@@ -3978,6 +3978,10 @@ int main() {
 
 ### 格式化I/O
 
+#### 格式化输出
+
+##### printf系列
+
 格式化`I/O`是通过`printf`系列函数来处理的
 
 ~~~cpp
@@ -4003,7 +4007,53 @@ int snprintf(char *restrict buf, size_t size, const char *restrict format, ...);
 // 如果给定的size足够大，返回将要存入数组的字符数，如果编码错误，返回负值
 ~~~
 
-#### 格式化标准
+##### 格式化标准
 
-这显然就涉及到格式化的标准了
+这显然就涉及到格式化的标准了，当然这里需要我们自己进行对数据进行合适的格式化处理
 
+这些标志其中括号里面是可选的，`convtype`是不可选的，如下图：
+
+<img src="https://img-blog.csdnimg.cn/46ae2430f4b940adab7050f840e549b1.png" alt="image-20230909142120139" style="zoom:80%;" />
+
+<img src="https://img-blog.csdnimg.cn/eb02eac7a8ce4e85b3a23b861fc59cbe.png" alt="image-20230909142131548" style="zoom:80%;" />
+
+![image-20230909142140609](https://img-blog.csdnimg.cn/5ddccfa1524b4044b33f0751499cad59.png)
+
+##### vprintf函数(了解)
+
+<img src="https://img-blog.csdnimg.cn/611416fbefcb47bfa8f105918152fdd4.png" alt="image-20230909144901212" style="zoom: 80%;" />
+
+#### 格式化输入
+
+##### scanf系列
+
+以下几个函数用作格式化输入
+
+~~~cpp
+#include <stdio.h>
+
+// 从标准输入中读取
+int scanf(const char *restrict format, ...);
+
+// 从标准输入中读取写入流中(是先写入流缓冲区中)
+int fscanf(FILE *restrict stream, const char *restrict format, ...);
+
+// 从标准输入中读取写入字符串str中
+int sscanf(const char *restrict str, const char *restrict format, ...);
+~~~
+
+这几个函数返回值我们可以不用判断，判断了也没有什么作用，所以只提一嘴：返回赋值的输入项数，若输入出错或者在任一转换之前已经到达文件末端，则返回EOF
+
+##### 格式化标准
+
+同前面，截图：
+
+![image-20230909145428023](https://img-blog.csdnimg.cn/f1b207db056147c8acf2db700cb643c4.png)
+
+![image-20230909145440049](https://img-blog.csdnimg.cn/be14b6061fe54afbbc09304d4e459aac.png)
+
+##### vscanf系列(了解)
+
+![image-20230909145502533](https://img-blog.csdnimg.cn/532e2d43a7464cda8190fefbd6aa6f23.png)
+
+![image-20230909145508121](https://img-blog.csdnimg.cn/bc870803e5124a9da40e46c1edb9eb17.png)
