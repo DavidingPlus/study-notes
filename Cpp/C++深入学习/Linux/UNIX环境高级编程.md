@@ -4057,3 +4057,51 @@ int sscanf(const char *restrict str, const char *restrict format, ...);
 ![image-20230909145502533](https://img-blog.csdnimg.cn/532e2d43a7464cda8190fefbd6aa6f23.png)
 
 ![image-20230909145508121](https://img-blog.csdnimg.cn/bc870803e5124a9da40e46c1edb9eb17.png)
+
+### 实现细节
+
+在标准I/O中，每一个标准I/O流都对应着一个与其相关联的文件描述符，我们可以调用以下函数来进行获得
+
+~~~cpp
+#include <stdio.h>
+
+int fileno(FILE *stream);
+~~~
+
+#### 例子
+
+我们写个程序简单看一下
+
+~~~cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    FILE* file_stream = fopen("07.txt", "r");
+    if (!file_stream) {
+        perror("fopen");
+        return -1;
+    }
+
+    int fd = fileno(file_stream);
+    if (-1 == fd) {
+        perror("fileno");
+        return -1;
+    }
+
+    printf("file descriptor: %d\n", fd);
+
+    return 0;
+}
+~~~
+
+结果：
+
+应该返回文件描述符的值是3，结果是，符合预期
+
+![image-20230911103808954](https://img-blog.csdnimg.cn/8503ffa6f4b2430b98bec829634ad371.png)
+
+我们这里再复习一下，标准错误默认是不带缓冲的，因为我们想要错误信息尽快显示到屏幕上，而不是关心是否具有换行符；标准输入和输出在连接到终端的时候默认是行缓冲的，如果定向到文件就是全缓冲
+
+### 临时文件
+
