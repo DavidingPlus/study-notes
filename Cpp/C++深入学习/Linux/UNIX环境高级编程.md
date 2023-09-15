@@ -4103,5 +4103,126 @@ int main() {
 
 我们这里再复习一下，标准错误默认是不带缓冲的，因为我们想要错误信息尽快显示到屏幕上，而不是关心是否具有换行符；标准输入和输出在连接到终端的时候默认是行缓冲的，如果定向到文件就是全缓冲
 
-### 临时文件
+### 临时文件(了解)
 
+#### tmpnam系列
+
+有两个库函数可以用来帮助创建临时文件
+
+~~~cpp
+#include <stdio.h>
+
+char *tmpnam(char *s);
+// tmpnam函数产生一个与现有文件名不同的一个有效路径名字符串，给的是路径名字
+// 每次调用的时候都产生一个不同的路径名，最多的次数是TMP_MAX(238328)
+// 现在tmpnam函数已经被弃用了，所以在使用的时候会报警告，但是能用，不推荐使用
+// 在文件关闭或者程序结束的时候就自动删除这个临时文件
+
+FILE *tmpfile(void);
+// 用来创建一个二进制临时文件，同样在文件关闭或者程序结束的时候就自动删除这个临时文件
+// UNIX对二进制文件不做区分
+~~~
+
+##### 例子
+
+我们先写一个关于tmpnam的例子
+
+~~~cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    char name[1024] = {0};
+
+    // c++使用这个函数会被警告说不安全，tmpnam函数返回一个临时文件的路径名，这个路径名中对应的文件名和本文件不相同
+    const char* tmp_path = tmpnam(name);
+    if (!tmp_path) {
+        perror("tmpnam");
+        return -1;
+    }
+
+    cout << TMP_MAX << endl;
+
+    cout << tmp_path << endl;
+    cout << name << endl;
+
+    return 0;
+}
+~~~
+
+结果：
+
+- 在编译的时候，说这个函数不推荐，很危险
+- 输出结果可以看出`TMP_MAX`的值是238328，产生的有效路径字符串路径是`/tmp/file6PoHsM`，我们可以推测`/tmp`路径就是产生临时文件路径的，并且我传进去的`name`字符串数组也被赋值为了路径名，返回值也是这个，双重保险
+
+![image-20230915150756157](https://img-blog.csdnimg.cn/e18f05290adc481d868ab86201879e1f.png)
+
+我们来看下`/tmp`路径：
+
+文件在程序结束之后就是释放掉了，确实是临时文件，做得很好
+
+<img src="https://img-blog.csdnimg.cn/425ddca0d24444f39be0fe6b8047dd14.png" alt="image-20230915150920192" style="zoom:80%;" />
+
+#### mkdtemp系列
+
+刚才使用`tmpnam`的时候编译器就提醒我们`tmpnam`函数不安全，建议使用`mkdtemp`函数
+
+~~~cpp
+#include <stdlib.h>
+
+char *mkdtemp(char *template);
+// 这个函数可以用来创建一个目录，这个目录有一个唯一的名字
+// 这个名字是根据我传入的template路径指定的，我的template可以是一个绝对路径也可以是一个相对路径
+// 但是为了保证名字唯一，必须要在这个字符串后面加上XXXXXX(6个)的路径名，系统会替换这六个字符让目录名字唯一
+
+int mkstemp(char* template);
+// 以唯一的名字创建一个普通文件并且打开文件，返回的值是文件描述符
+// 成功，返回文件描述符；失败，返回-1
+
+// 这两个函数创建的目录和文件都不会自动删除，如果想要删除我们必须要手动删除才可以！
+~~~
+
+##### 例子
+
+我们先试一下`mkdtemp`函数
+
+~~~cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    char name[1024] = {"./mydirXXXXXX"};
+
+    char *file_path = mkdtemp(name);
+    if (!file_path) {
+        perror("mkdtemp");
+        return -1;
+    }
+
+    cout << name << endl;
+    cout << file_path << endl;
+
+    return 0;
+}
+
+~~~
+
+结果：
+
+创建了一个目录，并且`name`字符串和函数的返回值都是这个路径，并且路径的位置也是正确的，当然我要选择绝对路径或者相对路径都是可以的
+
+![image-20230915161012243](https://img-blog.csdnimg.cn/e19bd96c801340ff9985a9f61c900378.png)
+
+当然`mkdtemp`函数还有其他的作用：
+
+![image-20230915161221228](https://img-blog.csdnimg.cn/3f5c489950914cf8a4b39501f4f03a50.png)
+
+### 内存流(了解)
+
+这部分看不懂思密达。。。
+
+<img src="https://img-blog.csdnimg.cn/0575e3b187bd461eb55dbb4a4d67d45a.png" alt="image-20230915163646515" style="zoom:80%;" />
+
+<img src="https://img-blog.csdnimg.cn/b1c940499dd2457cb8742b2d08a0c27b.png" alt="image-20230915163654809" style="zoom:80%;" />
+
+<img src="https://img-blog.csdnimg.cn/2b2e6834aa2940c0be6a7dd16b3e0399.png" alt="image-20230915163712024" style="zoom:80%;" />
