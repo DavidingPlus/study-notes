@@ -1031,7 +1031,7 @@ static bool fileExists(const LString &filePath);
  * @author <作者中文名>
  * @author <可以添加更多作者名>
  */
- ```
+```
 
 > 接口注释不需要写在源文件内。
 
@@ -1136,7 +1136,7 @@ int QDocDemoClass::add(int a, int b)
       int add(int a,int b);
   };
   ```
-  
+
   ```cpp
   // 文件：qdocdemoclass.cpp
   
