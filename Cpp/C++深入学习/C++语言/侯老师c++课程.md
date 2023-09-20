@@ -2,9 +2,7 @@
 
 # 面向对象高级开发
 
-## 4.10
-
-### 1. Header头文件的防卫式声明
+## Header头文件的防卫式声明
 
 ```c++
 //complex.h
@@ -19,7 +17,7 @@
 #endif
 ```
 
-### 2. inline 函数
+## inline 函数
 
 ```c++
 class complex{
@@ -45,7 +43,7 @@ C++要求对一般的内置函数要用关键字inline声明，但对类内定�
 
 如果函数太复杂，编译器没有办法把他看成 inline 函数!! 所以我们在类内实现只是为了建议编译器将其看成 inline 函数来提高效率，但是实际上是不是 inline 函数要看编译器，我们也不知道！
 
-### 3.单例设计模式(构造函数在private部分)
+## 单例设计模式(构造函数在private部分)
 
 例子：
 
@@ -94,7 +92,7 @@ int main()
 }
 ```
 
-### 4.const 常量成员函数
+## const 常量成员函数
 
 ```c++
 //complex类
@@ -130,7 +128,7 @@ std::cout<<c.real();//打印real()
 
 打印real()会出问题，因为使用者不想要改变c里面元素的值，但是这个成员函数在访问的时候不加const，编译器认为有可能会改变成员函数的值，这两者是相互矛盾的，所以会报错，所以需要加上const来保证是不会改变值的。
 
-### 5.引用(指针常量 指针指向不可修改)
+## 引用(指针常量 指针指向不可修改)
 
 引用的本质: 是一个指针常量
 
@@ -147,7 +145,7 @@ ref = 20; //内部发现ref是引用，自动帮我们转换为: *ref = 20;
 
 所以考虑到这两个问题，在实际操作过程中尽量传入引用。
 
-### 6.friend 友元
+## friend 友元
 
 ```c++
 //complex类
@@ -195,7 +193,9 @@ c2.func(c1);
 
 2.私有成员属性可以类内访问，类外不可以访问，需要访问需要成员函数接口
 
-### 7. return by reference
+## return by *
+
+### return by reference
 
 传送着无需知道接收者是以reference接受
 
@@ -266,9 +266,7 @@ operator+(const complex &x,const complex &y){
 c2=c1+c2;//这行代码的意思是c1+c2创建出来一个新的对象赋值给c2!!!
 ```
 
-## 4.12
-
-### 1.class with pointer members 带有指针的类
+## class with pointer members 带有指针的类
 
 比较经典的类就是string字符串类,必须有拷贝构造 copy ctor和拷贝赋值 copy op=
 
@@ -316,7 +314,7 @@ inline String &String::operator=(const String &str)
 
 这里为什么要检测自我赋值：因为不检测自我赋值的话，如果使用者调用自我赋值的时候，第一步就会把唯一的自身这个_data杀掉，后续就没有办法进行了，会出现安全隐患!!!这也是为了安全和严谨性考虑的
 
-### 2.一些对象的生命期
+## 一些对象的生命期
 
 ```c++
 class complex{ };
@@ -350,7 +348,9 @@ c4: new出来的，动态分配内存，存放于堆区，注意new了之后记�
 
 ​      否则会出现内存泄露的问题，当作用域结束之后c4指针会被释放掉，但是他所指向的内存没有被释放!!!一般写析构函数解决这个问题
 
-### 3. new: 先分配内存空间，再调用构造函数
+## new和delete
+
+### new: 先分配内存空间，再调用构造函数
 
 ![image-20230412174017480.png](https://img-blog.csdnimg.cn/35d7d548df19498380f6ca77c6160b84.png)
 
@@ -364,7 +364,7 @@ c4: new出来的，动态分配内存，存放于堆区，注意new了之后记�
 
 写了 [] 的话编译器才会知道你不仅要删除p这个类对象指针,还要把这个p对象指针指向的数组元素给全部删除掉，因为 String* p既可以表示单个的类对象指针也可以表示类对象数组的首元素地址指针!!! 所以必须要要写 [] ,否则只会删除掉p[0]所对应的元素!!!
 
-### 4. static 静态
+## static 静态
 
 静态变量和静态函数很特殊，具体看下面代码:
 
@@ -436,7 +436,7 @@ static Stu& getInstance(){
 }
 ```
 
-### 5.模板
+## 模板
 
 ### 类模板:
 
@@ -493,7 +493,7 @@ int main()
 }
 ```
 
-### 6.命名空间 namespace
+## 命名空间 namespace
 
 将自己写的东西封装在一个命名空间当中，可以防止与其他人名称一样功能不同的问题
 
@@ -503,7 +503,7 @@ namespace std{
 }
 ```
 
-### 7. 复合 composition
+## 复合 composition
 
 简单来理解就是 一个类包含另一个类对象,本类可以调用另一个类的底层函数
 
@@ -538,7 +538,7 @@ deque是双端队列，queue是单端队列，显然deque的功能要比queue功
 
 ![image-20230412203303042](https://img-blog.csdnimg.cn/c2925e6e0a7a4865bf6e16053ade1742.png)
 
-### 8. 委托 Delefgation.Composition by reference
+## 委托 Delefgation.Composition by reference
 
 把复合下面传入的参数类型改为指针!!!
 
@@ -550,7 +550,7 @@ deque是双端队列，queue是单端队列，显然deque的功能要比queue功
 
 reference counting: 这种写法在这个特殊例子当中可以实现，用户创建了三个String对象，但是每个对象下面对应的 rep 指针指向的对象其实是一块内存，因为他们的字符串是一样的，这样就可以减少内存的开销。
 
-### 9. 继承 inheritance
+## 继承 inheritance
 
 构造:由内而外 调用父类的**默认**构造函数，编译器指定的，也符合我们的预期！
 
@@ -611,7 +611,7 @@ int main()
 
   用父类对象指针来接受子类对象 来达到子类调用父类对象成员函数的目的，这样也可以实现多态.
 
-### 10. 转换函数 conversion function
+## 转换函数 conversion function
 
 作用：可以用于类型的转换
 
@@ -661,7 +661,7 @@ int main()
 
 注意main函数里面的细节!!!
 
-### 11.函数对象(仿函数) -> 谓词
+## 函数对象(仿函数) -> 谓词
 
 谓词:
 
@@ -720,9 +720,7 @@ public:
 
 标准库里面有很多仿函数，这些仿函数都继承了一些标准库里面的父类，这些父类大小为0，没有成员函数。(标准库)
 
-## 4.13
-
-### 1.模板补充: 成员模板 member template
+## 模板补充: 成员模板 member template
 
 到目前为止，三种模板: 类模板 函数模板 成员模板
 
@@ -784,7 +782,7 @@ Base1 *ptr=new Derived1;//这么写是完全ok的
 
 并且恰好这么写可以使得子类调用父类的虚函数来实现不同的虚函数功能。
 
-### 2.命名空间
+## 命名空间
 
 ```c++
 #include <iostream>
@@ -817,7 +815,7 @@ int main()
 
 两个命名空间，即使里面的函数名称一样，传入参数等等方面完全一样，甚至还是静态的，虽然静态的存放于全局静态区只有一份，但是这里用了两个不同的命名空间将他们分割开来，这样就导致两个函数本质上是不同的，从下面的使用就可以看出来了。
 
-### 3. explicit
+## explicit
 
 non-explicit-one-argument ctor(构造函数)
 
@@ -930,7 +928,7 @@ int main(){
 
 这个关键字 explicit 绝大部分都是用在构造函数前面来防止其他类型的隐式转换!!!!
 
-### 4. pointer-like classes 关于智能指针和迭代器
+## pointer-like classes 关于智能指针和迭代器
 
 ### 智能指针: 用一个类来模拟一般指针的作用
 
@@ -1004,7 +1002,7 @@ int main()
 }
 ```
 
-### 5. specialization 模板特化
+## specialization 模板特化
 
 对于一个泛型模板，我们调用的时候里面的接口都是一样的。但是如果我们发现有的特殊的类型在某个函数下有更加好的实现方法，这个时候就可以用模板特化来操作了。可以类比子类继承父类(抽象类)的虚函数，特殊化实现，本质是一样的。
 
@@ -1059,7 +1057,7 @@ class Fuck<type>{
 };
 ```
 
-### partial specialization 模板偏特化
+## partial specialization 模板偏特化
 
 个数的偏
 
@@ -1166,9 +1164,7 @@ int main()
 
 ## 第一讲：STL标准库和泛型编程
 
-## 4.14
-
-### 1.STL 体系结构
+### STL 体系结构
 
 六大部件: 容器 分配器 算法 迭代器 适配器 仿函数
 
@@ -1236,7 +1232,7 @@ int main()
 
    然后最外面 **not1** 一样的，将条件取反，所以求的就是大于等于40的元素个数了,function adapter(negator)
 
-### 2.基于范围的 for 语句
+### 基于范围的 for 语句
 
 个人感觉有点像python里面的 for i in range()
 
@@ -1271,7 +1267,7 @@ int main()
 }
 ```
 
-### 3.容器的结构和分类
+### 容器的结构和分类
 
 总体来讲分为两类:
 
@@ -1293,11 +1289,7 @@ int main()
 
 ![image-20230414171828137](https://img-blog.csdnimg.cn/a9e45283a98641a1873cfa245f989735.png)
 
-## 4.15
-
-### 1.一些容器的使用
-
-#### 1.1 Sequence Containers 序列容器
+### Sequence Containers 序列容器
 
 #### array(c++11)
 
@@ -1485,7 +1477,7 @@ deque的功能可以实现stack的所有功能，可以用复合composition的�
 
 <img src="https://img-blog.csdnimg.cn/77285d8183ce4e0f801b6e99452c5514.png" alt="image-20230415150706680" style="zoom:67%;" />
 
-#### 1.2 Associate Containers 关联式容器
+###  Associate Containers 关联式容器
 
 关联式容器每个元素都存在 key 和 value，这样才能使得查询效率大大提高
 
@@ -1592,7 +1584,7 @@ unordered_set 通过一个**哈希函数**，将对象的值映射到一个数�
 
 其他略，具体实现后面再谈
 
-### 2.使用分配器 allocator
+### 使用分配器 allocator
 
 这部分先了解怎么使用分配器，后面会有专题来讲解分配器的原理
 
@@ -1602,7 +1594,7 @@ unordered_set 通过一个**哈希函数**，将对象的值映射到一个数�
 
 ## 第二讲：分配器 迭代器
 
-### 3. OOP(面向对象编程)和GP(泛型编程)
+###  OOP(面向对象编程)和GP(泛型编程)
 
 OOP将 data 和 methods 结合在一起,GP却将他们两个分开来
 
@@ -1612,7 +1604,7 @@ OOP将 data 和 methods 结合在一起,GP却将他们两个分开来
 
 2.算法ALgorithms通过迭代器Iterator确定操作范围，并通过Iterator取用Container元素
 
-### 4.随机访问迭代器
+### 随机访问迭代器
 
 随机访问迭代器 RandomAccessIterator：能够随机访问容器中的任一元素，例如vector单端数组
 
@@ -1656,7 +1648,7 @@ int main()
 }
 ```
 
-### 5.GP 泛型编程举一个例子
+### GP 泛型编程举一个例子
 
 ```c++
 #include <iostream>
@@ -1697,9 +1689,7 @@ int main()
 
 这个例子很简单，就不多做解释了
 
-## 4.16
-
-### 1.重载new运算符 operator new
+### 重载new运算符 operator new
 
 ![image-20230416094923459](https://img-blog.csdnimg.cn/12ca7e1551944f158637eb34da0d0176.png)
 
@@ -1709,9 +1699,9 @@ int main()
 
 size所包含的内容才是我想要的存放数据的内容部分，但是malloc会给我们开辟比size更大的空间，这些在另一门课里面会具体谈到。
 
-### 2.分配器 allocators
+### 分配器 allocators
 
-### VC6 allocator
+#### VC6 allocator
 
 VC6里面的分配器具体实现如下图：
 
@@ -1736,7 +1726,7 @@ VC6里面的分配器具体实现如下图：
     allocator<int>().deallocate(p, 512);//在归还的时候还需要之前的大小，所以非常不好用!!!
 ```
 
-### BC++ allocator
+#### BC++ allocator
 
 BC5 STL中对分配器的设计和VC6一样，没有特殊设计
 
@@ -1744,7 +1734,7 @@ BC5 STL中对分配器的设计和VC6一样，没有特殊设计
 
 操作略
 
-### GCC2.9 allocator
+#### GCC2.9 allocator
 
 和前面两个一样，也没有特殊设计，就是简单的调用malloc 和 free分配和释放内存
 
@@ -1752,7 +1742,7 @@ BC5 STL中对分配器的设计和VC6一样，没有特殊设计
 
 右边这一段注释的意思就是虽然这里实现了符合标准的allocator，但是他自己的容器从来不去用这些分配器，这些分配器都有一个致命的缺点，就是因为本质是在调用mallloc和free函数，根据前面的内存分配机制很容易看出会产生很多的其他空间，从而被浪费，所以开销相对比较大，一般不用
 
-### GCC2.9 自己使用的分配器：alloc(不是allocator!!!)
+#### GCC2.9 自己使用的分配器：alloc(不是allocator!!!)
 
 这个分配器想必比allocator要好用的多
 
@@ -1766,7 +1756,7 @@ BC5 STL中对分配器的设计和VC6一样，没有特殊设计
 
 这个东西的缺陷到内存管理里面去讲。
 
-### GCC4.9 使用的分配器：allocator(不是alloc!!!)
+#### GCC4.9 使用的分配器：allocator(不是alloc!!!)
 
 ![image-20230416105043344](https://img-blog.csdnimg.cn/27646ca0eeaa47998fec09c963c69b3c.png)
 
@@ -1780,13 +1770,13 @@ BC5 STL中对分配器的设计和VC6一样，没有特殊设计
 
 ![image-20230416110401962](https://img-blog.csdnimg.cn/8e03c20dc47a4a99907ac34eeec16164.png)
 
-### 3.容器之间的关系
+### 容器之间的关系
 
 容器与容器之间的关系基本上都是复合的关系，比如set/multiset和map/multimap底层都是由rbtree红黑树实现的等等，具体见下图
 
 ![image-20230416154815162](https://img-blog.csdnimg.cn/7c406272023143348189d5ce984d639e.png)
 
-### 3.区别size()和sizeof()
+### 区别size()和sizeof()
 
 以容器list为例，list.size()和sizeof(list)是没有直接的大小联系的（单项链表forward_list不存在size()方法）
 
@@ -1802,7 +1792,7 @@ BC5 STL中对分配器的设计和VC6一样，没有特殊设计
 
 l.size()指的是容器中存放的元素个数；sizeof(l)指的是需要形成list这个容器需要这个类所占的内存有多大，list类里面不仅存放了链表的指针，还有其他的成员属性来配合控制这个容器的运行.所以sizeof(l)和这个元素的个数一般没有关系。
 
-### 4.深入探索 list
+### 深入探索 list
 
 GCC2.9是这样写的
 
@@ -1812,7 +1802,7 @@ GCC2.9是这样写的
 
 由于list的存储是不连续的，所以相应的他的迭代器也需要是智能指针，需要重载++和--运算符，(注意list的迭代器不是随机访问迭代器，所以不能使用+ -号运算符，也不能使用算法库的函数sort()，而需要使用自带的函数sort() )那么就应该是一个类了。**进而推得所有的容器(除了vector和array)的迭代器，最好都写成一个类来实现。**
 
-### list的迭代器
+#### list的迭代器
 
 这个迭代器最重要的就是重载 ++ 运算符，也就是前置++和后置++
 
@@ -1853,7 +1843,7 @@ self operator++(int){
 //注意由于需要返回原位置的迭代器，而现在的迭代器已经改变了，所以最好新创建一个，return by value
 ```
 
-### 关于为什么后置++不能返回引用，比较有说服力的还有如下的原因：
+#### 关于为什么后置++不能返回引用，比较有说服力的还有如下的原因：
 
 ```c++
 int i=2,j=2;
@@ -1864,7 +1854,7 @@ cout<< ++++i << j++++ << endl;
 
 然后类在重载这两个运算符的时候也会向编译器自带的规则看起，也不允许后置++连续加，所以就只能return by value
 
-### 关于 * 和 & 运算符的重载
+#### 关于 * 和 & 运算符的重载
 
 ```c++
 #include <iostream>
@@ -1911,7 +1901,7 @@ pointer operator->(){
 }
 ```
 
-### G4.9 和 G2.9的区别
+#### G4.9 和 G2.9的区别
 
 具体区别就如下图所示：
 
@@ -1923,9 +1913,7 @@ pointer operator->(){
 
 **刻意在list尾端加上一段空白的区域来复合STL迭代器前闭后开的特征!!!但是相应的这个设计的复杂度又大大增加了。**
 
-## 4.19
-
-### 1.迭代器的设计原则
+### 迭代器的设计原则
 
 Iterator需要遵循的原则：在调用算法的时候，iterator作为中间桥梁连接容器和算法，所以算法需要知道Iterator的很多东西
 
@@ -1968,7 +1956,7 @@ struct List_Iterator
 
 当然，指针是个**退化**的迭代器!!!
 
-### 2. Traits 萃取机
+### Traits 萃取机
 
 ![image-20230419190233258](https://img-blog.csdnimg.cn/3be2212e189a43b589a2b1335df9e045.png)
 
@@ -2033,11 +2021,11 @@ struct iterator_traits<const T*>{
 
 ## 第三讲：容器
 
-### 3.深入探索vector
+### 深入探索vector
 
 其实自己都可以封装一个vector，当然所有的功能是不现实的，但是基本的功能还是可以
 
-### GCC2.9的设计
+#### GCC2.9的设计
 
 直观感受就是简洁明了
 
@@ -2068,17 +2056,15 @@ struct iterator_traits<const T*>{
 typedef value_type* iterator; // T*
 ```
 
-### GCC4.9的设计
+#### GCC4.9的设计
 
 复杂，依托答辩
 
 ![image-20230419201320469](https://img-blog.csdnimg.cn/64b96409cca04e5f843e01eb979b6fec.png)
 
-## 4.20
+### 深入探索 deque 和 queue , stack
 
-### 1.深入探索 deque 和 queue , stack
-
-### deque
+#### deque
 
 deque 双端队列的实现结构：
 
@@ -2156,9 +2142,7 @@ deque 双端队列的实现结构：
 
 ![image-20230420193754702](https://img-blog.csdnimg.cn/ae7a341af3844108a306b17cd904618d.png)
 
-## 4.21
-
-### 1. queue
+#### queue
 
 **内部存了一个 deque 容器，二者形成了复合 composition 关系**
 
@@ -2192,7 +2176,7 @@ queue内部的函数，deque能完全满足它，所以调用 deque 的成员函
 
 关于这些底部容器支撑，如果你没有调用它不存在的函数，那其实调用还是可以的，但是总体来看是不行的!!!
 
-### 2.自己手写了一个简单的二叉树(创建二叉树函数不会)
+### 自己手写了一个简单的二叉树(创建二叉树函数不会)
 
 ```c++
 //TreeNode.h
@@ -2438,11 +2422,11 @@ int main()
 }
 ```
 
-### 3 rb_Tree 红黑树
+### rb_Tree 红黑树
 
 红黑树是一种高度平衡的二叉搜寻树；由于它保持尽量的平衡，非常有利于search和insert的操作，并且在改变了元素的操作之后会继续保持树状态的平衡
 
-### 红黑树 rb_Tree 与二叉平衡树 AVL 的对比：
+#### 红黑树 rb_Tree 与二叉平衡树 AVL 的对比：
 
 ![image-20230421175541816](https://img-blog.csdnimg.cn/01d129349b5d4632a304b96aec5aa704.png)
 
@@ -2460,7 +2444,7 @@ rb_Tree和AVL相比，虽然AVL更加平衡，但是条件更加苛刻，**红�
 
 红黑树的设计当中存在两种设计 **insert_unique() 和 insert_equal()** ，表示key可以重复或者不重复，这样就可以引申出 set和 multiset，mal和 multimap
 
-### 标准库对红黑树的实现:
+#### 标准库对红黑树的实现:
 
 ![image-20230421182526116](https://img-blog.csdnimg.cn/a19515ed9e4743569c89aef058aeec85.png)
 
@@ -2521,9 +2505,9 @@ int main()
 }
 ```
 
-### 4.基于红黑树的set和map
+### 基于红黑树的set和map
 
-### set/multiset
+#### set/multiset
 
 由于set/multiset的key和value相同，所以没有办法通过迭代器修改元素的值，也就是修改key，error
 
@@ -2560,7 +2544,7 @@ int main()
 }
 ```
 
-### map/multimap
+#### map/multimap
 
 **map没有办法通过迭代器修改key的值，但是可以用过迭代器修改value的值!!!!!**
 
@@ -2674,9 +2658,7 @@ int main()
 }
 ```
 
-## 4.22
-
-### 1.map独特的 operator [ ]!!!
+### map独特的 operator [ ]!!!
 
 **作用：根据key传回data。注意只有map有，因为key不为data并且key是独一无二的!!!**
 
@@ -2686,7 +2668,7 @@ int main()
 
 使用二分查找在有序的key当中查找目标key，如果找不到的话就进行insert操作创建一个新的key！！！
 
-### 2.hashtable 散列表
+### hashtable 散列表
 
 哈希表的设计
 
@@ -2783,13 +2765,13 @@ int main()
 
 ##  第四讲：算法
 
-### 3.算法概述
+### 算法概述
 
 ![image-20230422162235208](https://img-blog.csdnimg.cn/1ddc3f47f97744a2b887c22491f9dc0d.png)
 
 算法没有办法直接面对容器，他需要借助中间商迭代器才可以，换句话说，算法不关系容器是怎么样的，只关心容器提供给我的迭代器是怎么样的，而迭代器的设计的符号重载是普适的，这样就可以适用于大多数容器了。
 
-### 4.迭代器的五种分类：注意这五种都是类!!!
+### 迭代器的五种分类：注意这五种都是类!!!
 
 ![image-20230422162614061](https://img-blog.csdnimg.cn/8cdfadd3dde640149ede096e1ad7b402.png)
 
@@ -2872,7 +2854,7 @@ int main()
 }
 ```
 
-### 5.iterator_category对算法的效率影响
+### iterator_category对算法的效率影响
 
 不同的迭代器类型会导致在访问的过程中效率有区别
 
@@ -2945,9 +2927,7 @@ int main()
 
 因为上面的迭代器都是模板，但是有些算法在实现的过程中只对某种类型的迭代器有效，所以设计者会暗示迭代器的类型来方便阅读和修改!!!
 
-## 4.23
-
-### 1.算法源代码剖析
+### 算法源代码剖析
 
 C++ STL 库里面的标准算法格式
 
@@ -2964,7 +2944,7 @@ std::Algorithm(Iterator iter1,Iterator iter2,Cmp cmp){
 }
 ```
 
-### accumulate
+#### accumulate
 
 遍历整个容器对每个元素进行操作(可以是累加)然后返回值
 
@@ -3070,7 +3050,7 @@ int main()
 }
 ```
 
-### for_each
+#### for_each
 
 容器的遍历算法
 
@@ -3159,7 +3139,7 @@ int main()
 }
 ```
 
-### replace,replace_if,replace_copy,replace_copy_if
+#### replace,replace_if,replace_copy,replace_copy_if
 
 ```c++
 #include <iostream>
@@ -3225,7 +3205,7 @@ int main()
 }
 ```
 
-### count,count_if
+#### count,count_if
 
 这个差不多就不写了
 
@@ -3239,13 +3219,13 @@ int main()
 
 有些容器自带的成员函数，比如图中的，这些函数的执行效率肯定比全局的执行效率更高!!!
 
-### find,find_if
+#### find,find_if
 
 循序式查找，效率并不是很高，找不到返回last迭代器
 
 ![image-20230423202430305](https://img-blog.csdnimg.cn/857e370620b947d8812210e721a3aecc.png)
 
-### sort
+#### sort
 
 ```c++
 #include <iostream>
@@ -3304,7 +3284,7 @@ int main()
 
 **所以list和forward_list没办法调用，只能调用他们自己的类函数sort!!!**
 
-### binary_search(通过二分查找确定元素在不在容器当中)
+#### binary_search(通过二分查找确定元素在不在容器当中)
 
 **二分查找一定只能适用于一个有序序列!!!!并且在库函数当中只能用于升序序列!!!!**
 
@@ -3411,11 +3391,9 @@ int main()
 }
 ```
 
-## 4.24
-
 ## 第五讲：仿函数 适配器
 
-### 1.仿函数 functors(注意要继承)
+### 仿函数 functors(注意要继承)
 
 标准库提供的三大类型的仿函数：算术类 逻辑运算类 相对运算类
 
@@ -3439,7 +3417,7 @@ int main()
 
 **什么叫adaptable?如果你希望自己的仿函数是可以被适配器调整的话，那么就继承一个适当的类，这样可以完成更多的操作!!!为什么要继承呢？因为可能在被adapter改造的时候可能会问这些问题。这也和算法问迭代器的五个问题一样，那里是通过迭代器的萃取机 Iterator Traits (也叫迭代器适配器 Iterator Adapters )去问的，这里同理通过继承的关系去回答adapter的问题!!!**
 
-### 2.适配器 Adapter
+### 适配器 Adapter
 
 存在多种 Adapters ，还是那张图，注意关系
 
@@ -3453,15 +3431,13 @@ Adapter的关键是：
 
 一下就是一些适配器的例子：
 
-### 容器适配器：stack,queue
+#### 容器适配器：stack,queue
 
 ![image-20230424172134280](https://img-blog.csdnimg.cn/7bfd3aab335b456c80b15a9ff5ad831e.png)
 
 这个之前用过很多次了，就是把默认的容器拿进来进行改造，比如这里给的默认值是 deque ，改造之后能够以一种全新的面貌展现给用户，能够更加准确的针对用户的需要来进行相应的操作。
 
-## 4.25
-
-### 函数适配器：binder2nd
+#### 函数适配器：binder2nd
 
 ![image-20230425185823723](https://img-blog.csdnimg.cn/53710d3057cc452cadca94c46263fa2c.png)
 
@@ -3531,7 +3507,7 @@ typename Binary_Op::second_argument_type value;
 
 ![image-20230425191652925](https://img-blog.csdnimg.cn/07d92104067c4e728fc1972a27e00492.png)
 
-### 函数适配器：not1
+#### 函数适配器：not1
 
 ![image-20230425194548756](https://img-blog.csdnimg.cn/e07128cad30243599b15663c52c62051.png)
 
@@ -3582,7 +3558,7 @@ int main()
 
 **观察发现这些adapter的实现方法基本都是一个模板辅助函数，调用一个模板类，这个类里面有构造函数和小括号重载!!!!**
 
-### 新型适配器：bind(since c++11)
+#### 新型适配器：bind(since c++11)
 
 右边是老版本，左边是新版本!!!
 
@@ -3677,13 +3653,13 @@ int main()
 }
 ```
 
-### 迭代器适配器：rbegin，rend
+#### 迭代器适配器：rbegin，rend
 
 ![image-20230425203641882](https://img-blog.csdnimg.cn/c94cb4e542ee4e95b97fadb6e3f4d05d.png)
 
 这个迭代器就是在正向迭代器的基础之上进行改造的迭代器!!!
 
-### 迭代器适配器：inserter(没弄懂)
+#### 迭代器适配器：inserter(没弄懂)
 
 ![image-20230425205345712](https://img-blog.csdnimg.cn/a5a8c50291fe49f89f2bd7af05646e07.png)
 
@@ -3691,17 +3667,15 @@ int main()
 
 **答案是借助操作符重载，本例子就是重载了 = 号运算符就是实现了由赋值操作变为插入操作了!!!!**
 
-## 4.26
-
 ## 第六讲：STL周围的细碎知识点
 
-### 1.一个万用的 hash function
+### 一个万用的 hash function
 
 ![image-20230426151146418](https://img-blog.csdnimg.cn/d9826d8118df4ac78c503a5aadb272f7.png)
 
 **系统提供了一个非常不错的hashcode生成函数 hash_val() ，括号里面把元素的所有参数全部放进去就好！**
 
-### hash_val(参数包)
+#### hash_val(参数包)
 
 ```c++
     // 1
@@ -3808,7 +3782,7 @@ int main()
 }
 ```
 
-### Hash函数的三种形式
+#### Hash函数的三种形式
 
 1.仿函数 functor
 
@@ -3865,9 +3839,7 @@ namespace std
 
 可以在我们的代码中对std里面的系统提供的hash函数进行特化版本的处理来实现
 
-## 4.27
-
-### 1.tuple
+### tuple
 
 tuple是c++11新引入的一个好东西，他可以传入一个参数包，参数包里面可以放入任意大小，任意类型
 
@@ -3997,7 +3969,7 @@ tuple里面有两个head和tail函数，这两个在现在的c++里面不太好�
 
 ## 第一讲：语言
 
-### 2.variatic templates 参数包
+### variatic templates 参数包
 
 **在类模板中，模板参数包必须是最后一个模板形参. 而在函数模板中则不必!!!!**
 
@@ -4017,9 +3989,9 @@ print(args...) //函数参数包
 
 ![image-20230427171431489](https://img-blog.csdnimg.cn/da001ea4a964481bb7a8abdec428fc1c.png)
 
-### 3.零碎知识点
+### 零碎知识点
 
-### nullptr
+#### nullptr
 
 ```c++
 #include <iostream>
@@ -4045,7 +4017,7 @@ int main()
 }
 ```
 
-### auto
+#### auto
 
 提醒：不要有了auto就以后都不写类型了，能不用就不用，除非是在类型名太长或者太复杂的类型才用一下，我们心里需要明白这到底是怎么类型，不要编译器知道了我们不知道
 
@@ -4075,7 +4047,9 @@ int main()
 }
 ```
 
-### 4.uniform initialization 统一初始化
+### initializer_list<>
+
+#### uniform initialization 统一初始化
 
 任何初始化动作都可以用一个共同语法：{ //填入值 }
 
@@ -4112,10 +4086,6 @@ int main()
     return 0;
 }
 ```
-
-## 4.30
-
-### 1.initializer_list<>
 
 在编译器看到 {} 的时候会自动创建出来一个 initializer_list，这是一个类，具体代码实现如下：
 
@@ -4165,8 +4135,6 @@ public:
 STL的容器是如何引入initializer_list的？
 
 ![image-20230430111248498](https://img-blog.csdnimg.cn/a29e118349c340f8a1184a70133a1723.png)
-
-## 5.4
 
 initializer_list<>里面内置了一个array数组的指针和这个数组的长度，编译器会读取{}里面的元素来进行容器的插入操作以实现初始化操作
 
@@ -4243,7 +4211,7 @@ int main()
 }
 ```
 
-### 1.explicit
+### explicit
 
 **explicit for ctor taking one argument**
 
@@ -4316,7 +4284,7 @@ int main()
 }
 ```
 
-### 2. =delete,=default
+### =delete,=default
 
 ```c++
 #include <iostream>
@@ -4441,7 +4409,7 @@ classes with or without pointer members!!!!
 
 **带有指针的类基本上都需要重写 big 3；不带指针的基本都不需要写!!!!!**
 
-### No-Copy and Private-Copy
+#### No-Copy and Private-Copy
 
 ![image-20230504201206953](https://img-blog.csdnimg.cn/868287830ce743159a0b7aac0d365b22.png)
 
@@ -4491,13 +4459,13 @@ int main()
 }
 ```
 
-### 3.Alias(化名) Template (template typedef) 模板的化名
+### Alias(化名) Template (template typedef) 模板的化名
 
 ![image-20230504202940442](https://img-blog.csdnimg.cn/2ecc058bc209466d8fd465c0f5f948a2.png)
 
 **值得注意的是下面两个没办法实现我们想要的结果!!!!**
 
-### test_moveable函数测试
+#### test_moveable函数测试
 
 这么写始终会报错，看起来是没有办法把容器和容器模板的类型分开来进行传入的
 
@@ -4507,9 +4475,7 @@ int main()
 
 ![image-20230504213510643](https://img-blog.csdnimg.cn/c4552e6d607b4f238abd20112eb7bff1.png)
 
-## 5.5
-
-### 1.template template parameter 双重模板参数
+### template template parameter 双重模板参数
 
 ![image-20230505102818021](https://img-blog.csdnimg.cn/999f1656c51b402198c4f97021842868.png)
 
@@ -4576,7 +4542,7 @@ int main()
 }
 ```
 
-### 2.type alias 类型化名
+### type alias 类型化名
 
 type alias 和 typedef 没有任何的不同
 
@@ -4626,7 +4592,7 @@ int main()
 }
 ```
 
-### 3.noexcept 保证不会抛出异常
+### noexcept 保证不会抛出异常
 
 **我们必须通知C++(特别是 std::vector)，move ctor 和 move assignment 和 dtor不会抛出异常，前两个都是右值引用**
 
@@ -4638,7 +4604,7 @@ int main()
 
 至于move ctor和move assignment，到后面再说
 
-### 4.override 覆写 特用于虚函数重写上面
+### override 覆写 特用于虚函数重写上面
 
 **这个需要保证子类和父类这个虚函数的名称，返回值，参数类型，个数，位置完全相同!!!!!**
 
@@ -4667,7 +4633,7 @@ int main()
 }
 ```
 
-### 5.final
+### final
 
 用来修饰class表示不允许类继承自己；用来修饰虚函数virtual表示不允许子类override这个函数
 
@@ -4701,7 +4667,7 @@ int main()
 }
 ```
 
-### 6.decltype
+### decltype
 
 用来得到一个表达式的类型，有三大应用:
 
@@ -4797,7 +4763,7 @@ int main() {
 
 <img src="https://img-blog.csdnimg.cn/77cf2b855b65437e802bb05f263cbc2b.png" alt="image-20230505195009665" style="zoom:67%;" />
 
-### 7.lambdas
+### lambdas
 
 ![image-20230505190504411](https://img-blog.csdnimg.cn/0c27c281c16c454ea3bade99254efb0b.png)
 
@@ -4911,7 +4877,7 @@ int main() {
 }
 ```
 
-### 8.variadic templates
+### variadic templates
 
 之前已经提到过很多次了，举一些例子：
 
@@ -5038,9 +5004,7 @@ int main() {
 
 ## 第二讲：标准库
 
-## 5.16
-
-### 1.右值引用
+### 右值引用
 
 记住：
 
@@ -5488,9 +5452,9 @@ int main() {
 
 ![image-20230516165803938](https://img-blog.csdnimg.cn/dfa7b86974454891b9fb20c9410428fd.png)
 
-## 适配器 Adapter 补充
+### 适配器 Adapter 补充
 
-### 2.X适配器：ostream_iterator
+#### X适配器：ostream_iterator
 
 可以用来连接 cout
 
@@ -5514,7 +5478,7 @@ int main() {
 }
 ```
 
-### 3.istream_iterator
+#### istream_iterator
 
 可以用来连接 cin
 
@@ -5542,7 +5506,7 @@ int main() {
 }
 ```
 
-### 4.type traits
+#### type traits
 
 ![image-20230516212207244](https://img-blog.csdnimg.cn/e43b007bd4034daa8a95283aff9ffda0.png)
 
@@ -5590,13 +5554,11 @@ int main() {
 
 ## 第一讲：primitives
 
-## 5.18
-
-### 1.c++应用程序
+### c++应用程序
 
 <img src="https://img-blog.csdnimg.cn/eda7e335a6a0434e80c2e184d1140d9a.png" alt="image-20230518140540645" style="zoom:67%;" />
 
-### c++内存的基本工具
+#### c++内存的基本工具
 
 <img src="https://img-blog.csdnimg.cn/9489e312051e4a92a5459c8e97869d32.png" alt="image-20230518140911306" style="zoom:50%;" />
 
@@ -5657,7 +5619,7 @@ int main() {
 }
 ```
 
-### 2.new expression
+### new expression
 
 使用new关键字之后编译器会把这串代码翻译为如下：
 
@@ -5665,7 +5627,7 @@ int main() {
 
 **new关键字使用之后重要的就执行了两步，第一步是分配内存，第二步是调用构造函数**
 
-### delete expression
+#### delete expression
 
 与new相对应的就有delete关键字
 
@@ -5720,7 +5682,7 @@ int main() {
 }
 ```
 
-### 3.array new,array delete
+### array new,array delete
 
 注意：array new 一定要搭配 array delete，否则就极容易发生内存泄漏
 
@@ -5768,7 +5730,7 @@ int main() {
 
 <img src="https://img-blog.csdnimg.cn/7f7e1f59f026453fa388b5078926a080.png" alt="image-20230518160118276" style="zoom:67%;" />
 
-### 内存分布
+#### 内存分布
 
 内存的底层开辟和释放都是调用的malloc和free，那么调用了malloc之后会给我们的内存分布就如下所示：
 
@@ -5786,7 +5748,7 @@ int main() {
 
 **上面一共加起来84个字节，需要调整到16个字节的倍数，也就是96个字节，多出的12个字节存放在Pad中**
 
-### 4.placement new
+### placement new
 
 **placement new允许我们将对象建造在已经分配好的内存当中！！**
 
@@ -5818,7 +5780,7 @@ int main() {
 }
 ```
 
-### 5.重载
+#### 重载
 
 ![image-20230518164140667](https://img-blog.csdnimg.cn/d8b9332fe9b94850b6e8cc55f0d67228.png)
 
@@ -5832,9 +5794,7 @@ int main() {
 
 delete中的第二参数是optional的，可以写也可以不写
 
-## 5.28
-
-### 1.重载示例
+#### 重载示例
 
 在类当中进行简单的重载，和全局的输出做对比
 
@@ -6066,11 +6026,11 @@ Foo *p5 = new (100) Foo(1);
 
 **只有这种情况下，ctor中抛出异常，对应的operator delete才会被调用起来；如果不写，那就是放心这个构造函数并且不去处理这个异常**
 
-### basic_string使用new(extra)申请扩充量
+#### basic_string使用new(extra)申请扩充量
 
 ![image-20230528141445828](https://img-blog.csdnimg.cn/54884e14d47d419c9690b7edad2c47d5.png)
 
-### 2.per-class allocator 版本1 (重点看)
+### per-class allocator 版本1 (重点看)
 
 设计一个小型的内存池，小型的内存分配器，目前是第一版本
 
@@ -6187,7 +6147,7 @@ int main()
 
 可以看出，设计之后的内存之间没有了cookie，节省了空间，这就是我们自己的一个小型内存池
 
-### per-class allocator2 版本2
+#### per-class allocator2 版本2
 
 **和前面的思路基本一样：就是要一大块内存，当数组形式要进来分配内存的时候，如果这一大块内存还有空间，就链在后面就行；如果没有了，就要再要一大块空间进行同样的操作就可以了，最后在前后加上cookie就可以了。而这一切的发生都必须依赖于静态变量static headOfFreeList!!!!他在整个程序中只有一份，当然可以标识。**
 
@@ -6347,7 +6307,7 @@ int main() {
 
 **但是这个设计有一个问题，就是你一次性拿了很多的内存，假如剩下的空白内存还很多的话，在释放的时候理应将他们还给内存，但是在上面的operator delete当中并没有将其归还给操作系统，这样不能说好也不能说不好。首先就是归还这个技术操作太难了，其次就是虽然我没有归还，但是我也没有发生内存泄漏啊，这一段内存还是在我的手上，只是被归入了freeList当中而已。**
 
-### 3.static allocator 版本3
+#### static allocator 版本3
 
 上面的内存分配的设计对于某个指定的类是非常有效果的，但是我们不可能对于每一个类都这么干吧，所以我们需要找到一个普遍的设计方法来解决这个问题。
 
@@ -6464,7 +6424,7 @@ int main() {
 
 <img src="https://img-blog.csdnimg.cn/c84ba757ea704a6ab6db0469e4bf93a7.png" alt="image-20230528160530816" style="zoom:67%;" />
 
-### macro for static allocator 版本4 (偷懒)
+#### macro for static allocator 版本4 (偷懒)
 
 因为上面的static allocator的格式写的非常固定，所以我们可以想办法给他简化一下，偷偷懒
 
@@ -6513,13 +6473,11 @@ public:
 IMPLEMENT_POOL_ALLOC(Goo)
 ```
 
-### 4.global allocator 标准库的那个非常棒的alloc
+### global allocator 标准库的那个非常棒的alloc
 
 ![image-20230528160553832](https://img-blog.csdnimg.cn/0efb155976c945228bbdaa34e8b480cd.png)
 
-## 5.29
-
-### 1.new handler
+### new handler
 
 当operator new没有能力为我们分配成功我们所申请的memory的时候，会抛出异常 std::bad_alloc，我们应该要采取一些措施来应对这个
 
@@ -6640,29 +6598,29 @@ int main() {
 
 ## 第二讲：std::allocator
 
-### 2.malloc
+### malloc
 
 <img src="https://img-blog.csdnimg.cn/6aa8417829984bfb87eef3809393f363.png" alt="image-20230529203344173" style="zoom:67%;" />
 
 **当我们调用malloc函数的时候，图当中block size的部分是真实的存放我们的数据的地方，除此之外还会有其他的东西，在上下会有两包东西分别叫debug header和debug tail(这个是什么现在不去管)，在整个部分的上下会有固定两个大小的cookie，记录这一段区块的大小(只有区块大小相同才可以去除cookie)，也就是类似于前面per-class allocator的设计，VC6是上下各四个字节共八个字节；然后他要求这个内存块必须要满足字节数是16的倍数(不同的设计可能不同)，需要有一个pad块来进行调整，整个就是malloc分配给我们的内存**
 
-### 3.不同版本allocator的实现
+### 不同版本allocator的实现
 
 不同的编译器对于分配器allocator的实现都是不一样的，下面将举几个版本的例子：
 
-#### 3.1 VC6
+#### VC6
 
 ![image-20230529204213232](https://img-blog.csdnimg.cn/691406f1e1a6401d8f67be6f1a2da800.png)
 
 VC6的版本里面没有做特殊设计，就是调用operator new/delete，进而调用malloc，free，没有对内存进行特殊管理
 
-#### 3.2 BC5
+#### BC5
 
 ![image-20230529205010426](https://img-blog.csdnimg.cn/44a42ef79d3741c39159e319c96620df.png)
 
 同样BC5的版本也没有做特殊设计
 
-#### 3.3 Gc2.9
+#### Gc2.9
 
 ![image-20230529210322971](https://img-blog.csdnimg.cn/3d0100eed60c45149aacfe9b74f45e41.png)
 
@@ -6674,7 +6632,7 @@ Gc2.9的分配器allocator也没有做特殊设计
 
 下面将会介绍
 
-#### 3.4 pool alloc(Gc4.9) 非常棒的版本
+#### pool alloc(Gc4.9) 非常棒的版本
 
 以下是Gc2.9和Gc4.9对这个的实现
 
@@ -6702,9 +6660,7 @@ Gc4.9有很多扩充的alloctors，其中 __gnu_cxx::__pool_alloc<> 就是这个
 
 **答案是去除了cookie，比如放入一百万个元素，使用cookie就节省了八百万个字节的空间，这样减少了内存开销**
 
-## 5.30
-
-#### Gc2.9 std::alloc(很好的分配器)的实现
+### Gc2.9 std::alloc(很好的分配器)的实现
 
 ![image-20230530104526960](https://img-blog.csdnimg.cn/78c9a7c3b7764fb4bbad8b21b7dc78ca.png)
 
@@ -6732,7 +6688,7 @@ Gc4.9有很多扩充的alloctors，其中 __gnu_cxx::__pool_alloc<> 就是这个
 
 那么这里考虑到一个问题，就是如果客户需要的空间本来就小于4或者8个即一个指针的大小，那这个时候指针是不是就不能借用了呢？这是正确的，但是对于工业级别的绝大多数情况，客户需要的大小肯定都是大于一根指针的大小的，所以不太需要担心这个问题
 
-### 1.Gc2.9 std::alloc 运行一瞥(一个非常好的设计) 1-13
+### Gc2.9 std::alloc 运行一瞥(一个非常好的设计) 1-13
 
 01
 
@@ -6839,7 +6795,7 @@ Gc4.9有很多扩充的alloctors，其中 __gnu_cxx::__pool_alloc<> 就是这个
 - 图中还有很多空白的区块未分配给用户，那么可不可以把白色的小区块合并成为大区块给用户呢？(难度太高了)
 - system heap还剩余 10000 - 9688 = 312，可不可以把剩下的312继续用光呢？
 
-### 2.Gc2.9  std::alloc的源码剖析
+### Gc2.9  std::alloc的源码剖析
 
 **第二级分配器：第二级分配器就是上面提到的alloc，当这个分配器分配不出内存的时候，实际上不会立即山穷水尽，会调用第一级分配器调用new_handler来对分配不出内存进行处理**
 
@@ -7289,9 +7245,7 @@ int main() {
 
 ![image-20230531113514416](https://img-blog.csdnimg.cn/8a06215f6b2b46c692cc28d64ad5fad2.png)
 
-## 5.31
-
-### 1.Gc2.9 std::alloc观念大整理
+### Gc2.9 std::alloc观念大整理
 
 ![image-20230531112717690](https://img-blog.csdnimg.cn/6a1db4052f794ed1af2011aabfa06cc1.png)
 
@@ -7494,9 +7448,9 @@ int main() {
 
 ## 第四讲：loki::allocator
 
-## 6.9
+第三讲将malloc和free，太难了，这部分暂时没听.
 
-### 1.Loki::allocator设计
+### Loki::allocator设计
 
 **Loki分配器和std::alloc分配器的区别，std::alloc分配器的致命伤是他要到一大块内存之后进行设计，然后分配给用户之后，用户发出释放内存的操作的时候，分配器内部的实现是不归还给操作系统的，他很霸道，官方的解释是一是实现很难，二是归还这个操作可能在多任务进程中会影响其他进程的操作，而Loki分配器就解决了这个问题**
 
@@ -7514,9 +7468,9 @@ int main() {
 
 **至于为什么要指向某两个，这两个可能还有其他的特殊作用，这个后面再说**
 
-### 2.源代码
+### 源代码
 
-#### 2.1 Chunk类
+#### Chunk类
 
 ![image-20230609155142232](https://img-blog.csdnimg.cn/6823e8cd2db543688a8bdbe68e0aa394.png)
 
@@ -7536,9 +7490,9 @@ Reset()函数：对这大块内存进行分配，就是标出Chunk那三块， �
 
 **deallocate()函数：给一个指针，当然需要先判断这跟指针位于哪个Chunk结构当中，这就一个一个去查询(查询指针的位置)就好了，找到之后把这一块内存free掉，做allocate()函数的逆操作，把目前状态的firstAvailable的区块索引填入该区块，然后该区块索引取代他成为firstAvailableBlock，然后blocksAvailable加加，这就保证了操作的严谨和自洽**
 
-## 7.11
 
-#### 2.2 FixedAllocator类
+
+#### FixedAllocator类
 
 FixedAllocator类的结构：
 
@@ -7580,7 +7534,7 @@ DoDeallocate()函数：
 
 ## 第五讲：other issues
 
-### 1.new_allocator
+### new_allocator
 
 ![image-20230711142511891](https://img-blog.csdnimg.cn/cb5ee09836304fb89d5fcdb265e7e597.png)
 
@@ -7590,7 +7544,7 @@ DoDeallocate()函数：
 
 这几个版本实现不同，但是其实本质上没有进行额外的设计，就是对c runtime libirary里面malloc和free的调用
 
-### 2.array_allocator
+### array_allocator
 
 ![image-20230711143546194](https://img-blog.csdnimg.cn/11920db4ff624059aa271aa91df980b3.png)
 
@@ -7608,7 +7562,7 @@ DoDeallocate()函数：
 
 ![image-20230711144615462](https://img-blog.csdnimg.cn/187c47fe567b4dd0a335d5ee0369a6e0.png)
 
-### 3.debug_allocator
+### debug_allocator
 
 ![image-20230711145211456](https://img-blog.csdnimg.cn/cb3038f387664bd6a0e01b1f1df556eb.png)
 
@@ -7616,13 +7570,13 @@ DoDeallocate()函数：
 
 **但是感觉没什么用，试想一下我刚好去除了cookie构造了一个不错的内存池，然后用这个debug_allocator又添加了一个类似于cookie的debug header，这不是很鸡肋嘛**
 
-### 4.Gc2.9使用的std::alloc (__pool_alloc)
+### Gc2.9使用的std::alloc (__pool_alloc)
 
 太熟悉啦！
 
 ![image-20230711145521073.png](https://img-blog.csdnimg.cn/50751c6441014e648f29a371558073a5.png)
 
-### 5.bitmap_allocator
+### bitmap_allocator
 
 **该分配器就allocate()和deallocate()函数做了两种；**
 
@@ -7682,7 +7636,7 @@ block的个数由64加倍，变为128；然后记得修改__mini_vector的值，
 
 整个过程大致就是这样
 
-### 6.谈谈const
+### 谈谈const
 
 ![image-20230712145001503](https://img-blog.csdnimg.cn/f3758d34633b481ea27a436972665324.png)
 
@@ -7719,4 +7673,3 @@ int main() {
     return 0;
 }
 ```
-
