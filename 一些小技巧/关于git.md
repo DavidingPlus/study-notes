@@ -19,7 +19,7 @@
 2. `git commit -m "xxx"`
 使用git commit 提交文件，此时提交的修改仍然存储在本地，并没有上传到远程服务器。`-m` 后为此次提交的说明，解释做了哪些修改，方便他人理解。
 
-3. `git push origin master`
+3. `git push -u origin master`(可以`-u`也可以不加)
 `origin`表示是远程仓库，`master`是我们操作的分支，我一般就用`master`
 我们可以用 `git remote -v` 查看地址
 
