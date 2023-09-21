@@ -330,7 +330,7 @@ vim .bashrc 进入并修改
 
 **把一些格式差不多的规则用通式写出来**!
 
-![image-20230713113808672](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713113808672.png)
+![image-20230713113808672](https://img-blog.csdnimg.cn/f7ed660e900e4fa08b5a0422ee4531dd.png)
 
 #### 函数
 
@@ -362,85 +362,85 @@ vim .bashrc 进入并修改
 
 **gdb是调试可执行程序的，所以我们需要先编译文件成为一个可执行程序**
 
-![image-20230713141622040](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713141622040.png)
+![image-20230713141622040](https://img-blog.csdnimg.cn/6a86d47c75964c6f8dd3d823ee332772.png)
 
 示例
 
 **-g 保证了gdb能找到源文件**
 
-![image-20230713143121240](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713143121240.png)
+![image-20230713143121240](https://img-blog.csdnimg.cn/22d5a35849f846538b949cf2070280a1.png)
 
 #### GDB命令
 
 **gdb 启动的是可执行程序!!!**
 
-![image-20230713142329930](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713142329930.png)
+![image-20230713142329930](https://img-blog.csdnimg.cn/158817cf28304218b5be55b871187cb6.png)
 
 示例：
 
-![image-20230713143240623](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713143240623.png)
+![image-20230713143240623](https://img-blog.csdnimg.cn/a545facc80ac470a862f7ca28a5e1d50.png)
 
 ##### 查看 list
 
 **list命令**
 
-![image-20230713143813271](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713143813271.png)
+![image-20230713143813271](https://img-blog.csdnimg.cn/7d7758c91b214dac974c55a41f8a46fd.png)
 
 **查看别的文件**
 
 先把这三个cpp文件编译连接成为一个可执行文件，加上-g -Wall
 
-![image-20230713144716128](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713144716128.png)
+![image-20230713144716128](https://img-blog.csdnimg.cn/7fe35b0ed2704502adcdf87a5297035d.png)
 
 进入gdb，默认查看的是main.cpp，现在我看bubble.cpp
 
-![image-20230713144828842](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713144828842.png)
+![image-20230713144828842](https://img-blog.csdnimg.cn/603e156247d4459a87ecda722acc3b91.png)
 
 ##### 断点操作 break
 
-![image-20230713150206430](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713150206430.png)
+![image-20230713150206430](https://img-blog.csdnimg.cn/d8d6acf8da2f49bf9244aaf445317a16.png)
 
 **示例：**
 
-![image-20230713150556682](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713150556682.png)
+![image-20230713150556682](https://img-blog.csdnimg.cn/f4ff475d192342708e4d01cc45766e67.png)
 
 **在其他文件打断点**
 
-![image-20230713150932690](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713150932690.png)
+![image-20230713150932690](https://img-blog.csdnimg.cn/e89264f750014dffa0674976bbc18f90.png)
 
 **设置断点无效或者有效**
 
-![image-20230713151406288](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713151406288.png)
+![image-20230713151406288](https://img-blog.csdnimg.cn/b7dbf0a4388f45b198a4d26d1e2df0e2.png)
 
 **设置条件断点(一般用在循环的位置)**
 
-![image-20230713151623439](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713151623439.png)
+![image-20230713151623439](https://img-blog.csdnimg.cn/8add970e212d430aa52dc2b6542b6f17.png)
 
 ##### 调试命令
 
-![image-20230713152020106](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713152020106.png)
+![image-20230713152020106](https://img-blog.csdnimg.cn/d82d4fbea15744fa8aaddbbdd01c9771.png)
 
 示例：
 
 start
 
-![image-20230713152439462](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713152439462.png)
+![image-20230713152439462](https://img-blog.csdnimg.cn/867f92ab39594fcfbe197348bcc5e0b1.png)
 
 run，next，step
 
-![image-20230713153024581](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713153024581.png)
+![image-20230713153024581](https://img-blog.csdnimg.cn/3aa7d5acf6a745bf8805e27a45ff40fe.png)
 
-![image-20230713153323313](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713153323313.png)
+![image-20230713153323313](https://img-blog.csdnimg.cn/758e800265c54fb78d7bfd67653ba59b.png)
 
 **next不会进入函数体，step会进入函数体**
 
-![image-20230713153540431](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713153540431.png)
+![image-20230713153540431](https://img-blog.csdnimg.cn/d2aea7d459a74f0bb70d46a9cebef5e9.png)
 
 **自动变量操作**
 
 **这样每次执行代码都可以打印变量的值**
 
-![image-20230713154539740](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230713154539740.png)
+![image-20230713154539740](https://img-blog.csdnimg.cn/02e27106283d4b8ca6d510478abb2b7a.png)
 
 ### 7.文件IO
 
@@ -450,13 +450,13 @@ run，next，step
 
 **标准C库的IO函数的效率更高，因为当中带有缓冲区(设置在内存当中)**
 
-![image-20230714100055222](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714100055222.png)
+![image-20230714100055222](https://img-blog.csdnimg.cn/cbed27855863488ba716f7a57d9f23c0.png)
 
 标准C库的IO和Linux系统IO的关系
 
 **调用这两个标准C库IO函数的时候，会让数据进入设置在内存当中的缓冲区IO buffer，然后通过系统提供的API例如write和read来进行内存到磁盘的读写操作；如果直接使用Linux系统IO函数，则不会经过内存中的缓冲区**
 
-![image-20230714101445015](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714101445015.png)
+![image-20230714101445015](https://img-blog.csdnimg.cn/07ba3e1cc3084b848bf30cdf1fb53905.png)
 
 #### 虚拟地址空间
 
@@ -464,15 +464,15 @@ run，next，step
 
 **栈空间是从上往下村，也就是高地址到低地址**
 
-![image-20230714102646385](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714102646385.png)
+![image-20230714102646385](https://img-blog.csdnimg.cn/842df24d5a0348f497cd10d7aec446b2.png)
 
 #### 文件描述符
 
-![image-20230714105536343](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714105536343.png)
+![image-20230714105536343](https://img-blog.csdnimg.cn/c46fc363a96e454ea5eb9ca93b562a17.png)
 
 #### Linux系统IO函数
 
-![image-20230714110840838](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714110840838.png)
+![image-20230714110840838](https://img-blog.csdnimg.cn/137e5ab52aab4940971c197c9356b5db.png)
 
 #### open函数
 
@@ -516,7 +516,7 @@ errno属于linux系统函数库，库里面一个全局变量，记录错误号�
 
 s参数：用户描述，比如hello，最终输出的内容是 hello:xxx(实际的错误描述)
 
-![image-20230714113744182](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714113744182.png)
+![image-20230714113744182](https://img-blog.csdnimg.cn/40f38a8bc7bc41d9a3d492ef8ec2533d.png)
 
 代码：
 
@@ -599,9 +599,9 @@ int main() {
 
 **用shell命令 ll 来查看文件的权限**
 
-![image-20230714134141808](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714134141808.png)
+![image-20230714134141808](https://img-blog.csdnimg.cn/98c112fa731b4bafa1c10f26ed2f75ab.png)
 
-![image-20230714134158964](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714134158964.png)
+![image-20230714134158964](https://img-blog.csdnimg.cn/2c733f9e6e164485805c8ab72505d0d8.png)
 
 #### read,write函数
 
@@ -618,6 +618,7 @@ ssize_t read(int fd, void *buf, size_t count);
 ```
 
 - 参数：
+
   - fd：文件描述符，通过open得到的，通过文件描述符操作某个文件
   - buf：缓冲区，需要读取数据存放的地方，数组的地方(传出参数)
   - count：指定的数组的大小
@@ -641,7 +642,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 
 - 返回值：
   - 成功 >0 返回实际写入的字节数
-    		 ==0 文件已经写入完了
+    ==0 文件已经写入完了
   - 失败 -1 并且修改errno
 
 代码：
@@ -704,6 +705,7 @@ off_t lseek(int fd, off_t offset, int whence);
 ```
 
 - 参数：
+
   - fd：文件描述符，通过open得到，通过这个fd操作某个文件
   - offset：off_t(long别名) 偏移量
   - whence：
@@ -718,16 +720,16 @@ off_t lseek(int fd, off_t offset, int whence);
 
 - 作用：
 
-  		1.移动文件指针到头部 lseek(fd,0,SEEK_SET);
-  
+  	1.移动文件指针到头部 lseek(fd,0,SEEK_SET);
+
   ​	2.获取当前文件指针的位置 lseek(fd,0,SEEK_CUR);
-  
+
   ​	3.获取文件长度 lseek(fd,0,SEEK_END);
-  
+
   ​	4.拓展文件的长度，当前文件10B，增加100B，增加了100个字节 lseek(fd,100,SEEK_END);
-  
+
    ​	**为什么能扩展？**
-  
+
    ​	 **因为我们把文件指针移动到了本来不属于文件的位置上去，系统就进行了扩展，**
 
 ​    		**不过一定要一次写的操作。迅雷等下载工具在下载文件时候先扩展一个空间，然后再下载的。**
@@ -788,13 +790,13 @@ int main() {
 
 ##### stat结构体(!!!)
 
-![image-20230714152755154](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714152755154.png)
+![image-20230714152755154](https://img-blog.csdnimg.cn/c153a5adb208413183b065b43bdb0580.png)
 
 比较重要的是mode_t类型的 st_mode变量：**就是下面的16位数(01)**
 
 **之前创建文件open函数的第三个参数也是这个类型，只不过里面只用了User,Group,Others这三个**
 
-![image-20230714153204023](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714153204023.png)
+![image-20230714153204023](https://img-blog.csdnimg.cn/029d299ee6be4dd7ac220ccb1e41f3b5.png)
 
 **判断后面某一位是否为1，也就是比如User是否具有r权限，就用st_mode变量(他就是这16位数)与其相与**
 
@@ -804,7 +806,7 @@ int main() {
 
 软链接文件
 
-![image-20230714154550861](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714154550861.png)
+![image-20230714154550861](https://img-blog.csdnimg.cn/82764aa7f37f43939311be3eb5ba41f9.png)
 
 **就是说 2.txt 是指向 1.txt 文件的!!!但是它本身的大小是5个字节**
 
@@ -852,13 +854,13 @@ int main() {
 
 **在shell终端中可以用 stat 命令来获取文件的信息，这里的文件信息就是本文件了，就不是软链接文件的指向文件**
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230714154900243.png" alt="image-20230714154900243"  />
+<img src="https://img-blog.csdnimg.cn/bc205610c7b8443abcb1c4193344b918.png" alt="image-20230714154900243"  />
 
 #### 模拟实现ls -l 命令
 
 **里面有很多库函数的调用，这些大概知道就行，开发的时候去查文档就好了**
 
-![image-20230715104004715](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715104004715.png)
+![image-20230715104004715](https://img-blog.csdnimg.cn/d86092f52a414673901be09c3962b250.png)
 
 第一个字符( ’-‘ )是文件类型，后面一堆rwx是读写权限
 
@@ -1003,7 +1005,7 @@ char *ctime(const time_t *timep);
 
 四个函数
 
-![image-20230715110918357](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715110918357.png)
+![image-20230715110918357](https://img-blog.csdnimg.cn/f2fccb0195ad4c5c986e78e727b197ec.png)
 
 ##### access函数
 
@@ -1116,7 +1118,7 @@ int main() {
 
 #### 文件目录操作函数
 
-![image-20230715113517243](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715113517243.png)
+![image-20230715113517243](https://img-blog.csdnimg.cn/ab7b2f9ec0244f8394378f614c113a24.png)
 
 ##### mkdir函数
 
@@ -1255,7 +1257,7 @@ int main() {
 
 #### 文件目录遍历函数
 
-![image-20230715125019218](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715125019218.png)
+![image-20230715125019218](https://img-blog.csdnimg.cn/68baea5562d14e739d8168448a3d14ab.png)
 
 ##### opendir函数
 
@@ -1274,7 +1276,7 @@ DIR *opendir(const char *name);
 
 ##### dirent结构体和d_type(!!!)
 
-![image-20230715130311932](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715130311932.png)
+![image-20230715130311932](https://img-blog.csdnimg.cn/97556f847fac458d822040eaf02202ef.png)
 
 **这个dirent存储的也是文件的信息，前面也有个stat结构体也有存储，但是这两个存储的东西不太一样**
 
@@ -1361,7 +1363,7 @@ int main(int argc, char* const argv[]) {
 
 #### dup,dup2函数(与文件描述符相关)
 
-![image-20230715141246853](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715141246853.png)
+![image-20230715141246853](https://img-blog.csdnimg.cn/1304264d2ffd444a9b7a9489951c5c62.png)
 
 ##### dup()
 
@@ -1481,7 +1483,7 @@ int main() {
 
 **设置或者获取文件的状态标志**
 
-![image-20230715145100478](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230715145100478.png)
+![image-20230715145100478](https://img-blog.csdnimg.cn/530146ebbb03403cbd72ef421761015b.png)
 
 ~~~cpp
 #include <fcntl.h>
@@ -1582,41 +1584,41 @@ int remove(const char *pathname); // 标准C库的函数
 
 #### 程序和进程
 
-![image-20230716113520531](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716113520531.png)
+![image-20230716113520531](https://img-blog.csdnimg.cn/8c066e253e664b8dbbae425c6cbc8495.png)
 
-![image-20230716113908652](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716113908652.png)
+![image-20230716113908652](https://img-blog.csdnimg.cn/87dae5a63f714639825c0af3f655a13a.png)
 
 #### 单道，多道程序设计
 
-![image-20230716114055627](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716114055627.png)
+![image-20230716114055627](https://img-blog.csdnimg.cn/f54a9eb14ba34142b26ae51249f8a52b.png)
 
 #### 时间片
 
-![image-20230716114135444](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716114135444.png)
+![image-20230716114135444](https://img-blog.csdnimg.cn/0d62d3a6ba2a4ad7897a3c072f416f2e.png)
 
 
 
 #### 并行和并发
 
-![image-20230716114205304](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716114205304.png)
+![image-20230716114205304](https://img-blog.csdnimg.cn/07a4ca3a5b2a4cffa1660c292e8e8dee.png)
 
 #### 进程控制块PCB
 
 **在Linux内核的进程控制块是 task_struct 结构体**
 
-![image-20230716120419774](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716120419774.png)
+![image-20230716120419774](https://img-blog.csdnimg.cn/9f8ec96ec55c4f63b7d88793a161d004.png)
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230716121448756.png" alt="image-20230716121448756" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/f6d27217a7f947c8928170e64f1f9e4d.png" alt="image-20230716121448756" style="zoom:80%;" />
 
 ### 2.进程状态
 
 #### 状态转化图
 
-![image-20230718093121456](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718093121456.png)
+![image-20230718093121456](https://img-blog.csdnimg.cn/d3bc8a04198348c189aa395edc27ad62.png)
 
 **加入新建和终止的状态**
 
-![image-20230718093806701](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718093806701.png)
+![image-20230718093806701](https://img-blog.csdnimg.cn/81675cad6df6469b935a8b9d42d5cfef.png)
 
 #### 进程相关命令
 
@@ -1625,31 +1627,31 @@ ps aux / ajx
 #注意aux和ajx的区别
 ~~~
 
-![image-20230718094028703](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718094028703.png)
+![image-20230718094028703](https://img-blog.csdnimg.cn/7c6e6637ee1347f4bd0703747a917a25.png)
 
 ##### ps aux
 
-![image-20230718094423758](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718094423758.png)
+![image-20230718094423758](https://img-blog.csdnimg.cn/0a14c4080bcb46928559584830f9337a.png)
 
 stat参数的意义：
 
-![image-20230718095104233](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718095104233.png)
+![image-20230718095104233](https://img-blog.csdnimg.cn/698614e12584488592fe8230c5e58f6d.png)
 
 ##### ps ajx
 
-![image-20230718095230919](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718095230919.png)
+![image-20230718095230919](https://img-blog.csdnimg.cn/ee8464effa5c45fab889c27bd4057ea1.png)
 
 ##### top
 
 **实时显示进程动态**
 
-![image-20230718095445176](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718095445176.png)
+![image-20230718095445176](https://img-blog.csdnimg.cn/6c3abdd3ae9543b581491bead1006e8c.png)
 
 ##### kill
 
 **杀死进程**
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718095843259.png" alt="image-20230718095843259" style="zoom: 80%;" />
+<img src="https://img-blog.csdnimg.cn/cf9073b5d0234181a1b4d5fdafffb1f5.png" alt="image-20230718095843259" style="zoom: 80%;" />
 
 里面有一个 9 号信号(SIGKILL)，比如：
 
@@ -1659,13 +1661,13 @@ kill -9 <pid>
 
 **这个命令可以强制杀掉某个进程**
 
-![image-20230718100643298](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718100643298.png)
+![image-20230718100643298](https://img-blog.csdnimg.cn/09d94842dff847a89af558ad60c8096a.png)
 
 ##### ./a.out & 后台运行程序
 
 **这个时候，这个进程会被挂在后台进行运行，然后他的打印信息仍然会打印在屏幕上，这里使用ps aux查看命令可以看出是可以正常执行命令的，不冲突，然后可以用 kill 998 将其杀掉**
 
-![image-20230718101259447](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718101259447.png)
+![image-20230718101259447](https://img-blog.csdnimg.cn/a562b991c8e14231b161e51bf344e347.png)
 
 ### 3.创建进程
 
@@ -1673,11 +1675,11 @@ kill -9 <pid>
 
 **进程组是一个或者多个进程的集合，他们相关联，并且可以接受同一终端的各种信号，具有一个进程组号(pgid)**
 
-![image-20230718101452289](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718101452289.png)
+![image-20230718101452289](https://img-blog.csdnimg.cn/b4d9c9cf59e24a59b0bd7b06ce20ea10.png)
 
 #### 进程创建
 
-![image-20230718101951634](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718101951634.png)
+![image-20230718101951634](https://img-blog.csdnimg.cn/bb0d676a8e4e4ff49673312b9bb9bbb3.png)
 
 ##### fork()
 
@@ -1729,11 +1731,11 @@ int main() {
 
 例如这是两次的执行结果：
 
-![image-20230718104207327](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718104207327.png)
+![image-20230718104207327](https://img-blog.csdnimg.cn/a1283af4784c410baf2221a8906d39cf.png)
 
 当给多点的时候，到后面并发执行的时候就可能是交替执行
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718105046657.png" alt="image-20230718105046657" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/85cf918904d54db281d097b77777cb0b.png" alt="image-20230718105046657" style="zoom:67%;" />
 
 #### 父子进程虚拟地址空间
 
@@ -1741,13 +1743,13 @@ int main() {
 
 **但其实这两个空间大部分的东西都是一样的!!!**
 
-![image-20230718142613257](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718142613257.png)
+![image-20230718142613257](https://img-blog.csdnimg.cn/84822f6a580a4e9696f020862dfadc97.png)
 
 ##### 读时拷贝，写时共享
 
 **子进程在被创建出来的时候，如果没有对变量进行修改，进行写的操作，那么父子进程共享一块空间；当父子进程需要进行写，就是修改变量的值的时候就拷贝一块空间，这样就节省了物理内粗拿到空间!!!**
 
-![image-20230718143403658](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718143403658.png)
+![image-20230718143403658](https://img-blog.csdnimg.cn/90d61fd388c94bd3ae1f46ffd5cf6588.png)
 
 #### 总结：父子进程关系
 
@@ -1772,19 +1774,19 @@ int main() {
 
 **默认情况下gdb调试的都是父进程，加了断点的话默认只对父进程生效，可以设置**
 
-![image-20230718145227613](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718145227613.png)
+![image-20230718145227613](https://img-blog.csdnimg.cn/1b30c958fd9e4a71b65ad4ded2c5e8c1.png)
 
 #### 设置调试子进程
 
-![image-20230718145632605](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718145632605.png)
+![image-20230718145632605](https://img-blog.csdnimg.cn/7e023458740f4d5696327288f7dcf2c3.png)
 
 #### 设置调试模式
 
 **这里我把 detac-on-fork 模式关闭了，父进程在被调试的时候，子进程会被挂起，所以屏幕上没显示j的信息**
 
-![image-20230718151209448](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718151209448.png)
+![image-20230718151209448](https://img-blog.csdnimg.cn/93e2f24a56fd4a629d4f50c4b3c42967.png)
 
-![image-20230718151224879](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718151224879.png)
+![image-20230718151224879](https://img-blog.csdnimg.cn/904d8708e6ec4868a3bc9c959e1c8142.png)
 
 ### 5.exec函数族
 
@@ -1796,17 +1798,17 @@ int main() {
 
 **执行成功了不会返回，因为新的已经取代了旧的，旧的再接受返回值并做操作没有任何意义；只有调用失败了才会返回-1，这个时候新的不会进来，还是旧的**
 
-![image-20230718152959795](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718152959795.png)
+![image-20230718152959795](https://img-blog.csdnimg.cn/765dbf5bbec34206b5d2b0ba84b7f8f6.png)
 
 图解
 
-![image-20230718154755731](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718154755731.png)
+![image-20230718154755731](https://img-blog.csdnimg.cn/72938bd9ed2b4abfa8965691a9dc9eb8.png)
 
 #### 函数族(附图)
 
 **前面6个函数是C标准库当中的函数，最后一个(execve)是Linux下的系统函数**
 
-![image-20230718154816547](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718154816547.png)
+![image-20230718154816547](https://img-blog.csdnimg.cn/41b24a104c994e10970781c4cbbff38f.png)
 
 ##### execl()
 
@@ -1901,7 +1903,7 @@ int main() {
 
 执行结果：
 
-![image-20230718171319019](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718171319019.png)
+![image-20230718171319019](https://img-blog.csdnimg.cn/4cbd92ebe080486394ce600977223393.png)
 
 ##### execlp()
 
@@ -1967,7 +1969,7 @@ int main() {
 
 **exit()是标准C库的函数，在linux系统下底层会调用linux系统的函数_exit()**
 
-![image-20230718194621050](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718194621050.png)
+![image-20230718194621050](https://img-blog.csdnimg.cn/41f0c0ada69b4a96950f995a416ebfd7.png)
 
 两个的区别：**exit()在调用之后需要比_exit()做更多的事情，其中有一个就是刷新I/O缓冲关闭文件描述符**
 
@@ -1993,7 +1995,7 @@ int main() {
 
 exit:
 
-![image-20230718195742100](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718195742100.png)
+![image-20230718195742100](https://img-blog.csdnimg.cn/467fdaea69074146a9fea7f8563a8af4.png)
 
 _exit:
 
@@ -2005,7 +2007,7 @@ _exit:
 
 **c++和c语言中的cout或者printf()也好，本质都是printf()，printf()作为C语言标准库的函数，并不是直接输出到终端屏幕上，而是先写在缓冲区当中，然后当缓冲区刷新的时候在清空缓冲区输出到屏幕当中!!!**
 
-![image-20230718200326121](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718200326121.png)
+![image-20230718200326121](https://img-blog.csdnimg.cn/6d76b07a6fdb48388c3739682ddbe2d8.png)
 
 于是乎刚才的代码：
 
@@ -2041,7 +2043,7 @@ int main() {
 
 **父进程有义务回收子进程的资源，但是当父进程结束而子进程未结束的时候这一点无法做到，所以这个时候内核会把这个子进程的父进程设置为init进程(linux上的第一层进程，linux下的进程都是不断的创建子进程而创建出来的)，init进程会循环的wait()等待这个子进程，当这个子进程结束了之后，init进程会将其回收，处理善后工作!!!**
 
-![image-20230718202030384](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718202030384.png)
+![image-20230718202030384](https://img-blog.csdnimg.cn/693e90b4cccd448a8f61495f79ca24c8.png)
 
 演示代码：
 
@@ -2076,7 +2078,7 @@ int main() {
 
 输出效果：
 
-![image-20230718203522772](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718203522772.png)
+![image-20230718203522772](https://img-blog.csdnimg.cn/fca4df6fe7674773bea506ad19163f9e.png)
 
 **父进程创建出来子进程之后，子进程休眠1秒，父进程早已跑完，结束，子进程交给_init进程作为他的父进程进行管理，所以会显示终端是因为父进程结束了，但是这个时候子进程尚未结束，父进程和子进程在内核区域有一些数据是一样的，比如文件描述符012的标准输入，输出和错误，所以仍然可以在当前终端输出信息。并且这里 _init还让他结束之后阻塞了**
 
@@ -2090,7 +2092,7 @@ int main() {
 
 **僵尸进程多了会占据进程号，进程号范围 0 ~ 32767，占据完了就会有危险**
 
-![image-20230718203825193](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718203825193.png)
+![image-20230718203825193](https://img-blog.csdnimg.cn/780461dabe0c41759a699f17aabc9963.png)
 
 演示代码：
 
@@ -2122,7 +2124,7 @@ int main() {
 
 输出结果：
 
-![image-20230718205238264](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718205238264.png)
+![image-20230718205238264](https://img-blog.csdnimg.cn/98a06fdf668d4357ae0cdce5736628e4.png)
 
 可以看出，子进程结束了但是父进程没结束，没有办法释放子进程内核区域的数据，导致了僵尸进程
 
@@ -2132,17 +2134,17 @@ int main() {
 
 kill -9 杀不掉僵尸进程
 
-![image-20230718205637544](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718205637544.png)
+![image-20230718205637544](https://img-blog.csdnimg.cn/8f2c17fb11464d5ba06a77c87db61666.png)
 
 ![image-20230718205647171](https://cdnjson.com/images/2023/09/04/image-20230718205647171.png)
 
 **这个时候想要解决这个问题只能杀掉父进程，把子进程托管给 /init ，这样才能将其释放，但是实际开发当中杀掉父进程往往不现实，所以需要父进程调用wait()和waitpid()来保证父进程会把子进程的内核PCB的数据给释放掉，这样才能避免僵尸进程**
 
-![image-20230718210109506](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718210109506.png)
+![image-20230718210109506](https://img-blog.csdnimg.cn/aa22c1101edc4e3081f4c2b79fc60c48.png)
 
 #### 进程回收
 
-![image-20230718211154805](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718211154805.png)
+![image-20230718211154805](https://img-blog.csdnimg.cn/893cfb19d0c546439998ecdba3ee41ad.png)
 
 ##### wait()
 
@@ -2219,7 +2221,7 @@ int main() {
 
 执行结果：
 
-![image-20230719094953685](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719094953685.png)
+![image-20230719094953685](https://img-blog.csdnimg.cn/a26add6da0f943cbbc11983e2967bc3f.png)
 
 稍加修改，现在我需要查看进程退出的状态：
 
@@ -2289,19 +2291,19 @@ int main() {
 
 执行结果：
 
-![image-20230719095319683](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719095319683.png)
+![image-20230719095319683](https://img-blog.csdnimg.cn/e4dcf8ca023f4fb78de0f20aa639b659.png)
 
 现在我把子进程改成while(1)循环，然后用 kill -9 杀掉他，看看他是被哪个信号干掉的
 
 ###### 退出信息宏函数(status相关)
 
-![image-20230718220547310](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230718220547310.png)
+![image-20230718220547310](https://img-blog.csdnimg.cn/38968df7a29c4c549536d86b0d5ad54d.png)
 
 执行结果：
 
-![image-20230719095606504](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719095606504.png)
+![image-20230719095606504](https://img-blog.csdnimg.cn/7d2eaef2e73b4190a506f92fad91e63b.png)
 
-![image-20230719095625400](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719095625400.png)
+![image-20230719095625400](https://img-blog.csdnimg.cn/9a594fc86bca4f44ad97b1c9f8eb2fcf.png)
 
 ##### waitpid()
 
@@ -2403,25 +2405,25 @@ int main() {
 
 我不管他是这样，可以父进程是非阻塞的一直在工作的
 
-![image-20230719103805234](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719103805234.png)
+![image-20230719103805234](https://img-blog.csdnimg.cn/707ec56a360049e6b471aca8520ed2b0.png)
 
 现在我把子进程kill掉
 
-![image-20230719103852259](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719103852259.png)
+![image-20230719103852259](https://img-blog.csdnimg.cn/11459e6588564d8ca2c30d6c207046e8.png)
 
 kill一次输出一个信息，然后kill完毕之后结束进程
 
-![image-20230719103900180](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719103900180.png)
+![image-20230719103900180](https://img-blog.csdnimg.cn/d25345b307064c60aedc155c9c8f32c1.png)
 
 ### 7.进程间通信 IPC
 
 #### 概念
 
-![image-20230719104207710](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719104207710.png)
+![image-20230719104207710](https://img-blog.csdnimg.cn/7809ee6cadf749d28350dfc7a22f8177.png)
 
 #### 进程间通信方式(记忆!!!)
 
-![image-20230719110333954](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719110333954.png)
+![image-20230719110333954](https://img-blog.csdnimg.cn/efa21266bccf4f7dbe0d6cf4fa50b288.png)
 
 #### (同一主机之间----------)
 
@@ -2437,13 +2439,13 @@ kill一次输出一个信息，然后kill完毕之后结束进程
 
 **一个管道就是一个字节流，管道没有消息或者消息边界的概念，从管道读数据可以任意读，不用考虑写入的数据是多少；并且管道传递的数据是有顺序的**
 
-![image-20230719112527654](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719112527654.png)
+![image-20230719112527654](https://img-blog.csdnimg.cn/abd180c84cfe48e4b33ad44c16276639.png)
 
 **管道单向，一边写，一边读；半双工**
 
 **匿名管道只能在拥有共同祖先的进程当中使用，例如父进程和子进程；两个兄弟进程**
 
-![image-20230719143725384](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719143725384.png)
+![image-20230719143725384](https://img-blog.csdnimg.cn/e5c949d220c74af88c74952b90a10217.png)
 
 **为什么可以用管道通信**
 
@@ -2455,15 +2457,15 @@ kill一次输出一个信息，然后kill完毕之后结束进程
 
 **因为fork()之前建立管道，比如如图，管道占据两个文件描述符5和6，现在fork()之后，由于管道具有文件描述符，子进程内核区域文件描述符指向的东西是和父进程一块东西，所以他们两个指向的是同一块管道，这样才能进行通信!!!**
 
-![image-20230719144556698](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719144556698.png)
+![image-20230719144556698](https://img-blog.csdnimg.cn/43e68821b3a24c98b1c34dd184e8115d.png)
 
 管道的数据结构：环形队列
 
-![image-20230719145008340](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719145008340.png)
+![image-20230719145008340](https://img-blog.csdnimg.cn/a01f32e05a7c4c189dc85d4b4a1f2299.png)
 
 ##### 匿名管道(pipe)
 
-![image-20230719111308071](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719111308071.png)
+![image-20230719111308071](https://img-blog.csdnimg.cn/724481d797fa4c1691a093c945ecb4fe.png)
 
 看如图的命令：
 
@@ -2574,7 +2576,7 @@ int main() {
 
 代码当中用了两个循环，子进程循环写数据给管道，父进程调用read()函数接受，read()函数默认是阻塞的，调用while(1)一直读，因此最后的结果是这样
 
-![image-20230719153654422](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230719153654422.png)
+![image-20230719153654422](https://img-blog.csdnimg.cn/e3471fa35c6d4c59a289eaf725824580.png)
 
 变式：
 
@@ -2692,7 +2694,7 @@ int main() {
 
 一般的交互情况如下所示：
 
-![image-20230721103551177](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721103551177.png)
+![image-20230721103551177](https://img-blog.csdnimg.cn/4418ff50019642c883a8e6721b66943d.png)
 
 ![image-20230721103558631](https://img-blog.csdnimg.cn/e130b90ef9e94061aa02457de30a6866.png)
 
@@ -2700,13 +2702,13 @@ int main() {
 
 **所以我们匿名管道在实际运用的时候一般规定数据流只从一端流向另一端，不会去实现双向的数据流动，因为这样就可能发生自己数据被自己接受的情况**
 
-![image-20230721103607149](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721103607149.png)
+![image-20230721103607149](https://img-blog.csdnimg.cn/35c9d8ea7dab44eea1a5604b35ec7143.png)
 
 所以在实际的开发过程中我们往往直接关闭一方的写端和另一方的读端，如下所示：
 
 我们想要的就是第三种情况
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721104349892.png" alt="image-20230721104349892" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/dda85503648f4b1094df0eb38595d41b.png" alt="image-20230721104349892" style="zoom:80%;" />
 
 ~~~cpp
 #include <cstring>
@@ -2775,7 +2777,7 @@ int main() {
 
 实现 ps aux | grep root，父子进程之间通信
 
-![image-20230721115524021](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721115524021.png)
+![image-20230721115524021](https://img-blog.csdnimg.cn/0e5fa04d7d654d76b5b2384959871fce.png)
 
 代码：(看代码理解!!!)
 
@@ -2910,7 +2912,7 @@ int main() {
 
 执行结果：
 
-![image-20230721115546729](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721115546729.png)
+![image-20230721115546729](https://img-blog.csdnimg.cn/e1b4ec013efc409886cbca0e4d35e78d.png)
 
 ##### 管道的读写特点
 
@@ -2920,17 +2922,17 @@ int main() {
 
   如图所示，这里的读端计数为2，写端计数为0
 
-  ![image-20230721134808630](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721134808630.png)
+  ![image-20230721134808630](https://img-blog.csdnimg.cn/135d998d14ce43f3869a5008c438e534.png)
 
 - **如果有指向管道写端的文件描述符没有关闭(管道写端的引用计数大于0)，而持有管道写端的进程也没有往管道中写数据，这个时候有进程往管道中读取数据，那么管道中剩余的数据被读取完毕之后，再次read阻塞，直到管道中有数据可以读取了才会读取数据并且返回**
-  ![image-20230721135603117](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721135603117.png)
+  ![image-20230721135603117](https://img-blog.csdnimg.cn/ab41b9e1dd9244bd9101479c5df15cfd.png)
 
 - **如果所有指向管道读端的文件描述符没有关闭(管道读端的引用计数为0)，这个时候有进程向管道中写数据，那么该进程会收到一个信号SIGPIPE，通常会导致进程异常终止**
 
-  ![image-20230721135452517](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721135452517.png)
+  ![image-20230721135452517](https://img-blog.csdnimg.cn/85ad9bcd46d944e8a8b681fd41b0d345.png)
 
 - **如果有指向管道读端的文件描述符没有关闭(管道读端的引用计数大于0)，而持有管道读端的进程也没有从管道中读取数据，这时候有进程向管道中写数据，那么在管道被写满的时候再次调用write()会阻塞，直到管道中有空位置才能再次写入数据并返回**
-  ![image-20230721140511484](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721140511484.png)
+  ![image-20230721140511484](https://img-blog.csdnimg.cn/048e32341e44417bb4580271a0825cf6.png)
 
 总结：
 
@@ -3059,33 +3061,33 @@ int main() {
 
 可见子进程在睡眠的时候父进程执行到read()并没有阻塞，而是执行走了!!!
 
-![image-20230721145953793](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721145953793.png)
+![image-20230721145953793](https://img-blog.csdnimg.cn/1f61e6d4587449f185f754abbb0dec91.png)
 
 ##### 有名管道(FIFO)
 
 **有名管道和匿名管道的区别在于：匿名管道本身没有一个文件描述符或者说路径可以让两个进程找到他，这就导致我们只能通过某种方式让两个进程指向同一块管道，比如主进程先建立管道，然后创建子进程，这样保证了两个进程的读端和写端的文件描述符指向的是同样的匿名管道的两端，这样就只能用于亲缘关系的进程之间通信，而有名管道则恰好克服了这个问题；设置了一个路径名方便两个进程关联，并且这个路径名可以像文件一样被访问(FIFO)，这样就可以被任意关系的两个进程找到并且建立通信**
 
-![image-20230721150130194](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721150130194.png)
+![image-20230721150130194](https://img-blog.csdnimg.cn/82969707e2a24ab986a2f06648a36e55.png)
 
 区别：
 
-![image-20230721151257066](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721151257066.png)
+![image-20230721151257066](https://img-blog.csdnimg.cn/d70b7067050f40189192979343118254.png)
 
 ###### mkinfo()
 
-![image-20230721151329604](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721151329604.png)
+![image-20230721151329604](https://img-blog.csdnimg.cn/e2371fae53a749e2b07ffd4458b02f6e.png)
 
 **通过命令 mkfifo < name >**
 
-![image-20230721152717230](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721152717230.png)
+![image-20230721152717230](https://img-blog.csdnimg.cn/cd1075eed2dc4539982d9b0ab6857d0d.png)
 
 这里创建失败，为什么呢？因为windows系统的文件系统不支持管道文件(匿名管道没有管道文件)
 
-![image-20230721151935217](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721151935217.png)
+![image-20230721151935217](https://img-blog.csdnimg.cn/2cfcc74c790d456496232ac72e6c339b.png)
 
 在linux系统自己的本地文件夹当中创建
 
-![image-20230721152127780](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721152127780.png)
+![image-20230721152127780](https://img-blog.csdnimg.cn/635913278bce418c83d9024839f6ded7.png)
 
 **观察发现fifo文件的大小为0，这是因为fifo管道文件的信息是存储在内核的缓冲区里面的，当程序结束之后便会清空，留给下一次使用**
 
@@ -3221,9 +3223,9 @@ int main() {
 
 执行结果：(本来想写注意事项的，都在下面了)
 
-![image-20230721164727872](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721164727872.png)
+![image-20230721164727872](https://img-blog.csdnimg.cn/dbb61f0813ee45ac8de2654c0635d50e.png)
 
-![image-20230721164735118](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721164735118.png)
+![image-20230721164735118](https://img-blog.csdnimg.cn/856494b4dd994b9abcaaf41b806ad20a.png)
 
 **有名管道的注意事项：**
 
@@ -3254,7 +3256,7 @@ int main() {
 
 ###### 思路
 
-![image-20230721170443404](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230721170443404.png)
+![image-20230721170443404](https://img-blog.csdnimg.cn/44990241d935479c8f9556cbecca7770.png)
 
 需要注意一点的就是两个进程是你来我往的，所以需要一方先写，另一方先读，否则就会导致阻塞
 
@@ -3454,7 +3456,7 @@ int main() {
 
 mmap()用来建立映射，munmap()用来取消映射
 
-![image-20230722143806582](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722143806582.png)
+![image-20230722143806582](https://img-blog.csdnimg.cn/90cfd09ed9ea4d0ea1f045749436fc93.png)
 
 ~~~cpp
     #include <sys/mman.h>
@@ -3678,7 +3680,7 @@ int main() {
 
 执行结果：
 
-![image-20230722155039444](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722155039444.png)
+![image-20230722155039444](https://img-blog.csdnimg.cn/b0dfec023cba42fc8274bbc7997fadfe.png)
 
 **但是要注意一点，写的数据不能比文件本身的大小大，不然就会超出内存的大小范围了，就会写不进去!!!**
 
@@ -3869,41 +3871,41 @@ int main() {
 
 ##### 概念
 
-![image-20230722171544342](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722171544342.png)
+![image-20230722171544342](https://img-blog.csdnimg.cn/aea70e45c0ce4195bc9884c76669d976.png)
 
 软件中断
 
 处理紧急事务，完毕后回到保存的位置继续执行
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722171944530.png" alt="image-20230722171944530" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/cb3a19e815134daaa4211162b5390f8d.png" alt="image-20230722171944530" style="zoom:67%;" />
 
 ##### 目的
 
 **让进程知道了已经发生了某一个特定的事情；强迫进程执行他自己代码当中的信号处理程序**
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722172651186.png" alt="image-20230722172651186" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/cbfda02d77c24be9b56c08e0283620cc.png" alt="image-20230722172651186" style="zoom: 67%;" />
 
 ##### Linux信号列表
 
 **一共62个(32 33没有)，1-31是常规信号，32-64是预定义好的信号，目前还没有使用，将来可能会使用，并且是实时信号**
 
-![image-20230722172945238](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722172945238.png)
+![image-20230722172945238](https://img-blog.csdnimg.cn/b21fe318e2d3415284459418204f1048.png)
 
 红色信号比较重要：
 
-![image-20230722173136070](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722173136070.png)
+![image-20230722173136070](https://img-blog.csdnimg.cn/477a33d271084c76899e5be86eae5a04.png)
 
 ![image-20230722173332099](https://img-blog.csdnimg.cn/596796ebe4504fe2acb32e2c0b1a59c6.png)
 
-![image-20230722173427247](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722173427247.png)
+![image-20230722173427247](https://img-blog.csdnimg.cn/a2d120fe441341439a2a7170852a2629.png)
 
-![image-20230722173511150](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722173511150.png)
+![image-20230722173511150](https://img-blog.csdnimg.cn/2d085be8839a4789aabe53ccc135c5ba.png)
 
 ##### 信号的5种默认处理动作
 
 其中，Core是指终止进程并且生成一个Core文件，这个文件当中记载了程序异常终止时候保存的一些错误信息等等
 
-![image-20230722173544492](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722173544492.png)
+![image-20230722173544492](https://img-blog.csdnimg.cn/c4b2644e692144068d65a43b7cbd6113.png)
 
 ###### 查看并且使用Core文件
 
@@ -3913,11 +3915,11 @@ Core文件里面记录了程序异常退出的状态信息，可以让程序在�
 
 可以看出 core file size 这一项默认是0
 
-![image-20230722190246653](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722190246653.png)
+![image-20230722190246653](https://img-blog.csdnimg.cn/19cb6adc8f0b4cd1aabe545de5fe4ea1.png)
 
 我们将其设置一下，可以设置为一个具体的大小或者不限制
 
-![image-20230722190333227](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722190333227.png)
+![image-20230722190333227](https://img-blog.csdnimg.cn/0c020dc61caa45d28ed6242c9267f8e0.png)
 
 现在就应该有了
 
@@ -3940,11 +3942,11 @@ int main() {
 }
 ~~~
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722190630746.png" alt="image-20230722190630746" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/5087a798952a49849252f9c4b3c669c2.png" alt="image-20230722190630746" style="zoom:67%;" />
 
 执行 a.out 之后，报了段错误，我们来查看下core文件的大小，不为0，可见记录了相关错误信息
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722190751504.png" alt="image-20230722190751504" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/ee83f2681d3844179ef5efa6ce51ad17.png" alt="image-20230722190751504" style="zoom:80%;" />
 
 怎么查看呢？可以通过gdb调试来查看，这也是为什么我们编译的时候加上 -g 调试参数的原因
 
@@ -3954,7 +3956,7 @@ int main() {
 core-file core #用来查看该可执行文件对应的core文件信息
 ~~~
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722190919579.png" alt="image-20230722190919579" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/c02b8801212e464caca55b8a53a589ce.png" alt="image-20230722190919579" style="zoom:80%;" />
 
 可以看出程序的异常终止是因为这一行的问题，与我们的预期一致；
 
@@ -3964,7 +3966,7 @@ core-file core #用来查看该可执行文件对应的core文件信息
 
 ###### kill(),raise(),abort()
 
-![image-20230722174710585](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722174710585.png)
+![image-20230722174710585](https://img-blog.csdnimg.cn/0254f8325770424498c423cfcb61d87a.png)
 
 ~~~cpp
     #include <signal.h>
@@ -4026,9 +4028,9 @@ int main() {
 
 执行结果：
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722193118885.png" alt="image-20230722193118885" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/85ac2901f0124ec48126d4cff3bffa6e.png" alt="image-20230722193118885" style="zoom:67%;" />
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722193131543.png" alt="image-20230722193131543" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/03b746110e2c4b958a69f09240244806.png" alt="image-20230722193131543" style="zoom:67%;" />
 
 **有可能为2次也有可能为3次，因为父子进程是并发执行的，谁先运行要看抢占cpu，这里如果是父进程先执行就是2次，子进程先执行就会先偷偷打印一次，就是3次，这也体现了多进程程序执行结果的不确定性，这完全取决于操作系统对于进程的调度**
 
@@ -4104,7 +4106,7 @@ int main() {
 
 执行结果：
 
-![image-20230722200801779](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722200801779.png)
+![image-20230722200801779](https://img-blog.csdnimg.cn/64b892140d2b4a3fb1e4430338182c3b.png)
 
 但是我们观察到输出完毕花的时间好像不止1秒，这是为什么呢？
 
@@ -4112,9 +4114,9 @@ int main() {
 
 **但是这里只数了20万不到，感觉少太多了，这是因为往终端上输出的时候需要调用文件描述符，输出一次调用一次磁盘I/O，这样浪费时间，CPU没有百分百去执行数的这个操作，我们可以将其输出重定向到一个文本当中，这样只用调用一次文件I/O就可以把文件写在里面**
 
-![image-20230722201704262](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722201704262.png)
+![image-20230722201704262](https://img-blog.csdnimg.cn/f9a3c1bc73f142dc82eb7133171c47fe.png)
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230722201732964.png" alt="image-20230722201732964" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/8dcfd915f6d04faba461816cee62c517.png" alt="image-20230722201732964" style="zoom:67%;" />
 
 可见这样就多了很多
 
@@ -4207,7 +4209,7 @@ int main() {
 
 ##### 信号捕捉函数
 
-![image-20230723150743944](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230723150743944.png)
+![image-20230723150743944](https://img-blog.csdnimg.cn/ade91a3110bd4794b278a63120c3c87d.png)
 
 ###### signal()
 
@@ -4306,7 +4308,7 @@ int main() {
 
 **系统PCB当中自带阻塞信号集和未决信号集，我们也不能直接操作，需要借助系统提供的API才能操作**
 
-![image-20230723154213795](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230723154213795.png)
+![image-20230723154213795](https://img-blog.csdnimg.cn/08c60fbba30d4d5aa6a930b773e3bd9d.png)
 
 阻塞信号集和未决信号集(在PCB当中)
 
@@ -4325,7 +4327,7 @@ int main() {
 
 ###### 相关函数
 
-![image-20230723170027725](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230723170027725.png)
+![image-20230723170027725](https://img-blog.csdnimg.cn/3e0ad9eea12445ca8166e5c753485688.png)
 
 **前面五个，都是对自己定义的信号集进行操作，信号集的类型是 sigset_t，本质就是一个数组，下标对应信号signum，值代表是否信号状态**
 
@@ -4431,7 +4433,7 @@ int main() {
 
 **调用之后就可以把我们自己设置的信号集设置到系统提供的阻塞信号集当中，这也是我们唯一能设置系统内核PCB中的信号集，未决信号集不能被设置或者处理，只能被读取**
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724150434261.png" alt="image-20230724150434261" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/efc1889c57184bf295ac911ac51c922e.png" alt="image-20230724150434261" style="zoom:50%;" />
 
 ~~~cpp
     #include <signal.h>
@@ -4560,7 +4562,7 @@ int main() {
 
 这里输出一个空行是因为第一，字符串我输出了换行，第二，SIGINT信号和SIGQUIT信号执行后都会输出空行，这里是执行了SIGINT信号
 
-![image-20230724155507574](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724155507574.png)
+![image-20230724155507574](https://img-blog.csdnimg.cn/9099f82e92fa4d54834ad7299bbfc77a.png)
 
 补充：将程序挂到后台执行，加上 & 符号
 
@@ -4572,7 +4574,7 @@ int main() {
 
 并且由于这个进程的输出是默认定向到终端的，所以终端会输出
 
-![image-20230724160250340](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724160250340.png)
+![image-20230724160250340](https://img-blog.csdnimg.cn/82900528317f4dd9ade23e38734bdc51.png)
 
 切换到前台
 
@@ -4580,7 +4582,7 @@ int main() {
 fg
 ~~~
 
-![image-20230724160542261](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724160542261.png)
+![image-20230724160542261](https://img-blog.csdnimg.cn/1f6fdf918f4d4a3c9f2e391b0205ca62.png)
 
 ##### (续信号捕捉函数)sigaction()
 
@@ -4678,7 +4680,7 @@ int main() {
 
 ###### 更好理解信号捕捉
 
-![image-20230724170811186](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724170811186.png)
+![image-20230724170811186](https://img-blog.csdnimg.cn/fd5cf34fe65943aa846d764da84a44aa.png)
 
 要注意几点：
 
@@ -4686,7 +4688,7 @@ int main() {
 - **信号发出之后不会立即处理，先进入未决信号集，变为1，然后去找对应的阻塞信号集，不阻塞则处理，并且修改未决信号集相应为0，当信号在处理过程当中如果未处理完毕这时候收到一个对应的新的信号，不会处理，而是先填入未决信号集，然后等待处理结束然后处理**
 - **如果查找阻塞信号集发现阻塞，则阻塞等待，这个时候如果收到新的信号，由于未决信号集相应位置都还是1，那么表示信号尚未被处理，新来的信号会被忽略，当然也不可能记录来了几个，到时候一起处理这种，因为只能存0 1，这也是忽略的原因**
 
-![image-20230724172117665](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724172117665.png)
+![image-20230724172117665](https://img-blog.csdnimg.cn/46282d2d655c474facb8c9095d9ba8b3.png)
 
 ##### SIGCHLD信号
 
@@ -4702,7 +4704,7 @@ int main() {
 
 **如果我们能接受这个信号，然后去回收子进程的资源，因为wait()函数是阻塞的，父进程不可能一直等待子进程等待结束然后回收，那么可以捕捉子进程结束时候(当然还有其他两种情况)发出的SIGCHLD信号，然后父进程中断去处理这个事情，回收子进程，这样就很好的避免了僵尸进程的问题**
 
-![image-20230724173035421](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724173035421.png)
+![image-20230724173035421](https://img-blog.csdnimg.cn/952c8a078e9d4ab6ab5f04ec7f3b220d.png)
 
 代码：
 
@@ -4793,17 +4795,17 @@ int main() {
 
 并不是完全没有内核介入，而是相比于其他通信的操作要少得多，因为没有经过内核和用户之间的切换操作或者说非常少，省去了这一大部分的时间，就是将数据从用户空间当中拷贝到内核当中的这一段时间，所以他的效率是最高的
 
-![image-20230724204226816](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230724204226816.png)
+![image-20230724204226816](https://img-blog.csdnimg.cn/370f8d0ac21c4b6fb7f7796ac728bb25.png)
 
 ##### 使用步骤
 
 创建共享内存，连接共享内存；分离，删除
 
-![image-20230725090718804](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725090718804.png)
+![image-20230725090718804](https://img-blog.csdnimg.cn/d2ad0f2eb9164e80a6379221c774fd2f.png)
 
 ##### 相关函数
 
-![image-20230725091618011](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725091618011.png)
+![image-20230725091618011](https://img-blog.csdnimg.cn/3360f8b6264048fd8b79423ba15450b9.png)
 
 记得查man文档，太多太杂了!!!
 
@@ -4974,15 +4976,15 @@ int main() {
 
 执行结果：
 
-![image-20230725102001298](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725102001298.png)
+![image-20230725102001298](https://img-blog.csdnimg.cn/8448bb6a5d954f00bec4142c75a3d81c.png)
 
-![image-20230725102008328](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725102008328.png)
+![image-20230725102008328](https://img-blog.csdnimg.cn/41f01f67706743b8a2360ffa32711830.png)
 
 ##### 共享内存操作命令
 
 **注意，shmctl()执行的删除只是标记删除操作，执行到这一步后，这个共享内存的key修改为0，然后不再接受连接，其他程序再次执行shmctl()标记删除相当于什么也没做，但是可以执行不会报错，系统就监听其他进程对这个共享内存的解除连接操作，然后维护shm_nattach，记录关联数，当程序执行shmdt()手动解除或者程序结束的时候系统自动解除连接，当连接数为0之后系统就删除这块共享内存。之所以标记删除，是为了防止删除后还有其他进程在使用这块内存造成不必要的危险**
 
-![image-20230725104726840](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725104726840.png)
+![image-20230725104726840](https://img-blog.csdnimg.cn/8e9acf799ab049579a303c3561ad120e.png)
 
 ##### 注意
 
@@ -5005,42 +5007,42 @@ int main() {
   - 共享内存：所有的进程操作的是同一块共享内存
     - 内存映射：(父子进程除外)每个进程在自己的虚拟地址空间中有一个独立的内存
 - 数据安全
-     - 进程突然退出，共享内存还存在，内存映射消失了
-     - 运行进程的电脑死机了，数据存储在共享内存中就没有了，内存映射区的数据也没有了，但是他的数据已经同步给磁盘了
+  - 进程突然退出，共享内存还存在，内存映射消失了
+  - 运行进程的电脑死机了，数据存储在共享内存中就没有了，内存映射区的数据也没有了，但是他的数据已经同步给磁盘了
 - 生命周期
-     - 内存映射区：进程退出，内存映射区销毁
-     - 共享内存：进程退出，共享内存还在，标记删除(所有关联的进程数为0)，或者关机
-         如果进程退出，系统会自动和共享内存取消关联
+  - 内存映射区：进程退出，内存映射区销毁
+  - 共享内存：进程退出，共享内存还在，标记删除(所有关联的进程数为0)，或者关机
+    如果进程退出，系统会自动和共享内存取消关联
 
 ### 8.守护进程
 
 #### 终端
 
-![image-20230725111929961](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725111929961.png)
+![image-20230725111929961](https://img-blog.csdnimg.cn/e8d254c6a1704bb998412f551acb777d.png)
 
 #### 进程组
 
-![image-20230725112626809](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725112626809.png)
+![image-20230725112626809](https://img-blog.csdnimg.cn/18f44d231aff44f6b96ef80bdca21634.png)
 
 #### 会话
 
-![image-20230725113205286](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725113205286.png)
+![image-20230725113205286](https://img-blog.csdnimg.cn/727b488f98624c419c9e5fc2d76d8b00.png)
 
 #### 理解关系举例
 
-![image-20230725113517970](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725113517970.png)
+![image-20230725113517970](https://img-blog.csdnimg.cn/c10a580a4de54209a4bb4ca95501f67c.png)
 
 #### 操作函数
 
 gid：进程组id；sid：会话的id
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725113838738.png" alt="image-20230725113838738" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/af6d9f3d02004c23b16b90d2aebb6801.png" alt="image-20230725113838738" style="zoom: 67%;" />
 
 #### 守护进程(Daemon进程，精灵进程)
 
 **后台服务进程，是一个生存期较长的进程，一般采用以d结尾的名字**
 
-![image-20230725114051864](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725114051864.png)
+![image-20230725114051864](https://img-blog.csdnimg.cn/fd8c10c993144c968ea1bb829b7a447e.png)
 
 ##### 创建步骤(!!!)
 
@@ -5048,11 +5050,11 @@ gid：进程组id；sid：会话的id
 
 **首先为什么要用子进程来创建会话，因为如果是父进程创建会话的话，一旦父进程是这个进程组的首进程，进程组号就是父进程的id，然后创建会话之后新会话中创建出来的进程组号也用的是这个，两个不同会话中存在同一个进程组号，这个显然是不可以的，所以我们用子进程创建，就避免了这个问题；然后父进程退出一是为了保证不出现僵尸进程(这是孤儿进程没有什么危险)，而是避免子进程运行着时候父进程完了然后输出终端提示符，就是如下(突然冒出来很诡异)**
 
-![image-20230725150200682](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725150200682.png)
+![image-20230725150200682](https://img-blog.csdnimg.cn/9a54e160a4774c53af9626c08239a11e.png)
 
 **第二，为什么要创建一个新会话？因为如果不是新创建而是挪入其他的会话或者就用自身的会话，那么可能这个会话绑定了控制终端，能够接受信号处理信号这些，这显然与守护进程的初衷不符，所以我们要创建一个新会话，新会话默认是不绑定控制终端的，但是不代表没有终端，至少文件描述符012，标准输入输出错误是有的，言下之意就是可以向屏幕上输出数据，所以这就有了下面关闭文件描述符，然后重定向到 dev/null 的操作，当然这一步也不是必须的**
 
-![image-20230725114544913](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725114544913.png)
+![image-20230725114544913](https://img-blog.csdnimg.cn/0f6632e4c3dd4908acdfd29f417b1f4e.png)
 
 ###### 示例
 
@@ -5174,11 +5176,11 @@ int main() {
 
 执行结果：
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725162229689.png" alt="image-20230725162229689" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/856759b42fe04763afd2008285bf9a60.png" alt="image-20230725162229689" style="zoom:67%;" />
 
 并且从文件大小不断变化可以看出是实时更新的
 
-![image-20230725162327872](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230725162327872.png)
+![image-20230725162327872](https://img-blog.csdnimg.cn/de856cc3e2754b6fb7585c6895e4712a.png)
 
 守护进程没有控制终端，所以没有办法接受控制终端发出的信号(例如SIGINT( ctrl+c )和SIGQUIT( ctrl+\ ) )，我们只能通过kill -9 强制杀死
 
@@ -9614,6 +9616,11 @@ int main() {
                         return -1;
                     }
 
+                    // 设置read非阻塞
+                    int flag = fcntl(connect_fd, F_GETFL);
+                    flag |= O_NONBLOCK;
+                    fcntl(connect_fd, F_SETFL, flag);
+                    
                     // 将客户端信息存入结构体数组，下标用connect_fd代替
                     inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, cli_infos[connect_fd].client_ip, sizeof(cli_infos[connect_fd].client_ip));
                     cli_infos[connect_fd].client_port = ntohs(client_addr.sin_port);
