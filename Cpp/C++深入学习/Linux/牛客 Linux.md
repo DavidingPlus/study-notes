@@ -9418,6 +9418,8 @@ if (fds[i].revents & POLLIN == POLLIN)
 
 ##### epoll
 
+**epoll和前面两种技术不同，epoll技术直接在内核态当中进行操作，完全省去了用户态到内核态拷贝的过程，并且由内核通知用户，实现了内核和用户的并发操作，提高了效率。**
+
 ###### 工作过程分析
 
 select技术和poll技术虽然实现方式有所不同，poll技术是select技术的改进，但是他们在实际操作的时候都是先在用户区生成一个表，select就是文件描述符表，对应位置置为1，下标表示为文件描述符；poll技术是用事件表示的，并且定义了我们想要的检测事件和实际发生的事件供我们比对，比如我们想要检测读事件，他返回0则表示没发生，两个都定义出来就免去了我们用临时变量的麻烦；好，这两个都是先在用户区然后拷贝到内核区然后再回来，众所周知，从内核区到用户区的二者切换要消耗CPU资源，所以一旦文件描述符多了，检测的事件多了就会影响性能
@@ -11217,7 +11219,7 @@ webbench -c 1000 -t 30 http://192.168.110.129:10000/index.html
 
 #### 链接和构建
 
-项目文件放在github上，链接：[https://github.com/DavidingPlus/WebServer](https://github.com/DavidingPlus/WebServer)
+项目文件放在github上，链接：[https://github.com/DavidingPlus/Web_Server](https://github.com/DavidingPlus/Web_Server)
 
 使用cmake编译项目需要在根目录创建一个build目录，然后进入build目录，之后如下操作进行编译，我设置了项目生成的可执行文件路径在 build 目录下，名称为app
 
