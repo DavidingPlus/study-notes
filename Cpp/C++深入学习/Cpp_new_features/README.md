@@ -3,9 +3,9 @@
 <br>
 
 <div align=center>
-	
 <img width="70%" height="70%" src="https://user-images.githubusercontent.com/87457873/134297801-d13053cc-0a5d-4efd-9f02-9343b513fc33.png"/>
 	
+
 ## 🚀 直达  [（# C++11）](#cpp_11) [（# C++14）](#cpp_14) [（# C++17）](#cpp_17) [（# C++20）](#cpp_20) [（# C++23）](#cpp_23)
 
 <br>
@@ -613,7 +613,7 @@
 ---
 
 <div id="cpp_11" align=center>
-	
+
 <img width="30%" height="30%" src="https://user-images.githubusercontent.com/87457873/134301566-dfe24e96-44a5-48b7-9294-f72c49010c2f.jpg"/>
 
 </div>
@@ -1009,19 +1009,19 @@
 ####  <h5 id="cpp_11_SFINAE">一般化的SFINAE规则(generalized SFINAE rules)</h5>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_11/002_grammar_SFINAE.cpp">generalized SFINAE rules</a>
 	
------	
-	
+-----
+
 <div  id="cpp_14" align=center>
-	
+
 <img width="30%" height="30%" src="https://user-images.githubusercontent.com/87457873/134302218-7e6d1586-7210-4121-8aa0-244ddb37572a.jpg"/>
 
 </div>		
 	
 
 ### <h3 id="cpp_14_RTTI">类型支持（基本类型、RTTI、类型特性）</h3>
-	
+
 ### <h5 id="cpp_headfile_type_traits">Defined in header&lt;type_traits&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_14/001_type_traits_is_null_pointer.cpp">检查类型是否为 std::nullptr_t</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_14/001_type_traits_is_final.cpp">is_final(检查类型是否为 final 类类型)</a>
 
@@ -1080,12 +1080,12 @@
 * [std::integer_sequence](https://github.com/0voice/cpp_new_features/blob/main/cpp_14/README.md#cpp_14_09)
 * [std::exchange](https://github.com/0voice/cpp_new_features/blob/main/cpp_14/README.md#cpp_14_10)
 * [std::quoted](https://github.com/0voice/cpp_new_features/blob/main/cpp_14/README.md#cpp_14_11)
--->
+	-->
 	
 -----
 
 <div id="cpp_17" align=center>
-	
+
 <img width="30%" height="30%" src="https://user-images.githubusercontent.com/87457873/134302312-2c3ddfc0-7942-4263-9b02-4cec08c18e2f.jpg"/>
 
 </div>	
@@ -1098,9 +1098,9 @@
 * [register](https://github.com/0voice/cpp_new_features/blob/main/cpp_17/001_keywords_README.md#register)
 	
 ### <h3 id="cpp_17_RTTI">类型支持（基本类型、RTTI、类型特性）</h3>
-	
+
 ### <h5 id="cpp_headfile_type_traits">Defined in header&lt;type_traits&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/002_type_traits_byte.cpp">byte(字节类型)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/002_type_traits_is_aggregate.cpp">is_aggregate(检查类型是否聚合类型)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/002_type_traits_is_swappable_with.cpp">is_swappable_with(检查一个类型的对象是否能与同类型或不同类型的对象交换)</a>
@@ -1129,7 +1129,7 @@
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/003_utility_in_place_t.cpp">in_place_t(原位构造标签)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/003_utility_in_place_type_t.cpp">in_place_type_t(原位构造标签)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/003_utility_in_place_index_t.cpp">in_place_index_t(原位构造标签)</a>
--->
+	-->
 	
 ### <h5 id="cpp_headfile_tuple">Defined in header&lt;tuple&gt;</h5>
 
@@ -1212,10 +1212,10 @@
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/012_stl_empty.cpp">empty(检查容器是否为空)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_17/012_stl_data.cpp">data(获得指向底层数组的指针)</a>
 
----- 
-	
+----
+
 <div id="cpp_20" align=center>
-	
+
 <img width="30%" height="30%" src="https://user-images.githubusercontent.com/87457873/134302390-53b4bfe7-eb75-4325-8376-dabd620c3a9d.jpg"/>
 
 </div>		
@@ -1336,7 +1336,7 @@
 -->
 
 ### <h5 id="cpp_headfile_memory">Defined in header&lt;memory&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/008_memory_uninitialized_move.cpp">uninitialized_move(移动一个范围的对象到未初始化的内存区域)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/008_memory_uninitialized_move_n.cpp">uninitialized_move_n(移动一定数量对象到未初始化内存区域)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/008_memory_uninitialized_default_construct.cpp">uninitialized_default_construct(在范围所定义的未初始化的内存区域以默认初始化构造对象)</a>
@@ -1348,9 +1348,10 @@
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/008_memory_destroy_n.cpp">destroy_n(销毁范围中一定数量的对象)</a>
 
 	
+
 <!--
 ### <h5 id="cpp_headfile_concepts">Defined in header&lt;memory_resource&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/009_memory_resource_polymorphic_allocator.cpp">polymorphic_allocator(以 std::memory_resource 构造，支持基于它的运行时多态的分配器)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/009_memory_resource_memory_resource.cpp">memory_resource(一个抽象接口，用于各种封装内存资源的类)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/009_memory_resource_new_delete_resource.cpp">new_delete_resource(返回一个静态的程序范围 std::pmr::memory_resource，它使用全局 operator new 与 operator delete 分配和解分配内存</a>
@@ -1489,12 +1490,12 @@
 ### <h3 id="cpp_20_string">字符串</h3>
 
 ### <h5 id="cpp_headfile_string">Defined in header&lt;string&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/013_string_starts_with.cpp">starts_with(检查 string 是否始于给定前缀)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/013_string_ends_with.cpp">ends_with(检查 string 是否终于给定后缀)</a>
 	
 ### <h5 id="cpp_headfile_string_view">Defined in header&lt;string_view&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/014_string_view_starts_with.cpp">starts_with(检查 string_view 是否始于给定前缀)</a>
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/014_string_view_ends_with.cpp">ends_with(检查 string_view 是否终于给定后缀)</a>
 	
@@ -1651,7 +1652,7 @@
 ### <h5 id="cpp_headfile_span">Defined in header &lt;ranges&gt;</h5>
 ### <h5 id="cpp_headfile_span">Defined in header &lt;iterator&gt;</h5>
 ### <h5 id="cpp_headfile_span">Defined in namespace std::ranges</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/027_ranges_ranges_begin.cpp">ranges::begin(返回指向范围起始的迭代器)</a> 
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/027_ranges_ranges_cbegin.cpp">ranges::cbegin(返回指向只读范围起始的迭代器)</a> 
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_20/027_ranges_ranges_end.cpp">ranges::end(返回指示范围结尾的哨位)</a> 
@@ -1668,9 +1669,9 @@
 
 
 -----
-	
+
 <div id="cpp_23" align=center>
-	
+
 <img width="30%" height="30%" src="https://user-images.githubusercontent.com/87457873/134302554-85d6bf7c-1e1d-4579-8141-8a4c3e8d92e2.jpg"/>
 
 </div>		
@@ -1703,11 +1704,11 @@
 ### <h3 id="cpp_23_string">字符串</h3>
 
 ### <h5 id="cpp_headfile_string">Defined in header&lt;string&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_23/005_string_contains.cpp">contains(检查字符串是否含有给定的子串或字符)</a>
 
 ### <h5 id="cpp_headfile_string_view">Defined in header&lt;string_view&gt;</h5>
-	
+
 * <a href="https://github.com/0voice/cpp_new_features/blob/main/cpp_23/005_string_view_contains.cpp">contains(检查字符串视图是否含有给定的子串或字符)</a>
 
 ---
