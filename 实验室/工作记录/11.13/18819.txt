@@ -1,0 +1,145 @@
+// 服务端类
+    class TestServer : public LThread
+    {
+    public:
+        LString m_msg;
+        bool flag = false;
+        ServerTcpSocket m_sv;
+        void run() override
+        {
+            flag = m_sv.createSever(LAbstractSocket::IPv4Protocol, "127.0.0.1", 50200, 3); // 创建服务端并绑定监听
+            m_msg = m_sv.receiveClient();                                                  // 接收客户端的数据
+            cout << "client_ip: " << m_sv.m_server->peerAddress().getAddress() << ":" << m_sv.m_server->peerPort() << endl;
+            LThread::msleep(50);
+            m_sv.sendMessage("got it!"); // 向客户端发送数据
+            cout << "sever starts closing!" << endl;
+            m_sv.close();                // 关闭套接字
+            cout << "sever closed!" << endl;
+        }
+        void handleTimerEvent(LTimerEvent *e)
+        {
+            LApplication::quit();
+        }
+    };
+
+    // 客户端类
+    class TestClient : public LThread
+    {
+    public:
+        bool flag = false;
+        int bytes;
+        LString m_msg;
+        ClientTcpSocket m_cl;
+        void run() override
+        {
+            LTcpSocket socket(LAbstractSocket::IPv4Protocol);
+            socket.setBufferSize(1024);
+            LString ip = "127.0.0.1";
+            // 直接连接服务端,并发送和接收消息
+            flag = socket.connectToHost(LHostAddress(ip), uint16_t(50200));
+            socket.sends("please call back if you received my text!"); // 发送
+            LThread::msleep(50);
+            cout << "client starts receiving!" << endl;
+            bytes = socket.receives();
+            cout << "client received!" << endl;
+            // m_msg = LString(socket.pData->bytebuffer);
+            socket.closes(); // 关闭套接字
+        }
+    };
+
+    LApplication app;
+    // 启动服务端
+    TestServer server;
+    server.start();
+    LThread::msleep(50);
+    // 启动客户端
+    TestClient client1;
+    client1.start();
+    // 定时退出程序
+    LTimer time(&server);
+    time.start(1500);
+    app.exec();
+
+    // 验证客户端建立连接成功，服务端等待连接成功
+    EXPECT_EQ(server.flag, true);
+    EXPECT_EQ(server.m_msg, "please call back if you received my text!");
+    EXPECT_EQ(client1.bytes, 7);
+    EXPECT_EQ(client1.m_msg, "got it!");
+    LThread::msleep(100);
+
+
+
+
+
+-------------------------------------------------------------------------------------------
+class ServerTcpSocket
+{
+public:
+    LTcpSocket *m_server;
+    LString m_msg;
+    bool createSever(LAbstractSocket::NetworkProtocol network, LString ip, int port, int max = 5, int buffer = 1024)
+    {
+        m_server = new LTcpSocket(network);
+        m_server->setBufferSize(buffer);
+        // 判断绑定结果
+        bool bind = m_server->binds(new LHostAddress(ip), port);
+        cout << "server_bind: " << bind << endl;
+        cout << "server_listen: " << m_server->listens(max) << endl; // 监听socket
+        cout << " == start waiting client's connection! ==" << endl;
+        return m_server->accepts(); // 阻塞等待接收客户端的连接
+        // if (bind)
+        // {
+        //     // 验证监听结果
+        //     cout << "server_listen: " << m_server->listens(max) << endl; // 监听socket
+        //     cout << " == start waiting client's connection! ==" << endl;
+        //     return m_server->accepts(); // 阻塞等待接收客户端的连接
+        // }
+        // else
+        // {
+        //     cout << "server failed to bind!" << endl;
+        //     return false;
+        // }
+    }
+    LString receiveClient()
+    {
+        // 接收客户端的数据
+        int rcv = m_server->receives();
+        if (rcv == 0)
+        {
+            cout << "server receive null data " << endl;
+            return LString();
+        }
+        else if(rcv == -1)
+        {
+            cout << "server receive -1 " << endl;
+            return LString();
+        }
+        else
+        {
+            // 获取接收的数据
+            m_msg = m_server->pData->bytebuffer;
+            cout << "server_recevice_message: " << m_msg << endl;
+            return m_msg;
+        }
+    }
+    bool sendMessage(LString msg)
+    {
+        // 向客户端发送数据
+        return m_server->sends(msg);
+    }
+    bool close()
+    {   
+        // 关闭客户端的连接
+        return m_server->closes(); 
+    }
+};
+
+
+
+
+
+
+
+
+
+
