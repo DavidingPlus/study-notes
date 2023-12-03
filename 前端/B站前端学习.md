@@ -179,19 +179,19 @@ html骨架
 <a href="#">空链接，不知道跳转到哪里</a>
 ~~~
 
-## 第二章 HTML基础
+# 第二章 HTML基础
 
-### 列表
+## 列表
 
 **展示网页当中具有关联性的内容，按照行的方式展示整齐的内容!!!**
 
 **三种列表标签：无序列表，有序列表，自定义列表**
 
-#### 使用场景
+### 使用场景
 
 ![image-20230716170638077](https://img-blog.csdnimg.cn/7689ef3e766647d891b61b2eba5d8668.png)
 
-#### 无序列表(ul li)
+### 无序列表(ul li)
 
 **ul只能包含li标签；li中可以包含任意内容**
 
@@ -209,7 +209,7 @@ html骨架
 </ul>
 ~~~
 
-#### 有序列表(ol li)
+### 有序列表(ol li)
 
 **ol只能包含li标签；li中可以包含任意内容**
 
@@ -226,7 +226,7 @@ html骨架
 </ol>
 ~~~
 
-#### 自定义列表(dl dt dd)
+### 自定义列表(dl dt dd)
 
 ![image-20230716171953399](https://img-blog.csdnimg.cn/a9afc744dfa94ed09cedcc70177840b3.png)
 
@@ -239,9 +239,9 @@ html骨架
 </dl>
 ~~~
 
-### 表格
+## 表格
 
-#### 标签(table tr td)
+### 标签(table tr td)
 
 **table 嵌套 tr 嵌套 td**
 
@@ -280,19 +280,19 @@ html骨架
 
 **发现没有格子，那么需要加入table的其他属性才能实现**
 
-#### 属性(border width height)
+### 属性(border width height)
 
 **width 和 height 属性一般不是在这里设置的，实际开发的时候一般用css进行设置**
 
 ![image-20230716172957442](https://img-blog.csdnimg.cn/a172a5f7925f43f1844afefa57a7a28c.png)
 
-#### 表格标题和表头单元格标签
+### 表格标题和表头单元格标签
 
 ![image-20230716173322631](https://img-blog.csdnimg.cn/88a95950ad5f47d79a0e512fc7983693.png)
 
 **表头单元格th放在 tr 段的第一个，代表第一行，然后替换掉里面的td标签就可以了，就代表是表头单元格标签；也就是 th 和 td 的地位是相同的**
 
-#### 表格的结构标签(了解)
+### 表格的结构标签(了解)
 
 **表格结构标签内部用来包裹tr标签(代表将这些 tr 进行分类，哪些是头，身体和底部)；并且结构标签可以忽略**
 
@@ -336,7 +336,7 @@ html骨架
 
 <img src="https://img-blog.csdnimg.cn/f19cdf0d3c6340a988e6af6a209666dc.png" alt="image-20230716174513211" style="zoom:150%;" />
 
-#### 合并单元格(rowspan colspan 单元格的属性设置)
+### 合并单元格(rowspan colspan 单元格的属性设置)
 
 **水平或者垂直合并单元格**
 
