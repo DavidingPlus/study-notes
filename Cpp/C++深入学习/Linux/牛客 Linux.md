@@ -713,8 +713,8 @@ off_t lseek(int fd, off_t offset, int whence);
   		 \- SEEK_SET 设置文件指针的偏移量，从头开始
 
       			- SEEK_CUR 设置偏移量：当前位置 + 第二参数offset的值
-	  	
-		  		 - SEEK_END 设置偏移量：文件大小 + 第二参数offset的值
+	   	
+		 		 - SEEK_END 设置偏移量：文件大小 + 第二参数offset的值
 
 - 返回值：返回文件指针设置之后的位置
 
