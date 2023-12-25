@@ -2,7 +2,7 @@
 
 ## 1、 演讲比赛程序需求
 
-![1548154762048](assets/1548154762048.png)
+![1548154762048](https://img-blog.csdnimg.cn/direct/9b231b9bda42426d8633c74b017a1d6b.png)
 
 
 
@@ -25,7 +25,7 @@
 
 ### 1.3 程序效果图：
 
-![1548155966702](assets/1548155966702.png)
+![1548155966702](https://img-blog.csdnimg.cn/direct/e5d4623971834801b54ae505c31d580a.png)
 
 
 
@@ -44,13 +44,13 @@
 
 如图：
 
-![1548121881969](assets/1548121881969.png)
+![1548121881969](https://img-blog.csdnimg.cn/direct/48271115f3de497494fcd91f9597d444.png)
 
 
 
 * 填写项目名称以及选取项目路径，点击确定生成项目
 
-![1548122271773](assets/1548122271773.png)
+![1548122271773](https://img-blog.csdnimg.cn/direct/365f38f1f5304b239c0e85868f03f6bb.png)
 
 
 
@@ -58,15 +58,13 @@
 
 * 右键源文件，进行添加文件操作
 
-![1548122420253](assets/1548122420253.png)
+![1548122420253](https://img-blog.csdnimg.cn/direct/254be716f3af499a9c9f07184546a887.png)
 
 * 填写文件名称，点击添加
 
-![1548122510869](assets/1548122510869.png)
-
 * 生成文件成功，效果如下图
 
-![1548122619712](assets/1548122619712.png)
+![1548122619712](https://img-blog.csdnimg.cn/direct/47526b91fd5c4b21b7246050e1924fae.png)
 
 
 
@@ -91,7 +89,7 @@
 
 * 在头文件和源文件的文件夹下分别创建speechManager.h 和 speechManager.cpp文件
 
-![1548123402593](assets/1548123402593.png)
+![1548123402593](https://img-blog.csdnimg.cn/direct/ce313bbe104c4cc59db7a0acd4813afa.png)
 
 
 
@@ -148,7 +146,7 @@ SpeechManager::~SpeechManager()
 
 在管理类speechManager.h中添加成员函数  `void show_Menu();`
 
-![1548123942072](assets/1548123942072.png)
+![1548123942072](https://img-blog.csdnimg.cn/direct/e7cf23d69dd44f8cad2a861130ca69fd.png)
 
  
 
@@ -199,7 +197,7 @@ int main() {
 
 * 运行效果如图：
 
-![1548124599641](assets/1548124599641.png)
+![1548124599641](https://img-blog.csdnimg.cn/direct/f26da49771f34402a40cd683ef1f6359.png)
 
 * 菜单界面搭建完毕
 
@@ -272,13 +270,13 @@ void SpeechManager::exitSystem()
 
 在main函数分支 0  选项中，调用退出程序的接口
 
-![1548124853576](assets/1548124853576.png)
+![1548124853576](https://img-blog.csdnimg.cn/direct/a3d2bba95c49438a914783da1cb70fb2.png)
 
 
 
 运行测试效果如图：
 
-![1548124888578](assets/1548124888578.png)
+![1548124888578](https://img-blog.csdnimg.cn/direct/78fb914a0c5a4d8c8dca10b44ae4a09b.png)
 
 
 
@@ -446,11 +444,11 @@ for (map<int, Speaker>::iterator it = sm.m_Speaker.begin(); it != sm.m_Speaker.e
 }
 ```
 
-![1548141605742](assets/1548141605742.png)
+![1548141605742](https://img-blog.csdnimg.cn/direct/1c88e002ddf14c82aaa42d5d5efcea47.png)
 
 * 测试效果如图：
 
-![1548141560164](assets/1548141560164.png)
+![1548141560164](https://img-blog.csdnimg.cn/direct/a85ec2e6bf474911ae607809d31195e4.png)
 
 * 测试完毕后，可以将测试代码删除或注释。
 
@@ -552,17 +550,17 @@ void SpeechManager::speechDraw()
 
 * 在startSpeech比赛流程控制的函数中，调用抽签函数
 
-![1548143871202](assets/1548143871202.png)
+![1548143871202](https://img-blog.csdnimg.cn/direct/f1bbcd9cdbd64d50b57fb8a0aa06b692.png)
 
 * 在main函数中，分支1选项中，调用开始比赛的接口
 
-![1548143543475](assets/1548143543475.png)
+![1548143543475](https://img-blog.csdnimg.cn/direct/40a8776b827c4dd9aa961fb8dc7e9bbc.png)
 
 
 
 * 测试
 
-![1548143610682](assets/1548143610682.png)
+![1548143610682](https://img-blog.csdnimg.cn/direct/bca3f40a972043c78ad1f30bdb720f5f.png)
 
 
 
@@ -663,13 +661,13 @@ void SpeechManager::speechContest()
 
 * 在startSpeech比赛流程控制的函数中，调用比赛函数
 
-![1548144491984](assets/1548144491984.png)
+![1548144491984](https://img-blog.csdnimg.cn/direct/97afe9d659e748af9f991bdae222da4d.png)
 
 
 
 * 再次运行代码，测试比赛
 
-![1548144765146](assets/1548144765146.png)
+![1548144765146](https://img-blog.csdnimg.cn/direct/6204aac2f36f43c68c33b257cab10dc6.png)
 
 
 
@@ -714,11 +712,11 @@ void SpeechManager::showScore()
 
 * 在startSpeech比赛流程控制的函数中，调用显示比赛分数函数
 
-![1548146903960](assets/1548146903960.png)
+![1548146903960](https://img-blog.csdnimg.cn/direct/f018a51b37744971a8c632f4e196660d.png)
 
 * 运行代码，测试效果
 
-![1548146961550](assets/1548146961550.png)
+![1548146961550](https://img-blog.csdnimg.cn/direct/ff870b58d36546f4999c6ffb58f8db55.png)
 
 
 
@@ -728,13 +726,13 @@ void SpeechManager::showScore()
 
 * 在startSpeech比赛流程控制的函数中，加入第二轮的流程
 
-![1548148593215](assets/1548148593215.png)
+![1548148593215](https://img-blog.csdnimg.cn/direct/07dcf5bb11ed438f8e2e0b8a1136b14d.png)
 
 
 
 测试，将整个比赛流程都跑通
 
-![1548148536395](assets/1548148536395.png)
+![1548148536395](https://img-blog.csdnimg.cn/direct/94b8422dee4747abbaea77bd9c2da997.png)
 
 
 
@@ -782,19 +780,19 @@ void SpeechManager::saveRecord()
 
 * 在startSpeech比赛流程控制的函数中，最后调用保存记录分数函数
 
-![1548149937860](assets/1548149937860.png)
+![1548149937860](https://img-blog.csdnimg.cn/direct/5c51761e59a6497ba60dafe5def38282.png)
 
 
 
 * 测试，整个比赛完毕后记录保存情况
 
-![1548149912863](assets/1548149912863.png)
+![1548149912863](https://img-blog.csdnimg.cn/direct/4c0ab4e3e48f4213925e5c3e8ec081f2.png)
 
 
 
 利用记事本打开文件 speech.csv，里面保存了前三名选手的编号以及得分
 
-![1548150047975](assets/1548150047975.png)
+![1548150047975](https://img-blog.csdnimg.cn/direct/0868eef17f134d7b97b819f309cbd58c.png)
 
 
 
@@ -891,7 +889,7 @@ void SpeechManager::loadRecord()
 
 * 在SpeechManager构造函数中调用获取往届记录函数
 
-![1548151977242](assets/1548151977242.png)
+![1548151977242](https://img-blog.csdnimg.cn/direct/28b246f244204893a5145b0a81e0da5a.png)
 
 
 
@@ -929,11 +927,11 @@ void SpeechManager::showRecord()
 
 在main函数分支 2  选项中，调用查看记录的接口
 
-![1548152359604](assets/1548152359604.png)
+![1548152359604](https://img-blog.csdnimg.cn/direct/dd82d0d7ec54491db9665f9e30c208b9.png)
 
 显示效果如图：（本次测试添加了4条记录）
 
-![1548152394715](assets/1548152394715.png)
+![1548152394715](https://img-blog.csdnimg.cn/direct/3889d083459c4183af7e78da38641b29.png)
 
 
 
@@ -945,7 +943,7 @@ void SpeechManager::showRecord()
 
 解决方式：在showRecord函数中，开始判断文件状态并加以判断
 
-![1548152803116](assets/1548152803116.png)
+![1548152803116](https://img-blog.csdnimg.cn/direct/570de0550aa7474a8888c02e6b6e1936.png)
 
 
 
@@ -953,13 +951,13 @@ void SpeechManager::showRecord()
 
 解决方式：saveRecord中更新文件为空的标志
 
-![1548153005042](assets/1548153005042.png)
+![1548153005042](https://img-blog.csdnimg.cn/direct/54cbb45d868c41a2b321db5686d564f9.png)
 
 3. 比完赛后查不到本届比赛的记录，没有实时更新
 
 解决方式：比赛完毕后，所有数据重置
 
-![1548153319587](assets/1548153319587.png)
+![1548153319587](https://img-blog.csdnimg.cn/direct/4b3b4e72fd694528930bb09adbed8fab.png)
 
 
 
@@ -967,7 +965,7 @@ void SpeechManager::showRecord()
 
 解决方式：initSpeech中添加 初始化记录容器
 
-![1548154340974](assets/1548154340974.png)
+![1548154340974](https://img-blog.csdnimg.cn/direct/4ecff8cb9533483e8c279b2dbb9dcdb7.png)
 
 5. 每次记录都是一样的
 
@@ -981,7 +979,7 @@ srand((unsigned int)time(NULL));
 
 所有bug解决后 测试：
 
-![1548153571603](assets/1548153571603.png)
+![1548153571603](https://img-blog.csdnimg.cn/direct/12ae75e9879c46a49233c9f9cde56313.png)
 
 
 
@@ -1038,15 +1036,15 @@ void SpeechManager::clearRecord()
 
 在main函数分支 3  选项中，调用清空比赛记录的接口
 
-![1548154674242](assets/1548154674242.png)
+![1548154674242](https://img-blog.csdnimg.cn/direct/f388cb3389214eadbadf125b563b155a.png)
 
 运行程序，测试清空记录：
 
-![1548154004738](assets/1548154004738.png)
+![1548154004738](https://img-blog.csdnimg.cn/direct/d954a97e43454cdda6f825e67dcb7bb1.png)
 
 speech.csv中记录也为空
 
-![1548154508831](assets/1548154508831.png)
+![1548154508831](https://img-blog.csdnimg.cn/direct/b3de9214bbe841208e188a9ec72655f5.png)
 
 
 
