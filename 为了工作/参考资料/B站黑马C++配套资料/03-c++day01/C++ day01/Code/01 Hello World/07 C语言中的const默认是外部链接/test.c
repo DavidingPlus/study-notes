@@ -1,1 +1,0 @@
-const int a = 10; //C语言中默认const是外部链接
