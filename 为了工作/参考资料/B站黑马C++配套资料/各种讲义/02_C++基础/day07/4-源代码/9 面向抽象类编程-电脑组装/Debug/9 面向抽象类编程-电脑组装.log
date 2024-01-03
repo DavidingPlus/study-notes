@@ -1,0 +1,11 @@
+﻿生成启动时间为 2016/4/19 17:36:13。
+     1>项目“C:\Users\apple\Documents\C提高视频\code\day08\C++基础day07\9 面向抽象类编程-电脑组装\9 面向抽象类编程-电脑组装.vcxproj”在节点 2 上(Build 个目标)。
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\apple\Documents\C提高视频\code\day08\C++基础day07\Debug\9 面向抽象类编程-电脑组装.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\apple\Documents\C提高视频\code\day08\C++基础day07\Debug\9 面向抽象类编程-电脑组装.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\apple\Documents\C提高视频\code\day08\C++基础day07\Debug\9 面向抽象类编程-电脑组装.lib" /MACHINE:X86 "Debug\9 面向抽象类编程-电脑组装.obj"
+     1>9 面向抽象类编程-电脑组装.obj : error LNK2019: 无法解析的外部符号 "public: __thiscall CPU::CPU(void)" (??0CPU@@QAE@XZ)，该符号在函数 "public: __thiscall IntelCPU::IntelCPU(void)" (??0IntelCPU@@QAE@XZ) 中被引用
+     1>C:\Users\apple\Documents\C提高视频\code\day08\C++基础day07\Debug\9 面向抽象类编程-电脑组装.exe : fatal error LNK1120: 1 个无法解析的外部命令
+     1>已完成生成项目“C:\Users\apple\Documents\C提高视频\code\day08\C++基础day07\9 面向抽象类编程-电脑组装\9 面向抽象类编程-电脑组装.vcxproj”(Build 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:00.71

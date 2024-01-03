@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01  容器算法迭代器基本思路", "01  容器算法迭代器基本思路\01  容器算法迭代器基本思路.vcxproj", "{3A2C7966-0C92-4FFC-B478-75DA30FDF401}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02 STL hello world程序", "02 STL hello world程序\02 STL hello world程序.vcxproj", "{115A75CC-976C-436A-B3AF-F4BA45816027}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03 string容器", "03 string容器\03 string容器.vcxproj", "{FB711B00-C1C2-42E7-B6A2-E610C036092A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04 vector容器", "04 vector容器\04 vector容器.vcxproj", "{09B122ED-559C-45E6-9881-27F537C25097}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{DDC309FA-15BE-4EE7-8C62-3BF1EFD6019F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A2C7966-0C92-4FFC-B478-75DA30FDF401}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3A2C7966-0C92-4FFC-B478-75DA30FDF401}.Debug|Win32.Build.0 = Debug|Win32
+		{3A2C7966-0C92-4FFC-B478-75DA30FDF401}.Release|Win32.ActiveCfg = Release|Win32
+		{3A2C7966-0C92-4FFC-B478-75DA30FDF401}.Release|Win32.Build.0 = Release|Win32
+		{115A75CC-976C-436A-B3AF-F4BA45816027}.Debug|Win32.ActiveCfg = Debug|Win32
+		{115A75CC-976C-436A-B3AF-F4BA45816027}.Debug|Win32.Build.0 = Debug|Win32
+		{115A75CC-976C-436A-B3AF-F4BA45816027}.Release|Win32.ActiveCfg = Release|Win32
+		{115A75CC-976C-436A-B3AF-F4BA45816027}.Release|Win32.Build.0 = Release|Win32
+		{FB711B00-C1C2-42E7-B6A2-E610C036092A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FB711B00-C1C2-42E7-B6A2-E610C036092A}.Debug|Win32.Build.0 = Debug|Win32
+		{FB711B00-C1C2-42E7-B6A2-E610C036092A}.Release|Win32.ActiveCfg = Release|Win32
+		{FB711B00-C1C2-42E7-B6A2-E610C036092A}.Release|Win32.Build.0 = Release|Win32
+		{09B122ED-559C-45E6-9881-27F537C25097}.Debug|Win32.ActiveCfg = Debug|Win32
+		{09B122ED-559C-45E6-9881-27F537C25097}.Debug|Win32.Build.0 = Debug|Win32
+		{09B122ED-559C-45E6-9881-27F537C25097}.Release|Win32.ActiveCfg = Release|Win32
+		{09B122ED-559C-45E6-9881-27F537C25097}.Release|Win32.Build.0 = Release|Win32
+		{DDC309FA-15BE-4EE7-8C62-3BF1EFD6019F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DDC309FA-15BE-4EE7-8C62-3BF1EFD6019F}.Debug|Win32.Build.0 = Debug|Win32
+		{DDC309FA-15BE-4EE7-8C62-3BF1EFD6019F}.Release|Win32.ActiveCfg = Release|Win32
+		{DDC309FA-15BE-4EE7-8C62-3BF1EFD6019F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

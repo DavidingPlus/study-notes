@@ -1,0 +1,18 @@
+﻿生成启动时间为 2016/5/13 17:52:10。
+     1>项目“C:\Users\apple\Desktop\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Books.cpp index.cpp Manager.cpp Reader.cpp
+         Reader.cpp
+     1>c:\users\apple\desktop\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写\books.h(18): error C2065: “Reader”: 未声明的标识符
+     1>c:\users\apple\desktop\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写\books.h(18): error C2923: “std::vector”: 对于参数“_Ty”，“Reader”不是有效的 模板 类型变量
+     1>c:\users\apple\desktop\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写\books.h(29): error C2065: “Reader”: 未声明的标识符
+     1>c:\users\apple\desktop\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写\books.h(29): error C2923: “std::vector”: 对于参数“_Ty”，“Reader”不是有效的 模板 类型变量
+         Manager.cpp
+         index.cpp
+         Books.cpp
+         正在生成代码...
+     1>已完成生成项目“C:\Users\apple\Desktop\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写\图书管理系统的设计与实现改写.vcxproj”(Rebuild 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:06.27

@@ -1,0 +1,25 @@
+11604   A:  192.168.78.128
+     MAC:  00:0C:29:81:31:E9
+
+     
+1604——2  B：192.168.78.130
+   MAC：00:0C:29:3C:8C:BB
+
+
+默认网关：192.168.78.2 
+
+
+sudo tcpdump -i ens33 -ent '(dst 192.168.78.128 and src 192.168.78.130)or (dst 192.168.78.130 and src 192.168.78.128)'
+
+
+sudo tcpdump -i ens33 -nt '(dst 192.168.78.128 and src 192.168.78.130)or (dst 192.168.78.130 and src 192.168.78.128)'
+
+sudo tcpdump -nt -i port 12345
+
+scp -r ./Linux_high_perference_code sh@192.168.78.130:/home/sh/
+-r拷贝整个文件夹，循环拷贝
+
+
+监听端口号状态：netstat -nt |grep  XXport
+telnet登录： telnet XXX.XX.XX.XXX XXXport
+ssh登录：ssh XXX.XXX.XX.XX

@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01 map容器", "01 map容器\01 map容器.vcxproj", "{9C172045-7C66-4FEB-AEB7-8597D779E165}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02 multimap案例_员工分组", "02 multimap案例_员工分组\02 multimap案例_员工分组.vcxproj", "{23FD34D0-251D-421A-BE61-86DEF5E71EAB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{2C028B90-8F65-4E29-8BAB-21A113ABEEC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03 容器深拷贝和浅拷贝", "03 容器深拷贝和浅拷贝\03 容器深拷贝和浅拷贝.vcxproj", "{E51ED3FC-AB8B-4E1C-9B30-4AE88C045BD8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04 函数对象", "04 函数对象\04 函数对象.vcxproj", "{028DCA19-E468-444B-9A69-DA7839C63B70}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05 内建函数对象", "05 内建函数对象\05 内建函数对象.vcxproj", "{4660FA69-5707-471B-A54D-AF501872B3D6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06 函数对象适配器", "06 函数对象适配器\06 函数对象适配器.vcxproj", "{B4B6BDD5-B7D6-4808-831A-A2E2B3634E01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07 常用的遍历算法", "07 常用的遍历算法\07 常用的遍历算法.vcxproj", "{FBBEBC15-A35B-4695-8A2A-1F8E90B3DE29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C172045-7C66-4FEB-AEB7-8597D779E165}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9C172045-7C66-4FEB-AEB7-8597D779E165}.Debug|Win32.Build.0 = Debug|Win32
+		{9C172045-7C66-4FEB-AEB7-8597D779E165}.Release|Win32.ActiveCfg = Release|Win32
+		{9C172045-7C66-4FEB-AEB7-8597D779E165}.Release|Win32.Build.0 = Release|Win32
+		{23FD34D0-251D-421A-BE61-86DEF5E71EAB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{23FD34D0-251D-421A-BE61-86DEF5E71EAB}.Debug|Win32.Build.0 = Debug|Win32
+		{23FD34D0-251D-421A-BE61-86DEF5E71EAB}.Release|Win32.ActiveCfg = Release|Win32
+		{23FD34D0-251D-421A-BE61-86DEF5E71EAB}.Release|Win32.Build.0 = Release|Win32
+		{2C028B90-8F65-4E29-8BAB-21A113ABEEC8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C028B90-8F65-4E29-8BAB-21A113ABEEC8}.Debug|Win32.Build.0 = Debug|Win32
+		{2C028B90-8F65-4E29-8BAB-21A113ABEEC8}.Release|Win32.ActiveCfg = Release|Win32
+		{2C028B90-8F65-4E29-8BAB-21A113ABEEC8}.Release|Win32.Build.0 = Release|Win32
+		{E51ED3FC-AB8B-4E1C-9B30-4AE88C045BD8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E51ED3FC-AB8B-4E1C-9B30-4AE88C045BD8}.Debug|Win32.Build.0 = Debug|Win32
+		{E51ED3FC-AB8B-4E1C-9B30-4AE88C045BD8}.Release|Win32.ActiveCfg = Release|Win32
+		{E51ED3FC-AB8B-4E1C-9B30-4AE88C045BD8}.Release|Win32.Build.0 = Release|Win32
+		{028DCA19-E468-444B-9A69-DA7839C63B70}.Debug|Win32.ActiveCfg = Debug|Win32
+		{028DCA19-E468-444B-9A69-DA7839C63B70}.Debug|Win32.Build.0 = Debug|Win32
+		{028DCA19-E468-444B-9A69-DA7839C63B70}.Release|Win32.ActiveCfg = Release|Win32
+		{028DCA19-E468-444B-9A69-DA7839C63B70}.Release|Win32.Build.0 = Release|Win32
+		{4660FA69-5707-471B-A54D-AF501872B3D6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4660FA69-5707-471B-A54D-AF501872B3D6}.Debug|Win32.Build.0 = Debug|Win32
+		{4660FA69-5707-471B-A54D-AF501872B3D6}.Release|Win32.ActiveCfg = Release|Win32
+		{4660FA69-5707-471B-A54D-AF501872B3D6}.Release|Win32.Build.0 = Release|Win32
+		{B4B6BDD5-B7D6-4808-831A-A2E2B3634E01}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B4B6BDD5-B7D6-4808-831A-A2E2B3634E01}.Debug|Win32.Build.0 = Debug|Win32
+		{B4B6BDD5-B7D6-4808-831A-A2E2B3634E01}.Release|Win32.ActiveCfg = Release|Win32
+		{B4B6BDD5-B7D6-4808-831A-A2E2B3634E01}.Release|Win32.Build.0 = Release|Win32
+		{FBBEBC15-A35B-4695-8A2A-1F8E90B3DE29}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FBBEBC15-A35B-4695-8A2A-1F8E90B3DE29}.Debug|Win32.Build.0 = Debug|Win32
+		{FBBEBC15-A35B-4695-8A2A-1F8E90B3DE29}.Release|Win32.ActiveCfg = Release|Win32
+		{FBBEBC15-A35B-4695-8A2A-1F8E90B3DE29}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "常用算法", "常用算法\常用算法.vcxproj", "{47307FF5-94DA-4514-B228-812F58CEE6FF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02 常用的拷贝和替换算法", "02 常用的拷贝和替换算法\02 常用的拷贝和替换算法.vcxproj", "{F9069D0E-885D-4CB5-B716-C9AB58F9A913}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03 常用的算术生成算法", "03 常用的算术生成算法\03 常用的算术生成算法.vcxproj", "{A6656CDD-F235-46C3-9476-1A6297FC5166}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04 综合案例", "04 综合案例\04 综合案例.vcxproj", "{ACDF2DEB-2D67-4A0C-8D69-4E0B9E1034E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47307FF5-94DA-4514-B228-812F58CEE6FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{47307FF5-94DA-4514-B228-812F58CEE6FF}.Debug|Win32.Build.0 = Debug|Win32
+		{47307FF5-94DA-4514-B228-812F58CEE6FF}.Release|Win32.ActiveCfg = Release|Win32
+		{47307FF5-94DA-4514-B228-812F58CEE6FF}.Release|Win32.Build.0 = Release|Win32
+		{F9069D0E-885D-4CB5-B716-C9AB58F9A913}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F9069D0E-885D-4CB5-B716-C9AB58F9A913}.Debug|Win32.Build.0 = Debug|Win32
+		{F9069D0E-885D-4CB5-B716-C9AB58F9A913}.Release|Win32.ActiveCfg = Release|Win32
+		{F9069D0E-885D-4CB5-B716-C9AB58F9A913}.Release|Win32.Build.0 = Release|Win32
+		{A6656CDD-F235-46C3-9476-1A6297FC5166}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A6656CDD-F235-46C3-9476-1A6297FC5166}.Debug|Win32.Build.0 = Debug|Win32
+		{A6656CDD-F235-46C3-9476-1A6297FC5166}.Release|Win32.ActiveCfg = Release|Win32
+		{A6656CDD-F235-46C3-9476-1A6297FC5166}.Release|Win32.Build.0 = Release|Win32
+		{ACDF2DEB-2D67-4A0C-8D69-4E0B9E1034E3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ACDF2DEB-2D67-4A0C-8D69-4E0B9E1034E3}.Debug|Win32.Build.0 = Debug|Win32
+		{ACDF2DEB-2D67-4A0C-8D69-4E0B9E1034E3}.Release|Win32.ActiveCfg = Release|Win32
+		{ACDF2DEB-2D67-4A0C-8D69-4E0B9E1034E3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
