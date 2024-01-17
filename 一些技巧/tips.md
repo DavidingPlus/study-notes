@@ -95,3 +95,4 @@
 
 - 在docker上部署个人云盘nextcloud：https://zhuanlan.zhihu.com/p/108301496/
 
+- github的ssh连接超时：[https://blog.csdn.net/the__future/article/details/130038818](https://blog.csdn.net/the__future/article/details/130038818)
