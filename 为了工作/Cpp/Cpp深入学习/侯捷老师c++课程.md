@@ -538,7 +538,7 @@ deque是双端队列，queue是单端队列，显然deque的功能要比queue功
 
 ![image-20230412203303042](https://img-blog.csdnimg.cn/c2925e6e0a7a4865bf6e16053ade1742.png)
 
-## 委托 Delefgation.Composition by reference
+## 委托 Delefgation -- Composition by reference
 
 把复合下面传入的参数类型改为指针!!!
 
