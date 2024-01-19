@@ -11,14 +11,14 @@
   ~~~powershell
   diskpart
   # 在新开的终端里面
-  select vdisk file="D:\Ubuntu\ext4.vhdx"  
+  select vdisk file="D:\Ubuntu\ext4.vhdx"
   compact vdisk
   ~~~
 
   ```powershell
   diskpart
   # 在新开的终端里面
-  select vdisk file="D:\Ubuntu20.04\ext4.vhdx"  
+  select vdisk file="D:\Ubuntu20.04\ext4.vhdx"
   compact vdisk
   ```
 
