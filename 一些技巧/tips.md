@@ -96,3 +96,7 @@
 - 在docker上部署个人云盘nextcloud：https://zhuanlan.zhihu.com/p/108301496/
 
 - github的ssh连接超时：[https://blog.csdn.net/the__future/article/details/130038818](https://blog.csdn.net/the__future/article/details/130038818)
+
+- 解决Qt（从5.15以后只能在线安装）在线安装过慢：[https://zhuanlan.zhihu.com/p/645793252](https://zhuanlan.zhihu.com/p/645793252)
+
+
