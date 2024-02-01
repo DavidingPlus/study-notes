@@ -99,4 +99,8 @@
 
 - 解决Qt（从5.15以后只能在线安装）在线安装过慢：[https://zhuanlan.zhihu.com/p/645793252](https://zhuanlan.zhihu.com/p/645793252)
 
+- vscode的CMake-tools插件kits的json文件位置：`~/.local/share/CMakeTools`
+
+- ccache清除缓存文件夹：使用命令`ccache -s -v`查看缓存的位置，删除即可
+
 
