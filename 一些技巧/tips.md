@@ -1,9 +1,23 @@
+- Code的c++的google代码规范代码
+
+  c++插件设置搜索format，C_Cpp: Clang_format_fallback Style中填入
+
+  ~~~json
+  {BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Attach, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 0, AccessModifierOffset: -4}
+  ~~~
+
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
+
 - 老白的博客：https://baizj.gitee.io/
+
 - pip安装报错：https://www.cnblogs.com/GrnLeaf/p/17201957.html
+
 - Linux应用层编程可以开发的一些项目：https://blog.csdn.net/sinat_16643223/article/details/105761275
+
 - typora实现页内链接：https://blog.csdn.net/Manchester__united/article/details/113257595
+
 - Linux下配置github：https://blog.csdn.net/qq_33975041/article/details/104275499
+
 - Linux下安装python2(2.7.9)(可靠回答)：https://ubuntuforums.org/showthread.php?t=2486174
 
 - 清理wsl2占据空间的问题(虚拟空间，会吃磁盘)：https://zhuanlan.zhihu.com/p/614993276
@@ -102,5 +116,4 @@
 - vscode的CMake-tools插件kits的json文件位置：`~/.local/share/CMakeTools`
 
 - ccache清除缓存文件夹：使用命令`ccache -s -v`查看缓存的位置，删除即可
-
 
