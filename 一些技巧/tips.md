@@ -117,3 +117,6 @@
 
 - ccache清除缓存文件夹：使用命令`ccache -s -v`查看缓存的位置，删除即可
 
+- windows下安装npm和cnpm：[https://blog.csdn.net/qq_40323256/article/details/100825982](https://blog.csdn.net/qq_40323256/article/details/100825982)
+
+
