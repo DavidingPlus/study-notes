@@ -119,4 +119,6 @@
 
 - windows下安装npm和cnpm：[https://blog.csdn.net/qq_40323256/article/details/100825982](https://blog.csdn.net/qq_40323256/article/details/100825982)
 
+- 在windows的git-bash中使用tree命令：[https://blog.csdn.net/qq_33154343/article/details/100064726](https://blog.csdn.net/qq_33154343/article/details/100064726)
+
 
