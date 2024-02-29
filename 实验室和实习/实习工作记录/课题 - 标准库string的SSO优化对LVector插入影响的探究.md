@@ -115,6 +115,8 @@ inline void LPaddedVector<T>::moveMemory(T *pTargetAddress, T *pSourceAddress, s
 
 分析了问题的来源，那解决问题就好办了，比如可以为`std::string`做特化，让他在这里使用拷贝的策略，这样能解决问题
 
+- 注意：这里的拷贝和前面移动导致的类似浅拷贝不一样，这里的拷贝是通过分配器构造，实际上调用的是`std::string`的拷贝构造函数，不管`std::string`是哪种优化方式，深拷贝他是必然做的，也就是说那根`pointer`就指向的是自身的`data`而不是之前的了，这样就是对的
+
 ~~~cpp
 template <>
 inline void LPaddedVector<std::string>::copyConstruct(std::string *pTargetAddress, const std::string &itemToCopy)
@@ -164,13 +166,13 @@ struct DataT
 
 所以就只能从刚才提到的`moveMemory()`入手了，既然直接移动不好，那我干脆改成拷贝不行吗？当然不好，白白多了很多次拷贝，这是不可接受的，那有没有办法将二者结合起来呢？你别说，还真有。
 
-参考了`Qt`的部分实现，`Qt`中封装了一个叫`QTypeInfoQuery`的类，里面有一个变量`isRelocatable`，这个东西可以用来判断类能否**平凡可复制**，顾名思义，像`std::string`显然不能平凡可复制，因为`SSO`的优化，平凡复制的话指针指向的地方是原来的，显然不行，说白了就是浅拷贝，因此这里做了判断，如果不行就拷贝，可以就移动
+参考了`Qt`的部分实现，`Qt`中封装了一个叫`QTypeInfoQuery`的类，里面有一个变量`isRelocatable`，这个东西可以用来判断类能否**平凡可复制**，顾名思义，像`std::string`显然不能平凡可复制，因为`SSO`的优化，平凡复制的话指针指向的地方是原来的，显然不行，说白了就是类似浅拷贝，因此这里做了判断，如果不行就拷贝，可以就移动
 
 <img src="https://img-blog.csdnimg.cn/direct/b98cdfae9ae5411c8c4489f4e41772c6.png" alt="8a91e41e1e61a64d333c6494ae960975" style="zoom:75%;" />
 
 关于`std::string`堆内存那个模型，是满足平凡可复制条件的，画个图如下理解
 
-- `std::memmove`不会触发类的析构函数，因此堆内存还在，不会被释放，因此就做到了完美迁移，同时避免了一次拷贝
+- `std::memmove`不会触发类的析构函数，因此堆内存还在，不会被释放，因此就做到了完美迁移，同时避免了不必要的栈内存和堆内存的拷贝，提升了效率
 
 <img src="https://img-blog.csdnimg.cn/direct/c1b1f4b05f534b42a7cd6298001c154d.png" alt="image-20240228171845622" style="zoom:70%;" />
 
