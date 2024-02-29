@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>渲染图片案例</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    .box {
+      display: flex;
+      flex-wrap: wrap;
+      width: 540px;
+      margin: 20px auto;
+    }
+
+
+
+    .box li {
+      width: 100px;
+      height: 100px;
+      margin: 0 10px 10px 0;
+    }
+
+    .box li:nth-child(5n+1) {
+      margin-right: 0;
+    }
+
+    .box li img {
+      width: 100%;
+      height: 100%;
+      border: 2px solid #258DF2;
+      border-radius: 10px 0 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <ul class="box">
+    <li>
+      <img src="./images/1.webp" alt="">
+    </li>
+    <li>
+      <img src="./images/2.webp" alt="">
+    </li>
+    <li>
+      <img src="./images/3.webp" alt="">
+    </li>
+    <li>
+      <img src="./images/4.webp" alt="">
+    </li>
+    <li>
+      <img src="./images/5.webp" alt="">
+    </li>
+  </ul>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .box {
+            position: relative;
+            width: 400px;
+            border-bottom: 1px solid #ccc;
+            margin: 100px auto;
+        }
+
+        .box input {
+            width: 370px;
+            height: 30px;
+            border: 0;
+            outline: none;
+        }
+
+        .box label {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 24px;
+            height: 24px;
+            background-color: pink;
+            cursor: pointer;
+            background: url(./images/close.png) no-repeat;
+            background-size: cover;
+        }
+
+        .box label.active {
+            background-image: url(./images/open.png);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <label for=""></label>
+        <input type="password" name="" id="pwd">
+    </div>
+    <script>
+        // 1. 获取元素  label 和 input 
+        const label = document.querySelector('label')
+        const input = document.querySelector('input')
+        // 2. 给label 注册事件， 可以切换类实现图片的切换
+        // 声明一个变量来控制
+        let flag = true
+        label.addEventListener('click', function () {
+            this.classList.toggle('active')
+            // 3. 因为要修改input的 type属性 text和password，可以使用一个变量来控制  flag ， 如果为true 就切换为text ，如果为false就修改为 password
+            if (flag) {
+                input.type = 'text'
+
+            } else {
+                input.type = 'password'
+
+            }
+
+            flag = !flag
+        })
+
+
+    </script>
+</body>
+
+</html>

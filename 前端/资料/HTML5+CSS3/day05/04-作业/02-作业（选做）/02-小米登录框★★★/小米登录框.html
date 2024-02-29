@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.box {
+			width: 356px;
+			height: 339px;
+			margin: 100px auto;
+		}
+
+		.box h1 {
+			width: 49px;
+			height: 49px;
+			/* logo这个背景图片是透明的四周中间有白色的logo，所以需要设置背景颜色从而衬托出白色的logo */
+			background: #ff4c00 url('./images/mi-logo.png');
+			margin: 0 auto;
+		}
+
+		.box h2 {
+			height: 77px;
+			margin-top: 35px;
+			text-align: center;
+			font-size: 30px;
+			font-weight: 400;
+		}
+
+		.box input {
+			width: 356px;
+			height: 50px;
+			border: 1px solid #ccc;
+			padding-left: 15px;
+			margin-bottom: 14px;
+			/* 不要盒子被撑大，自动内减 */
+			box-sizing: border-box;
+		}
+
+		.box button {
+			width: 356px;
+			height: 50px;
+			background-color: #ff4c00;
+			color: #fff;
+			border: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		<h1></h1>
+		<h2>小米账号登录</h2>
+		<input type="text" placeholder="邮箱/手机/小米ID">
+		<input type="text" placeholder="邮箱/手机/小米ID">
+		<button>登录</button>
+	</div>
+</body>
+</html>

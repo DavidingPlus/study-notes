@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    // 函数求和
+    // function getSum(x = 0, y = 0) {
+    //   // x = 1
+    //   // num1 默认的值 undefined
+    //   document.write(x + y)
+    // }
+    // getSum(1, 2)
+    // getSum()  // 0
+    function getSum(start = 0, end = 0) {   // end = 50
+      // 形参  形式上的参数
+      // console.log(end)
+      let sum = 0
+      for (let i = start; i <= end; i++) {
+        sum += i
+      }
+      console.log(sum)
+    }
+    getSum(1, 50)  // 调用的小括号里面 实参 - 实际的参数
+    getSum(100, 200)  // 实参 - 实际的参数
+    getSum()
+  </script>
+</body>
+
+</html>

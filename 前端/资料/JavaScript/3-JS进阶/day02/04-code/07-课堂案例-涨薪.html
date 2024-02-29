@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const arr = [{
+      name: '张三',
+      salary: 10000
+    }, {
+      name: '李四',
+      salary: 10000
+    }, {
+      name: '王五',
+      salary: 20000
+    },
+    ]
+    // 涨薪的钱数  10000 * 0.3 
+    // const money = arr.reduce(function (prev, item) {
+    //   return prev + item.salary * 0.3
+    // }, 0)
+    const money = arr.reduce((prev, item) => prev + item.salary * 0.3, 0)
+    console.log(money)
+  </script>
+</body>
+
+</html>

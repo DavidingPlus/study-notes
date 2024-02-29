@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 创建一个猪 构造函数 
+    function Pig(uname, age) {
+      this.uname = uname
+      this.age = age
+    }
+
+    // console.log(new Pig('佩奇', 6))
+    // console.log(new Pig('乔治', 3))
+    const p = new Pig('佩奇', 6)
+    console.log(p)
+
+    //  const pepa = { uname: '佩奇', age: 6 }
+
+    // const obj = new Object()
+
+    function Goods(name, price, count) {
+      this.name = name
+      this.price = price
+      this.count = count
+      this.sayhi = function () { }
+    }
+    const mi = new Goods('小米', 1999, 20)
+    console.log(mi)
+    const hw = new Goods('华为', 3999, 59)
+    console.log(hw)
+    console.log(mi === hw)
+    mi.name = 'vivo'
+    console.log(mi)
+    console.log(hw)
+    // const date = new Date('2022-4-8')
+    // console.log(date)
+
+    // 静态成员 
+    Goods.num = 10
+    console.log(Goods.num)
+    Goods.sayhi = function () { }
+  </script>
+</body>
+
+</html>

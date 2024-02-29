@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // const pc = ['海尔', '联想', '小米', '方正'];
+    // [hr, lx, mi, fz] = pc
+    // console.log(hr, lx, mi, fz);
+
+
+    // function getValue() {
+    //   return [100, 60]
+    // }
+    // [max, min] = getValue()
+    // console.log(max, min);
+
+
+
+    // const pc = ['海尔', '联想', '小米', '方正']
+    // const [hr, lx, mi, fz] = ['海尔', '联想', '小米', '方正']
+    // console.log(hr)
+    // console.log(lx)
+    // console.log(mi)
+    // console.log(fz)
+
+    // // 请将最大值和最小值函数返回值解构 max 和min 两个变量
+    // function getValue() {
+    //   return [100, 60]
+    // }
+    // const [max, min] = getValue()
+    // console.log(max)
+    // console.log(min)
+    // 1. 变量多， 单元值少 ， undefined
+    // const [a, b, c, d] = [1, 2, 3]
+    // console.log(a) // 1
+    // console.log(b) // 2
+    // console.log(c) // 3
+    // console.log(d) // undefined
+    // 2. 变量少， 单元值多
+    // const [a, b] = [1, 2, 3]
+    // console.log(a) // 1
+    // console.log(b) // 2
+    // 3.  剩余参数 变量少， 单元值多
+    // const [a, b, ...c] = [1, 2, 3, 4]
+    // console.log(a) // 1
+    // console.log(b) // 2
+    // console.log(c) // [3, 4]  真数组
+    // 4.  防止 undefined 传递
+    // const [a = 0, b = 0] = [1, 2]
+    // const [a = 0, b = 0] = []
+    // console.log(a) // 1
+    // console.log(b) // 2
+    // 5.  按需导入赋值
+    // const [a, b, , d] = [1, 2, 3, 4]
+    // console.log(a) // 1
+    // console.log(b) // 2
+    // console.log(d) // 4
+
+    // const arr = [1, 2, [3, 4]]
+    // console.log(arr[0])  // 1
+    // console.log(arr[1])  // 2
+    // console.log(arr[2])  // [3,4]
+    // console.log(arr[2][0])  // 3
+
+    // 多维数组解构
+    // const arr = [1, 2, [3, 4]]
+    // const [a, b, c] = [1, 2, [3, 4]]
+    // console.log(a) // 1
+    // console.log(b) // 2
+    // console.log(c) // [3,4]
+
+
+    const [a, b, [c, d]] = [1, 2, [3, 4]]
+    console.log(a) // 1
+    console.log(b) // 2
+    console.log(c) // 3
+    console.log(d) // 4
+  </script>
+
+
+</body>
+
+</html>

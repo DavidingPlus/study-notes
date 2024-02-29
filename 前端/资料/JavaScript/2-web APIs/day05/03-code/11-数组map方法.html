@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+
+    const arr = ['red', 'blue', 'green']
+    // map 方法也是遍历  处理数据  可以返回一个数组
+    const newArr = arr.map(function (item, i) {
+      // console.log(item)  // 数组元素  'red'
+      // console.log(i)  // 下标
+      return item + '老师'
+    })
+    console.log(newArr)
+
+
+    ['red老师', 'blue老师', 'green老师']
+
+
+    const arr1 = [10, 20, 30]
+    const newArr1 = arr1.map(function (item) {
+      return item + 10
+    })
+    console.log(newArr1)
+
+
+
+
+  </script>
+</body>
+
+</html>

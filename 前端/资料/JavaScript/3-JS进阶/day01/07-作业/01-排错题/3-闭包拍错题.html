@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 第26行打印count = 2 是否正确，如果错误，请说出正确答案
+    function outer() {
+      let count = 1;
+      function g() {
+        count++
+        console.log(count);
+      }
+
+      return g
+    }
+
+    const res = outer()
+    res()
+    res()
+    res()
+    res() // count = 2
+  </script>
+</body>
+</html>

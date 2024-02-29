@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // arr.reduce(function(累计值, 当前元素){}, 起始值)
+    // arr.reduce(function (prev, item) {
+    //   // console.log(11)
+    //   // console.log(prev)
+    //   return prev + item
+    // }, 0)
+    // arr.reduce(function (prev, item) {
+    //   console.log(11)
+    //   // console.log(prev)
+    //   return prev + item
+    // })
+
+    const arr = [1, 2, 3]
+    const re = arr.reduce((prev, item) => prev + item)
+    console.log(re)
+  </script>
+</body>
+
+</html>

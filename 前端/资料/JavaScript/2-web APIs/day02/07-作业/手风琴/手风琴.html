@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>手风琴</title>
+  <style>
+    ul {
+      list-style: none;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      width: 1200px;
+      height: 400px;
+      margin: 50px auto;
+      border: 1px solid red;
+      overflow: hidden;
+    }
+
+    div li {
+      width: 240px;
+      height: 400px;
+      float: left;
+      transition: all 500ms;
+    }
+
+    div ul {
+      width: 1200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="box">
+    <ul>
+      <li>
+        <a href="#">
+          <img src="./images/1.jpg" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="./images/2.jpg" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="./images/3.jpg" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="./images/4.jpg" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="./images/5.jpg" alt="">
+        </a>
+      </li>
+    </ul>
+  </div>
+</body>
+<script>
+  // 获取元素
+  const box = document.querySelectorAll('li');// lis = [li, li, li, li, li]
+  // 分析：
+  // 1、鼠标进入显示图片，
+  // 鼠标进入li，让当前li变成800，其他的li变成100
+  for (let i = 0; i < box.length; i++) {
+
+    box[i].addEventListener('mouseenter', function () {
+      for (let j = 0; j < box.length; j++) {// 事件触发执行，为了让所有li变成240宽的
+        box[j].style.width = '100px';
+      }
+      this.style.width = '800px'
+    })
+
+    box[i].addEventListener('mouseleave', function () {
+      // 让所有的li变成240
+      for (let j = 0; j < box.length; j++) {// 事件触发执行，为了让所有li变成240宽的
+        box[j].style.width = '240px';
+      }
+    })
+
+  }
+
+
+
+
+
+</script>
+
+</html>

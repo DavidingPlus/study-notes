@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .login {
+            width: 356px;
+            /* height: 300px;
+            background-color: pink; */
+            margin: 50px auto;
+            /* 让logo向下移动 */
+            padding-top: 10px;
+        }
+
+        /* 定义一个负责内容居中的类, 将来哪个内容居中调佣 */
+        .center {
+            text-align: center;
+        }
+
+        .login h1 a {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-color: #ff4c00 ;
+        }
+
+        .login h2 {
+            margin-top: 35px;
+            line-height: 1;
+            font-size: 26px;
+            font-weight: 400;
+
+            margin-bottom: 48px;
+        }
+
+        .login input {
+            width: 356px;
+            height: 50px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+            padding-left: 13px;
+        }
+
+        .login button {
+            width: 356px;
+            height: 50px;
+            background-color: #ff4c00;
+            /* border: 0; */
+            border:none;
+            color: #fff;
+            font-size: 14px;
+        }
+    </style>    
+</head>
+<body>
+    <div class="login">
+        <h1 class="center">
+            <a href="#"><img src="./images/mi-logo.png" alt=""></a>
+        </h1>
+
+        <h2 class="center">小米账号登录</h2>
+
+        <!-- 表单域, 未来加了form才有真正的发送的功能 -->
+        <form action="">
+            <input type="text" placeholder="请输入邮箱">
+            <input type="password" placeholder="请输入密码">
+            <button>登录</button>
+        </form>
+    </div>
+</body>
+</html>

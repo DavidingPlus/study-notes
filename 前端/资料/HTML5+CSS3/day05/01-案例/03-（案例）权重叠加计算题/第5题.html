@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>第5题: 全是继承的特殊情况</title>
+	<style>
+		/* 都是继承, 继承里面谁高, 看继承哪个父级, 哪个父级高, 哪个选择器生效 */
+
+		/* 继承 */
+		div p {
+			color:red;
+		} 
+
+		/* 继承 */
+		.father {
+			color:blue;
+		} 
+	</style>
+</head>
+<body>
+	<div class="father">
+		<p class="son"> 
+			<span>文字</span>
+		</p>
+	</div>
+</body>
+</html>

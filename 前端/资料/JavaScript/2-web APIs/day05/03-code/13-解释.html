@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+
+    const arr = [
+      {
+        stuId: 1001,
+        uname: '欧阳霸天',
+        age: 19,
+        gender: '男',
+        salary: '20000',
+        city: '上海',
+      },
+      {
+        stuId: 1001,
+        uname: '欧阳霸天',
+        age: 19,
+        gender: '男',
+        salary: '20000',
+        city: '上海',
+      },
+    ]
+    const array = [1, 2, 3]
+    const newArr = array.map(function (item, i) {
+      // console.log(item)
+      // console.log(i)
+      return item + 10
+    })
+    // [11, 12, 13]
+    console.log(newArr)
+
+    // const obj = {}
+    // obj.stuId = 1
+    // obj.uname = 'pink老师'
+    // console.log(obj)
+    // const obj = {
+    //   uname: uname.value,
+    //   age: age.value,
+    //   gender: gender.value,
+    //   salary: salary.value,
+    //   city: city.value,
+    // }
+    const o = {
+      uname: 'pink'
+    }
+
+    // o.uname  // pink
+    const item = 'age'
+    // o['uname'] // pink
+    // o['age']
+    // o.age = 18
+    o[item] = 18
+    // o.item = 18
+    // 只要item 是变量，我们不能采取 点的形式 采取的事 中括号的形式
+    console.log(o)
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+a {
+  width: 150px;
+  height: 30px;
+  text-decoration: none;
+  display: block;
+  margin: 10px auto;
+  background: goldenrod;
+  color:#fff;
+  border-radius: 15px;
+  line-height: 30px;
+}
+a:hover {
+  background: gold;
+  color:#666;
+}
+body {
+  background: #000;
+  text-align: center;
+}
+.list {
+  width: 500px;
+  margin: 20px auto;
+}
+.list li {
+  float: left;
+  position: relative;
+  transition: all 1s;
+  margin-top: 15px;
+}
+.list li:first-child {
+  margin-left: 0;
+}
+.list li:hover {
+  transform: scale(1.3);
+  z-index: 999;
+}
+.list li img {
+  width: 100px;
+}
+

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 23行返回的就是false，因为是浅拷贝；说法对吗，为什么？
+    const old = {
+      name: '佩奇',
+      address: {
+        province: '北京'
+      }
+    }
+
+    const newObj = {...old}
+    
+    newObj.name = '乔治'
+    newObj.address.province = '美国'
+    console.log(newObj.address === old.address);
+  </script>
+</body>
+</html>

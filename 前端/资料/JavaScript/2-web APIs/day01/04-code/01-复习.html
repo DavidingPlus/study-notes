@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // let obj = {name: 'andy'}
+    // let obj = new Object()
+    // let obj = {}
+    // let num = 10
+    // num.age = 20
+    // console.log(num)
+    // let obj.name = 'andy'
+    let arr = ['red', 'green']
+    // 1.删除 数组.splice(起始位置, 删除个数)
+    // arr.splice(1, 1)
+    // console.log(arr)  // splice 修改原来数组
+    // 2. 添加  数组.splice(起始位置, 删除个数, 添加的元素)
+    // 把 pink 放到 red 和 green中间   
+    // 起始位置 要放到的索引号位置
+    // arr.splice(1, 0, 'pink')
+    arr.splice(1, 0, 'pink', 'hotpink')
+    console.log(arr)
+  </script>
+</body>
+
+</html>

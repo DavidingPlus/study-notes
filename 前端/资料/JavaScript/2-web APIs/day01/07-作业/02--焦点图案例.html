@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ音乐10屏轮播图</title>
+    <style>
+        .img-box {
+            width: 700px;
+            height: 320px;
+            margin: 50px auto 0;
+            background: #000;
+            position: relative;
+        }
+
+        .img-box .tip {
+            width: 700px;
+            height: 53px;
+            line-height: 53px;
+            position: absolute;
+            bottom: 0px;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10;
+        }
+
+        .img-box .tip h3 {
+            width: 82%;
+            margin: 0;
+            margin-right: 20px;
+            padding-left: 20px;
+            color: #98E404;
+            font-size: 28px;
+            float: left;
+            font-weight: 500;
+            font-family: "Microsoft Yahei", Tahoma, Geneva;
+        }
+
+        .img-box .tip a {
+            width: 30px;
+            height: 29px;
+            display: block;
+            float: left;
+            margin-top: 12px;
+            margin-right: 3px;
+        }
+
+        .img-box ul {
+            position: absolute;
+            bottom: 0;
+            right: 30px;
+            list-style: none;
+            z-index: 99;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="img-box">
+        <img class="pic" src="images/b01.jpg" alt="第1张图的描述信息">
+        <div class="tip">
+            <h3 class="text">挑战云歌单，欢迎你来</h3>
+        </div>
+    </div>
+
+    <script>
+        // 数据
+        const data = [
+            {
+                imgSrc: 'images/b01.jpg',
+                title: '挑战云歌单，欢迎你来'
+            },
+            {
+                imgSrc: 'images/b02.jpg',
+                title: '田园日记，上演上京记'
+            },
+            {
+                imgSrc: 'images/b03.jpg',
+                title: '甜蜜攻势再次回归'
+            },
+            {
+                imgSrc: 'images/b04.jpg',
+                title: '我为歌狂，生为歌王'
+            },
+            {
+                imgSrc: 'images/b05.jpg',
+                title: '年度校园主题活动'
+            },
+            {
+                imgSrc: 'images/b06.jpg',
+                title: 'pink老师新歌发布，5月10号正式推出'
+            },
+            {
+                imgSrc: 'images/b07.jpg',
+                title: '动力火车来到西安'
+            },
+            {
+                imgSrc: 'images/b08.jpg',
+                title: '钢铁侠3，英雄镇东风'
+            },
+            {
+                imgSrc: 'images/b09.jpg',
+                title: '我用整颗心来等你'
+            },
+        ]
+
+        // 1. 获取元素  图片  和  h3
+        const pic = document.querySelector('.pic')
+        const text = document.querySelector('.text')
+        // i 记录图片的张数
+        let i = 0
+        // 2.开启定时器
+        setInterval(function () {
+            i++
+            // 无缝衔接
+            if (i >= data.length) {
+                i = 0
+            }
+            // 修改图片的src属性
+            // console.log(data[i].imgSrc)
+            pic.src = data[i].imgSrc
+            // 修改文字内容
+            text.innerHTML = data[i].title
+        }, 1000)
+    </script>
+</body>
+
+</html>

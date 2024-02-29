@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/index.css" />
+  <link rel="stylesheet" href="./css/inputnumber.css" />
+  <title>购物车</title>
+</head>
+
+<body>
+  <div class="app-container" id="app">
+    <!-- 顶部banner -->
+    <div class="banner-box"><img src="http://autumnfish.cn/static/fruit.jpg" alt="" /></div>
+    <!-- 面包屑 -->
+    <div class="breadcrumb">
+      <span>🏠</span>
+      /
+      <span>购物车</span>
+    </div>
+    <!-- 购物车主体 -->
+    <div class="main">
+      <div class="table">
+        <!-- 头部 -->
+        <div class="thead">
+          <div class="tr">
+            <div class="th">选中</div>
+            <div class="th th-pic">图片</div>
+            <div class="th">单价</div>
+            <div class="th num-th">个数</div>
+            <div class="th">小计</div>
+            <div class="th">操作</div>
+          </div>
+        </div>
+        <!-- 身体 -->
+        <div class="tbody">
+
+          <!-- 渲染需要的行 -->
+          <!-- 
+            <div class="tr">
+            <div class="td"><input type="checkbox" checked /></div>
+            <div class="td"><img src="http://autumnfish.cn/static/火龙果.png" alt="" /></div>
+            <div class="td">6</div>
+            <div class="td">
+              <div class="my-input-number">
+                <button class="decrease"> - </button>
+                <span class="my-input">2</span>
+                <button class="increase"> + </button>
+              </div>
+            </div>
+            <div class="td">12</div>
+            <div class="td"><button class="del">删除</button></div>
+          </div> 
+        -->
+
+        </div>
+      </div>
+      <!-- 底部 -->
+      <div class="bottom">
+        <!-- 全选 -->
+        <label class="check-all">
+          <input type="checkbox" />
+          全选
+        </label>
+        <div class="right-box">
+          <!-- 所有商品总价 -->
+          <span class="price-box">总价&nbsp;&nbsp;:&nbsp;&nbsp;¥&nbsp;<span class="price">24</span></span>
+          <!-- 结算按钮 -->
+          <button class="button pay">结算( 6 )</button>
+        </div>
+      </div>
+    </div>
+    <!-- 空车 -->
+    <div class="empty" style="display: none;">🛒空空如也</div>
+  </div>
+  <script>
+    const dataArr = [
+      {
+        id: 1,
+        icon: 'http://autumnfish.cn/static/火龙果.png',
+        isChecked: true,
+        num: 2,
+        price: 6,
+      },
+      {
+        id: 2,
+        icon: 'http://autumnfish.cn/static/荔枝.png',
+        isChecked: false,
+        num: 7,
+        price: 20,
+      },
+      {
+        id: 3,
+        icon: 'http://autumnfish.cn/static/榴莲.png',
+        isChecked: false,
+        num: 3,
+        price: 40,
+      },
+      {
+        id: 4,
+        icon: 'http://autumnfish.cn/static/鸭梨.png',
+        isChecked: true,
+        num: 10,
+        price: 3,
+      },
+      {
+        id: 5,
+        icon: 'http://autumnfish.cn/static/樱桃.png',
+        isChecked: false,
+        num: 20,
+        price: 34,
+      },
+    ]
+
+    // 1. 渲染业务
+    const tbody = document.querySelector('.tbody')
+    const price = document.querySelector('.price')
+    const checkAll = document.querySelector('.check-all input')
+
+    function render() {
+      let total = 0
+      const strArr = dataArr.map(function (ele, index) {
+        return `
+            <div class="tr" data-id="${index}">
+              <div class="td"><input type="checkbox" ${ele.isChecked ? 'checked' : ''} /></div>
+              <div class="td"><img src="${ele.icon}" alt="" /></div>
+              <div class="td">${ele.price}</div>
+              <div class="td">
+                <div class="my-input-number">
+                  <button class="decrease"> - </button>
+                  <span class="my-input">${ele.num}</span>
+                  <button class="increase"> + </button>
+                </div>
+              </div>
+              <div class="td">${ele.price * ele.num}</div>
+              <div class="td"><button class="button del">删除</button></div>
+          </div> 
+        `
+      })
+      tbody.innerHTML = strArr.join('')
+
+      // 全选按钮设置
+      checkAll.checked = dataArr.every(ele => ele.isChecked === true)
+      // 总价模块：只选择勾选的商品
+      const newArr = dataArr.filter(ele => ele.isChecked)
+
+      const totalPrice = newArr.reduce((prev, item) => prev += item.num * item.price, 0)
+      document.querySelector('.price-box .price').innerHTML = totalPrice.toFixed(2)
+      const totalNum = newArr.reduce((prev, item) => prev += item.num, 0)
+      document.querySelector('.pay').innerHTML = `结算(${totalNum})`
+      // 空空购物车是否显示
+      const empty = document.querySelector('.empty')
+      empty.style.display = dataArr.length === 0 ? 'block' : 'none'
+    }
+    render()
+
+
+    // 2. 事件委托
+    tbody.addEventListener('click', function (e) {
+      const id = e.target.parentNode.parentNode.dataset.id
+      // 删除业务
+      if (e.target.className === 'del') {
+        dataArr.splice(id, 1)
+        //渲染业务
+        render()
+      }
+      // 小复选框业务是否全选开控制总的复选框
+      if (e.target.tagName === 'INPUT') {
+        // alert(11)
+        dataArr[id].isChecked = e.target.checked
+        //渲染业务
+        render()
+      }
+
+      // 增加数量业务
+      if (e.target.className === "increase") {
+        const idNum = e.target.parentNode.parentNode.parentNode.dataset.id
+        dataArr[idNum].num++
+        render()
+      }
+      // 删除数量业务
+      if (e.target.className === "decrease") {
+        const idNum = e.target.parentNode.parentNode.parentNode.dataset.id
+        if (dataArr[idNum].num <= 1) {
+          dataArr[idNum].num = 1
+        } else {
+      dataArr[idNum].num--  
+          render()
+        }
+      }
+    })
+
+    // 3. 全选反选点击
+    // 3.1 点击全选修改数组所有选中状态为true
+    checkAll.addEventListener('click', function () {
+      dataArr.forEach(ele => ele.isChecked = this.checked)
+      // console.log(dataArr)
+      // 渲染页面
+      render()
+    })
+
+
+
+
+  </script>
+</body>
+
+</html>

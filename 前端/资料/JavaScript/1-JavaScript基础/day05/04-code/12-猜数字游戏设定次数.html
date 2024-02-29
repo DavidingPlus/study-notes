@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 1. 随机生成一个数字 1~10
+    // 取到 N ~ M 的随机整数
+    function getRandom(N, M) {
+      return Math.floor(Math.random() * (M - N + 1)) + N
+    }
+    let random = getRandom(1, 10)
+    // 2. 设定三次  三次没猜对就直接退出
+    let flag = true  // 开关变量 
+    for (let i = 1; i <= 3; i++) {
+      let num = +prompt('请输入1~10之间的一个数字:')
+      if (num > random) {
+        alert('您猜大了，继续')
+      } else if (num < random) {
+        alert('您猜小了，继续')
+      } else {
+        flag = false
+        alert('猜对了，真厉害')
+        break
+      }
+    }
+    // 写到for的外面来
+    if (flag) {
+      alert('次数已经用完')
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 下面的ldh不能访问sing方法，说法对吗？
+    function Star(name) {
+      this.name = name
+      this.song = function() {
+        console.log('唱歌');
+      }
+    }
+
+    Star.prototype.sing = function() {
+      console.log('唱歌');
+    }
+
+    const ldh = new Star('刘德华')
+  </script>
+</body>
+</html>

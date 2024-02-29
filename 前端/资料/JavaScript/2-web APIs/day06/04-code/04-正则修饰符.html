@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    console.log(/^java$/.test('java'))
+    console.log(/^java$/i.test('JAVA'))
+    console.log(/^java$/i.test('Java'))
+    const str = 'java是一门编程语言， 学完JAVA工资很高'
+    // const re = str.replace(/java|JAVA/g, '前端')
+    const re = str.replace(/java/ig, '前端')
+    console.log(re)  // 前端是一门编程语言， 学完前端工资很高
+  </script>
+</body>
+
+</html>

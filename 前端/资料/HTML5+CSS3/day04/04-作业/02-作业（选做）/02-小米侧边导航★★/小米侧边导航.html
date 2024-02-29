@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .box {
+      width: 234px;
+      height: 420px;
+      /* background-color: pink; */
+    }
+
+    .box a {
+      /* 需要a标签这个行内元素设置宽高，需要转换成：块级元素或者行内块元素 */
+      display: block;
+      width: 234px;
+      height: 42px;
+      background-color: #2c505f;
+      color: #fff;
+      font-size: 14px;
+      /* 去除默认的下划线 */
+      text-decoration: none;
+      /* 每个a标签文字首行缩进 */
+      text-indent: 30px;
+      /* a标签中的文字垂直居中 */
+      line-height: 42px;
+    }
+
+    /* 鼠标移入之后，让a底色变红 */
+    .box a:hover {
+      background-color: red;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="box">
+    <!-- 一般导航点击能跳转，所以一般需要使用a标签完成 -->
+    <a href="#">手机 电话卡</a>
+    <a href="#">电视 盒子</a>
+    <a href="#">笔记本 显示器</a>
+    <a href="#">家电 插线板</a>
+    <a href="#">出行 穿戴</a>
+    <a href="#">智能 路由器</a>
+    <a href="#">电源 配件</a>
+    <a href="#">健康 儿童</a>
+    <a href="#">耳机 音箱</a>
+    <a href="#">生活 箱包</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>第4题：权重相同此时比较层叠性</title>
+	<style>
+		/* (0, 0, 2, 1) */
+		.c1 .c2 div { 
+			color: blue;
+		}
+		
+		/* (0, 1, 0, 1) */
+		div #box3 {
+			color:green;
+		}
+		
+		/* (0, 1, 0, 1) */
+		#box1 div {
+			color:yellow;
+		}
+	</style>
+</head>
+<body>
+	<div id="box1" class="c1">
+		<div id="box2" class="c2">
+			<div id="box3" class="c3">
+				这行文本是什么颜色的？
+			</div>
+		</div>
+	</div>
+</body>
+</html>

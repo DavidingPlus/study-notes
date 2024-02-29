@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>js基础-排错题-题目</title>
+  </head>
+  <body>
+    <!-- 请找出下面“每个script标签”中的代码的错误(可以通过控制台调试)-->
+    <!-- 1. JS代码书写位置
+    script标签一旦设置的src属性，则里面代码不运行    
+    -->
+    <!-- <script src="./02.js"> -->
+      <!-- alert('弹框出现') -->
+    <!-- </script> -->
+    <!-- 改为 -->
+    <script>
+      alert('弹框出现')
+    </script>
+
+    <!-- 2. 输出语句
+    请输入您的姓名 是字符内容，需要有引号包裹，否则会被当成变量
+    -->
+    <script>
+      //   prompt(请输入您的姓名)
+    </script>
+    <!-- 改为 -->
+    <script>
+      prompt('请输入您的姓名')
+    </script>
+
+    <!-- 3. 变量 -->
+    <script>
+      // 使用let 不允许重复声明同一个变量多次
+      let age = 18
+      //   let age = 19
+      let ageNew = 19
+    </script>
+
+    <script>
+      // let 不能在声明变量之前先使用变量
+      //   console.log(age)
+      //   let age1 = 18
+      let age1 = 18
+      console.log(age1)
+    </script>
+
+    <!-- 3. 字符串 -->
+    <script>
+      // 张三 是字符串，需要使用引号包裹
+      //   let username = 张三
+      let username = '张三'
+    </script>
+
+    <script>
+      // 引号不能这样混搭  引号是成对出现
+      //   let uname = '张三"
+      let uname1 = '张三'
+      let uname2 = '张三'
+      let uname3 = `张三`
+    </script>
+
+    <!-- 4. 数组 -->
+    <script>
+      // 需求：打印 "星期六"
+      let arr4 = [
+        '星期一',
+        '星期二',
+        '星期三',
+        '星期四',
+        '星期五',
+        '星期六',
+        '星期日',
+      ]
+      //   数组的下标是从0开始的，所以星期六的对应下标是5
+      //   console.log(arr[6])
+      console.log(arr4[5])
+    </script>
+
+    <!-- 5. 自增 -->
+    <script>
+      // 让num5自身增加1
+      let num5 = 10
+      //   num + 1自增后的结果需要重新赋值修改num。  以上缺少对num的重新赋值
+      //   num + 1
+      num5 = num5 + 1
+    </script>
+
+    <!-- 6.  switch分支 -->
+    <script>
+      // 需求
+      // 如果用户输入的是1,则弹窗提示"数字1"
+      // 如果用户输入的是2,则弹窗提示"数字2"
+      // 如果用户输入的是3,则弹窗提示"数字3"
+      // 如果用户输入的不是1或者2或者3,则弹窗提示"非1、2、3的数字"
+      //   let num6 = prompt('请输入一个数字')
+      //   switch (num6) {
+      //     case 1:
+      //       alert('数字1')
+      //     case 2:
+      //       alert('数字2')
+      //     case 3:
+      //       alert('数字3')
+      //     default:
+      //       alert('非1、2、3的数字')
+      //   }
+      // 1. switch语句中缺少 break，会有穿透问题
+      // 2. switch是进行全等比较，num变量存的是字符串类型数据，和case的值1 2 进行比较，是不成立的。
+      let num6 = +prompt('请输入一个数字')
+      switch (num6) {
+        case 1:
+          alert('用户您输入的是数字1')
+          break
+        case 2:
+          alert('用户您输入的是数字2')
+          break
+        case 3:
+          alert('用户您输入的是数字3')
+          break
+        default:
+          alert('用户您输入的是非1、2、3的数字')
+          break
+      }
+    </script>
+
+    <!-- 7. while循环 -->
+    <script>
+      // 运行下面代码并且找出错误并解决
+      //   let num7 = 1
+      //   while (num7 <= 5) {
+      //     document.write(`月薪过万不是梦<br/>`)
+      //   }
+      // 1. 以上代码缺少 num7变量的变化量 num7++
+      // 2. 会导致 num7一直都是1
+      // 3. while条件一直是满足的情况
+      // 4. while是个死循环
+      let num7 = 1
+      while (num7 <= 5) {
+        document.write(`月薪过万不是梦<br/>`)
+        num7++
+      }
+    </script>
+
+    <!-- 8. for循环 -->
+    <script>
+      // 找出for循环的语法错误
+      //   for (let i = 1; i <= 3; ) {
+      //     document.write(`月薪过万不是梦 <br/>`)
+      //   }
+      //   for循环中缺少 i变量变化量  i++
+      for (let i = 1; i <= 3; i++) {
+        document.write(`月薪过万不是梦 <br/>`)
+      }
+    </script>
+
+    <!-- 9. 遍历数组 -->
+    <script>
+      // 需求：取出数组中的每一项（共7项）并且打印
+      //   let arr = ['马超', '赵云', '张飞', '关羽', '黄忠', '小黑', '小红']
+      //   for (let i = 1; i < arr.length; i++) {
+      //     console.log(arr[i])
+      //   }
+
+      //  数组的下标从0开始，所以for循环遍历数组，i需要从0开始
+      let arr9 = ['马超', '赵云', '张飞', '关羽', '黄忠', '小黑', '小红']
+
+      for (let i = 0; i < arr9.length; i++) {
+        console.log(arr9[i])
+      }
+    </script>
+
+    <!-- 10. 修改数组的项 -->
+    <script>
+      // 需求：将数组中的“小白”修改成 “小灰灰”
+      let arr10 = ['小黑', '小白', '小红']
+      // 原本arr10变量存数组，现在存字符串小灰灰
+      // arr10 = '小灰灰'
+      // 语法： 数组名[下标] = 新值
+      arr10[1] = '小灰灰'
+    </script>
+
+    <!-- 11. 操作数组 -->
+    <script>
+      // 需求：在数组arr的最后面添加 blue
+      let arr11 = ['red', 'green']
+      // 数组的push是个方法，需要加小括号来使用, 而不是赋值操作
+      // arr11.push = 'blue'
+      // 语法：数组.push(数据1, 数据2, ...)
+      arr11.push('blue')
+    </script>
+
+    <!-- 12. 对象 -->
+    <script>
+      // phone 手机对象
+      // 找出下面代码的语法错误
+      //   let phone = {
+      //       size = 6.1
+      //       play = function () {
+      //           console.log('走起，吃鸡')
+      //       }
+      //   }
+      //  对象是有属性和方法组成，属性名和属性值，
+      // 方法名和函数之间都是冒号隔开，并且属性和方法之间需要有逗号隔开
+      let phone = {
+        size: 6.1,
+        play: function () {
+          console.log('走起，吃鸡')
+        },
+      }
+    </script>
+
+    <!-- 13. 遍历对象 -->
+    <script>
+      // 遍历obj对象，取出对象的属性名和属性值并且打印
+      let obj = {
+        uname: '小明',
+        age: 18,
+        sex: '男',
+        height: 200,
+      }
+
+      //   for (let k in obj) {
+      //     console.log(k)
+      //     console.log(obj.k)
+      //   }
+      // 在for...in 语法中，对象的属性值需要通过 中括号语法才能取出对象的属性值
+      for (let k in obj) {
+        console.log(k)
+        console.log(obj[k])
+      }
+    </script>
+  </body>
+</html>

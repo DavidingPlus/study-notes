@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>练习 - 网页时钟</title>
+  <style>
+    body {
+      padding: 40px;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      margin: 10px 0;
+      line-height: 26px;
+      display: flex;
+    }
+
+    input,
+    button {
+      padding: 0;
+      margin-left: 10px;
+      display: block;
+    }
+
+    input {
+      width: 190px;
+      outline: none;
+    }
+
+    button {
+      width: 120px;
+    }
+
+    .verify {
+      width: 60px;
+    }
+  </style>
+</head>
+
+<body>
+  <ul>
+    <li>
+      手机号:
+      <input type="text">
+    </li>
+    <li>
+      验证码:
+      <input type="text" class="verify">
+      <button id="btn">获取验证码</button>
+    </li>
+  </ul>
+
+  <script>
+    // 1. 获取元素 按钮
+    const btn = document.querySelector('#btn')
+    // 2. 给按钮注册点击事件
+    btn.addEventListener('click', function () {
+      // 3. 点击之后，禁用按钮，同时开启倒计时
+      this.disabled = true
+      // 控制显示数字的
+      let i = 5
+      btn.innerHTML = `${i}秒之后重新获取`
+      let timer = setInterval(function () {
+        i--
+        // 在定时器里面不能用this，this执行的window
+        btn.innerHTML = `${i}秒之后重新获取`
+
+        // 4. 如果时间为0，则清除定时器，并且更改文字
+        if (i < 0) {
+          clearInterval(timer)
+
+          btn.innerHTML = '获取验证码'
+          btn.disabled = false
+        }
+      }, 1000)
+
+    })
+
+
+
+  </script>
+</body>
+
+</html>

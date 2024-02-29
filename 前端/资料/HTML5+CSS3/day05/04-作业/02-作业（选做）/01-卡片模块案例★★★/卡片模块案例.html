@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* 清除标签默认的margin和padding */
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f4f5f9;
+    }
+
+    .box {
+      /* 1、宽高 */
+      width: 228px;
+      height: 270px;
+      /* 2、背景颜色 */
+      background-color: #fff;
+      margin: 100px auto;
+    }
+
+    .box .product {
+      /* width: 228px; */
+      width: 100%;
+    }
+
+    .box h3 {
+      height: 52px;
+      padding-left: 24px;
+      padding-right: 20px;
+      margin-top: 25px;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .box p {
+      margin-left: 24px;
+      font-size: 12px;
+      color: #929292;
+    }
+
+    .box p span {
+      color: #f77321;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- 布局流程：从上往下、从外往内 -->
+  <div class="box">
+    <img src="./images/product.png" alt="" class="product">
+    <h3>Android网络图片加载框架详解</h3>
+    <p><span>高级</span> • 1125人在学习</p>
+  </div>
+</body>
+</html>

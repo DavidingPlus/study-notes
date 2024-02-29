@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 定位盒子居中: left和top设置50%, 把盒子移动到浏览器的中间(盒子的左和顶到浏览器的中间) */
+        /* 把盒子向左和上移动宽度和高度的一半 */
+        .box {
+            position: absolute;
+            left: 50%;
+            /* margin-left: -200px; */
+            /* transform: translate(-50%); */
+
+            top: 50%;
+            /* margin-top: -150px; */
+            transform: translate(-50%, -50%);
+
+            /* margin: 0 auto; */
+            width: 400px;
+            height: 300px;
+            background-color: pink;
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+</body>
+</html>

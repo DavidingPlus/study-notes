@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <input type="button" value="切换" id="btn"><br>
+    <img src="images/1.jpg" width="300" id="img">
+
+    <script>
+
+        const arr = ["images/1.jpg", "images/01.gif", "images/02.gif", "images/2.jpg", "images/3.jpg"]
+        function getRandom(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
+        // 1. 获取元素
+        const btn = document.querySelector('#btn')
+        const pic = document.querySelector('#img')
+        // 2. 注册事件，点击随机更换图片
+        btn.addEventListener('click', function () {
+            let random = getRandom(0, arr.length - 1)
+            // src 是图片的常用属性， 千万不要加style 他不是样式
+            pic.src = arr[random]
+        })
+    </script>
+</body>
+
+</html>

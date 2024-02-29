@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box {
+            color: orange;
+        }
+
+        .box {
+            color: blue;
+        }
+
+        div {
+            color: green !important;
+        }
+
+        body {
+            color: red;
+        }
+
+        /* !important不要给继承的添加, 自己有样式无法继承父级样式 */
+    </style>
+</head>
+<body>
+    <!-- 意义: 当一个标签使用了多个选择器, 样式冲突的时候, 到底谁生效 -->
+    <div class="box" id="box" style="color: pink;">测试优先级</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // constructor  单词 构造函数
+
+    // Star.prototype.sing = function () {
+    //   console.log('唱歌')
+    // }
+    // Star.prototype.dance = function () {
+    //   console.log('跳舞')
+    // }
+    function Star() {
+    }
+    // console.log(Star.prototype)
+    Star.prototype = {
+      // 从新指回创造这个原型对象的 构造函数
+      constructor: Star,
+      sing: function () {
+        console.log('唱歌')
+      },
+      dance: function () {
+        console.log('跳舞')
+      },
+    }
+    console.log(Star.prototype)
+    // console.log(Star.prototype.constructor)
+
+    // const ldh = new Star()
+    // console.log(Star.prototype.constructor === Star)
+  </script>
+</body>
+
+</html>

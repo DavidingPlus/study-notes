@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 3000px;
+        }
+
+        .aside {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .item {
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            padding: 0 10px;
+            cursor: pointer;
+        }
+
+        .active {
+            background-color: red;
+            color: #fff;
+        }
+
+        .content {
+            width: 660px;
+            margin: 400px auto;
+        }
+
+        .neirong {
+            height: 300px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .content1 {
+            background-color: red;
+        }
+
+        .content2 {
+            background-color: blue;
+        }
+
+        .content3 {
+            background-color: orange;
+        }
+
+        .content4 {
+            background-color: yellowgreen;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="aside">
+        <div class="item active">男装/女装</div>
+        <div class="item">儿童服装/游乐园</div>
+        <div class="item">电子产品</div>
+        <div class="item">电影/美食</div>
+    </div>
+
+    <div class="content">
+        <div class="neirong content1">男装/女装</div>
+        <div class="neirong content2">儿童服装/游乐园</div>
+        <div class="neirong content3">电子产品</div>
+        <div class="neirong content4">电影/美食</div>
+    </div>
+
+    <script>
+
+        // 1. 获元取素  
+        const items = document.querySelectorAll('.item')
+        // 内容的盒子获取
+        const neirongs = document.querySelectorAll('.neirong')
+        // 2. 左侧aside 模块 点击谁，谁高亮
+        for (let i = 0; i < items.length; i++) {
+            items[i].addEventListener('click', function () {
+                // 找到上一个active 移除类
+                document.querySelector('.aside .active').classList.remove('active')
+                // 点击谁谁添加类
+                this.classList.add('active')
+                // 3. 右侧内容跟随走动  让页面滚动到对应的offsetTop值位置
+                // console.log(neirongs[i].offsetTop) 不用给单位
+                document.documentElement.scrollTop = neirongs[i].offsetTop
+            })
+        }
+
+    </script>
+</body>
+
+</html>

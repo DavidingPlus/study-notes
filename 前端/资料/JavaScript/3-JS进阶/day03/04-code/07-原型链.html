@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // function Objetc() {}
+    console.log(Object.prototype)
+    console.log(Object.prototype.__proto__)
+
+    function Person() {
+
+    }
+    const ldh = new Person()
+    // console.log(ldh.__proto__ === Person.prototype)
+    // console.log(Person.prototype.__proto__ === Object.prototype)
+    console.log(ldh instanceof Person)
+    console.log(ldh instanceof Object)
+    console.log(ldh instanceof Array)
+    console.log([1, 2, 3] instanceof Array)
+    console.log(Array instanceof Object)
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 找出下面23行的打印 a=10 是否有问题，如果有问题说出原因
+    let a = 10;
+    let b = 20;
+
+    function fn1() {
+      function fn2() {
+        a = 200;
+      }
+      fn2()
+    }
+
+    console.log(a);  // 10
+    fn1()
+  </script>
+</body>
+</html>

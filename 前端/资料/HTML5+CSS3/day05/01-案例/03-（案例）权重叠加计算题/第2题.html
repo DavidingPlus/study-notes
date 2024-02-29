@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>第2题: 标签选择器选择一类</title>
+	<style>
+		/* (行内, id, 类, 标签) */
+		/* !important 最高 */
+		/* 继承: 最低 */
+	
+		/* 2 */
+	  div div {
+			color: skyblue;
+		} 
+
+		/* 1 */
+		div {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<div>
+			<div>
+				这行文本是什么颜色？
+			</div>
+		</div>
+	</div>
+</body>
+</html>

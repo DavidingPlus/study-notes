@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小米密码框</title>
+  <style>
+    .mi-form {
+      display: table;
+      width: 356px;
+      height: 60px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0);
+      background-color: #f9f9f9;
+    }
+
+    .mi-control {
+      position: relative;
+      display: table-cell;
+      width: 294px;
+    }
+
+    .mi-input {
+      box-sizing: border-box;
+      width: 100%;
+      height: 60px;
+      border: 0;
+      padding: 30px 20px 10px;
+      outline: none;
+      background: none;
+      appearance: none;
+      font-size: 17px;
+      font-family: "Noto Color Emoji";
+      color: #333;
+      line-height: 20px;
+    }
+
+
+    .mi-control label {
+      user-select: none;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      height: 20px;
+      font-weight: 400;
+      font-size: 17px;
+      color: rgba(0, 0, 0, .4);
+      line-height: 20px;
+      transition: top .15s cubic-bezier(.4, 0, .2, 1), font-size .15s cubic-bezier(.4, 0, .2, 1), color .15s cubic-bezier(.4, 0, .2, 1);
+      max-width: calc(100% - 20px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mi-control label.above {
+      top: 6px;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .mi-password {
+      display: table-cell;
+      width: 60px;
+      color: rgba(0, 0, 0, .85);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .mi-password svg {
+      width: 20px;
+      height: 20px;
+      margin: 10px 20px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mi-form">
+    <div class="mi-control">
+      <input type="password" class="mi-input">
+      <label>密码</label>
+    </div>
+    <div class="mi-password">
+      <svg>o</svg>
+    </div>
+  </div>
+  <script>
+
+  </script>
+</body>
+
+</html>

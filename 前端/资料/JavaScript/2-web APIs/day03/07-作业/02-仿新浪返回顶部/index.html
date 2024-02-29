@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .content {
+            width: 1000px;
+            height: 3000px;
+            background-color: pink;
+            margin: 0 auto;
+        }
+
+        .backtop {
+            display: none;
+            width: 50px;
+            left: 50%;
+            margin: 0 0 0 505px;
+            position: fixed;
+            bottom: 60px;
+            z-index: 100;
+        }
+
+        .backtop a {
+            height: 50px;
+            width: 50px;
+            background: url(./images/bg2.png) 0 -600px no-repeat;
+            opacity: 0.35;
+            overflow: hidden;
+            display: block;
+            text-indent: -999em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content"></div>
+    <div class="backtop">
+        <img src="./images/close2.png" alt="">
+        <a href="javascript:;"></a>
+    </div>
+    <script>
+        // 0 获取元素
+        let backtop = document.querySelector('.backtop')
+        // 一. 页面滚动事件
+        window.addEventListener('scroll', function () {
+            // 2. 页面检测滚动的距离
+            // console.log(document.documentElement.scrollTop)
+            let num = document.documentElement.scrollTop
+            // 3. 进行判断显示和隐藏
+            if (num >= 500) {
+                //显示那个元素
+                backtop.style.display = 'block'
+            } else {
+                // 否则隐藏元素
+                backtop.style.display = 'none'
+
+            }
+
+        })
+
+
+        // 二、点击链接返回顶部 backtop.children[1]
+        backtop.children[1].addEventListener('click', function () {
+            // 返回顶部
+            // scrollTop 可读写
+            document.documentElement.scrollTop = 0
+        })
+    </script>
+</body>
+
+</html>

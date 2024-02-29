@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* 去除掉标签默认的margin和padding */
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    
+    .box {
+      width: 1226px;
+      height: 614px;
+      /* background-color: pink; */
+      margin: 100px auto;
+    }
+
+    .left {
+      float: left;
+      width: 234px;
+      height: 614px;
+      background-color: #800080;
+    }
+
+    .right {
+      float: right;
+      width: 978px;
+      height: 614px;
+      /* background-color: yellow; */
+    }
+
+    .item {
+      float: left;
+      width: 234px;
+      height: 300px;
+      background-color: #87ceeb;
+      margin-right: 14px;
+      margin-bottom: 14px;
+    }
+
+    /* 找到的是 第 4 和第 8个 4倍数  4n */
+    .item:nth-child(4n) {
+      /* background-color: red; */
+      margin-right: 0;
+    }
+
+    /* 找到从第5个开始往后的所有个子元素 */
+    .item:nth-child(n+5) {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- 布局流程：从上往下，从外往内 -->
+  <div class="box">
+    <div class="left"></div>
+    <div class="right">
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+      <div class="item"></div>
+    </div>
+  </div>
+</body>
+</html>

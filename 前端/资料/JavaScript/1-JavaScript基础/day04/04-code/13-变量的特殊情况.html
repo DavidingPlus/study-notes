@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // let num = 20
+    // function fn() {
+    //   num = 10  // 全局变量来看  强烈不允许
+    // }
+    // fn()
+    // console.log(num)
+
+    // function fun(x, y) {
+    //   // 形参可以看做是函数的局部变量
+    //   console.log(x)
+    // }
+    // fun(1, 2)
+    // console.log(x)  // 错误的
+
+    // let num = 10
+    function fn() {
+      // let num = 20
+      function fun() {
+        // let num = 30
+        console.log(num)
+      }
+      fun()
+    }
+    fn()
+  </script>
+</body>
+
+</html>

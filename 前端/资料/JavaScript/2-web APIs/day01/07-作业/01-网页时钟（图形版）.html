@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>练习 - 网页时钟</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .clock {
+      width: 600px;
+      height: 600px;
+      background: url(./images/clock.jpg) no-repeat;
+      margin: 50px auto 0;
+      position: relative;
+    }
+
+    .hh,
+    .mm,
+    .ss {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background: url(./images/hour.png) no-repeat center;
+    }
+
+    .mm {
+      background-image: url(./images/minute.png);
+      transform: rotate(270deg);
+    }
+
+    .ss {
+      background-image: url(./images/second.png);
+      transform: rotate(0deg);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="clock">
+    <div class="hh" id="h"></div>
+    <div class="mm" id="m"></div>
+    <div class="ss" id="s"></div>
+  </div>
+  <script>
+    /*
+      知识点：
+        1. 创建日期对象 获取当前时间
+        2. 多次定时器，重复获取时间，让指针动起来
+    */
+
+    // 查找页面的元素，定时器调用的函数外面，查找一次即可
+    const second = document.querySelector('.ss');
+    // 封装时钟效果，定时器定时调用的函数
+    // 通过定时器每隔一秒钟再调用一次。
+    let du = 0
+    setInterval(function () {
+      du += 6
+      if (du >= 360) {
+        du = 0
+      }
+      second.style.transform = `rotate(${du}deg)`;
+    }, 1000);
+  </script>
+</body>
+
+</html>

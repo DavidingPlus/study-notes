@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>购物车</title>
+	<style>
+		/* 因为a是行内元素，直接设置宽高不生效，我们需要将a的显示模式转化 */
+		.cart {
+			display: block;
+			width: 67px;
+			height: 31px;
+			background-color: pink;
+			background-image: url("images/shopcar_01.png");
+		}
+
+		.cart:hover {
+			background-image: url("images/shopcar_02.png");
+		}
+	</style>
+</head>
+<body>
+	<a href="#" class="cart"></a>
+</body>
+</html>

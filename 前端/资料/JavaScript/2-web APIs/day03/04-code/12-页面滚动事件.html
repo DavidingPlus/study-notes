@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      padding-top: 100px;
+      height: 3000px;
+    }
+
+    div {
+      display: none;
+      margin: 100px;
+      overflow: scroll;
+      width: 200px;
+      height: 200px;
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+    我里面有很多很多的文字
+
+  </div>
+  <script>
+    const div = document.querySelector('div')
+    // 页面滚动事件
+    window.addEventListener('scroll', function () {
+      // console.log('我滚了')
+      // 我想知道页面到底滚动了多少像素， 被卷去了多少  scrollTop
+      // 获取html元素写法  
+      // document.documentElement  
+      // console.log(document.documentElement.scrollTop)
+      const n = document.documentElement.scrollTop
+      if (n >= 100) {
+        div.style.display = 'block'
+      } else {
+        div.style.display = 'none'
+      }
+    })
+    // const div = document.querySelector('div')
+    // div.addEventListener('scroll', function () {
+    //   // console.log(111)
+    //   // scrollTop 被卷去的头部
+    //   console.log(div.scrollTop)
+    // })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 21行代码打印20 20 20，是否正确，为什么
+    const obj = { count: 10 }
+    function fn(x) {
+      return this.count + x
+    }
+
+    const res1 = fn.call(obj, 10)  
+    const res2 = fn.apply(obj, [10]) 
+    const res3 = fn.bind(obj, 10) 
+
+    console.log(res1, res2, res3);
+  </script>
+</body>
+</html>

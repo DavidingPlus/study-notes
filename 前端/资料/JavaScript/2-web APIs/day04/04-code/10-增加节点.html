@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <ul>
+    <li>我是老大</li>
+  </ul>
+  <script>
+    // // 1. 创建节点
+    // const div = document.createElement('div')
+    // // console.log(div)
+    // 2. 追加节点  作为最后一个子元素
+    // document.body.appendChild(div)
+    const ul = document.querySelector('ul')
+    const li = document.createElement('li')
+    li.innerHTML = '我是li'
+    // ul.appendChild(li)
+    // ul.children
+    // 3. 追加节点
+    // insertBefore(插入的元素, 放到哪个元素的前面)
+    ul.insertBefore(li, ul.children[0])
+  </script>
+</body>
+
+</html>

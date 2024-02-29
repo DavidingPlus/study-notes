@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* 上一行出错, 下一行会受影响 */
+    /* } */
+
+    .father .son .sun {
+      color: orange;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="father">
+    <div class="son">
+      <div class="sun">孙子</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/hero.css">
+</head>
+
+<body>
+	<a href="javascript:" id="create">创建英雄列表</a>
+	<ul class="list">
+
+	</ul>
+	<!-- <script src="js/hero.js"></script> -->
+	<script type="text/javascript">
+		// 后的的数据
+		// datas = [{},{},{}]
+		let datas = [
+			{ name: '司马懿', imgSrc: '01.jpg' },
+			{ name: '女娲', imgSrc: '02.jpg' },
+			{ name: '百里守约', imgSrc: '03.jpg' },
+			{ name: '亚瑟', imgSrc: '04.jpg' },
+			{ name: '虞姬', imgSrc: '05.jpg' },
+			{ name: '张良', imgSrc: '06.jpg' },
+			{ name: '安其拉', imgSrc: '07.jpg' },
+			{ name: '李白', imgSrc: '08.jpg' },
+			{ name: '阿珂', imgSrc: '09.jpg' },
+			{ name: '墨子', imgSrc: '10.jpg' },
+			{ name: '鲁班', imgSrc: '11.jpg' },
+			{ name: '嬴政', imgSrc: '12.jpg' },
+			{ name: '孙膑', imgSrc: '13.jpg' },
+			{ name: '周瑜', imgSrc: '14.jpg' },
+			{ name: 'XXX', imgSrc: '15.jpg' },
+			{ name: 'XXX', imgSrc: '16.jpg' },
+			{ name: 'XXX', imgSrc: '17.jpg' },
+			{ name: 'XXX', imgSrc: '18.jpg' },
+			{ name: 'XXX', imgSrc: '19.jpg' },
+			{ name: 'XXX', imgSrc: '20.jpg' }
+		];
+		// 功能:点击创建元素
+		// 点击a元素,创建新的li放到ul中
+		// 创建li,里面还有img,还有src地址,title属性
+		// 一个图片对应一个li,一个图片的地址和title实际上就是我们datas数组里面的一个对象
+		// 获取元素
+		let link = document.getElementById('create');
+		let list = document.querySelector('.list');
+
+		// 添加事件操作
+		link.addEventListener('click', function () {
+			// 几张图就要有几个li, 数组长度有多少,就是有几张图
+			// 遍历数组
+			for (let i = 0; i < datas.length; i++) {// i = 2;
+				// 创建li
+				let newLi = document.createElement('li');
+				// 放到页面上
+				list.appendChild(newLi);
+
+				// 继续创建img
+				let img = document.createElement('img');
+				// 放到li里面
+				newLi.appendChild(img);
+				// <li><img src="uploads/heros/01.jpg" title="司马懿"></li>
+				// <li><img src="uploads/heros/02.jpg" title="女娲"></li>
+				// ......
+				// img的属性
+				// datas[i] == { name: '司马懿', imgSrc: '01.jpg' }
+				img.src = 'uploads/heros/' + datas[i].imgSrc;
+				img.title = datas[i].name;
+
+			}
+		})
+
+
+
+
+	</script>
+</body>
+
+</html>

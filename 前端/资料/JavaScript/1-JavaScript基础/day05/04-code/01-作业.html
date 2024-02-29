@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // function fn() {
+    //   // return 20
+    // }
+    // let re = fn()
+    // console.log(re)
+
+    // 目标： 封装一个函数, 可以求任意数组的 和 或 平均值
+    //要求：
+    //- 函数可以传递2个参数，比如  handleData(arr, true)      handleData 处理数据的意思
+    //- 参数一： 接受实参传递过来的数组
+    //- 参数二: 布尔类型  如果是true或者不传递参数 是求和操作，   如果传递过来的参数是 false 则是求平均值
+    function handleData(arr, flag = true) {
+      let sum = 0
+      for (let i = 0; i < arr.length; i++) {
+        sum += arr[i]
+      }
+      // flag变量里面存的 布尔值
+
+      if (flag) {
+        // 求和
+        // 返回值
+        return sum
+      } else {
+        // 求平均值
+        return sum / arr.length
+      }
+    }
+    console.log(handleData([1, 2, 3, 4, 5], true))
+    console.log(handleData([1, 2, 3, 4, 5]))
+    console.log(handleData([1, 2, 3, 4, 5], false))
+
+  </script>
+</body>
+
+</html>

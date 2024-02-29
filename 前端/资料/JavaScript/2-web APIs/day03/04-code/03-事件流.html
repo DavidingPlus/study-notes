@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .father {
+      width: 500px;
+      height: 500px;
+      background-color: pink;
+    }
+
+    .son {
+      width: 200px;
+      height: 200px;
+      background-color: purple;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="father">
+    <div class="son"></div>
+  </div>
+  <script>
+    const fa = document.querySelector('.father')
+    const son = document.querySelector('.son')
+    // 山东  济南  蓝翔   目标（pink老师）  捕获阶段
+    //  蓝翔  济南   山东   冒泡阶段
+    document.addEventListener('click', function () {
+      alert('我是爷爷')
+    }, true)
+    fa.addEventListener('click', function () {
+      alert('我是爸爸')
+    }, true)
+    son.addEventListener('click', function () {
+      alert('我是儿子')
+    }, true)
+
+  </script>
+</body>
+
+</html>

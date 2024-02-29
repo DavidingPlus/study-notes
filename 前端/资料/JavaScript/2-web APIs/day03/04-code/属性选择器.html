@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* input[value] {
+      color: red;
+    } */
+    input[type=text] {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text" value="123" data-id="0" data-name="andy">
+  <input type="password">
+  <script>
+    const input = document.querySelector('input[value]')
+    // console.log(input)
+    console.log(input.dataset) // 自定义属性集合
+    console.log(input.dataset.name) // 自定义属性集合
+  </script>
+</body>
+
+</html>

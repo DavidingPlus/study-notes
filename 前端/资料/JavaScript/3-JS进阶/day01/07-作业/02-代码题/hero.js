@@ -1,0 +1,505 @@
+/* 
+pay_type :  10 本周免费  11 新手推荐
+hero_type : 3:坦克  1:战士  4:刺客  2:法师   5:射手   6:辅助
+*/
+const heroArr = [{
+    "icon": "./images/105.jpg",
+    "name": "廉颇",
+    "pay_type": 10,
+    "hero_type": 3,
+}, {
+    "icon": "./images/106.jpg",
+    "name": "小乔",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/107.jpg",
+    "name": "赵云",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/108.jpg",
+    "name": "墨子",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/109.jpg",
+    "name": "妲己",
+    "pay_type": 11,
+    "hero_type": 2,
+}, {
+    "icon": "./images/110.jpg",
+    "name": "嬴政",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/111.jpg",
+    "name": "孙尚香",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/112.jpg",
+    "name": "鲁班七号",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/113.jpg",
+    "name": "庄周",
+    "pay_type": 10,
+    "hero_type": 6,
+}, {
+    "icon": "./images/114.jpg",
+    "name": "刘禅",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/115.jpg",
+    "name": "高渐离",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/116.jpg",
+    "name": "阿轲",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/117.jpg",
+    "name": "钟无艳",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/118.jpg",
+    "name": "孙膑",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/119.jpg",
+    "name": "扁鹊",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/120.jpg",
+    "name": "白起",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/121.jpg",
+    "name": "芈月",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/123.jpg",
+    "name": "吕布",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/124.jpg",
+    "name": "周瑜",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/126.jpg",
+    "name": "夏侯惇",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/127.jpg",
+    "name": "甄姬",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/128.jpg",
+    "name": "曹操",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/129.jpg",
+    "name": "典韦",
+    "pay_type": 10,
+    "hero_type": 1,
+}, {
+    "icon": "./images/130.jpg",
+    "name": "宫本武藏",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/131.jpg",
+    "name": "李白",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/132.jpg",
+    "name": "马可波罗",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/133.jpg",
+    "name": "狄仁杰",
+    "pay_type": 11,
+    "hero_type": 5,
+}, {
+    "icon": "./images/134.jpg",
+    "name": "达摩",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/135.jpg",
+    "name": "项羽",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/136.jpg",
+    "name": "武则天",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/139.jpg",
+    "name": "老夫子",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/140.jpg",
+    "name": "关羽",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/141.jpg",
+    "name": "貂蝉",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/142.jpg",
+    "name": "安琪拉",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/144.jpg",
+    "name": "程咬金",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/146.jpg",
+    "name": "露娜",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/148.jpg",
+    "name": "姜子牙",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/149.jpg",
+    "name": "刘邦",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/150.jpg",
+    "name": "韩信",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/152.jpg",
+    "name": "王昭君",
+    "pay_type": 10,
+    "hero_type": 2,
+}, {
+    "icon": "./images/153.jpg",
+    "name": "兰陵王",
+    "pay_type": 10,
+    "hero_type": 4,
+}, {
+    "icon": "./images/154.jpg",
+    "name": "花木兰",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/156.jpg",
+    "name": "张良",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/157.jpg",
+    "name": "不知火舞",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/162.jpg",
+    "name": "娜可露露",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/163.jpg",
+    "name": "橘右京",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/166.jpg",
+    "name": "亚瑟",
+    "pay_type": 11,
+    "hero_type": 1,
+}, {
+    "icon": "./images/167.jpg",
+    "name": "孙悟空",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/168.jpg",
+    "name": "牛魔",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/169.jpg",
+    "name": "后羿",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/170.jpg",
+    "name": "刘备",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/171.jpg",
+    "name": "张飞",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/173.jpg",
+    "name": "李元芳",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/174.jpg",
+    "name": "虞姬",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/175.jpg",
+    "name": "钟馗",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/177.jpg",
+    "name": "成吉思汗",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/178.jpg",
+    "name": "杨戬",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/183.jpg",
+    "name": "雅典娜",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/184.jpg",
+    "name": "蔡文姬",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/186.jpg",
+    "name": "太乙真人",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/180.jpg",
+    "name": "哪吒",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/190.jpg",
+    "name": "诸葛亮",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/192.jpg",
+    "name": "黄忠",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/191.jpg",
+    "name": "大乔",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/187.jpg",
+    "name": "东皇太一",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/182.jpg",
+    "name": "干将莫邪",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/189.jpg",
+    "name": "鬼谷子",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/193.jpg",
+    "name": "铠",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/196.jpg",
+    "name": "百里守约",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/195.jpg",
+    "name": "百里玄策",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/194.jpg",
+    "name": "苏烈",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/198.jpg",
+    "name": "梦奇",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/179.jpg",
+    "name": "女娲",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/501.jpg",
+    "name": "明世隐",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/199.jpg",
+    "name": "公孙离",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/176.jpg",
+    "name": "杨玉环",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/502.jpg",
+    "name": "裴擒虎",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/197.jpg",
+    "name": "弈星",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/503.jpg",
+    "name": "狂铁",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/504.jpg",
+    "name": "米莱狄",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/125.jpg",
+    "name": "元歌",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/510.jpg",
+    "name": "孙策",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/137.jpg",
+    "name": "司马懿",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/509.jpg",
+    "name": "盾山",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/508.jpg",
+    "name": "伽罗",
+    "pay_type": 10,
+    "hero_type": 5,
+}, {
+    "icon": "./images/312.jpg",
+    "name": "沈梦溪",
+    "pay_type": 10,
+    "hero_type": 2,
+}, {
+    "icon": "./images/507.jpg",
+    "name": "李信",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/513.jpg",
+    "name": "上官婉儿",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/515.jpg",
+    "name": "嫦娥",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/511.jpg",
+    "name": "猪八戒",
+    "hero_type": 3,
+    "pay_type": 1
+}, {
+    "icon": "./images/529.jpg",
+    "name": "盘古",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/505.jpg",
+    "name": "瑶",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/506.jpg",
+    "name": "云中君",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/522.jpg",
+    "name": "曜",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/518.jpg",
+    "name": "马超",
+    "hero_type": 1,
+    "pay_type": 1
+}, {
+    "icon": "./images/523.jpg",
+    "name": "西施",
+    "hero_type": 2,
+    "pay_type": 1
+}, {
+    "icon": "./images/525.jpg",
+    "name": "鲁班大师",
+    "hero_type": 6,
+    "pay_type": 1
+}, {
+    "icon": "./images/524.jpg",
+    "name": "蒙犽",
+    "hero_type": 5,
+    "pay_type": 1
+}, {
+    "icon": "./images/531.jpg",
+    "name": "镜",
+    "hero_type": 4,
+    "pay_type": 1
+}, {
+    "icon": "./images/527.jpg",
+    "name": "蒙恬",
+    "hero_type": 1,
+    "pay_type": 1
+}]

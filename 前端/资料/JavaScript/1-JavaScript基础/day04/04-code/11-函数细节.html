@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // function getSum(x, y) {
+    //   return x + y
+    //   // 返回值返回给了谁？ 函数的调用者  getSum(1, 2)
+    //   // getSum(1, 2) = 3
+    // }
+    // // let result = getSum(1, 2) = 3
+    // // let num = parseInt('12px')
+    // let result = getSum(1, 2)
+    // console.log(result)
+    // 1. 函数名相同， 后面覆盖前面
+
+    // function fn() {
+    //   console.log(1)
+    // }
+    // function fn() {
+    //   console.log(2)
+    // }
+    // fn()
+    // 2. 参数不匹配
+
+    function fn(a, b) {
+      console.log(a + b)
+    }
+    // (1). 实参多余形参   剩余的实参不参与运算
+    // fn(1, 2, 3)
+    // (2). 实参少于形参   剩余的实参不参与运算
+    fn(1)   // 1 + undefined  = NaN 
+  </script>
+</body>
+
+</html>

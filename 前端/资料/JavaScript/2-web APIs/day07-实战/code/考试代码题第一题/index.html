@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        .parentWrap {
+            width: 200px;
+            text-align: center;
+            margin: 50px auto auto;
+
+        }
+
+        .menuGroup {
+            border: 1px solid #999;
+            background-color: green;
+        }
+
+        .groupTitle {
+            display: block;
+            height: 20px;
+            line-height: 20px;
+            font-size: 16px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .menuGroup>div {
+            height: 200px;
+            background-color: #fff;
+            display: none;
+        }
+
+        /* 注意看这里，可以采用类名的形式直接实现 */
+        /* 思路： 点哪个 li ，哪个 li 添加 active 这个类，其余 li移除类 */
+        .parentWrap .active span {
+            /* 如果li添加active类，则 span 就改为红色 */
+            background-color: red;
+        }
+
+        .parentWrap .active div {
+            /* 如果当前li 添加 active 类，则 里面的div 就显示 */
+            display: block;
+        }
+
+        /* body {
+            background-image: url();
+        } */
+    </style>
+
+</head>
+
+<body>
+    <ul class="parentWrap">
+        <li class="menuGroup">
+            <span class="groupTitle">标题1</span>
+            <div>我是弹出来的div1</div>
+        </li>
+
+
+        <li class="menuGroup">
+            <span class="groupTitle">标题2</span>
+            <div>我是弹出来的div2</div>
+        </li>
+
+
+        <li class="menuGroup">
+            <span class="groupTitle">标题3</span>
+            <div>我是弹出来的div3</div>
+        </li>
+
+        <li class="menuGroup">
+            <span class="groupTitle">标题4</span>
+            <div>我是弹出来的div4</div>
+        </li>
+    </ul>
+
+    <script>
+        const lis = document.querySelectorAll('li')
+        for (let i = 0; i < lis.length; i++) {
+            lis[i].addEventListener('click', function () {
+                // 干掉上一个active
+                const ac = document.querySelector('.active')
+                if (ac) ac.classList.remove('active')
+                // 当前添加active
+                this.classList.add('active')
+            })
+        }
+    </script>
+</body>
+
+</html>
