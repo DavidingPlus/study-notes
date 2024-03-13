@@ -706,7 +706,7 @@ background-position: x y;
 | 参数值     | 说明                                              |
 | ---------- | ------------------------------------------------- |
 | `length`   | 百分数 \| 由浮点数字和单位标识符组成的长度值      |
-| `position` | top \| center \| bottom \| left \| rigth 方位名词 |
+| `position` | top \| center \| bottom \| left \| right 方位名词 |
 
 - 参数是方位名词
   - 如果指定的两个值都是方位名词，则两个值前后顺序无关，比如 left top 和 top left 效果一致
