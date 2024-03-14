@@ -247,6 +247,40 @@ th {
 - 如果测量的时候包含了边框，则需要 width、height 减去边框宽度（注意减单边还是双边）
 
 > 注意：盒子实际区域大小 = 内容区大小 + 内边距大小 + 边框大小 + 外边距大小
+>
+> - **这里的盒子实际区域大小和盒子大小是不同的概念，盒子大小最外到达边框的位置，而由于外边距是盒子之间的间隙，因此算作盒子实际占据的区域大小!!**
+
+测试
+
+浏览器中显示的盒子大小仍为`100 * 100`，不论是否打开内减模式都一样，这代表`margin`不会影响盒子大小，但是盒子实际侵占的区域大小会改变，上面指出了二者概念的不同
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+            margin: 50px;
+            /* box-sizing: border-box; */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>文字</div>
+
+</body>
+
+</html>
+~~~
 
 案例：
 
