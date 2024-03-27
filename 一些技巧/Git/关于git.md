@@ -31,3 +31,7 @@
 
 3. `git checkout master` 切换到指定的分支，我这里指定的是`master`
 
+- 恢复`修改 M`和`删除 D`的文件：`git chekcout .`
+- 删除`未追踪 U`的文件：`git clean -fd`
+  - 参考链接：[https://blog.csdn.net/zhu_superman/article/details/136326154](https://blog.csdn.net/zhu_superman/article/details/136326154)
+
