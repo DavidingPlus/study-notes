@@ -16,7 +16,7 @@
     - 清理软件的旧版本：`scoop cleanup -k *`
     - 清理下载缓存：`scoop cache rm *`
 
-- 用scoop安装oh-my-posh：[https://sspai.com](https://sspai.com)
+- 用scoop安装oh-my-posh：[https://sspai.com/post/69911](https://sspai.com/post/69911)
 
 - 老白的博客：https://baizj.gitee.io/
 
