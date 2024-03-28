@@ -1,4 +1,4 @@
-- Code的c++的google代码规范代码
+- code的c++的google代码规范代码
 
   c++插件设置搜索format，C_Cpp: Clang_format_fallback Style中填入
 
@@ -8,11 +8,15 @@
 
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
-- windows下安装oh-my-posh美化终端
-
-  - [https://sspai.com/post/69911](https://sspai.com/post/69911)
+- windows下的包管理器scoop
 
   - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
+  - 换国内scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
+  - 两个常用清理命令（其他的请自行搜索）
+    - 清理软件的旧版本：`scoop cleanup -k *`
+    - 清理下载缓存：`scoop cache rm *`
+
+- 用scoop安装oh-my-posh：[https://sspai.com](https://sspai.com)
 
 - 老白的博客：https://baizj.gitee.io/
 
