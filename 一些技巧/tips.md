@@ -8,6 +8,12 @@
 
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
+- windows下安装oh-my-posh美化终端
+
+  - [https://sspai.com/post/69911](https://sspai.com/post/69911)
+
+  - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
+
 - 老白的博客：https://baizj.gitee.io/
 
 - pip安装报错：https://www.cnblogs.com/GrnLeaf/p/17201957.html
@@ -38,7 +44,7 @@
 
 - cmake编译器选择指定的版本：https://www.cnblogs.com/lidabo/p/15400964.html
 
--  搭建自己的博客：
+- 搭建自己的博客：
 
   https://yushuaigee.gitee.io/
 
