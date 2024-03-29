@@ -8,6 +8,8 @@
 
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
+- pip清除下载缓存：`pip cache purge`
+
 - windows下的包管理器scoop
 
   - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
