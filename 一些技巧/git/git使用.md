@@ -23,7 +23,7 @@
 `origin`表示是远程仓库，`master`是我们操作的分支，我一般就用`master`
 我们可以用 `git remote -v` 查看地址
 
-- `Git` 切换分支
+- `git` 切换分支
 
 1. `git branch -a` 查看远端仓库的所有分支
 
@@ -34,4 +34,10 @@
 - 恢复`修改 M`和`删除 D`的文件：`git chekcout .`
 - 删除`未追踪 U`的文件：`git clean -fd`
   - 参考链接：[https://blog.csdn.net/zhu_superman/article/details/136326154](https://blog.csdn.net/zhu_superman/article/details/136326154)
+- 关于`git`的大小写敏感问题
+  - 在`windows`上默认是不敏感的，在`linux`和`mac`上是敏感的
+  - 也就是说在windows下，修改一个文件或者目录的字符大小写，不会被检测到，这就可能出现很大的问题了。。。
+  - 解决办法：`git config core.ignorecase false`，将忽略大小写设置为`false`，这样就能正确识别了，当然也可以`--global`设置全局
+  - 但是有个问题：设置了全局以后，每次克隆一个仓库，默认会添加这一条，并且为`true`，没办法，手动改一下吧，至少解决主要问题了。。。
+
 
