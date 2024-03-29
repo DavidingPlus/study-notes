@@ -13,7 +13,8 @@
 - windows下的包管理器scoop
 
   - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
-  - 换国内scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
+  - 换国内的scoop更新源：[https://gitee.com/glsnames/scoop-installer](https://gitee.com/glsnames/scoop-installer)
+  - 换国内bucket的scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
   - 两个常用清理命令（其他的请自行搜索）
     - 清理软件的旧版本：`scoop cleanup -k *`
     - 清理下载缓存：`scoop cache rm *`

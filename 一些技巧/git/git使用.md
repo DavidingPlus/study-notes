@@ -36,8 +36,7 @@
   - 参考链接：[https://blog.csdn.net/zhu_superman/article/details/136326154](https://blog.csdn.net/zhu_superman/article/details/136326154)
 - 关于`git`的大小写敏感问题
   - 在`windows`上默认是不敏感的，在`linux`和`mac`上是敏感的
-  - 也就是说在windows下，修改一个文件或者目录的字符大小写，不会被检测到，这就可能出现很大的问题了。。。
-  - 解决办法：`git config core.ignorecase false`，将忽略大小写设置为`false`，这样就能正确识别了，当然也可以`--global`设置全局
-  - 但是有个问题：设置了全局以后，每次克隆一个仓库，默认会添加这一条，并且为`true`，没办法，手动改一下吧，至少解决主要问题了。。。
-
+  - 也就是说在`windows`下，修改一个文件或者目录的字符大小写，不会被检测到，这就可能出现很大的问题了。。。
+  - 解决办法：`git config core.ignorecase false`，将忽略大小写设置为`false`，这样就能正确识别了，当然也可以使用参数`--global`设置全局
+  - 但是有个问题：设置了全局以后，每次克隆一个仓库，默认会添加这一条`core.ignorecase`，并且为`true`，没办法，手动改一下吧，至少解决主要问题了。。。
 
