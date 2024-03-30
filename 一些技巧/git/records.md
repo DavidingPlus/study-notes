@@ -1,4 +1,4 @@
-记录的`github`的恢复码，`token`之类的文件。（好吧`token`由于安全问题，传不上去，`github`这么智能？？？）
+记录的`github`的恢复码，`token`之类的文件。
 
 1. `recovery-codes`：
 
@@ -18,4 +18,8 @@
    - 39b08-97e1c
    - f6bca-98691
    - 2d860-cf672
+
+2. `token`：
+
+   ![image-20240330191854269](D:\Code\Study_Notes\typora-user-images\image-20240330191854269.png)
 
