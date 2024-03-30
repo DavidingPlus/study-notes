@@ -10,7 +10,13 @@
 
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
-- pip清除下载缓存：`pip cache purge`
+- python项目中的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
+
+- pip相关
+
+  - 清除下载缓存：`pip cache purge`
+
+  - pip换源：[https://blog.csdn.net/JineD/article/details/125090904](https://blog.csdn.net/JineD/article/details/125090904)
 
 - windows下的包管理器scoop
 
