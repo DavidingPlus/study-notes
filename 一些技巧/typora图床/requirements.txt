@@ -1,0 +1,4 @@
+Pillow==10.2.0
+psutil==5.9.8
+Requests==2.31.0
+requests_toolbelt==1.0.0
