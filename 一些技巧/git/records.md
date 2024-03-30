@@ -1,4 +1,4 @@
-记录的`github`的恢复码，`token`之类的文件。
+记录的`github`的恢复码，`token`之类的文件。（好吧`token`由于安全问题，传不上去，`github`这么智能？？？）
 
 1. `recovery-codes`：
 
