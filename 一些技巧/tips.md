@@ -6,20 +6,25 @@
   {BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Attach, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 0, AccessModifierOffset: -4}
   ~~~
 
+- code中列出所有的插件列表：`code --list-extensions`
+
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
 - pip清除下载缓存：`pip cache purge`
 
 - windows下的包管理器scoop
 
-  - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
+  - 如何安装：[https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
   - 换国内的scoop更新源：[https://gitee.com/glsnames/scoop-installer](https://gitee.com/glsnames/scoop-installer)
   - 换国内bucket的scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
-  - 两个常用清理命令（其他的请自行搜索）
+  - 用scoop安装oh-my-posh：[https://sspai.com/post/69911](https://sspai.com/post/69911)
+  - 清理命令（其他的请自行搜索）
     - 清理软件的旧版本：`scoop cleanup -k *`
     - 清理下载缓存：`scoop cache rm *`
-
-- 用scoop安装oh-my-posh：[https://sspai.com/post/69911](https://sspai.com/post/69911)
+    - 更新`scoop`本身：`scoop update`
+    - 更新某些`app`：`scoop update <appName>`
+    - 禁用某些程序更新：`scoop hold <appName>`
+    - 允许某些程序更新：`scoop unhold <appName>`
 
 - 老白的博客：https://baizj.gitee.io/
 
