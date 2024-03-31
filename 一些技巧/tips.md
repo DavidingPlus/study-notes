@@ -143,6 +143,8 @@
 
 - windows下安装npm和cnpm：[https://blog.csdn.net/qq_40323256/article/details/100825982](https://blog.csdn.net/qq_40323256/article/details/100825982)
 
+- npm配置环境变量：[https://blog.csdn.net/InOneStep/article/details/110235287](https://blog.csdn.net/InOneStep/article/details/110235287)
+
 - 在windows的git-bash中使用tree命令：[https://blog.csdn.net/qq_33154343/article/details/100064726](https://blog.csdn.net/qq_33154343/article/details/100064726)
 
 - 我的世界通过forge核心进行服务器搭建：[https://www.mintimate.cn/2020/02/08/Minecraft-Mod服务器搭建)](https://www.mintimate.cn/2020/02/08/Minecraft-Mod服务器搭建)
