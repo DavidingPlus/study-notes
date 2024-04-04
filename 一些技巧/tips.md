@@ -14,6 +14,8 @@
 
 - powshell增强，自动补全、主题美化、Git扩展：[https://cloud.tencent.com/developer/article/2317806](https://cloud.tencent.com/developer/article/2317806)
 
+  - 相关powershell配置文件见`./oh-my-posh-theme/Microsoft.PowerShell_profile.ps1`
+
 - pip相关
 
   - 清除下载缓存：`pip cache purge`
