@@ -12,6 +12,8 @@
 
 - python项目中的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
 
+- powshell增强，自动补全、主题美化、Git扩展：[https://cloud.tencent.com/developer/article/2317806](https://cloud.tencent.com/developer/article/2317806)
+
 - pip相关
 
   - 清除下载缓存：`pip cache purge`
