@@ -1,43 +1,32 @@
 # git的一些使用技巧
 
-持续更新~~~
+持续更新。。。
 
-第一次拉取:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称
+- 第一次拉取:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称；拉取之后会把`github`上的文件夹拉取到本地，在文件夹当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
 
-拉取之后会把`github`上的文件夹拉取到本地，在文件夹当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
+- 后续的拉取：
 
-- 后续的拉取(我自己写代码一般用不上)：
-
-  `git pull`
+  - `git pull`
 
 - 后续提交按照顺序：
 
-  1. `git add .` 
-  将所有的文件放到暂存区
-  这个时候可以用 `git status` 查看文件状态，已经放到暂存区
+  - `git add .` 
+    - 将所有的文件放到暂存区，这个时候可以用 `git status` 查看文件状态，已经放到暂存区
 
+- `git commit -m "xxx"`
 
-  2. `git commit -m "xxx"`
+  - 使用`git commit`提交文件，此时提交的修改仍然存储在本地，并没有上传到远程服务器。`-m` 后为此次提交的说明，解释做了哪些修改，方便他人理解
 
-    使用git commit 提交文件，此时提交的修改仍然存储在本地，并没有上传到远程服务器。`-m` 后为此次提交的说明，解释做了哪些修改，方便他人理解。
+- `git push -u origin master`(可以`-u`也可以不加)
 
-
-  3. `git push -u origin master`(可以`-u`也可以不加)
-
-    `origin`表示是远程仓库，`master`是我们操作的分支，我一般就用`master`
-    我们可以用 `git remote -v` 查看地址
-
+  - `origin`表示是远程仓库，`master`是我们操作的分支，我一般就用`master`
+  - 我们可以用 `git remote -v` 查看地址
 
 - `git` 切换分支
 
-  1. `git branch -a` 查看远端仓库的所有分支
-
-
-  2. `git branch` 查看现在项目处于哪个分支
-
-
-  3. `git checkout master` 切换到指定的分支，我这里指定的是`master`
-
+  - `git branch -a` 查看远端仓库的所有分支
+  - `git branch` 查看现在项目处于哪个分支
+  - `git checkout master` 切换到指定的分支，我这里指定的是`master`
 
 - 恢复`修改 M`和`删除 D`的文件：`git chekcout .`
 
@@ -55,6 +44,7 @@
   - 虽然但是，为了隐私，我还是放在本地吧，不传上去了
 
 - `git`版本回退的步骤：[https://blog.csdn.net/qing040513/article/details/109150075](https://blog.csdn.net/qing040513/article/details/109150075)
+
   - 使用`git log`命令或`code`的`git graph`插件查看需要恢复的`commit`的`ID`
   - `git reset --hard <commit>`，回退到某次的`commit`版本
     - 注意：`--hard`的参数的有无是很重要的，有`--hard`参数，回退以后本地当前的修改全部清空，没有才会保留
@@ -64,8 +54,7 @@
 
 - `git`在合并的时候全部采用某一端的文件：[https://blog.csdn.net/chaiyu2002/article/details/83791671](https://blog.csdn.net/chaiyu2002/article/details/83791671)
 
-
-  - `merge`的时候加上采用传入端或者本端
+- `merge`的时候加上采用传入端或者本端
 
     ```bash
     # keep remote files
@@ -74,8 +63,7 @@
     git merge <branch> --strategy-option ours
     ```
 
-  - 如果显示`unrelated histories`，在后面加上`--allow-unrelated-histories`
+- 如果显示`unrelated histories`，在后面加上`--allow-unrelated-histories`
 
-  - 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
-
+- 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
 
