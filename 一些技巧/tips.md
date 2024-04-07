@@ -12,6 +12,8 @@
 
 - python项目中的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
 
+- 彻底卸载计算机中的`python`：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
+
 - pip相关
 
   - 清除下载缓存：`pip cache purge`
