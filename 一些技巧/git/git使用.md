@@ -1,60 +1,69 @@
 # git的一些使用技巧
 
-持续更新~~~
+持续更新。。。
 
-第一次拉取:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称
+- 第一次拉取:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称；拉取之后会把`github`上的文件夹拉取到本地，在文件夹当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
 
-拉取之后会把`github`上的文件夹拉取到本地，在文件夹当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
+- 后续的拉取：
 
-- 后续的拉取(我自己写代码一般用不上)：
-
-  `git pull`
+  - `git pull`
 
 - 后续提交按照顺序：
 
-  1. `git add .` 
-  将所有的文件放到暂存区
-  这个时候可以用 `git status` 查看文件状态，已经放到暂存区
+  - `git add .` 
+    - 将所有的文件放到暂存区，这个时候可以用 `git status` 查看文件状态，已经放到暂存区
 
+- `git commit -m "xxx"`
 
-  2. `git commit -m "xxx"`
+  - 使用`git commit`提交文件，此时提交的修改仍然存储在本地，并没有上传到远程服务器。`-m` 后为此次提交的说明，解释做了哪些修改，方便他人理解
 
-    使用git commit 提交文件，此时提交的修改仍然存储在本地，并没有上传到远程服务器。`-m` 后为此次提交的说明，解释做了哪些修改，方便他人理解。
+- `git push -u origin master`(可以`-u`也可以不加)
 
-
-  3. `git push -u origin master`(可以`-u`也可以不加)
-
-    `origin`表示是远程仓库，`master`是我们操作的分支，我一般就用`master`
-    我们可以用 `git remote -v` 查看地址
-
+  - `origin`表示是远程仓库，`master`是我们操作的分支，我一般就用`master`
+  - 我们可以用 `git remote -v` 查看地址
 
 - `git` 切换分支
 
-  1. `git branch -a` 查看远端仓库的所有分支
-
-
-  2. `git branch` 查看现在项目处于哪个分支
-
-
-  3. `git checkout master` 切换到指定的分支，我这里指定的是`master`
-
+  - `git branch -a` 查看远端仓库的所有分支
+  - `git branch` 查看现在项目处于哪个分支
+  - `git checkout master` 切换到指定的分支，我这里指定的是`master`
 
 - 恢复`修改 M`和`删除 D`的文件：`git chekcout .`
+
 - 删除`未追踪 U`的文件：`git clean -fd`
   - 参考链接：[https://blog.csdn.net/zhu_superman/article/details/136326154](https://blog.csdn.net/zhu_superman/article/details/136326154)
+
 - 关于`git`的大小写敏感问题
   - 在`windows`上默认是不敏感的，在`linux`和`mac`上是敏感的
   - 也就是说在`windows`下，修改一个文件或者目录的字符大小写，不会被检测到，这就可能出现很大的问题了。。。
   - 解决办法：`git config core.ignorecase false`，将忽略大小写设置为`false`，这样就能正确识别了，当然也可以使用参数`--global`设置全局
   - 但是有个问题：设置了全局以后，每次克隆一个仓库，默认会添加这一条`core.ignorecase`，并且为`true`，没办法，手动改一下吧，至少解决主要问题了。。。
+
 - 由于我的仓库加入了`git guardian`，所以关于`token`没办法直接写入文件传到远端，直接传会报错，当然它也是为我着想。。。
   - 好吧，图片能传上去，笑死我了。。。
   - 虽然但是，为了隐私，我还是放在本地吧，不传上去了
+
 - `git`版本回退的步骤：[https://blog.csdn.net/qing040513/article/details/109150075](https://blog.csdn.net/qing040513/article/details/109150075)
+
   - 使用`git log`命令或`code`的`git graph`插件查看需要恢复的`commit`的`ID`
   - `git reset --hard <commit>`，回退到某次的`commit`版本
     - 注意：`--hard`的参数的有无是很重要的，有`--hard`参数，回退以后本地当前的修改全部清空，没有才会保留
     - 因此，延申出撤销已经`commit`但未`push`的提交：`git reset origin/<branch>`，记得不要加上`--hard`
   - `git commit --allow-empty`，当然可以在此版本上修改之后在提交，但这里为了简便，就空提交了
   - `git push -f -u origin <branch>`，`-f`参数表示强制推送，这样会覆盖回退的版本到最新版本之间的所有`commit`，直接到达最新提交的`commit`；所以`-f`参数还是慎用，否则把别人的工作干掉了得不偿失，尽量还是拉取合并解决冲突吧
+
+- `git`在合并的时候全部采用某一端的文件：[https://blog.csdn.net/chaiyu2002/article/details/83791671](https://blog.csdn.net/chaiyu2002/article/details/83791671)
+
+- `merge`的时候加上采用传入端或者本端
+
+    ```bash
+    # keep remote files
+    git merge <branch> --strategy-option theirs
+    # keep local files
+    git merge <branch> --strategy-option ours
+    ```
+
+- 如果显示`unrelated histories`，在后面加上`--allow-unrelated-histories`
+
+- 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
 

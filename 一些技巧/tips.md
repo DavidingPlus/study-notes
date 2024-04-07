@@ -10,7 +10,9 @@
 
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
-- python项目中的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
+- powshell增强，自动补全、主题美化、Git扩展：[https://cloud.tencent.com/developer/article/2317806](https://cloud.tencent.com/developer/article/2317806)
+
+  - 相关powershell配置文件见`./oh-my-posh-theme/Microsoft.PowerShell_profile.ps1`
 
 - 彻底卸载计算机中的`python`：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
 
@@ -154,4 +156,6 @@
 - 修复zsh历史错误：[https://blog.csdn.net/henryhu712/article/details/123836534](https://blog.csdn.net/henryhu712/article/details/123836534)
 
 - python项目的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
+
+- python执行报错SyntaxError：[https://blog.csdn.net/flyfish1986/article/details/114702706](https://blog.csdn.net/flyfish1986/article/details/114702706)
 
