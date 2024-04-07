@@ -54,16 +54,17 @@
 
 - `git`在合并的时候全部采用某一端的文件：[https://blog.csdn.net/chaiyu2002/article/details/83791671](https://blog.csdn.net/chaiyu2002/article/details/83791671)
 
-- `merge`的时候加上采用传入端或者本端
+    - `merge`的时候加上采用传入端或者本端
 
-    ```bash
-    # keep remote files
-    git merge <branch> --strategy-option theirs
-    # keep local files
-    git merge <branch> --strategy-option ours
-    ```
+        ```bash
+        # keep remote files
+        git merge <branch> --strategy-option theirs
+        # keep local files
+        git merge <branch> --strategy-option ours
+        ```
 
-- 如果显示`unrelated histories`，在后面加上`--allow-unrelated-histories`
+    - 如果显示`unrelated histories`，在后面加上`--allow-unrelated-histories`
 
-- 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
+    - 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
+
 
