@@ -77,7 +77,7 @@
   https://blog.csdn.net/qq_41461536/article/details/126127819
 
 - 解决博客网络图片加载不出来：https://blog.csdn.net/mqdxiaoxiao/article/details/96770756
-  (在md文章正文前面添加：<meta name="referrer" content="no-referrer"/>)
+  (在md文章正文前面添加：`<meta name="referrer" content="no-referrer"/>`)
 
 - .gitignore不起作用：https://blog.csdn.net/Saintmm/article/details/120847019
 
