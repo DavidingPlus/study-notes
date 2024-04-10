@@ -24,12 +24,15 @@
 
 - windows下的包管理器scoop
 
-  - 如何安装：[https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
-  - 换国内的scoop更新源：[https://gitee.com/glsnames/scoop-installer](https://gitee.com/glsnames/scoop-installer)
-  - 换国内bucket的scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
+  - 如何安装：
+    - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
+    - [https://blog.dejavu.moe/posts/windows-scoop](https://blog.dejavu.moe/posts/windows-scoop)
+  - 换国内的scoop更新源
+    - `scoop config SCOOP_REPO https://gitee.com/scoop-bucket/scoop`
+  - 换国内`bucket`的`scoop-cn`源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
   - 用scoop安装oh-my-posh：[https://sspai.com/post/69911](https://sspai.com/post/69911)
   - 清理命令（其他的请自行搜索）
-    - 清理软件的旧版本：`scoop cleanup -k *`
+    - 清理软件的旧版本：`scoop cleanup *`
     - 清理下载缓存：`scoop cache rm *`
     - 更新`scoop`本身：`scoop update`
     - 更新某些`app`：`scoop update <appName>`
@@ -160,5 +163,4 @@
 - python执行报错SyntaxError：[https://blog.csdn.net/flyfish1986/article/details/114702706](https://blog.csdn.net/flyfish1986/article/details/114702706)
 
 - 使用gulp压缩hexo博客文件（兼容ES6标准）：[https://blog.inkuang.com/2021/405](https://blog.inkuang.com/2021/405)
-
 
