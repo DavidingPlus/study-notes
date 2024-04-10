@@ -14,7 +14,7 @@
 
   - 相关powershell配置文件见`./oh-my-posh-theme/Microsoft.PowerShell_profile.ps1`
 
-- 彻底卸载计算机中的`python`：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
+- 彻底卸载计算机中的python：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
 
 - pip相关
 
@@ -28,14 +28,17 @@
     - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
     - [https://blog.dejavu.moe/posts/windows-scoop](https://blog.dejavu.moe/posts/windows-scoop)
   - 换国内的scoop更新源
-    - `scoop config SCOOP_REPO https://gitee.com/scoop-bucket/scoop`
-  - 换国内`bucket`的`scoop-cn`源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
+    - `scoop config SCOOP_REPO git@gitee.com:scoop-bucket/scoop.git`
+  - 换国内bucket的scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
   - 用scoop安装oh-my-posh：[https://sspai.com/post/69911](https://sspai.com/post/69911)
+  - scoop可以安装aria2加快下载速度，但是不建议自定义其配置，用默认就行
+    - 关闭警告可以开：`scoop config aria2-warning-enabled False`
+    - 删除`config`使用`scoop config rm <...>`
   - 清理命令（其他的请自行搜索）
     - 清理软件的旧版本：`scoop cleanup *`
     - 清理下载缓存：`scoop cache rm *`
-    - 更新`scoop`本身：`scoop update`
-    - 更新某些`app`：`scoop update <appName>`
+    - 更新scoop本身：`scoop update`
+    - 更新某些app：`scoop update <appName>`
     - 禁用某些程序更新：`scoop hold <appName>`
     - 允许某些程序更新：`scoop unhold <appName>`
 
