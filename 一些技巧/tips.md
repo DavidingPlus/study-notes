@@ -10,10 +10,6 @@
 
 - gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
 
-- powshell增强，自动补全、主题美化、Git扩展：[https://cloud.tencent.com/developer/article/2317806](https://cloud.tencent.com/developer/article/2317806)
-
-  - 相关powershell配置文件见`./oh-my-posh-theme/Microsoft.PowerShell_profile.ps1`
-
 - 彻底卸载计算机中的python：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
 
 - pip相关
@@ -21,6 +17,11 @@
   - 清除下载缓存：`pip cache purge`
 
   - pip换源：[https://blog.csdn.net/JineD/article/details/125090904](https://blog.csdn.net/JineD/article/details/125090904)
+
+- powshell增强，自动补全、主题美化、Git扩展：[https://cloud.tencent.com/developer/article/2317806](https://cloud.tencent.com/developer/article/2317806)
+
+  - 相关powershell配置文件见`./oh-my-posh-theme/Microsoft.PowerShell_profile.ps1`
+  - 在windows中添加alias命令别名：[https://zhuanlan.zhihu.com/p/74881435](https://zhuanlan.zhihu.com/p/74881435)
 
 - windows下的包管理器scoop
 
