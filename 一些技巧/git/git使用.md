@@ -67,4 +67,10 @@
 
     - 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
 
+- `git`同步远程已删除的分支和删除本地多余的分支：[https://www.cnblogs.com/saysmy/p/9166331.html](https://www.cnblogs.com/saysmy/p/9166331.html)
+
+    - 查看本地分支和追踪情况：`git remote show origin`
+    - 同步远程已删除的分支：`git remote prune origin`
+    - 删除本地分支：`git branch -D <branch>`
+
 
