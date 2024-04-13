@@ -73,4 +73,14 @@
     - 同步远程已删除的分支：`git remote prune origin`
     - 删除本地分支：`git branch -D <branch>`
 
+- `git`删除远程分支：`git push origin --delete <branch>`
+
+- `git`重命名分支
+
+    - 重命名本地分支：`git branch -m <newName>`
+    - 如何重命名远程分支？
+        - 首先将本地对应的分支（一般都是与远程分支相同，如果不同请跳过这一步）重命名为想要的名字
+        - 然后将原远程分支删除
+        - 最后重新将本地重命名的分支推送上去即可：`git push -u origin <newBranch>`
+
 
