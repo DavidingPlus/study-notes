@@ -164,7 +164,10 @@
 
 - python项目的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
 
+  - `python`一次性删除所有的第三方包：使用`pip freeze > log`将第三方包的内容导入到`log`文件中，然后通过`pip uninstall -r log`即可删除，如果不想输入`y`可以加上`-y`参数
+
 - python执行报错SyntaxError：[https://blog.csdn.net/flyfish1986/article/details/114702706](https://blog.csdn.net/flyfish1986/article/details/114702706)
 
 - 使用gulp压缩hexo博客文件（兼容ES6标准）：[https://blog.inkuang.com/2021/405](https://blog.inkuang.com/2021/405)
+
 
