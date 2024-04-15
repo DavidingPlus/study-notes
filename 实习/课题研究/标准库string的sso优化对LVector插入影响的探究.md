@@ -1,4 +1,4 @@
-# 标准库string的SSO优化对LVector插入影响的探究
+# 标准库string的sso优化对LVector插入影响的探究
 
 # 问题背景
 
