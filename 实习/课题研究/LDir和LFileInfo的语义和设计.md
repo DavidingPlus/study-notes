@@ -61,6 +61,40 @@
    当然。上面只是考虑了一种情况，实际的情况可能是有无盘符和绝对相对路径的综合情况，故作下图进行总结：
 
    <img src="https://img-blog.csdnimg.cn/direct/2a60ae10f08742ef8b35f207c79245db.png" alt="综合总结" style="zoom:80%;" />
-   
+
    因此，经过如上考虑，最新的算法流程是一个`path`进来以后，先考虑盘符，如果是`windows`尝试提取盘符，如果是`linux`不管；后面再进行反斜杠`\`转化为正斜杠`/`，然后`split`，再存储的过程，当然其中会有更多需要注意的小细节。
+
+2. 经过讨论，原`LDir`中处理目录的相关接口和`LFileInfo`处理文件的相关接口移动到新`LFileInfoEntry`中，现将所有接口归纳在这里。
+
+   - 文件接口
+     - `isExecutable()`：判断是否为可执行文件
+     - `isFile()`：判断是否为非目录文件
+     - `isHidden()`：判断是否为隐藏文件
+     - `completeSuffix()`：获取文件后缀
+   - 目录接口
+     - `isDir()`：判断是否为目录
+     - `isRoot()`：判断目录是否为根目录
+     - `cd()`：进入指定目录
+     - `count()`：统计目录中的目录和文件总数
+     - `mkdir()`：在当前目录下，创建一个子目录
+     - `entryInfoList()`：获取目录下的文件列表
+   - 文件和目录通用接口
+     - `setFile()`：做了语义明确以后，这个接口应该改为`setPath()`接口，并且针对`LFileSystemPath`构造成的结构作合法性的检测
+     - `isEmpty()`：判断目录或文件是否为空
+     - `isAbsolute()`：判断是否为绝对路径
+     - `isWritable()`：判断目录或文件是否可写
+     - `exists()`：判断目录或文件是否存在
+     - `name()`：返回目录或文件名称，应与原`LFileInfo`类的`completeBaseName()`统一
+     - `rename()`：重命名文件或目录。经检查，重命名文件在`LFile`当中，个人认为在明确语义以后，应将`rename`的操作交予`LFileInfoEntry`处理，`LFile`是一个`IODevice`，专门处理与`IO`相关的内容。如果`LFile`非要提供这个接口也不是不可以，但是内部真正起作用的是`LFileInfoEntry`
+     - `absolutePath()`：返回绝对路径，目前语义已明确，目录和文件是一个东西，返回的都是指向目录和文件本身的
+       - 应与原`LFileInfo`中的`absoluteFilePath()`和`absoluteDir()`做统一
+       - 如果传入的是相对路径，那么需要找一个基准路径来计算得出最终的绝对路径。这个路径可以是当前工作目录的路径，可以是当前可执行文件的路径。经讨论，目前使用可执行文件的路径。后续`lcoremisc`中会提供相对工作目录的路径，后续再讨论如何更好的处理。
+     - `makeAbsolute()`：将目录或文件路径转化为绝对路径
+     - `relativeFilePath()`：获取给定文件或目录的结构相对于类内文件或目录的相对路径
+     - `birthTime()`：返回目录或文件创建日期，如果是符号链接，应当在函数参数中给出参数，分别对符号链接本身和符号链接指向的文件做处理
+     - `lastModified()`：获取目录或文件最后一次修改日期
+     - `lastRead()`：获取目录或文件最后依次读取日期
+     - `owner()`：获取目录或文件所有者
+     - `permission()`：返回目录或文件的权限
+     - `setPermission()`：设置目录或文件的权限
 
