@@ -1,10 +1,8 @@
-# LDir和LFileInfo的语义明确和重新设计
+# 语义明确
 
 本迭代走查不包括`LFile`的部分，只关心`LDir`和`LFileInfo`的语义和设计问题。因为`LFile`是一类，`LDir`和`LFileInfo`是一类。
 
 现在的设计方式是直接存储一个`LString`类型的路径，但是这样对于`windows`平台非常不友好。
-
-# 语义明确
 
 目前`LDir`和`LFileInfo`的语义非常不明确，为了避免混淆，将二者重新命名为`LFileSystemPath`和`LFileSystemEntry`，后续`LDir`作为`LFileSystemPath`的别名，`LFileInfo`作为`LFileSystemEntry`的别名。同时这里只给出讨论后的结果。
 
