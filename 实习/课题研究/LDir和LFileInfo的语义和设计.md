@@ -65,9 +65,8 @@
 2. 经过讨论，原`LDir`中处理目录的相关接口和`LFileInfo`处理文件的相关接口移动到新`LFileInfoEntry`中，现将所有接口归纳在这里。
 
    - 文件接口
-     - `isExecutable()`：判断是否为可执行文件
      - `isFile()`：判断是否为非目录文件
-     - `isHidden()`：判断是否为隐藏文件
+     - `completeBaseName()`：获取文件前缀（不包含第一个`.`后面的部分）
      - `completeSuffix()`：获取文件后缀
    - 目录接口
      - `isDir()`：判断是否为目录
@@ -80,9 +79,11 @@
      - `setFile()`：做了语义明确以后，这个接口应该改为`setPath()`接口，并且针对`LFileSystemPath`构造成的结构作合法性的检测
      - `isEmpty()`：判断目录或文件是否为空
      - `isAbsolute()`：判断是否为绝对路径
+     - `isHidden()`：判断是否为隐藏目录或文件
      - `isWritable()`：判断目录或文件是否可写
-     - `exists()`：判断目录或文件是否存在
-     - `name()`：返回目录或文件名称，应与原`LFileInfo`类的`completeBaseName()`统一
+     - `isExecutable()`：判断目录或文件是否有可执行权限
+     - `exists()`：判断目录或文件是否存在。经过重新设计以后`LFileSystemEntry`中的路径必须是存在的，这个接口应该删除
+     - `name()`：返回目录或文件名称
      - `rename()`：重命名文件或目录。经检查，重命名文件在`LFile`当中，个人认为在明确语义以后，应将`rename`的操作交予`LFileInfoEntry`处理，`LFile`是一个`IODevice`，专门处理与`IO`相关的内容。如果`LFile`非要提供这个接口也不是不可以，但是内部真正起作用的是`LFileInfoEntry`
      - `absolutePath()`：返回绝对路径，目前语义已明确，目录和文件是一个东西，返回的都是指向目录和文件本身的
        - 应与原`LFileInfo`中的`absoluteFilePath()`和`absoluteDir()`做统一
