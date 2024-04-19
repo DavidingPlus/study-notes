@@ -82,5 +82,6 @@
         - 首先将本地对应的分支（一般都是与远程分支相同，如果不同请跳过这一步）重命名为想要的名字
         - 然后将原远程分支删除
         - 最后重新将本地重命名的分支推送上去即可：`git push -u origin <newBranch>`
-
+    
+- `git`将`vim`设置为默认编辑器（默认的是`nano`，用着不太习惯）：`git config --global core.editor vim`
 
