@@ -10,7 +10,19 @@
 
    `LFileSystemPath`讨论以后的设计是能够将用户传入的路径进行合理并且严格的规范化，本类只负责这个功能。至于该路径指向的具体是文件还是目录，该路径指向的文件或目录是否存在，有什么权限，本类不关心。按照此语义，本类应当不会涉及与平台相关的具体接口。
 
-   现在需要考虑如何存储路径了。
+2. `LFileSystemEntry`：内部存储一个路径结构`LFileSystemPath`，真正与系统`API`打交道的类。
+
+   `LFileSystemPath`对路径做了严格规定，因此在`LFileSystemEntry`中会存储这个结构用于处理系统中的路径。在本类当中就会提供平台相关的借口了，比如创建目录`mkdir`，进入目录`cd`，文件权限`permission`等等操作，当然，这些操作都离不开路径结构`LFileSystemPath`。
+
+   与`Qt`不同的是，`LFileSystemEntry`中存储的路径指向的文件或目录都必须是在系统中实际存在的，不允许存储不存在的路径，因为这样没有意义。如果非要存储，请使用单纯的路径结构`LFileSystemPath`。
+
+3. 二者的命名规定。
+
+   对于大多数用户而言，可能并不知道目录是一种特殊的文件（目录和文件都具有`rwx`权限，只是表现方式不同），因此本类的名称有待商榷，目前的商讨结果是将`LDir`作为另一个类（例如`LFileSystemPath`这种）的别名，类似`LVector`和`LPaddedVector`的关系。保留`LDir`是考虑了`Qt`的缘故。`LFileSystemEntry`与`LFileInfo`的关系同理。
+
+# 更多细节
+
+1. `LFileSystemPath`如何存储路径。
 
    经过对比`Qt`和与钟老师讨论，决定使用`StringList`存储各级目录名和文件名的方式。
 
@@ -36,21 +48,13 @@
 
    至此，我们就在`LFileSystemPath`的层面对绝对路径和相对路径，文件和目录进行了严格的规定。
 
-   第三，类名问题。
+2. `LFileSystemEntry`构造时关于文件和目录的修正。
 
-   对于大多数用户而言，可能并不知道目录是一种特殊的文件（目录和文件都具有`rwx`权限，只是表现方式不同），因此本类的名称有待商榷，目前的商讨结果是将`LFileSystemPath`作为另一个类（例如`LFileSystemPath`这种）的别名，类似`LVector`和`LPaddedVector`的关系。保留`LFileSystemPath`是考虑了`Qt`的缘故。
+   在构造的时候会涉及到一个问题，对于`LFileSystemPath`而言，我们硬性对目录和文件做了规定，目录结尾必须有`/`，文件没有。但是对用户而言，可能并不知道，因此用户可能想要目录，也可能写入`/path/to/../to/local`，如果系统中这个`local`的确是一个目录，并且没有要给同名的`local`文件存在，这是没有毛病的。这个问题需要进行处理。
 
-2. `LFileSystemEntry`：内部存储一个路径结构`LFileSystemPath`，真正与系统`API`打交道的类。
+   比较合理的解决方式是，首先由于无论是在`linux`还是在`windows`下，文件和目录不能同名，也就是不能同时出现`test`和`test/`。对于`LFileSystemEntry`而言，对于文件类型的路径，既能匹配到文件也能匹配到目录，因此如果匹配成功，需要做二次匹配，匹配对应的目录，如果匹配失败，代表是一个文件路径；如果匹配成功，需要对此时的`LFileSystemPath`存储的内容做了修正，变成了`/path/to/../to/local/`。当然用户如果传入`/path/to/../to/local/`，那一定匹配的是目录，这一点毋庸置疑。
 
-   `LFileSystemPath`对路径做了严格规定，因此在`LFileSystemEntry`中会存储这个结构用于处理系统中的路径。在本类当中就会提供平台相关的借口了，比如创建目录`mkdir`，进入目录`cd`，文件权限`permission`等等操作，当然，这些操作都离不开路径结构`LFileSystemPath`。
-
-   现在会涉及到一个问题，对于`LFileSystemPath`而言，我们硬性对目录和文件做了规定，目录结尾必须有`/`，文件没有。但是对用户而言，可能并不知道，因此用户可能想要目录，也可能写入`/path/to/../to/local`，如果系统中这个`local`的确是一个目录，并且没有要给同名的`local`文件存在，这是没有毛病的。这个问题需要进行处理。
-
-   比较合理的解决方式是，对于`LFileSystemEntry`而言，首先去判断该路径是否是一个文件，因为如果`local`目录和`local`文件同时存在，这个东西一定是文件；如果匹配失败，去匹配是否是一个目录，如果匹配成功，那么存入`LFileSystemPath`，注意此时的`LFileSystemPath`存储的内容做了修正，变成了`/path/to/../to/local/`。当然用户如果传入`/path/to/../to/local/`，那一定是目录，这一点毋庸置疑。
-
-# 更多细节
-
-1. 考虑盘符的问题。
+3. 考虑盘符。
 
    `windows`下存在盘符，例如路径`d:\a\b\c`，其中`d:`就代表盘符，`\a\b\c`就是从`d:`盘符下的根目录开始的依次的`a`，`b`目录和`c`文件，那么对应到`linux`下面呢？例如`d:/a/b/c`，这就是一个正确的相对路径了，分别对应`d:`，`a`，`b`目录和`c`文件，可见如何处理盘符是一个非常重要的问题。
 
@@ -62,38 +66,70 @@
 
    因此，经过如上考虑，最新的算法流程是一个`path`进来以后，先考虑盘符，如果是`windows`尝试提取盘符，如果是`linux`不管；后面再进行反斜杠`\`转化为正斜杠`/`，然后`split`，再存储的过程，当然其中会有更多需要注意的小细节。
 
-2. 经过讨论，原`LDir`中处理目录的相关接口和`LFileInfo`处理文件的相关接口移动到新`LFileInfoEntry`中，现将所有接口归纳在这里。
+4. 经过讨论，原`LDir`中处理目录的相关接口和`LFileInfo`处理文件的相关接口移动到新`LFileInfoEntry`中，现将所有接口归纳在这里。
 
-   - 文件接口
-     - `isFile()`：判断是否为非目录文件
-     - `completeBaseName()`：获取文件前缀（不包含第一个`.`后面的部分）
-     - `completeSuffix()`：获取文件后缀
-   - 目录接口
-     - `isDir()`：判断是否为目录
-     - `isRoot()`：判断目录是否为根目录
-     - `cd()`：进入指定目录
-     - `count()`：统计目录中的目录和文件总数
-     - `mkdir()`：在当前目录下，创建一个子目录
-     - `entryInfoList()`：获取目录下的文件列表
-   - 文件和目录通用接口
-     - `setFile()`：做了语义明确以后，这个接口应该改为`setPath()`接口，并且针对`LFileSystemPath`构造成的结构作合法性的检测
-     - `isEmpty()`：判断目录或文件是否为空
+   - 路径返回接口
+
+     - `drive()`：返回盘符，效果等同于`LFileSystemPath`的`drive()`
+     - `path()`：返回路径，效果等同于`LFileSystemPath`的`path()`
+
+     - `canonicalPath()`：返回规范化路径，效果等同于`LFileSystemPath`的`canonicalPath()`
+
+     - `absolutePath()`：返回绝对路径，如果是绝对路径，计算规范化以后的绝对路径；如果是相对路径，以当前可执行文件的工作目录为基准路径，进行拼接，计算最后规范化以后的绝对路径
+     - `relativePath(const LString& path)`：计算给定`path`相对于本类中文件或目录的相对路径（这个算法待写）
+     - 关于`path()`，`canonicalPath()`和`absolutePath()`接口三者的区别，通过一个示例就知道了（假设是`linux`，`windows`同理)，设当前可执行文件的目录是：`/a/b/c/d/e/`
+       - 构造原串：`../..///./..`
+       - `path()`：`../.././../`
+       - `canonicalPath()`：`../../../`
+       - `absolutePath()`：`/a/b/`
+
+   - 判断接口
+
+     - `isValid()`：判断路径是否合法，在构造函数的时候会验证路径是否合法（遵循上面的规则），并且`LFileSystemEntry`规定路径指向的文件或目录必须存在，不存在则警告，并且清空数据。后续的其他函数首要逻辑就是判断是否合法
      - `isAbsolute()`：判断是否为绝对路径
-     - `isHidden()`：判断是否为隐藏目录或文件
-     - `isWritable()`：判断目录或文件是否可写
-     - `isExecutable()`：判断目录或文件是否有可执行权限
-     - `exists()`：判断目录或文件是否存在。经过重新设计以后`LFileSystemEntry`中的路径必须是存在的，这个接口应该删除
-     - `name()`：返回目录或文件名称
-     - `rename()`：重命名文件或目录。经检查，重命名文件在`LFile`当中，个人认为在明确语义以后，应将`rename`的操作交予`LFileInfoEntry`处理，`LFile`是一个`IODevice`，专门处理与`IO`相关的内容。如果`LFile`非要提供这个接口也不是不可以，但是内部真正起作用的是`LFileInfoEntry`
-     - `absolutePath()`：返回绝对路径，目前语义已明确，目录和文件是一个东西，返回的都是指向目录和文件本身的
-       - 应与原`LFileInfo`中的`absoluteFilePath()`和`absoluteDir()`做统一
-       - 如果传入的是相对路径，那么需要找一个基准路径来计算得出最终的绝对路径。这个路径可以是当前工作目录的路径，可以是当前可执行文件的路径。经讨论，目前使用可执行文件的路径。后续`lcoremisc`中会提供相对工作目录的路径，后续再讨论如何更好的处理。
-     - `makeAbsolute()`：将目录或文件路径转化为绝对路径
-     - `relativeFilePath()`：获取给定文件或目录的结构相对于类内文件或目录的相对路径
-     - `birthTime()`：返回目录或文件创建日期，如果是符号链接，应当在函数参数中给出参数，分别对符号链接本身和符号链接指向的文件做处理
-     - `lastModified()`：获取目录或文件最后一次修改日期
-     - `lastRead()`：获取目录或文件最后依次读取日期
-     - `owner()`：获取目录或文件所有者
-     - `permission()`：返回目录或文件的权限
-     - `setPermission()`：设置目录或文件的权限
+     - `makeAbsolute()`：将当前类存储的路径转化为绝对路径
+     - `isRelative()`：判断是否为相对路径
+     - `isDir()`：判断是否为目录
+     - `isFile()`：判断是否为文件
+     - `isRoot()`：判断是否为根目录
+     - `isHidden()`：判断是否为隐藏文件或目录
+     - `isReadable()`：判断目录或文件是否具有可读权限
+     - `isWritable()`：判断目录或文件是否具有可写权限
+     - `isExecutable()`：判断目录或文件是否具有可执行权限
+
+   - 名字返回接口
+
+     - `basename()`：返回当前目录或文件的名称。遵循`linux`系统下`basename`命令的规则，经验证，返回完整名字，注意目录需要去掉末尾的斜杠
+     - `name()`：`basename()`的别名
+     - `singleSuffix()`：获取当前文件的后缀，找到最后一个`.`以后的部分
+     - `suffix()`：`singleSuffix()`的别名
+     - `completeSuffix()`：获取当前文件的后缀，找到第一个`.`以后的部分
+
+   - 目录相关接口
+
+     - `cd(const LString& path)`：根据传入的路径进入指定的目录。如果是绝对路径，按照新绝对路径；如果是相对路径，以本类中存储的目录路径会基准进行拼接，得到最终的绝对路径
+     - `cdUp()`：进入父级目录，效果等同于`cd(LString(".."))`
+     - `mkdir(const LString& path)`：根据传入的路径创建新的目录。规则同`cd()`
+     - `rmdir(const LString& path)`：根据传入的路径删除指定的目录。规则同`cd()`
+     - `entryCount()`：统计当前目录中的目录和文件的总数
+     - `count()`：`entryCount()`的别名
+     - `entryList()`：获取当前目录中的目录和文件的列表
+
+   - 其他接口（由于调用了其他的类，目前直接放的旧版内容）
+     - `rename(const LString& path)`：将当前目录或文件重命名为`path`指向的目录或文件
+     - `birthTime()`：返回当前文件或目录的创建日期
+     - `lastModified()`：返回当前文件或目录的最后一次修改日期
+     - `lastRead()`：返回当前文件或目录的最后一次读取日期
+     - `owner()`：返回当前文件或目录的所有者
+     - `setPermission(LPermission permisson)`：设置当前文件或目录的权限
+     - `permission()`：返回当前文件或目录的权限
+     
+
+5. 后续维护任务归纳。
+
+   - 查看其他接口旧版的代码内容，优化修改或者重写
+   - `cd()`接口考虑返回自身引用而不是`bool`值，满足链式调用需求
+   - `isReadable()`、`isWritable()`、`isExecutable()`、`entryCount()`、`entryList()`目前使用旧版代码内容，同第一点
+   - `relativeFilePath()`和`rename()`逻辑待补
+   - `windows`下的`Lark::executableDirPath()`目前采用手动截取的方式，后续看有没有办法改为系统接口
 
