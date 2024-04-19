@@ -77,7 +77,7 @@
 
      - `absolutePath()`：返回绝对路径，如果是绝对路径，计算规范化以后的绝对路径；如果是相对路径，以当前可执行文件的工作目录为基准路径，进行拼接，计算最后规范化以后的绝对路径
      - `relativePath(const LString& path)`：计算给定`path`相对于本类中文件或目录的相对路径（这个算法待写）
-     - 关于`path()`，`canonicalPath()`和`absolutePath()`接口三者的区别，通过一个示例就知道了（假设是`linux`，`windows`同理)，设当前可执行文件的目录是：`/a/b/c/d/e/`
+     - 关于`path()`，`canonicalPath()`和`absolutePath()`接口三者的区别，通过一个示例就知道了（假设是`linux`，`windows`同理），设当前可执行文件的目录是：`/a/b/c/d/e/`
        - 构造原串：`../..///./..`
        - `path()`：`../.././../`
        - `canonicalPath()`：`../../../`
