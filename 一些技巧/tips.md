@@ -28,11 +28,12 @@
   - 如何安装：
     - [https://blog.csdn.net/Apple_Coco/article/details/113281197](https://blog.csdn.net/Apple_Coco/article/details/113281197)
     - [https://blog.dejavu.moe/posts/windows-scoop](https://blog.dejavu.moe/posts/windows-scoop)
-  - 换国内的scoop更新源
+  - 换国内的`scoop`更新源
     - `scoop config SCOOP_REPO git@gitee.com:scoop-bucket/scoop.git`
-  - 换国内bucket的scoop-cn源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
-  - 用scoop安装oh-my-posh：[https://sspai.com/post/69911](https://sspai.com/post/69911)
-  - scoop可以安装aria2加快下载速度，但是不建议自定义其配置，用默认就行
+  - 换国内`bucket`的`scoop-cn`源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
+    - 为了保险，将这个`bucket`的名字设置为`main`，防止`update`的时候报`no bucket main`的错误
+  - 用`scoop`安装`oh-my-posh`：[https://sspai.com/post/69911](https://sspai.com/post/69911)
+  - `scoop`可以安装`aria2`加快下载速度，但是不建议自定义其配置，用默认就行
     - 关闭警告可以开：`scoop config aria2-warning-enabled False`
     - 删除`config`使用`scoop config rm <...>`
   - 清理命令（其他的请自行搜索）
@@ -45,7 +46,11 @@
 
 - 老白的博客：https://baizj.gitee.io/
 
-- pip安装报错：https://www.cnblogs.com/GrnLeaf/p/17201957.html
+- pip安装报错
+
+  - https://www.cnblogs.com/GrnLeaf/p/17201957.html
+
+  - [https://www.yaolong.net/article/pip-externally-managed-environment](https://www.yaolong.net/article/pip-externally-managed-environment)
 
 - Linux应用层编程可以开发的一些项目：https://blog.csdn.net/sinat_16643223/article/details/105761275
 
@@ -169,5 +174,4 @@
 - python执行报错SyntaxError：[https://blog.csdn.net/flyfish1986/article/details/114702706](https://blog.csdn.net/flyfish1986/article/details/114702706)
 
 - 使用gulp压缩hexo博客文件（兼容ES6标准）：[https://blog.inkuang.com/2021/405](https://blog.inkuang.com/2021/405)
-
 
