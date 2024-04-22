@@ -123,6 +123,8 @@
 
   https://blog.csdn.net/ichenglin/article/details/124963918
 
+- wsl安装微软雅黑字体（解决窗体title乱码问题）：[https://blog.csdn.net/qq_30712797/article/details/128885517](https://blog.csdn.net/qq_30712797/article/details/128885517)（`8.3`节）
+
 - 离线安装pip：
 
   https://zhuanlan.zhihu.com/p/37473690
