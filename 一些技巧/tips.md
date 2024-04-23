@@ -80,13 +80,10 @@
 
 - 搭建自己的博客：
 
-  https://yushuaigee.gitee.io/
-
-  https://blog.csdn.net/qq_42893625/article/details/100852221
-
-  http://yearito.cn/posts/hexo-theme-beautify.html
-
-  https://blog.csdn.net/qq_41461536/article/details/126127819
+  - [https://yushuaigee.gitee.io/](https://yushuaigee.gitee.io/)
+  - [https://blog.csdn.net/qq_42893625/article/details/100852221](https://blog.csdn.net/qq_42893625/article/details/100852221)
+  - [http://yearito.cn/posts/hexo-theme-beautify.html](http://yearito.cn/posts/hexo-theme-beautify.html)
+  - [https://blog.csdn.net/qq_41461536/article/details/126127819](https://blog.csdn.net/qq_41461536/article/details/126127819)
 
 - 解决博客网络图片加载不出来：https://blog.csdn.net/mqdxiaoxiao/article/details/96770756
   (在md文章正文前面添加：`<meta name="referrer" content="no-referrer"/>`)
@@ -112,24 +109,29 @@
 
 - json-server，伪造一些json数据挂到服务器上：
 
-  https://blog.csdn.net/qq_43780023/article/details/121670691
-  https://blog.csdn.net/weixin_48299611/article/details/120709995
+  - [https://blog.csdn.net/qq_43780023/article/details/121670691](https://blog.csdn.net/qq_43780023/article/details/121670691)
+  - [https://blog.csdn.net/weixin_48299611/article/details/120709995](https://blog.csdn.net/weixin_48299611/article/details/120709995)
 
 - 将静态网页挂载到服务器上：https://blog.csdn.net/weixin_51563198/article/details/119673234
 
+- wsl下载更新网络错误：[https://zhuanlan.zhihu.com/p/661429025](https://zhuanlan.zhihu.com/p/661429025)
+
+- wsl登录`getpwnam(username) failed 0`：[https://github.com/microsoft/WSL/issues/9340](https://github.com/microsoft/WSL/issues/9340)
+
 - wsl永久修改hostname：
 
-  https://blog.csdn.net/qq_19922839/article/details/120697210
+  - [https://blog.csdn.net/qq_19922839/article/details/120697210](https://blog.csdn.net/qq_19922839/article/details/120697210)
 
-  https://blog.csdn.net/ichenglin/article/details/124963918
+  - [https://blog.csdn.net/ichenglin/article/details/124963918](https://blog.csdn.net/ichenglin/article/details/124963918)
 
 - wsl安装微软雅黑字体（解决窗体title乱码问题）：[https://blog.csdn.net/qq_30712797/article/details/128885517](https://blog.csdn.net/qq_30712797/article/details/128885517)（`8.3`节）
 
 - 离线安装pip：
 
-  https://zhuanlan.zhihu.com/p/37473690
+  - [https://zhuanlan.zhihu.com/p/37473690](https://zhuanlan.zhihu.com/p/37473690)
+  - [https://www.cnblogs.com/geoffreyone/p/10332737.html](https://www.cnblogs.com/geoffreyone/p/10332737.html)
 
-  https://www.cnblogs.com/geoffreyone/p/10332737.html
+- Zenity，在Shell下迈向图形化的GUI工具：[https://blog.csdn.net/DarlingTeng/article/details/106266964](https://blog.csdn.net/DarlingTeng/article/details/106266964)
 
 - Linux配置git：https://blog.csdn.net/qq_26620783/article/details/97265409
 
@@ -167,6 +169,16 @@
 
 - 我的世界通过forge核心进行服务器搭建：[https://www.mintimate.cn/2020/02/08/Minecraft-Mod服务器搭建)](https://www.mintimate.cn/2020/02/08/Minecraft-Mod服务器搭建)
 
+- 安装配置zsh(linux下推荐，windows下建议使用posh)
+
+  - [https://zhuanlan.zhihu.com/p/35283688](https://zhuanlan.zhihu.com/p/35283688)
+  - [https://zhuanlan.zhihu.com/p/265525597](https://zhuanlan.zhihu.com/p/265525597)
+
+- zsh安装好用插件
+
+  - [https://blog.csdn.net/qq_41996454/article/details/102640653](https://blog.csdn.net/qq_41996454/article/details/102640653)
+  - [https://blog.csdn.net/qq_36835255/article/details/128096616](https://blog.csdn.net/qq_36835255/article/details/128096616)
+
 - 修复zsh历史错误：[https://blog.csdn.net/henryhu712/article/details/123836534](https://blog.csdn.net/henryhu712/article/details/123836534)
 
 - python项目的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
@@ -176,4 +188,12 @@
 - python执行报错SyntaxError：[https://blog.csdn.net/flyfish1986/article/details/114702706](https://blog.csdn.net/flyfish1986/article/details/114702706)
 
 - 使用gulp压缩hexo博客文件（兼容ES6标准）：[https://blog.inkuang.com/2021/405](https://blog.inkuang.com/2021/405)
+
+- windows下cmd的命令大全（cmd不是powershell，可以在C程序中的system()函数调用）：[https://zhuanlan.zhihu.com/p/468515490(https://zhuanlan.zhihu.com/p/468515490)
+
+  - 创建目录：`md ...`
+  - 删除目录：`rd ...`
+  - 创建文件（没有直接的命令，利用重定向）：`echo > ...`
+  - 删除文件：`del ...`
+
 
