@@ -124,7 +124,13 @@
 
   - [https://blog.csdn.net/ichenglin/article/details/124963918](https://blog.csdn.net/ichenglin/article/details/124963918)
 
-- wsl安装微软雅黑字体（解决窗体title乱码问题）：[https://blog.csdn.net/qq_30712797/article/details/128885517](https://blog.csdn.net/qq_30712797/article/details/128885517)（`8.3`节）
+- wsl安装微软雅黑字体（解决窗体title乱码问题）
+
+  - [https://blog.csdn.net/qq_30712797/article/details/128885517](https://blog.csdn.net/qq_30712797/article/details/128885517)
+
+  - `8.3`节
+
+  - 显示器类型选择`LCD`
 
 - 离线安装pip：
 
@@ -195,5 +201,4 @@
   - 删除目录：`rd ...`
   - 创建文件（没有直接的命令，利用重定向）：`echo > ...`
   - 删除文件：`del ...`
-
 
