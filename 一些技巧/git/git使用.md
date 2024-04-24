@@ -1,6 +1,4 @@
-# git的一些使用技巧
-
-持续更新。。。
+# git使用
 
 - 第一次拉取:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称；拉取之后会把`github`上的文件夹拉取到本地，在文件夹当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
 
@@ -23,10 +21,14 @@
   - 我们可以用 `git remote -v` 查看地址
 
 - `git` 切换分支
-
   - `git branch -a` 查看远端仓库的所有分支
   - `git branch` 查看现在项目处于哪个分支
   - `git checkout master` 切换到指定的分支，我这里指定的是`master`
+
+- `git`新建分支
+    - `git checkout -b <branch>`：保留当前分支的`commit`历史，开一个新分支，这时候`merge`原分支是最新的
+    - `git checkout --orphan <branch>`：开一个没有`commit`历史的独立分支，这两个分支是独立的
+    - 在实际工作中，用第一个保留历史的最好，因为独立分支的话，后续应用主分支的修改还要`merge`，就会把该分支第一次的`commit`全`merge`过来，效果和第一个一样，但是更费力，不推荐，除非是功能不相干的分支，使用第二个比较好
 
 - 恢复`修改 M`和`删除 D`的文件：`git chekcout .`
 
@@ -55,20 +57,15 @@
 - `git`在合并的时候全部采用某一端的文件：[https://blog.csdn.net/chaiyu2002/article/details/83791671](https://blog.csdn.net/chaiyu2002/article/details/83791671)
 
     - `merge`的时候加上采用传入端或者本端
-
-        ```bash
-        # keep remote files
-        git merge <branch> --strategy-option theirs
-        # keep local files
-        git merge <branch> --strategy-option ours
-        ```
-
+        - 采用传入修改：`git merge <branch> --strategy-option theirs`
+        
+        - 采用本地修改：`git merge <branch> --strategy-option ours`
+        
     - 如果显示`unrelated histories`，在后面加上`--allow-unrelated-histories`
 
     - 同理`git pull`在冲突需要合并的时候也可以采取这样的方法
 
 - `git`同步远程已删除的分支和删除本地多余的分支：[https://www.cnblogs.com/saysmy/p/9166331.html](https://www.cnblogs.com/saysmy/p/9166331.html)
-
     - 查看本地分支和追踪情况：`git remote show origin`
     - 同步远程已删除的分支：`git remote prune origin`
     - 删除本地分支：`git branch -D <branch>`
@@ -82,6 +79,7 @@
         - 首先将本地对应的分支（一般都是与远程分支相同，如果不同请跳过这一步）重命名为想要的名字
         - 然后将原远程分支删除
         - 最后重新将本地重命名的分支推送上去即可：`git push -u origin <newBranch>`
-    
+
 - `git`将`vim`设置为默认编辑器（默认的是`nano`，用着不太习惯）：`git config --global core.editor vim`
+
 
