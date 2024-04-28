@@ -79,3 +79,9 @@
 
 - `git`将`vim`设置为默认编辑器（默认的是`nano`，用着不太习惯）：`git config --global core.editor vim`
 
+- `git`指定合并某次的`commit`（相当于可以跳过`git tree`中间的一些`commit`）：`git cherry-pick`命令
+    - [https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html](https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html)
+    - [https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html](https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html)
+    - [https://zhuanlan.zhihu.com/p/355413226](https://zhuanlan.zhihu.com/p/355413226)
+
+
