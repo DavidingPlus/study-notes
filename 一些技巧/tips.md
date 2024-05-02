@@ -202,3 +202,8 @@
   - 创建文件（没有直接的命令，利用重定向）：`echo > ...`
   - 删除文件：`del ...`
 
+- vscode通过ssh连接远程服务器：[https://blog.csdn.net/qq_29856169/article/details/115489702](https://blog.csdn.net/qq_29856169/article/details/115489702)
+
+- linux编译并且安装内核：[https://blog.csdn.net/weixin_43567188/article/details/119407019](https://blog.csdn.net/weixin_43567188/article/details/119407019)
+
+
