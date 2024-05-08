@@ -8,7 +8,7 @@
 
 - code中列出所有的插件列表：`code --list-extensions`
 
-- gcc不同版本的切换：https://www.jianshu.com/p/f66eed3a3a25
+- gcc不同版本的切换：[https://www.jianshu.com/p/f66eed3a3a25](https://www.jianshu.com/p/f66eed3a3a25)
 
 - 彻底卸载计算机中的python：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
 
@@ -207,5 +207,4 @@
 - linux编译并且安装内核：[https://blog.csdn.net/weixin_43567188/article/details/119407019](https://blog.csdn.net/weixin_43567188/article/details/119407019)
 
 - linux删除多余的内核版本：[https://blog.csdn.net/jays_/article/details/90738580](https://blog.csdn.net/jays_/article/details/90738580)
-
 
