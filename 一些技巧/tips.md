@@ -195,7 +195,7 @@
 
 - 使用gulp压缩hexo博客文件（兼容ES6标准）：[https://blog.inkuang.com/2021/405](https://blog.inkuang.com/2021/405)
 
-- windows下cmd的命令大全（cmd不是powershell，可以在C程序中的system()函数调用）：[https://zhuanlan.zhihu.com/p/468515490(https://zhuanlan.zhihu.com/p/468515490)
+- windows下cmd的命令大全（cmd不是powershell，可以在C程序中的system()函数调用）：[https://zhuanlan.zhihu.com/p/468515490(https://zhuanlan.zhihu.com/p/468515490)](https://zhuanlan.zhihu.com/p/468515490(https://zhuanlan.zhihu.com/p/468515490))
 
   - 创建目录：`md ...`
   - 删除目录：`rd ...`
