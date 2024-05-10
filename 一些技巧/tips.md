@@ -157,6 +157,8 @@
 
 - 使用MCSM非常方便的搭建我的世界服务器：https://mcsmanager.com/
 
+- 给自己的mc服务器绑定域名：[https://tutujanjan.com/如何给minecraft服务器绑定域名](https://tutujanjan.com/如何给minecraft服务器绑定域名)
+
 - 在docker上部署个人云盘nextcloud：https://zhuanlan.zhihu.com/p/108301496/
 
 - github的ssh连接超时：[https://blog.csdn.net/the__future/article/details/130038818](https://blog.csdn.net/the__future/article/details/130038818)
@@ -207,4 +209,7 @@
 - linux编译并且安装内核：[https://blog.csdn.net/weixin_43567188/article/details/119407019](https://blog.csdn.net/weixin_43567188/article/details/119407019)
 
 - linux删除多余的内核版本：[https://blog.csdn.net/jays_/article/details/90738580](https://blog.csdn.net/jays_/article/details/90738580)
+
+- tar压缩或者解压：[https://blog.csdn.net/stf1065716904/article/details/81909320](https://blog.csdn.net/stf1065716904/article/details/81909320)
+
 
