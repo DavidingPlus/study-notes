@@ -216,3 +216,9 @@
 
 - windows下使用tar压缩或者解压：[https://blog.csdn.net/weixin_42672685/article/details/132900030](https://blog.csdn.net/weixin_42672685/article/details/132900030)
 
+- cmake的build和install命令，不使用make
+
+  - build：`cmake --build ./`
+  - install：`cmake --build ./ --target install`
+
+
