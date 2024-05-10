@@ -210,6 +210,9 @@
 
 - linux删除多余的内核版本：[https://blog.csdn.net/jays_/article/details/90738580](https://blog.csdn.net/jays_/article/details/90738580)
 
-- tar压缩或者解压：[https://blog.csdn.net/stf1065716904/article/details/81909320](https://blog.csdn.net/stf1065716904/article/details/81909320)
+- linux下使用tar压缩或者解压：[https://blog.csdn.net/stf1065716904/article/details/81909320](https://blog.csdn.net/stf1065716904/article/details/81909320)
 
+- linux下使用zip压缩或者解压：[https://blog.csdn.net/soback00/article/details/132853862](https://blog.csdn.net/soback00/article/details/132853862)
+
+- windows下使用tar压缩或者解压：[https://blog.csdn.net/weixin_42672685/article/details/132900030](https://blog.csdn.net/weixin_42672685/article/details/132900030)
 
