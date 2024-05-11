@@ -27,6 +27,7 @@
     - `git checkout -b <branch>`：保留当前分支的`commit`历史，开一个新分支，这时候`merge`原分支是最新的
     - `git checkout --orphan <branch>`：开一个没有`commit`历史的独立分支，这两个分支是独立的
     - 在实际工作中，用第一个保留历史的最好，因为独立分支的话，后续应用主分支的修改还要`merge`，就会把该分支第一次的`commit`全`merge`过来，效果和第一个一样，但是更费力，不推荐，除非是功能不相干的分支，使用第二个比较好
+    - 最终`push`到远端的时候需要显式指定分支，这里最好加上都`-u`参数
 
 - 恢复`修改 M`和`删除 D`的文件：`git chekcout .`
 - 删除`未追踪 U`的文件：`git clean -fd`
@@ -83,5 +84,4 @@
     - [https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html](https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html)
     - [https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html](https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html)
     - [https://zhuanlan.zhihu.com/p/355413226](https://zhuanlan.zhihu.com/p/355413226)
-
 

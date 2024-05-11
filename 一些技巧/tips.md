@@ -221,4 +221,11 @@
   - build：`cmake --build ./`
   - install：`cmake --build ./ --target install`
 
+- oh-my-zsh更新换源
+
+  - 更新命令：`omz update`
+  - 进入`oh-my-zsh`安装目录：`cd ~/.oh-my-zsh`
+  - `git config --edit`
+  - 将`url`改为`https://gitee.com/mirrors/oh-my-zsh.git`
+
 
