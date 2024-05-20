@@ -216,6 +216,8 @@
 
 - windows下使用tar压缩或者解压：[https://blog.csdn.net/weixin_42672685/article/details/132900030](https://blog.csdn.net/weixin_42672685/article/details/132900030)
 
+- 在linux下如何使用tar和zip命令压缩、解压、分割、合并文件（分割和合并的操作对于`tar`和`zip`是一样的）：[https://blog.csdn.net/qq_41979513/article/details/98763608](https://blog.csdn.net/qq_41979513/article/details/98763608)
+
 - cmake的build和install命令，不使用make
 
   - build：`cmake --build ./`
@@ -227,5 +229,4 @@
   - 进入`oh-my-zsh`安装目录：`cd ~/.oh-my-zsh`
   - `git config --edit`
   - 将`url`改为`https://gitee.com/mirrors/oh-my-zsh.git`
-
 
