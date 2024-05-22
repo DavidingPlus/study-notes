@@ -230,3 +230,5 @@
   - `git config --edit`
   - 将`url`改为`https://gitee.com/mirrors/oh-my-zsh.git`
 
+- ubuntu重启后进入initramfs导致无法开机：[https://blog.csdn.net/weixin_44002151/article/details/134212707](https://blog.csdn.net/weixin_44002151/article/details/134212707)
+
