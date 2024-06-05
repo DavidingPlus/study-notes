@@ -1,10 +1,12 @@
 # 语义明确
 
-本迭代走查不包括`LFile`的部分，只关心`LDir`和`LFileInfo`的语义和设计问题。因为`LFile`是一类，`LDir`和`LFileInfo`是一类。
+​	`QDir`和`QFileInfo`的语义一直以来都比较令人费解。我们知道文件和目录的关系是：目录是一种特殊的文件。按照`QDir`和`QFileInfo`的命名来讲，应该是`QDir`管理目录，`QFileInfo`管理文件，但是实际上这两个类的功能是非常混乱的，`QDir`可以操作文件，`QFileInfo`也可以操作目录。而初版的`LDir`和`LFileInfo`也是完全按照QT的思维走的，因此导致该部分的语义非常混乱，让我们和用户感到非常费解。
 
-现在的设计方式是直接存储一个`LString`类型的路径，但是这样对于`windows`平台非常不友好。
+​	注意，该任务不包括`LFile`的部分，只关心`LDir`和`LFileInfo`的语义和设计问题。`LFile`是一类，需要通过`IO`进行文件操作，类似于`IODevice`。而`LDir`和`LFileInfo`是一类。
 
-目前`LDir`和`LFileInfo`的语义非常不明确，为了避免混淆，将二者重新命名为`LFileSystemPath`和`LFileSystemEntry`，后续`LDir`作为`LFileSystemPath`的别名，`LFileInfo`作为`LFileSystemEntry`的别名。同时这里只给出讨论后的结果。
+​	现在的设计方式是直接存储一个`LString`类型的路径，但是这样对于`windows`平台非常不友好。`QT`也是这样做的，不过可能是因为历史原因，未能按照更好的方式修改。但是QT的功能经过庞大的迭代是很稳定的，但是这部分初版的功能一言难尽。
+
+​	同时，目前`LDir`和`LFileInfo`的语义非常不明确。为了避免混淆，将二者重新命名为`LFileSystemPath`和`LFileSystemEntry`，后续`LDir`作为`LFileSystemPath`的别名，`LFileInfo`作为`LFileSystemEntry`的别名。经过我的思考和组内集体的讨论，有了如下的设计。
 
 1. `LFileSystemPath`：存储规范化后的路径的结构。
 
