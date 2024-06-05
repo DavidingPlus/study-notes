@@ -84,4 +84,5 @@
     - [https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html](https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html)
     - [https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html](https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html)
     - [https://zhuanlan.zhihu.com/p/355413226](https://zhuanlan.zhihu.com/p/355413226)
+- `git`报错`fatal: bad object refs/remotes/origin/xxx`解决方法：[https://www.cnblogs.com/along007/p/17335825.html](https://www.cnblogs.com/along007/p/17335825.html)
 
