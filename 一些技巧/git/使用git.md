@@ -1,6 +1,6 @@
 # 使用git
 
-- 第一次拉取:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称；拉取之后会把`github`上的文件夹拉取到本地，在文件夹当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
+- 第一次拉取，以`github`服务器为例，其他服务器将`github.com`替换成为对应的`IP`或者域名:`git clone git@github.com:xxx/xxx.git` 前面写用户名，后面写仓库名称；拉取之后会把`github`上的目录拉取到本地，在目录当中会有一个`.git/`隐藏文件夹，不要动它，这是自动生成的配置
 
 - 后续的拉取：
 
@@ -84,5 +84,8 @@
     - [https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html](https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html)
     - [https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html](https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html)
     - [https://zhuanlan.zhihu.com/p/355413226](https://zhuanlan.zhihu.com/p/355413226)
-- `git`报错`fatal: bad object refs/remotes/origin/xxx`解决方法：[https://www.cnblogs.com/along007/p/17335825.html](https://www.cnblogs.com/along007/p/17335825.html)
+- `git`报错`fatal: bad object refs/remotes/origin/xxx`的解决方法：[https://www.cnblogs.com/along007/p/17335825.html](https://www.cnblogs.com/along007/p/17335825.html)
+- `git`拉取子模块中的所有内容：[https://blog.csdn.net/toopoo/article/details/104225592](https://blog.csdn.net/toopoo/article/details/104225592)
+    - 使用子模块的仓库的例子，`boost`：[https://github.com/boostorg/boost](https://github.com/boostorg/boost)
+- `git`报错对象文件为空（`object-file-is-empty`）的解决方法：[https://blog.csdn.net/syx_1990/article/details/117237631](https://blog.csdn.net/syx_1990/article/details/117237631)
 
