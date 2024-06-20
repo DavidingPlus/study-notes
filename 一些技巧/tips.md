@@ -1,9 +1,31 @@
-- code的c++的google代码规范代码
+- code的c++的代码规范格式
 
-  c++插件设置搜索format，C_Cpp: Clang_format_fallback Style中填入
+  c++插件设置搜索format，C_Cpp: Clang_format_fallback Style中填入，详见clang-format-fallback-style目录的config.json
+
+  参考文档：
+
+  - [https://blog.csdn.net/weixin_43717839/article/details/129382657](https://blog.csdn.net/weixin_43717839/article/details/129382657)
+  - [https://blog.csdn.net/qq_29856169/article/details/119617736](https://blog.csdn.net/qq_29856169/article/details/119617736)
 
   ~~~json
-  {BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Attach, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 0, AccessModifierOffset: -4}
+  {
+      "BasedOnStyle": "LLVM",
+      "UseTab": "Never",
+      "IndentWidth": 4,
+      "TabWidth": 4,
+      "BreakBeforeBraces": "Allman",
+      "AllowShortIfStatementsOnASingleLine": true,
+      "AllowShortLoopsOnASingleLine": true,
+      "IndentCaseLabels": true,
+      "ColumnLimit": 0,
+      "AccessModifierOffset": -4,
+      "NamespaceIndentation": "All",
+      "FixNamespaceComments": false,
+      "MaxEmptyLinesToKeep": 2,
+      "EmptyLineBeforeAccessModifier": "Always",
+      "EmptyLineAfterAccessModifier": "Always",
+      "SortIncludes": "Never"
+  }
   ~~~
 
 - code中列出所有的插件列表：`code --list-extensions`
@@ -231,4 +253,6 @@
   - 将`url`改为`https://gitee.com/mirrors/oh-my-zsh.git`
 
 - ubuntu重启后进入initramfs导致无法开机：[https://blog.csdn.net/weixin_44002151/article/details/134212707](https://blog.csdn.net/weixin_44002151/article/details/134212707)
+
+- windows下powershell中类似find命令的替代：[https://blog.csdn.net/yao_zhuang/article/details/115645435](https://blog.csdn.net/yao_zhuang/article/details/115645435)
 
