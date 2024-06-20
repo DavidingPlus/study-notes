@@ -211,6 +211,13 @@
 
 - 修复zsh历史错误：[https://blog.csdn.net/henryhu712/article/details/123836534](https://blog.csdn.net/henryhu712/article/details/123836534)
 
+  ```bash
+  cd ~
+  mv .zsh_history .zsh_history_bad
+  strings -eS .zsh_history_bad > .zsh_history
+  fc -R .zsh_history
+  ```
+
 - python项目的requirements.txt：[https://blog.csdn.net/pearl8899/article/details/113877334](https://blog.csdn.net/pearl8899/article/details/113877334)
 
   - `python`一次性删除所有的第三方包：使用`pip freeze > log`将第三方包的内容导入到`log`文件中，然后通过`pip uninstall -r log`即可删除，如果不想输入`y`可以加上`-y`参数
@@ -255,4 +262,7 @@
 - ubuntu重启后进入initramfs导致无法开机：[https://blog.csdn.net/weixin_44002151/article/details/134212707](https://blog.csdn.net/weixin_44002151/article/details/134212707)
 
 - windows下powershell中类似find命令的替代：[https://blog.csdn.net/yao_zhuang/article/details/115645435](https://blog.csdn.net/yao_zhuang/article/details/115645435)
+
+- windows下配置临时变量：[https://blog.csdn.net/qq_23212697/article/details/69177654](https://blog.csdn.net/qq_23212697/article/details/69177654)
+
 
