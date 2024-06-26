@@ -195,6 +195,25 @@
 
 - npm配置环境变量：[https://blog.csdn.net/InOneStep/article/details/110235287](https://blog.csdn.net/InOneStep/article/details/110235287)
 
+- 在npm官方发布自己的包
+
+  - [https://blog.csdn.net/Angsts/article/details/116307509](https://blog.csdn.net/Angsts/article/details/116307509)
+  - [https://blog.csdn.net/to_the_Future/article/details/122949610](https://blog.csdn.net/to_the_Future/article/details/122949610)
+
+- npm换源
+
+  - 官方源
+
+    ```bash
+    npm config set registry https://registry.npmjs.org
+    ```
+
+  - 镜像源
+
+    ```bash
+    npm config set registry https://registry.npmmirror.com
+    ```
+
 - 在windows的git-bash中使用tree命令：[https://blog.csdn.net/qq_33154343/article/details/100064726](https://blog.csdn.net/qq_33154343/article/details/100064726)
 
 - 我的世界通过forge核心进行服务器搭建：[https://www.mintimate.cn/2020/02/08/Minecraft-Mod服务器搭建)](https://www.mintimate.cn/2020/02/08/Minecraft-Mod服务器搭建)
@@ -264,5 +283,4 @@
 - windows下powershell中类似find命令的替代：[https://blog.csdn.net/yao_zhuang/article/details/115645435](https://blog.csdn.net/yao_zhuang/article/details/115645435)
 
 - windows下配置临时变量：[https://blog.csdn.net/qq_23212697/article/details/69177654](https://blog.csdn.net/qq_23212697/article/details/69177654)
-
 
