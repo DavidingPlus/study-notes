@@ -88,4 +88,5 @@
 - `git`拉取子模块中的所有内容：[https://blog.csdn.net/toopoo/article/details/104225592](https://blog.csdn.net/toopoo/article/details/104225592)
     - 使用子模块的仓库的例子，`boost`：[https://github.com/boostorg/boost](https://github.com/boostorg/boost)
 - `git`报错对象文件为空（`object-file-is-empty`）的解决方法：[https://blog.csdn.net/syx_1990/article/details/117237631](https://blog.csdn.net/syx_1990/article/details/117237631)
+- `git`仓库的默认分支修改以后，最好同步将`origin/HEAD`同步修改，和`git`仓库的默认分支保持一致，否则在`fetch`和`pull`的时候可能会出现奇奇怪怪的问题：`git remote set-head origin <branch>`
 
