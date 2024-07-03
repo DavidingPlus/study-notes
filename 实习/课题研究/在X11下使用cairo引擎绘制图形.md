@@ -6,6 +6,14 @@
 
 <img src="https://img-blog.csdnimg.cn/direct/399d4439eeff4e02812c87f6250c3de3.png" alt="6be4cdf74bcd179c38d446809ccb67e0" style="zoom: 50%;" />
 
+# 安装Cairo库
+
+TODO
+
+# 使用Cairo库绘制图形
+
+TODO
+
 代码如下：
 
 ```cpp
@@ -114,6 +122,3 @@ void draw_star(cairo_t *cr, double cx, double cy, double radius, double rotation
 }
 
 ```
-
-TODO
-
