@@ -284,3 +284,5 @@
 
 - windows下配置临时变量：[https://blog.csdn.net/qq_23212697/article/details/69177654](https://blog.csdn.net/qq_23212697/article/details/69177654)
 
+- 虚拟机网卡掉了，没网：[https://blog.csdn.net/qq_40344790/article/details/120645806](https://blog.csdn.net/qq_40344790/article/details/120645806)
+
