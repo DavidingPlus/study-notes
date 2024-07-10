@@ -63,7 +63,7 @@ def Login():
     '''
     response = session.get('https://open.weixin.qq.com/connect/qrconnect?appid=wx0ae11b6a28b4b9fc&scope=snsapi_login&redirect_uri=https%3A%2F%2Fpassport.csdn.net%2Fv1%2Fregister%2FpcAuthCallBack%3FpcAuthType%3Dweixin&state=csdn&login_type=jssdk&self_redirect=default&style=white&href=https://csdnimg.cn/release/passport/history/css/replace-wx-style.css', verify=False)
     uuid = re.findall(
-        '<img class="qrcode lightBorder" src="(.*?)"', response.text)[0]
+        '<img class="qrcode lightBorder js_qrcode_img" src="(.*?)"', response.text)[0]
     img_url = 'https://open.weixin.qq.com' + uuid
     t = show_code(img_url)
     t.start()
