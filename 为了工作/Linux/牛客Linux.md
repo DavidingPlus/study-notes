@@ -1861,7 +1861,7 @@ int main() {
 
 可以看出 child process 这句话没有打印出来，他被可执行文件hello替换掉了，最后的打印i是父进程打印出来的
 
-![image-20230718170703719](https://cdnjson.com/images/2023/09/04/image-20230718170703719.png)
+![image-20230718170703719](https://img-blog.csdnimg.cn/direct/508d01d1858f45b6a9f9575cc8ce1593.png)
 
 **还可以让其执行linux的shell命令**
 
@@ -1999,7 +1999,7 @@ exit:
 
 _exit:
 
-![image-20230718195756973](https://cdnjson.com/images/2023/09/04/image-20230718195756973.png)
+![image-20230718195756973](https://img-blog.csdnimg.cn/direct/218040bf61b0410a99a1fb049b3082cc.png)
 
 那么为什么会这样呢？
 
@@ -2128,7 +2128,7 @@ int main() {
 
 可以看出，子进程结束了但是父进程没结束，没有办法释放子进程内核区域的数据，导致了僵尸进程
 
-![image-20230718205324350](https://cdnjson.com/images/2023/09/04/image-20230718205324350.png)
+![image-20230718205324350](https://img-blog.csdnimg.cn/direct/2c0a8e6b043a4874986e8665b0927356.png)
 
 现在的状态，子进程Z+代表是僵尸进程，< defunct >代表不存在的；父进程S+代表睡眠
 
@@ -2136,7 +2136,7 @@ kill -9 杀不掉僵尸进程
 
 ![image-20230718205637544](https://img-blog.csdnimg.cn/8f2c17fb11464d5ba06a77c87db61666.png)
 
-![image-20230718205647171](https://cdnjson.com/images/2023/09/04/image-20230718205647171.png)
+![image-20230718205647171](https://img-blog.csdnimg.cn/direct/945fed4011c84c73855845eb77eaf067.png)
 
 **这个时候想要解决这个问题只能杀掉父进程，把子进程托管给 /init ，这样才能将其释放，但是实际开发当中杀掉父进程往往不现实，所以需要父进程调用wait()和waitpid()来保证父进程会把子进程的内核PCB的数据给释放掉，这样才能避免僵尸进程**
 
@@ -2479,7 +2479,7 @@ ls | wc -l
 
 匿名管道的使用
 
-![image-20230719145051553](https://cdnjson.com/images/2023/09/04/image-20230719145051553.png)
+![image-20230719145051553](https://img-blog.csdnimg.cn/direct/daca29153e704891bbb9f5d04e75a820.png)
 
 ##### pipe()
 
@@ -11226,3 +11226,4 @@ cmake ..
 make
 ./app
 ~~~
+
