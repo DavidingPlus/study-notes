@@ -2670,7 +2670,7 @@ int main() {
 
 下面是一个书上的一个表用来记录不同系统调用对这三个时间的是否修改：
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904105617965.png" alt="image-20230904105617965" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9b4c5d6232f64f0988ad062613110fb5.png" alt="image-20230904105617965" style="zoom:80%;" />
 
 ## 函数futimens，utimesat和utimes
 
@@ -2694,13 +2694,13 @@ int utimensat(int dirfd, const char *pathname, const struct timespec times[_Null
 
 关于时间戳的设置值，给出书上的图进行理解：
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904111133258.png" alt="image-20230904111133258" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a3a6e9a08d1947e69c9664e6e6f5ad49.png" alt="image-20230904111133258" style="zoom:80%;" />
 
 同时，执行这些函数所要求的权限取决于`times`参数的值：
 
 我们都修改文件`stat`的内容了，那肯定我们进程肯定需要相应的权限才行啊，不然怎么保证安全
 
-<img src="https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904111206863.png" alt="image-20230904111206863" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/aa49dd77807448148854e607fbf2863b.png" alt="image-20230904111206863" style="zoom:80%;" />
 
 我们来看另一个函数`utimes`
 
@@ -2768,7 +2768,7 @@ int main() {
 
 文件长度被截断为0，如果我们不修改，那么时间会被自动更新，但是我们修改了，成功：
 
-![image-20230904133117860](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904133117860.png)
+![image-20230904133117860](https://img-blog.csdnimg.cn/direct/bda30d6d61594448971bc8d94038ebb7.png)
 
 ## 函数mkdir，mkdirat和rmdir
 
@@ -2845,7 +2845,7 @@ int main() {
 
 执行过后目录项是这样：
 
-![image-20230904155757324](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904155757324.png)
+![image-20230904155757324](https://img-blog.csdnimg.cn/direct/7c91ad49ff2c4fd1aad2a916b4799ff7.png)
 
 ~~~cpp
 // rmdir.cpp
@@ -2869,7 +2869,7 @@ int main() {
 
 可以看出没办法删除非空目录
 
-![image-20230904155841171](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904155841171.png)
+![image-20230904155841171](https://img-blog.csdnimg.cn/direct/4841969bbbad4367955137cf63bedc2b.png)
 
 #### 补充
 
@@ -2963,7 +2963,7 @@ int fchdir(int fd);
 
 我的目录情况：
 
-![image-20230904170648902](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904170648902.png)
+![image-20230904170648902](https://img-blog.csdnimg.cn/direct/ba09ad84ff084b36abc627c5295006cc.png)
 
 代码：
 
@@ -3007,13 +3007,13 @@ int main() {
 
 写入成功，没有问题
 
-![image-20230904170803393](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904170803393.png)
+![image-20230904170803393](https://img-blog.csdnimg.cn/direct/0073a7ba71ed4b8f8f8c43c3aacc9115.png)
 
 #### 思考
 
 在这里我们通过`shell`终端启动了一个进程来修改工作目录，注意修改的工作目录只是这个进程的，我们终端的工作目录并没有修改哦，这一点从终端提示符或者`pwd`命令都可以看出来：
 
-![image-20230904170951129](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904170951129.png)
+![image-20230904170951129](https://img-blog.csdnimg.cn/direct/dbfd4131735f4aa5aeb335f467fc7358.png)
 
 并且，我最开始向通过向标准输出重定向，就是这样：
 
@@ -3046,7 +3046,7 @@ char *getcwd(char *buf, size_t size);
 
 **对于当前的目录，我们目录项中记录的是`./`，而不是目录名字，当前目录的名字是由上一级目录中保存的，但是二者的`Inode`是相同的(但是二者不是链接关系，是同一个，链接数也是1，`./`目录比较特殊)，这样查询就能找到当即目录的名字，循环反复遇到根就找到了**
 
-![image-20230904171646868](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904171646868.png)
+![image-20230904171646868](https://img-blog.csdnimg.cn/direct/5a5dce6afbe546c8b9277c121f297288.png)
 
 我后续一定要自己实现一下`getcwd`这个函数
 
@@ -3060,19 +3060,19 @@ char *getcwd(char *buf, size_t size);
 
 这个不是很重要，我也没看懂，截图吧
 
-![image-20230904172357819](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904172357819.png)
+![image-20230904172357819](https://img-blog.csdnimg.cn/direct/62b4a5a91ada443394167b03a0b97aa1.png)
 
-![image-20230904172404121](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904172404121.png)
+![image-20230904172404121](https://img-blog.csdnimg.cn/direct/757f73f150b54ca893058803ecfdc5a2.png)
 
-![image-20230904172411254](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904172411254.png)
+![image-20230904172411254](https://img-blog.csdnimg.cn/direct/3d6a299a414d40738cec22ea32bb1c9c.png)
 
 ## 文件访问权限位小结
 
 如下：
 
-![image-20230904172514551](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904172514551.png)
+![image-20230904172514551](https://img-blog.csdnimg.cn/direct/2f22f01c00b547619667fa040cea3b80.png)
 
-![image-20230904172520134](https://cdn.jsdelivr.net/gh/DavidingPlus/typora_images@main/imgs/image-20230904172520134.png)
+![image-20230904172520134](https://img-blog.csdnimg.cn/direct/959e9f81579043dcb1e0979bfd3dd43b.png)
 
 # 第五章 标准`I/O`
 
