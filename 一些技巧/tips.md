@@ -223,6 +223,8 @@
   - [https://zhuanlan.zhihu.com/p/35283688](https://zhuanlan.zhihu.com/p/35283688)
   - [https://zhuanlan.zhihu.com/p/265525597](https://zhuanlan.zhihu.com/p/265525597)
 
+- zsh推荐字体：[https://gitee.com/keyboardkiller/MesloLGS_NF](https://gitee.com/keyboardkiller/MesloLGS_NF)
+
 - zsh安装好用插件
 
   - [https://blog.csdn.net/qq_41996454/article/details/102640653](https://blog.csdn.net/qq_41996454/article/details/102640653)

@@ -4,7 +4,7 @@
 
 这是效果图：
 
-<img src="https://i-blog.csdnimg.cn/direct/ed34193b9fb044ab8de7ae188f617972.png" alt="59cb53826fcba1602fd3769171f5f127" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/69a40467c7b144a2a2c1fa9aa0725b43.png" alt="59cb53826fcba1602fd3769171f5f127" style="zoom:67%;" />
 
 # 安装Cairo库
 
@@ -91,3 +91,4 @@ int main()
 }
 
 ```
+
