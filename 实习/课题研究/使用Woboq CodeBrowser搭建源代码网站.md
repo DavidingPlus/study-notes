@@ -55,7 +55,7 @@ sudo make install # 必要加上 sudo
 
 接下来以`googletest-1.12.1`为例，展示如何使用这个工具构建静态的源代码网站。
 
-## 关于compile_commands.json
+## 生成compile_commands.json
 
 `compile_commands.json`文件是一种特定格式的[compilation database](https://sarcasm.github.io/notes/dev/compilation-database.html)文件，而所谓`compilation database`其实很简单，它里面记录的是每一个源码文件在编译时详细的信息（包括文件路径，文件名，编译选项等等）。而`compile_commands.json`文件是[LibTooling](https://clang.llvm.org/docs/LibTooling.html)需要的以`json`格式呈现的`compilation database`文件，以下截取的是`compile_commands.json`中的一个`entry`：
 
@@ -87,14 +87,12 @@ sudo make install # 必要加上 sudo
 
 换句话说，要想使用`Woboq Codebrowser`，必须首先生成`compile_commands.json`文件。如果项目是由`cmake`构建的，那么恭喜你，只需加上`-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`即可。如果是传统的`make build system`也不要担心，`Bear`和`compdb`工具可以帮我们生成`compile_commands.json`文件。
 
-## 使用codebrowser_generator生成html
-
-首先我们拉取`googletest-1.12.1`的源码到本地。源码采用`CMake`工具的管理，这样正好很方便的能帮我们生成`compile_commands.json`。之所以这么推荐`CMake`是因为使用其他的工具可能需要编译整个工程才能生成该文件，费事费力。
+现在让我们一起生成`googletest-1.12.1`项目对应的`compile_commands.json`。首先我们拉取`googletest-1.12.1`的源码到本地。源码采用`CMake`工具的管理，这样正好很方便的能帮我们生成`compile_commands.json`。之所以这么推荐`CMake`是因为使用其他的工具可能需要编译整个工程才能生成该文件，费事费力。
 
 因为我是`C++11`标准的环境，因此需要使用的版本是`1.12.1`，切换到对应的`tag`。当然直接下载对应的`release`源码也行。
 
 ```bash
-git checkout release-1.12.1 # target tag name
+git checkout release-1.12.1 # target tag
 ```
 
 然后我们使用`CMake`工具生成`compile_commands.json`文件，个人建议使用`gcc/g++`编译器。
@@ -108,6 +106,10 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="
 
 在`build`目录下看到`compile_commands.json`文件正确生成即为成功。
 
+## 使用codebrowser_generator生成html
+
+TODO
+
 ## 使用codebrowser_indexgenerator为每个目录生成index.html
 
 TODO
@@ -116,5 +118,5 @@ TODO
 
 1. [https://blog.csdn.net/astrotycoon/article/details/104831055](https://blog.csdn.net/astrotycoon/article/details/104831055)
 2. [https://blog.csdn.net/weixin_42148156/article/details/121727163](https://blog.csdn.net/weixin_42148156/article/details/121727163)
-3. [https://blduan.top/post/工具使用/codebrowser之从浏览器阅读源码/](https://blduan.top/post/工具使用/codebrowser之从浏览器阅读源码/)
+3. [https://blduan.top/post/工具使用/codebrowser之从浏览器阅读源码](https://blduan.top/post/工具使用/codebrowser之从浏览器阅读源码/)
 
