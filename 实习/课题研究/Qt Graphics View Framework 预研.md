@@ -1,4 +1,4 @@
-# Qt Graphics View Framework 调研
+# Qt Graphics View Framework 预研
 
 该架构涉及到的最主要的三个类是`QGraphicsScene`、`QGraphicsView`和`QGraphicsItem`。
 
