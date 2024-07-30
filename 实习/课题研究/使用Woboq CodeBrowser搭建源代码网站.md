@@ -14,7 +14,7 @@
 
 1. 先通过`codebrowser_generator`解析`.h`和`.cpp`生成对应的`.h.html`和`.cpp.html`。
 2. 然后通过`codebrowser_indexgenerator`为所有目录生成 `index.html`。
-3. 最后我们可以把这些HTML文件拷贝到某个`Web`服务器上，就可以在浏览器里愉快地浏览`C/C++`项目的源码了。
+3. 最后我们可以把这些`HTML`文件拷贝到某个`Web`服务器上，就可以在浏览器里愉快地浏览`C/C++`项目的源码了。
 
 # 安装Woboq CodeBrowser工具
 
@@ -34,9 +34,9 @@ git clone https://github.com/KDAB/codebrowser.git
 sudo apt install llvm-14 clang-14 libclang-14-dev
 ```
 
-但是在`Ubuntu20.04`及以下的版本上会出现**定位不到软件包**的问题，官方提供了一个解决方案，参见博客[https://blog.csdn.net/weixin_50749380/article/details/128319851](https://blog.csdn.net/weixin_50749380/article/details/128319851)，这样我们的编译环境就安装好了。
+但是在`Ubuntu20.04`及以下的版本上会出现**定位不到软件包**的问题，官方提供了一个解决方案，参见博客[https://blog.csdn.net/weixin_50749380/article/details/128319851](https://blog.csdn.net/weixin_50749380/article/details/128319851)
 
-紧接着我们需要构建这个项目并且将编译后的文件安装到本地。项目受`CMake`管理，同时参考[官方文档](https://github.com/KDAB/codebrowser/blob/master/README.md)，构建流程就很简单了。
+这样我们的编译环境就安装好了，紧接着我们需要构建这个项目并且将编译后的文件安装到本地。项目受`CMake`管理，同时参考[官方文档](https://github.com/KDAB/codebrowser/blob/master/README.md)，构建流程就很简单了。
 
 ```bash
 mkdir -p build
@@ -87,7 +87,7 @@ sudo make install # 必要加上 sudo
 
 换句话说，要想使用`Woboq Codebrowser`，必须首先生成`compile_commands.json`文件。如果项目是由`cmake`构建的，那么恭喜你，只需加上`-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`即可。如果是传统的`make build system`也不要担心，`Bear`和`compdb`工具可以帮我们生成`compile_commands.json`文件。
 
-现在让我们一起生成`googletest-1.12.1`项目对应的`compile_commands.json`。首先我们拉取`googletest-1.12.1`的源码到本地。源码采用`CMake`工具的管理，这样正好很方便的能帮我们生成`compile_commands.json`。之所以这么推荐`CMake`是因为使用其他的工具可能需要编译整个工程才能生成该文件，费事费力。
+现在让我们一起生成`googletest-1.12.1`项目对应的`compile_commands.json`。首先我们拉取[googletest](https://github.com/google/googletest)的源码到本地。源码采用`CMake`工具的管理，这样正好很方便的能帮我们生成`compile_commands.json`。之所以这么推荐`CMake`是因为使用其他的工具可能需要编译整个工程才能生成该文件，费事费力。
 
 因为我是`C++11`标准的环境，因此需要使用的版本是`1.12.1`，切换到对应的`tag`。当然直接下载对应的`release`源码也行。
 
@@ -108,11 +108,55 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER="gcc" -DCMAKE_CXX_COMPILER="
 
 ## 使用codebrowser_generator生成html
 
-TODO
+`codebrowser_generator`是一个可执行文件，有各种执行参数，说明如下：
+
+- `-a`：处理`compile_commands.json`中的所有文件。如果没有传递这个参数，那么就需要传递要处理的文件列表
+- `-o`：指定文件输出目录
+- `-b`：是指包含`compile_commands.json`的构建目录。如果没有传递这个参数，编译参数可以在`--`后通过命令行传递
+- `-p`：（一个或多个）用于项目规范。即项目的名称、源代码的绝对路径和用冒号分隔的版本信息。示例：`-p projectname:/path/to/source/code:0.3beta`
+- `-d`：指定包含所有`JavaScript`和`CSS`文件的数据`URL`。默认为相对于输出目录的`../data`。示例：`-d https://codebrowser.dev/data/`
+- `-e`：是对外部项目的引用。示例： `-e clang/include/clang:/opt/llvm/include/clang/:https://codebrowser.dev/llvm`
+
+例如，对于当前`googletest-1.12.1`项目，一条合适的命令可能是这样的：
+
+```bash
+codebrowser_generator -b ./compile_commands.json -a -p googletest-1.12.1:"${PWD}/..":1.12.1 -o ./docs -d ../data
+```
+
+执行完的结果是这样的：
+
+![image-20240730153744964](https://img-blog.csdnimg.cn/direct/47b9a1a10d0b4aaf87e1e2b835087c2d.png)
+
+需要注意的是，上面的操作都是在根目录的`build`构建目录执行的，这也是`CMake`用户的构建习惯。
+
+同时，`-o ./docs`代表文件输出在`build/docs`中，`-d ../data`是指定资源文件的相对路径，代表资源文件位于生成目录`docs`的父级目录。至于为什么是`../data`，后面会详细解释。安装好`Woboq CodeBrowser`工具以后`data`目录会被安装在`/usr/local/share/woboq/data`，将其拷贝为`build/data`即可。
 
 ## 使用codebrowser_indexgenerator为每个目录生成index.html
 
-TODO
+`codebrowser_indexgenerator`同样有很多执行参数，说明如下：
+
+- `-p`：（一个或多个）用于项目规范。即项目的名称、源代码的绝对路径和用冒号分隔的版本信息。示例：`-p projectname:/path/to/source/code:0.3beta`
+- `-d`：指定包含所有`JavaScript`和`CSS`文件的数据`URL`。默认为相对于输出目录的 `../data`。示例：`-d https://codebrowser.dev/data/`
+
+同样执行类似命令：
+
+```bash
+codebrowser_indexgenerator ./docs -d ../data
+```
+
+类似执行结果如下，可以看到每个目录对应都有了`index.html`。
+
+![image-20240730154020528](https://img-blog.csdnimg.cn/direct/751c1044f6634e07bdb528665bb44ac4.png)
+
+## 关于-d参数以及资源文件
+
+上面提到，为什么我使用的是`-d ../data`呢？我们先弄清楚`data`目录是干嘛的。
+
+`data`目录存放着前端代码需要的资源文件，例如`CSS`、`JS`和图片资源等。因此需要指明这个目录的路径，绝对路径或者相对路径。由于我的[code-browser](https://github.com/DavidingPlus/code-browser/)项目需要存放很多库的源代码，因此我将`data`目录统一在根目录中，每个库的源代码对应一个自己的子目录，因此最终的结果是这样的：
+
+![image-20240730154929638](https://img-blog.csdnimg.cn/direct/b9a94d7a734a4e69afbddae5588900a4.png)
+
+这样就能正确定位到资源文件的路径了，`codebrowser_generator`生成的`html`文件同理。用户使用自己的习惯和方式即可。
 
 # 参考文档
 
