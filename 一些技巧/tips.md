@@ -49,9 +49,13 @@
     - [https://blog.dejavu.moe/posts/windows-scoop](https://blog.dejavu.moe/posts/windows-scoop)
     - 推荐使用第二个，使用管理员打开powershell，注意区分开**用户本身和全局安装的路径**
     - 若最后一步提示管理员权限失败，参考：[https://stackoverflow.com/questions/74763204/installing-scoop-fails-running-the-installer-as-administrator-is-disabled-by-d](https://stackoverflow.com/questions/74763204/installing-scoop-fails-running-the-installer-as-administrator-is-disabled-by-d)
+  - 关于`Hash Check Failed`问题：加`-s`参数，详见[https://github.com/lzwme/scoop-proxy-cn/blob/main/README.md#关于-hash-check-failed-的问题](https://github.com/lzwme/scoop-proxy-cn/blob/main/README.md#关于-hash-check-failed-的问题)
   - 换国内的`scoop`更新源
     - `scoop config SCOOP_REPO https://gitee.com/scoop-bucket/scoop.git`
-  - 换国内`bucket`的`scoop-cn`源：[https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
+  - 换国内`bucket`的`scoop-cn`源
+    - 参照两个`github`仓库链接配置即可，推荐使用第一个，数量更齐全
+    - [https://github.com/lzwme/scoop-proxy-cn](https://github.com/lzwme/scoop-proxy-cn)
+    - [https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
     - 为了保险，将这个`bucket`的名字设置为`main`，防止`update`的时候报`no bucket main`的错误
   - 用`scoop`安装`oh-my-posh`：[https://sspai.com/post/69911](https://sspai.com/post/69911)
   - `scoop`可以安装`aria2`加快下载速度，但是不建议自定义其配置，用默认就行
@@ -69,6 +73,11 @@
 
   - 相关powershell配置文件见`.\oh-my-posh-theme\Microsoft.PowerShell_profile.ps1`，将其拷贝到`~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
   - 在windows中添加alias命令别名：[https://zhuanlan.zhihu.com/p/74881435](https://zhuanlan.zhihu.com/p/74881435)
+
+- bandizip安装
+
+  - 6.25绿色专业版，有右键菜单：[https://www.52pojie.cn/thread-1477693-1-1.html](https://www.52pojie.cn/thread-1477693-1-1.html)
+  - 不推荐使用Scoop包管理器安装，因为是便携版，没有右键菜单
 
 - pip安装报错
 
@@ -306,4 +315,11 @@
   ```powershell
   mklink /j "C:\Program Files\Microsoft Office" "D:\Program Files\Microsoft Office"
   ```
+  
+- idm绿色版下载：[https://www.bilibili.com/read/cv35705140/](https://www.bilibili.com/read/cv35705140/)
+
+- windows配置命令别名alias：[https://segmentfault.com/a/1190000015928399](https://segmentfault.com/a/1190000015928399)
+
+- vmware workstation pro个人版安装：[https://blogs.vmware.com/workstation/2024/05/vmware-workstation-pro-now-available-free-for-personal-use.html](https://blogs.vmware.com/workstation/2024/05/vmware-workstation-pro-now-available-free-for-personal-use.html)
+
 
