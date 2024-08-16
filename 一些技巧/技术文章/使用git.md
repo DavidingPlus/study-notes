@@ -1,4 +1,4 @@
-# 使用git
+本文是一个`使用git`的简要总结。
 
 - 准备工作，`git`配置`ssh`：[https://blog.csdn.net/lqlqlq007/article/details/78983879](https://blog.csdn.net/lqlqlq007/article/details/78983879)
 
