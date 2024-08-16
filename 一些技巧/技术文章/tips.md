@@ -36,6 +36,10 @@
 
 - code中列出所有的插件列表：`code --list-extensions`
 
+  - 以下的`VS Code`插件都不适合升到最高版本，可能会出现各种各样的问题，下面是推荐的版本：
+    - `C++`：`1.18.5`
+    - `CMake Tools`：`1.16.32`
+
 - gcc不同版本的切换：[https://www.jianshu.com/p/f66eed3a3a25](https://www.jianshu.com/p/f66eed3a3a25)
 
 - 彻底卸载计算机中的python：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
