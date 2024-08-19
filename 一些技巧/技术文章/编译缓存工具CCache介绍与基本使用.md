@@ -123,7 +123,7 @@ ccache -p | grep max_size
 
 注意这里对`max_size`的配置已经被写入了自动建立的配置文件中。
 
-> 关于配置项的完整说明，参见[官网手册](https://ccache.dev/manual/4.10.2.html#_configuration_options)。
+> 关于配置项的完整说明，参见[官网手册](https://ccache.dev/manual/4.10.2.html#_configuration_options)
 
 ## 使用
 
@@ -189,9 +189,67 @@ set (CMAKE_C_COMPILER "gcc")
 set (CMAKE_CXX_COMPILER "g++")
 ```
 
-## Windows平台适配
+# Windows平台适配
 
-TODO
+`CCache`当然在`Windows`上使用，只是配置稍微有些麻烦。
+
+在`Windows`中安装`C/C++`编译环境有几种选择。可以安装微软提供的`VS`全家桶，也就是`MSVC`编译器。也可以安装跨平台编译器`gcc`，当然大部分情况是服务于`linux`的。或者安装`GNU`项目专门为了在`Windows`上使用以`gcc`为核心组件的`GNU`工具链而研发的`Mingw`工具。这几个的区别和联系可以参考文章：[https://blog.csdn.net/qq_29495615/article/details/133365562](https://blog.csdn.net/qq_29495615/article/details/133365562)
+
+安装`MSVC`推荐去[微软官方](https://visualstudio.microsoft.com/vs/)下载，安装`gcc`或者`Mingw`推荐使用`Scoop`包管理器进行安装，具体请自行研究。
+
+前面在`Linux`上配置`CCache`的时候，我们配置软链接对`gcc`和`g++`命令做了劫持。在`Windows`上不太好做到这一点，我也没有具体尝试过，因此这里将以`MSVC`编译器为例进行配置。在`github`上有相关文章介绍：[https://github.com/ccache/ccache/wiki/MS-Visual-Studio](https://github.com/ccache/ccache/wiki/MS-Visual-Studio)，以下均基于此文章进行总结。
+
+## 配置环境变量
+
+在官网下载下来的`CCache`压缩包，例如`ccache-4.10.2-windows-x86_64.zip`，解压下来以后默认是不具有环境变量的性质的。也就是没有办法直接在命令行使用`CCache`命令，因此需要配置用户变量或者系统变量。具体配置请自行查阅资料。
+
+配置环境变量也是为了能正确被`VS`或者`CMake`找到可执行文件的位置，方便后续的操作。配置好以后，像前面一样，输入`ccache -p`或者其他命令应该会得到预期结果。
+
+> 注意，如果你使用了 Scoop 或者 Chocolatey 等 Windows 上的包管理器，请不要使用它们安装 CCache，后文会提到原因。请从官网下载压缩包解压，并且配置环境变量。
+
+## 选择方案
+
+文章中给出了两个方案，一个是**伪装成编译器**，一个是**编写包装脚本**，如图所示：
+
+<img src="https://img-blog.csdnimg.cn/direct/3258f717fa7040aeb3ac90a5495bad83.png" alt="image-20240819160359910" style="zoom: 60%;" />
+
+一般我们的`C/C++`项目都是使用`CMake`进行管理的，因此伪装成编译器的可行性更大一些，也和前面的劫持`gcc/g++`命令似乎有着异曲同工之妙。
+
+> 留意第一个方案，文章提到使用包管理安装的 CCache ，没有配置环境变量，但是使用命令行能正常使用，原因就是因为包管理器能找到其可执行文件对应的**符号链接**，这也是原文提到的 shim executable，更深入可以参考文章[https://docs.chocolatey.org/en-us/features/shim/](https://docs.chocolatey.org/en-us/features/shim/)。在这种情况下，拷贝下来的是一个符号链接而不是可执行文件本体，在后续的使用中会出现问题。如果手动配置的话也可能出现环境变量冲突的问题。这也就解释了前文提到的一定要手动去官网下载而不使用包管理器。
+
+## 在CMake中配置
+
+文章中给出了在`VS`和`CMake`的两种配置方法，当然这里采用`CMake`的方式，官网也给出了代码：
+
+<img src="https://img-blog.csdnimg.cn/direct/ca3251ea283444349d33a2e15e888d20.png" alt="image-20240819160710904" style="zoom:60%;" />
+
+这个配置的含义和方案一是一样的，将`CCache`可执行文件拷贝到`CMake`的构建目录，即`build`，然后将`ccache.exe`重命名为`cl.exe`。`cl.exe`即为`MSVC`编译器的可执行文件的名称，即做到了伪装编译器的功能。
+
+留意到原文中注释的提醒，打开`/Z7`编译参数并做了一些小修改，最终的`CMake`配置应该是这样的，这样无论有无`CCache`，配置都能正常进行。
+
+```cmake
+# configure compiler MSVC with Ccache
+add_compile_options ("/Z7")
+
+find_program (CCACHE_EXECUTABLE ccache)
+if (CCACHE_EXECUTABLE)
+    message ("-- Ccache executable found at: ${CCACHE_EXECUTABLE}")
+    file (COPY "${CCACHE_EXECUTABLE}" DESTINATION "${PROJECT_BINARY_DIR}")
+    file (RENAME "${PROJECT_BINARY_DIR}/ccache.exe" "${PROJECT_BINARY_DIR}/cl.exe")
+    set (CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+    set (CMAKE_VS_GLOBALS
+        "CLToolExe=cl.exe"
+        "CLToolPath=${PROJECT_BINARY_DIR}"
+        "TrackFileAccess=false"
+        "UseMultiToolTask=true"
+        "DebugInformationFormat=OldStyle"
+    )
+
+else ()
+    message ("-- CCache not found.")
+
+endif ()
+```
 
 # 体验CCache编译缓存
 
@@ -216,7 +274,11 @@ ccache -s
 
 由于编译缓存归于`CCache`管理，因此即使你完全删除了构建目录（在`build`里面`rm -rf *`之类的），下一次`make`的时候同样可以享受编译缓存带来的加速体验。以上便是`CCache`基本的本地使用方式。事实上`CCache`还支持网络使用、跨用户共享等高级功能，这超出了本文的介绍范围。关于`CCache`的高级使用，还请参阅官方文档。
 
-# 参考资料
+# 参考文档
 
 1. [CCache 官网](https://ccache.dev/)
+
+2. [MS-Visual-Studio](https://github.com/ccache/ccache/wiki/MS-Visual-Studio)
+
+3. [Executable shimming (like symlinks but better)](https://docs.chocolatey.org/en-us/features/shim/)
 
