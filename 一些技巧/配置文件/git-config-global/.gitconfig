@@ -1,0 +1,7 @@
+[user]
+	email = davidingplus@qq.com
+	name = DavidingPlus
+[core]
+	ignorecase = false
+	quotepath = false
+	editor = vim
