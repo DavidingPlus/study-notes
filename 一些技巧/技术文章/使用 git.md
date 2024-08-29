@@ -75,6 +75,8 @@
 - git 仓库的默认分支修改以后，最好同步将 origin/HEAD 同步修改，和 git 仓库的默认分支保持一致，否则在 fetch 和 pull 的时候可能会出现奇奇怪怪的问题：git remote set-head origin <branch>
 - git 中 tag 的使用：[https://blog.csdn.net/qq_39505245/article/details/124705850](https://blog.csdn.net/qq_39505245/article/details/124705850)
 - git status 不能显示中文：[https://blog.csdn.net/u012145252/article/details/81775362](https://blog.csdn.net/u012145252/article/details/81775362)
+- git lfs 的使用: [https://zhuanlan.zhihu.com/p/106295945](https://zhuanlan.zhihu.com/p/106295945)
+- git 项目文件大小优化（去除大文件）：[https://www.cnblogs.com/fuhua/p/15527023.html](https://www.cnblogs.com/fuhua/p/15527023.html)
 
 # TODO LIST
 
