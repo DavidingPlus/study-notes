@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: Copy files
     runs-on: ubuntu-latest
 
     steps:
@@ -14,11 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 构建（其实就是拷贝一些文件）
-      - name: Copy files to public
+      # 安装 jq 工具
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      # 构建，根据 map.json 拷贝文件，路径都是都对项目根目录的路径
+      - name: Copy files to directory public
         run: |
-          mkdir public
-          cp README.md public/README.md
+          mkdir -p public
+          cat map.json | jq -r 'to_entries[] | "cp \(.key) \(.value)"' | sh
 
       # 上传构建产物
       - name: Upload artifacts
@@ -48,6 +53,5 @@ jobs:
           build_dir: dists
           keep_history: false # 开启以后虽然会有 git 历史，但是无法在部署分支自动清理本该删除的文件，个人觉得不舒服，所以关了。
           allow_empty_commit: false
-          # fqdn: xxx 自定义域名
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
