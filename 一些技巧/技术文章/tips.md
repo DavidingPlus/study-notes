@@ -1,3 +1,14 @@
+---
+title: tips
+categories:
+  - 一些技巧
+abbrlink: 642c4108
+date: 2024-06-26 16:05:00
+updated: 2024-09-10 21:50:00
+---
+
+<meta name="referrer" content="no-referrer"/>
+
 本文总结了工作过程中可能遇到的各种问题的解决方法的链接。
 
 - typora破解版下载链接：[https://blog.csdn.net/weixin_43580824/article/details/131371951](https://blog.csdn.net/weixin_43580824/article/details/131371951)
@@ -12,6 +23,7 @@
 
     - [https://blog.csdn.net/qq_29856169/article/details/119617736](https://blog.csdn.net/qq_29856169/article/details/119617736)
 
+<!-- more -->
 
   ```json
   {

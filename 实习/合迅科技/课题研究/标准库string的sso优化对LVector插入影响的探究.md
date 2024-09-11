@@ -1,4 +1,17 @@
-# 标准库string的sso优化对LVector插入影响的探究
+---
+title: 标准库string的sso优化对LVector插入影响的探究
+categories:
+  - 实习
+  - 合迅科技
+  - 课题研究
+abbrlink: b67fd3f4
+date: 2024-02-28 17:55:00
+updated: 2024-02-29 10:15:00
+---
+
+<meta name="referrer" content="no-referrer"/>
+
+钟老师让自己的做的一个课题研究，主题是`标准库string的sso优化对LVector插入的影响`。
 
 # 问题背景
 
@@ -9,6 +22,8 @@
 标准库的`std::string`其实是做了优化的，不同的编译器实现的细节可能不同，但是基本的大思路框架都是一样的。
 
 注：以下都是理论上的思路分析，具体的底层代码请自行查阅资料。
+
+<!-- more -->
 
 ## 基本内存模型
 

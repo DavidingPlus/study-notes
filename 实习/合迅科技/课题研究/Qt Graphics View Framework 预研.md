@@ -1,4 +1,15 @@
-# Qt Graphics View Framework 预研
+---
+title: Qt Graphics View Framework 预研
+categories:
+  - 实习
+  - 合迅科技
+  - 课题研究
+abbrlink: e2c22a62
+date: 2024-07-19 15:10:00
+updated: 2024-07-19 15:10:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 该架构涉及到的最主要的三个类是`QGraphicsScene`、`QGraphicsView`和`QGraphicsItem`。
 
@@ -7,6 +18,8 @@
 1. 绘制流程（`QGraphicsItem`->`QGraphicsScene`->`QGraphicsView`）
 
    `QGraphicsItem`当中保存了自身的“场景坐标”供`QGraphicsScene`进行管理。在绘制时，由`QGraphicsView`对象调用渲染方法，根据自身所设置的可视化相关属性，基于“视图坐标”确定将要绘制的`QGraphicsScene`当中有哪一部分“场景坐标”内的图元需要渲染，随后通过`QGraphicsScene`提供的方法，将属于这部分“场景坐标”内的图元(也就是`QGraphicsItem`)全部找出，并渲染这些图元到可视化`viewport`中。
+
+<!-- more -->
 
 2. 事件流转（`QGraphicsView`->`QGraphicsScene`->`QGraphicsItem`）
 

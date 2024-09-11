@@ -1,8 +1,19 @@
-# Linux
+---
+title: 牛客Linux
+categories:
+  - Linux学习
+abbrlink: 2adb5565
+date: 2023-09-21 01:00:00
+updated: 2023-09-21 01:00:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 # 学习路线
 
 ![image-20230712153227763](https://img-blog.csdnimg.cn/f9569f3266e1419798595a3d39830138.png)
+
+<!-- more -->
 
 # 第一章 Linux系统编程入门
 

@@ -1,4 +1,13 @@
-# UNIX环境高级编程
+---
+title: UNIX环境高级编程
+categories:
+  - Linux学习
+abbrlink: 9e44c3b9
+date: 2024-06-20 23:05:00
+updated: 2024-06-20 23:05:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 # 第一章 UNIX基础知识
 
@@ -9,6 +18,8 @@
 以下是UNIX系统的体系结构图：
 
 ![image-20230827151538210](https://img-blog.csdnimg.cn/62a333cde5004147b09e2b318c6c6ca7.png)
+
+<!-- more -->
 
 内核的接口被称为**系统调用**，公共函数库，比如C语言的C runtime library就是依托在操作系统提供的API上的，这导致C语言的标准库能够完美适配各种系统，我们的程序既可以使用公共函数库，也可以使用操作系统的API，也就是系统调用
 
