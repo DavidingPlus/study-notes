@@ -23,7 +23,7 @@ jobs:
       - name: Copy files to directory public
         run: |
           mkdir -p public
-          cat map.json | jq -r 'to_entries[] | "cp \(.key) \(.value)"' | sh
+          cat .github/workflows/map.json | jq -r 'to_entries[] | "cp \(.key) \(.value)"' | sh
 
       # 上传构建产物
       - name: Upload artifacts
