@@ -78,6 +78,7 @@ jobs:
           repository: DavidingPlus/blog
           ref: master
           path: blog
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       # 进行同步
       - name: Sync posts to source/_posts
@@ -93,9 +94,6 @@ jobs:
           git add source/_posts/
           git commit -m "Sync posts from repo study-notes"
           git push origin master
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       # 触发 blog 的工作流
       # - name: Trigger action in branch master
