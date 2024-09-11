@@ -1,4 +1,13 @@
-# 搭建自己的 teamspeak 服务器
+---
+title: 搭建自己的 teamspeak 服务器
+categories:
+  - 一些技巧
+abbrlink: eb8579d8
+date: 2024-08-16 19:46:14
+updated: 2024-08-20 14:10:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 # 前言
 
@@ -9,6 +18,8 @@ teamspeak 是一款开源、轻量的语音软件，这是它的[官网](https:/
 > 其实 [kook](https://www.kookapp.cn/) 也不错，但是 ts 更轻量，我个人感觉用起来也更舒服。
 >
 > 啊？你问为什么不用 [discord](https://discord.com/) 。你说为什么，谁打个游戏聊个天还需要翻墙才行？
+
+<!-- more -->
 
 ts 官方提供了服务器租赁的服务，根据租赁时间和服务器最大人数设有不同的价位，国内的话具体[点击这里](https://ts3.com.cn/price)进行查看。但是作为一个码农，既然 ts 是开源的，并且我可以自己下载 server 部署，那我为什么不自己搭建一个 ts 服务器呢？将其搭建在自己的服务器上，不就可以和朋友们一起愉快的玩耍了吗？
 

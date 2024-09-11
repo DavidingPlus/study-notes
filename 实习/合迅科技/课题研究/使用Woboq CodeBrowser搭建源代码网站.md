@@ -1,10 +1,23 @@
-# 使用Woboq CodeBrowser搭建源代码网站
+---
+title: 使用Woboq CodeBrowser搭建源代码网站
+categories:
+  - 实习
+  - 合迅科技
+  - 课题研究
+abbrlink: 25ed761b
+date: 2024-07-18 21:20:00
+updated: 2024-07-30 16:00:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 # 背景
 
 在日常学习工作中，我们不免需要浏览一些库的源码。在本地浏览源代码，例如使用`Source Insight`，当然是可以的，但问题是一是不方便，二是很多库下载下来是以头文件配合静态库或动态库的形式存在的，看不到`cpp`代码，因此阅读会受限。现在`Web`技术高速发展，有没有办法用网页直接查看源代码，并且还有类似于`Code`的代码跳转功能呢？换句话说，如何把`C/C++`代码转化为前端页面，并且最好是静态的前端页面，就是一个难题了。
 
 幸运的是，`github`上有人提前考虑到了这件事情，并且有了具体的[项目](https://github.com/KDAB/codebrowser)，已经有`1k`多的`star`。并且原作者还基于这个框架弄出了一个在线的[源代码网站](https://codebrowser.dev/)，方便开发者查看各个`C/C++`库的源代码，例如`Qt`、`GCC`、`Linux Kernel`、`GNU C Library`等。
+
+<!-- more -->
 
 那么问题来了，都有在线的网站了为什么还要自己搭建一个呢？原因就是这个网站在国内被墙了。有人会说？开梯子啊，不是每个节点都能上，我嫌他烦，因此决定自己搭建一个源代码网站一劳永逸。我的源码网站地址：[https://davidingplus.github.io/code-browser/](https://davidingplus.github.io/code-browser/)
 

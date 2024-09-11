@@ -1,6 +1,23 @@
+---
+title: LDir和LFileInfo的语义和设计
+categories:
+  - 实习
+  - 合迅科技
+  - 课题研究
+abbrlink: '567667e8'
+date: 2024-04-15 21:55:00
+updated: 2024-06-05 23:30:00
+---
+
+<meta name="referrer" content="no-referrer"/>
+
+`LarkSDK`中`FileSystem`中关于`LDir和LFileInfo的语义和设计`的总结。
+
 # 语义明确
 
 ​	`QDir`和`QFileInfo`的语义一直以来都比较令人费解。我们知道文件和目录的关系是：目录是一种特殊的文件。按照`QDir`和`QFileInfo`的命名来讲，应该是`QDir`管理目录，`QFileInfo`管理文件，但是实际上这两个类的功能是非常混乱的，`QDir`可以操作文件，`QFileInfo`也可以操作目录。而初版的`LDir`和`LFileInfo`也是完全按照QT的思维走的，因此导致该部分的语义非常混乱，让我们和用户感到非常费解。
+
+<!-- more -->
 
 ​	注意，该任务不包括`LFile`的部分，只关心`LDir`和`LFileInfo`的语义和设计问题。`LFile`是一类，需要通过`IO`进行文件操作，类似于`IODevice`。而`LDir`和`LFileInfo`是一类。
 
@@ -125,7 +142,6 @@
      - `owner()`：返回当前文件或目录的所有者
      - `setPermission(LPermission permisson)`：设置当前文件或目录的权限
      - `permission()`：返回当前文件或目录的权限
-     
 
 5. 后续维护任务归纳。
 

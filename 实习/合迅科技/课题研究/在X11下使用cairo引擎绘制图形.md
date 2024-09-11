@@ -1,10 +1,24 @@
-# 在X11下使用Cairo引擎绘制图形
+---
+title: 在X11下使用Cairo引擎绘制图形
+categories:
+  - 实习
+  - 合迅科技
+  - 课题研究
+abbrlink: f29dfbb5
+date: 2024-07-02 18:30:00
+updated: 2024-07-16 16:30:00
+top: 2
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 `cairo`是一个方便和高性能的第三方`C`库。它可以作为绘制引擎，帮助我们绘制各种图形，并且提供多种输出方式。本文将在`Linux`下结合`X11`图形显示协议绘制简单的图形。
 
 这是效果图：
 
 <img src="https://img-blog.csdnimg.cn/direct/69a40467c7b144a2a2c1fa9aa0725b43.png" alt="59cb53826fcba1602fd3769171f5f127" style="zoom:67%;" />
+
+<!-- more -->
 
 # 安装Cairo库
 

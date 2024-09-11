@@ -1,4 +1,13 @@
-# C++ Primer
+---
+title: C++ Primer
+categories:
+  - Cpp学习
+abbrlink: d23e5b67
+date: 2024-06-20 23:15:00
+updated: 2024-06-20 23:15:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 # 第一章 开始
 
@@ -12,6 +21,8 @@ return 0;
 ```
 
 每个C++程序都包含一个或多个函数，其中一个必须命名为main.
+
+<!-- more -->
 
 ## 初识输入输出
 

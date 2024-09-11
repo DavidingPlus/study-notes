@@ -1,15 +1,27 @@
-# 使用 git
+---
+title: 使用 git
+categories:
+  - 一些技巧
+abbrlink: 13ca1b18
+date: 2024-04-24 20:15:00
+updated: 2024-08-29 19:25:00
+---
+
+<meta name="referrer" content="no-referrer"/>
 
 本文是一个使用 git 的简要总结。
 
 - 准备工作，git 配置 ssh：[https://blog.csdn.net/lqlqlq007/article/details/78983879](https://blog.csdn.net/lqlqlq007/article/details/78983879)
 - 第一次拉取，以 github 服务器为例，其他服务器将 github.com 替换成为对应的 IP 或者域名：git clone git@github.com:xxx/xxx.git 前面写用户名，后面写仓库名称；拉取之后会把 github 上的目录拉取到本地，在目录当中会有一个 .git/ 隐藏文件夹，不要动它，这是自动生成的配置
+
+<!-- more -->
+
 - 后续的拉取：
 
   - git pull
 - 后续提交按照顺序：
-    - git add . 
-    - 将所有的文件放到暂存区，这个时候可以用 git status 查看文件状态，已经放到暂存区
+  - git add . 
+  - 将所有的文件放到暂存区，这个时候可以用 git status 查看文件状态，已经放到暂存区
 - git commit -m "xxx"
 
   - 使用 git commit 提交文件，此时提交的修改仍然存储在本地，并没有上传到远程服务器。-m 后为此次提交的说明，解释做了哪些修改，方便他人理解
@@ -21,10 +33,10 @@
   - git branch 查看现在项目处于哪个分支
   - git checkout master 切换到指定的分支，我这里指定的是 master
 - git 新建分支
-    - git checkout -b <branch>：保留当前分支的 commit 历史，开一个新分支，这时候 merge 原分支是最新的
-    - git checkout --orphan <branch>：开一个没有 commit 历史的独立分支，这两个分支是独立的
-    - 在实际工作中，用第一个保留历史的最好，因为独立分支的话，后续应用主分支的修改还要 merge，就会把该分支第一次的 commit 全 merge 过来，效果和第一个一样，但是更费力，不推荐，除非是功能不相干的分支，使用第二个比较好
-    - 最终 push 到远端的时候需要显式指定分支，这里最好加上都 -u 参数
+  - git checkout -b <branch>：保留当前分支的 commit 历史，开一个新分支，这时候 merge 原分支是最新的
+  - git checkout --orphan <branch>：开一个没有 commit 历史的独立分支，这两个分支是独立的
+  - 在实际工作中，用第一个保留历史的最好，因为独立分支的话，后续应用主分支的修改还要 merge，就会把该分支第一次的 commit 全 merge 过来，效果和第一个一样，但是更费力，不推荐，除非是功能不相干的分支，使用第二个比较好
+  - 最终 push 到远端的时候需要显式指定分支，这里最好加上都 -u 参数
 - 恢复修改 M 和删除 D 的文件：git chekcout .
 - 删除未追踪 U 的文件：git clean -fd
   - 参考链接：[https://blog.csdn.net/zhu_superman/article/details/136326154](https://blog.csdn.net/zhu_superman/article/details/136326154)
@@ -43,34 +55,34 @@
   - git push -f -u origin <branch>，-f 参数表示强制推送，这样会覆盖回退的版本到最新版本之间的所有 commit，直接到达最新提交的 commit；所以 -f 参数还是慎用，否则把别人的工作干掉了得不偿失，尽量还是拉取合并解决冲突吧
 - git 在合并的时候全部采用某一端的文件：[https://blog.csdn.net/chaiyu2002/article/details/83791671](https://blog.csdn.net/chaiyu2002/article/details/83791671)
 
-    - merge 的时候加上采用传入端或者本端
-        - 采用传入修改：git merge <branch> --strategy-option theirs
-        
-        - 采用本地修改：git merge <branch> --strategy-option ours
-        
-    - 如果显示 unrelated histories，在后面加上 --allow-unrelated-histories
+  - merge 的时候加上采用传入端或者本端
+    - 采用传入修改：git merge <branch> --strategy-option theirs
 
-    - 同理 git pull 在冲突需要合并的时候也可以采取这样的方法
+    - 采用本地修改：git merge <branch> --strategy-option ours
+
+  - 如果显示 unrelated histories，在后面加上 --allow-unrelated-histories
+
+  - 同理 git pull 在冲突需要合并的时候也可以采取这样的方法
 - git 同步远程已删除的分支和删除本地多余的分支：[https://www.cnblogs.com/saysmy/p/9166331.html](https://www.cnblogs.com/saysmy/p/9166331.html)
-    - 查看本地分支和追踪情况：git remote show origin
-    - 同步远程已删除的分支：git remote prune origin
-    - 删除本地分支：git branch -D <branch>
+  - 查看本地分支和追踪情况：git remote show origin
+  - 同步远程已删除的分支：git remote prune origin
+  - 删除本地分支：git branch -D <branch>
 - git 删除远程分支：git push origin --delete <branch>
 - git 重命名分支
 
-    - 重命名本地分支：git branch -m <newName>
-    - 如何重命名远程分支？
-        - 首先将本地对应的分支（一般都是与远程分支相同，如果不同请跳过这一步）重命名为想要的名字
-        - 然后将原远程分支删除
-        - 最后重新将本地重命名的分支推送上去即可：git push -u origin <newBranch>
+  - 重命名本地分支：git branch -m <newName>
+  - 如何重命名远程分支？
+    - 首先将本地对应的分支（一般都是与远程分支相同，如果不同请跳过这一步）重命名为想要的名字
+    - 然后将原远程分支删除
+    - 最后重新将本地重命名的分支推送上去即可：git push -u origin <newBranch>
 - git 将 vim 设置为默认编辑器（Linux 下默认的是 nano，用着不太习惯）：git config --global core.editor vim
 - git 指定合并某次的 commit（相当于可以跳过 git tree 中间的一些 commit）：git cherry-pick命令
-    - [https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html](https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html)
-    - [https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html](https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html)
-    - [https://zhuanlan.zhihu.com/p/355413226](https://zhuanlan.zhihu.com/p/355413226)
+  - [https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html](https://geek-docs.com/git/git-questions/1103_git_git_skipping_specific_commits_when_merging.html)
+  - [https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html](https://geek-docs.com/git/git-questions/71_git_git_cherry_picking_with_ourstheirs_strategy.html)
+  - [https://zhuanlan.zhihu.com/p/355413226](https://zhuanlan.zhihu.com/p/355413226)
 - git 报错 fatal: bad object refs/remotes/origin/xxx 的解决方法：[https://www.cnblogs.com/along007/p/17335825.html](https://www.cnblogs.com/along007/p/17335825.html)
 - git 拉取子模块中的所有内容：[https://blog.csdn.net/toopoo/article/details/104225592](https://blog.csdn.net/toopoo/article/details/104225592)
-    - 使用子模块的仓库的例子，boost：[https://github.com/boostorg/boost](https://github.com/boostorg/boost)
+  - 使用子模块的仓库的例子，boost：[https://github.com/boostorg/boost](https://github.com/boostorg/boost)
 - git 报错对象文件为空（object-file-is-empty）的解决方法：[https://blog.csdn.net/syx_1990/article/details/117237631](https://blog.csdn.net/syx_1990/article/details/117237631)
 - git 仓库的默认分支修改以后，最好同步将 origin/HEAD 同步修改，和 git 仓库的默认分支保持一致，否则在 fetch 和 pull 的时候可能会出现奇奇怪怪的问题：git remote set-head origin <branch>
 - git 中 tag 的使用：[https://blog.csdn.net/qq_39505245/article/details/124705850](https://blog.csdn.net/qq_39505245/article/details/124705850)

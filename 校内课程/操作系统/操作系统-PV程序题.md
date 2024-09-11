@@ -1,3 +1,15 @@
+---
+title: 操作系统-PV程序题
+categories:
+  - 校内课程
+  - 操作系统
+abbrlink: 8cb26668
+date: 2023-09-18 04:00:00
+updated: 2023-09-18 04:00:00
+---
+
+<meta name="referrer" content="no-referrer"/>
+
 注意：所有的互斥信号量的使用都是配对的!!!有wait操作就必然有signal操作!!!
 
 类型定义 用 **semaphore** 就行
@@ -31,6 +43,8 @@ Consumer(){
     }
 }
 ```
+
+<!-- more -->
 
 # 读者写者问题
 
