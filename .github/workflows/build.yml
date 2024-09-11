@@ -22,8 +22,7 @@ jobs:
       # 构建，根据 map.json 拷贝文件，路径都是都对项目根目录的路径
       - name: Copy files to directory public
         run: |
-          mkdir -p public
-          cat .github/workflows/map.json | jq -r 'to_entries[] | "cp \(.key) \(.value)"' | sh
+          cat .github/workflows/map.json | jq -r 'to_entries[] | "rsync \(.key) \(.value)"' | sh
 
       # 上传构建产物
       - name: Upload artifacts
