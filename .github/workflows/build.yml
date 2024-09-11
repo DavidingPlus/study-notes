@@ -34,7 +34,7 @@ jobs:
           }
 
           # 执行 rsync 命令
-          cat .github/workflows/map.json | jq -r 'to_entries[] | "rsync --mkpath \(.key) \(.value)"' | while read -r command; do
+          cat .github/workflows/res/file-mapping.json | jq -r 'to_entries[] | "rsync --mkpath \(.key) \(.value)"' | while read -r command; do
             echo "Executing: $command"
             eval "$command"
             if [ $? -ne 0 ]; then
