@@ -68,6 +68,7 @@ jobs:
         # 链接 https://github.com/crazy-max/ghaction-github-pages/
         uses: crazy-max/ghaction-github-pages@v4.0.0
         with:
+          repo: DavidingPlus/blog # 部署到 blog 项目
           target_branch: _posts
           build_dir: dists
           keep_history: false # 开启以后虽然会有 git 历史，但是无法在部署分支自动清理本该删除的文件，个人觉得不舒服，所以关了。
