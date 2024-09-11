@@ -75,7 +75,7 @@ updated: 2024-09-10 21:50:00
   - 换国内`bucket`的`scoop-cn`源
     - 参照两个`github`仓库链接配置即可，推荐使用第一个，数量更齐全
     - [https://github.com/lzwme/scoop-proxy-cn](https://github.com/lzwme/scoop-proxy-cn)
-      - 仓库提供的镜像被墙了，可使用 gitee 镜像：[https://gitee.com/mybasegy/scoopcn](https://gitee.com/mybasegy/scoopcn)。个人建议使用原 github 仓库的 ssh 链接：[git@github.com:lzwme/scoop-proxy-cn.git](git@github.com:lzwme/scoop-proxy-cn.git)，注意自己为 github 配个 ssh。
+      - 仓库提供的镜像被墙了，可使用 gitee 镜像：[https://gitee.com/mybasegy/scoopcn](https://gitee.com/mybasegy/scoopcn)。个人建议使用原 github 仓库的 ssh 链接：[git@github.com:lzwme/scoop-proxy-cn.git](git@github.com:lzwme/scoop-proxy-cn.git)，请注意自己为 github 配个 ssh 密钥。
     - [https://github.com/duzyn/scoop-cn](https://github.com/duzyn/scoop-cn)
     - 为了保险，将这个`bucket`的名字设置为`main`，防止`update`的时候报`no bucket main`的错误
   - 用`scoop`安装`oh-my-posh`：[https://sspai.com/post/69911](https://sspai.com/post/69911)
