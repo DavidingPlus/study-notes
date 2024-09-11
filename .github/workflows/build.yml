@@ -1,4 +1,4 @@
-name: Build
+name: Sync Posts To Repo Blog
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
 
 jobs:
   build:
-    name: Copy files
-    runs-on: ubuntu-22.04 # rsync --mkpath 在 ubuntu-22.04 才有这个参数
+    name: Generate Target Posts
+    runs-on: ubuntu-22.04 # rsync --mkpath 在 ubuntu-22.04 才有这个参数，故选择这个稳定版本
 
     steps:
       # 检出 Git 仓库
@@ -34,7 +34,7 @@ jobs:
           }
 
           # 执行 rsync 命令
-          cat .github/workflows/res/file-mapping.json | jq -r 'to_entries[] | "rsync --mkpath \(.key) \(.value)"' | while read -r command; do
+          cat .github/workflows/file-mapping.json | jq -r 'to_entries[] | "rsync --mkpath \(.key) \(.value)"' | while read -r command; do
             echo "Executing: $command"
             eval "$command"
             if [ $? -ne 0 ]; then
@@ -52,15 +52,58 @@ jobs:
           name: _posts
           path: public
 
-      - name: Deploy to _posts
-        # 链接 https://github.com/crazy-max/ghaction-github-pages/
-        uses: crazy-max/ghaction-github-pages@v4.0.0
+  sync:
+    name: Sync Files In Posts
+    runs-on: ubuntu-latest
+    needs: build  # 表示依赖于 build 作业完成
+
+    steps:
+      # 下载构建产物
+      - name: Download artifact
+        # 链接 https://github.com/actions/download-artifact
+        uses: actions/download-artifact@v4.0.0
         with:
-          repo: DavidingPlus/blog # 部署到 blog 项目
-          target_branch: _posts
-          build_dir: public
-          keep_history: false # 开启以后虽然会有 git 历史，但是无法在部署分支自动清理本该删除的文件，个人觉得不舒服，所以关了。
-          allow_empty_commit: false
-          commit_message: "Deploy to _posts"
+          name: _posts
+          path: dist
+
+      # 创建 repo blog 的目录
+      - name: Create directory for repo blog
+        run: |
+          mkdir -p blog
+
+      # 签出 blog 的 master 分支
+      - name: Checkout repo blog
+        uses: actions/checkout@v4.1.1
+        with:
+          repository: DavidingPlus/blog
+          ref: master
+          path: blog
+
+      # 进行同步
+      - name: Sync posts to source/_posts
+        run: |
+
+          rm -rf blog/source/_posts/*
+          cp -r dist/* blog/source/_posts/
+          cd blog/
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add source/_posts/
+          git commit -m "Sync posts from repo study-notes"
+          git push origin master
+
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      # 触发 blog 的工作流
+      # - name: Trigger action in branch master
+      #   uses: convictional/trigger-workflow-and-wait@v1.6.1
+      #   with:
+      #     owner: DavidingPlus
+      #     repo: blog
+      #     github_user: DavidingPlus
+      #     workflow_file_name: build.yml
+      #     ref: master
+      #     github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
