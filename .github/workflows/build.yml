@@ -1,0 +1,52 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出 Git 仓库
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 构建（其实就是拷贝一些文件）
+      - name: Copy files to public
+        run: |
+          cp -R README.md public/README.md
+
+      # 上传构建产物
+      - name: Upload artifacts
+        # 链接 https://github.com/actions/upload-artifact/
+        uses: actions/upload-artifact@v4.3.0
+        with:
+          name: _posts
+          path: public
+
+  deploy-posts:
+    name: Deploy to _posts
+    runs-on: ubuntu-latest
+    needs: build  # 表示依赖于 build 作业完成
+    steps:
+      - name: Download artifact
+        # 链接 https://github.com/actions/download-artifact
+        uses: actions/download-artifact@v4.0.0
+        with:
+          name: _posts
+          path: dists
+
+      - name: Deploy to gh-pages-deprecated
+        # 链接 https://github.com/crazy-max/ghaction-github-pages/
+        uses: crazy-max/ghaction-github-pages@v4.0.0
+        with:
+          target_branch: _posts
+          build_dir: dists
+          keep_history: false # 开启以后虽然会有 git 历史，但是无法在部署分支自动清理本该删除的文件，个人觉得不舒服，所以关了。
+          allow_empty_commit: false
+          # fqdn: xxx 自定义域名
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
