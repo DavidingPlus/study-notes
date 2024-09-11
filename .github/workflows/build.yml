@@ -22,7 +22,27 @@ jobs:
       # 构建，根据 map.json 拷贝文件，路径都是都对项目根目录的路径
       - name: Copy files to directory public
         run: |
-          cat .github/workflows/map.json | jq -r 'to_entries[] | "rsync \(.key) \(.value)"' | sh
+
+          # 启用错误处理
+          set -e
+
+          # 处理 rsync 错误
+          function handle_error 
+          {
+            echo "Rsync failed with exit code $1."
+            exit 1
+          }
+
+          # 执行 rsync 命令
+          cat .github/workflows/map.json | jq -r 'to_entries[] | "rsync --mkpath \(.key) \(.value)"' | while read -r command; do
+            echo "Executing: $command"
+            eval "$command"
+            if [ $? -ne 0 ]; then
+              handle_error $?
+            fi
+          done
+
+          echo "Files copied successfully."
 
       # 上传构建产物
       - name: Upload artifacts
