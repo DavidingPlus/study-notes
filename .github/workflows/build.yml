@@ -95,8 +95,10 @@ jobs:
           git commit -m "Sync posts from repo study-notes"
           git push origin master
 
-      # 触发 blog 的工作流
+      # 触发 blog 的 CI
+      # TODO 本来是通过 blog 的 _posts 分支进行中转的，但是 github 不允许连续两次触发 push 的 action，为了防止死循环，因此需要走手动 Trigger 的流程。现在直接一步到位，因此这一步骤注释。
       # - name: Trigger action in branch master
+      # # 链接 https://github.com/convictional/trigger-workflow-and-wait
       #   uses: convictional/trigger-workflow-and-wait@v1.6.1
       #   with:
       #     owner: DavidingPlus
