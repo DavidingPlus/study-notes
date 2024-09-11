@@ -64,7 +64,7 @@ jobs:
           name: _posts
           path: dists
 
-      - name: Deploy to gh-pages-deprecated
+      - name: Deploy to _posts
         # 链接 https://github.com/crazy-max/ghaction-github-pages/
         uses: crazy-max/ghaction-github-pages@v4.0.0
         with:
