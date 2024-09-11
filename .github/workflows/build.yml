@@ -17,7 +17,8 @@ jobs:
       # 构建（其实就是拷贝一些文件）
       - name: Copy files to public
         run: |
-          cp -R README.md public/README.md
+          mkdir public
+          cp README.md public/README.md
 
       # 上传构建产物
       - name: Upload artifacts
