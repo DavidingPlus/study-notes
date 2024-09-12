@@ -25,26 +25,26 @@ updated: 2024-09-10 21:50:00
 
 <!-- more -->
 
-  ```json
-  {
-      "BasedOnStyle": "LLVM",
-      "UseTab": "Never",
-      "IndentWidth": 4,
-      "TabWidth": 4,
-      "BreakBeforeBraces": "Allman",
-      "AllowShortIfStatementsOnASingleLine": true,
-      "AllowShortLoopsOnASingleLine": true,
-      "IndentCaseLabels": true,
-      "ColumnLimit": 0,
-      "AccessModifierOffset": -4,
-      "NamespaceIndentation": "All",
-      "FixNamespaceComments": false,
-      "MaxEmptyLinesToKeep": 2,
-      "EmptyLineBeforeAccessModifier": "Always",
-      "EmptyLineAfterAccessModifier": "Always",
-      "SortIncludes": "Never"
-  }
-  ```
+```json
+{
+    "BasedOnStyle": "LLVM",
+    "UseTab": "Never",
+    "IndentWidth": 4,
+    "TabWidth": 4,
+    "BreakBeforeBraces": "Allman",
+    "AllowShortIfStatementsOnASingleLine": true,
+    "AllowShortLoopsOnASingleLine": true,
+    "IndentCaseLabels": true,
+    "ColumnLimit": 0,
+    "AccessModifierOffset": -4,
+    "NamespaceIndentation": "All",
+    "FixNamespaceComments": false,
+    "MaxEmptyLinesToKeep": 2,
+    "EmptyLineBeforeAccessModifier": "Always",
+    "EmptyLineAfterAccessModifier": "Always",
+    "SortIncludes": "Never"
+}
+```
 
 - code中列出所有的插件列表：`code --list-extensions`
 
@@ -342,4 +342,10 @@ updated: 2024-09-10 21:50:00
 - windows配置命令别名alias：[https://segmentfault.com/a/1190000015928399](https://segmentfault.com/a/1190000015928399)
 
 - vmware workstation pro个人版安装：[https://blogs.vmware.com/workstation/2024/05/vmware-workstation-pro-now-available-free-for-personal-use.html](https://blogs.vmware.com/workstation/2024/05/vmware-workstation-pro-now-available-free-for-personal-use.html)
+
+- Linux 下安装 docker 教程（不建议在 Wsl2 上安装，极可能会出问题）：[https://www.cnblogs.com/Liyuting/p/17022739.html](https://www.cnblogs.com/Liyuting/p/17022739.html)
+
+- ubuntu 完全卸载 docker 及再次安装：[https://blog.csdn.net/qq_45495857/article/details/113743109](https://blog.csdn.net/qq_45495857/article/details/113743109)
+
+- docker 无法删除镜像 hello-world 等的解决办法：[https://blog.csdn.net/yyj108317/article/details/105875836](https://blog.csdn.net/yyj108317/article/details/105875836)
 
