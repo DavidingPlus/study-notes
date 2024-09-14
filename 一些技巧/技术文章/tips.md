@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-09-10 21:50:00
+updated: 2024-09-13 16:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -348,4 +348,6 @@ updated: 2024-09-10 21:50:00
 - ubuntu 完全卸载 docker 及再次安装：[https://blog.csdn.net/qq_45495857/article/details/113743109](https://blog.csdn.net/qq_45495857/article/details/113743109)
 
 - docker 无法删除镜像 hello-world 等的解决办法：[https://blog.csdn.net/yyj108317/article/details/105875836](https://blog.csdn.net/yyj108317/article/details/105875836)
+
+- Linux 系统配置 clash-gui 界面：[https://chh3213.github.io/2023/11/12/linux%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AEclash-gui%E7%95%8C%E9%9D%A2/](https://chh3213.github.io/2023/11/12/linux%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AEclash-gui%E7%95%8C%E9%9D%A2/)
 
