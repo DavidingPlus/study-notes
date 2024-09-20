@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-09-13 16:50:00
+updated: 2024-09-20 19:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -350,4 +350,6 @@ updated: 2024-09-13 16:50:00
 - docker 无法删除镜像 hello-world 等的解决办法：[https://blog.csdn.net/yyj108317/article/details/105875836](https://blog.csdn.net/yyj108317/article/details/105875836)
 
 - Linux 系统配置 clash-gui 界面：[https://chh3213.github.io/2023/11/12/linux%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AEclash-gui%E7%95%8C%E9%9D%A2/](https://chh3213.github.io/2023/11/12/linux%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AEclash-gui%E7%95%8C%E9%9D%A2/)
+
+- 在低版本 Ubuntu 22.04|20.04|18.04 上安装 Node.js 20：[https://cn.linux-console.net/?p=20486](https://cn.linux-console.net/?p=20486)
 
