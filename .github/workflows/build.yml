@@ -52,6 +52,7 @@ jobs:
           name: _posts
           path: public
 
+  # 设置为两个串行作业，个人认为这两个作业没必要完全绑成一个作业，为了不相互干扰和影响
   sync:
     name: Sync Directory Posts
     runs-on: ubuntu-latest
