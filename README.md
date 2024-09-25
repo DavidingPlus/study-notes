@@ -2,7 +2,7 @@
 
 学习过程中写的 markdown 文档集合，还有搜集的各种资料。啥都有，东西很杂，但是目录的结构很清晰。
 
-注意，本仓库中的部分文章通过 github action 向 [blog 仓库](https://github.com/DavidingPlus/blog) 进行同步，这些文章通过 file-mapping.json 进行管理。
+注意，本仓库中的部分文章通过 github action 向 [blog 仓库](https://github.com/DavidingPlus/blog/) 进行同步，这些文章通过 file-mapping.json 进行管理。注意 json 文件中如果文件名中间存在空格的话记得加上引号括起来，使用英文单引号 `'` 即可。
 
 大致步骤是将本仓库中这些文章的架构通过 Linux 命令处理为 blog 需要的架构，构建 _posts/ 目录。然后签出 blog 仓库，通过 git 命令提交即可。之后 blog 仓库触发 push CI 流程即可。
 
