@@ -355,5 +355,5 @@ updated: 2024-09-25 17:20:00
 
 - Docker Hub Search：[https://docker.fxxk.dedyn.io/](https://docker.fxxk.dedyn.io/)
 
-- Docker 国内镜像源下架的解决办法（推荐 1Panel 镜像）：[https://mixuying.com/archives/1719753069678/](https://mixuying.com/archives/1719753069678/)
+- Docker 国内镜像源下架的解决办法（推荐 1Panel 镜像）：[https://mixuying.com/archives/1719753069678](https://mixuying.com/archives/1719753069678)
 
