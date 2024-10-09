@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-09-25 17:20:00
+updated: 2024-10-09 18:15:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -53,6 +53,8 @@ updated: 2024-09-25 17:20:00
     - `CMake Tools`：`1.16.32`
 
 - gcc不同版本的切换：[https://www.jianshu.com/p/f66eed3a3a25](https://www.jianshu.com/p/f66eed3a3a25)
+
+- Ubuntu 20.04 安装高版本的 gcc（如 gcc-11）：[https://blog.csdn.net/tiansyun/article/details/136592258](https://blog.csdn.net/tiansyun/article/details/136592258)
 
 - 彻底卸载计算机中的python：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
 
