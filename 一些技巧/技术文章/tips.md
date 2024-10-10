@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-09 18:15:00
+updated: 2024-10-10 22:35:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -362,4 +362,20 @@ updated: 2024-10-09 18:15:00
 - Docker Hub Search：[https://docker.fxxk.dedyn.io/](https://docker.fxxk.dedyn.io/)
 
 - Docker 国内镜像源下架的解决办法（推荐 1Panel 镜像）：[https://mixuying.com/archives/1719753069678](https://mixuying.com/archives/1719753069678)
+
+- conan 更改安装的包的路径（主要用于 Windows）
+
+  - conan 1：修改 ~\.conan\conan.conf 文件，参考：[https://www.cnblogs.com/bibo/p/15712445.html](https://www.cnblogs.com/bibo/p/15712445.html)
+  
+  ```ini
+  [storage]
+  path = <target path>
+  ```
+
+  - conan 2：修改 ~\.conan2\global.conf 文件，在末尾添加下面这句，参考：[https://docs.conan.io/2/reference/commands/config.html](https://docs.conan.io/2/reference/commands/config.html)
+
+  ```ini
+  # Absolute path where the packages and database are stored
+  core.cache:storage_path = <target path>
+  ```
 
