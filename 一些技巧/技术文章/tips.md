@@ -58,11 +58,15 @@ updated: 2024-10-09 18:15:00
 
 - 彻底卸载计算机中的python：[https://blog.csdn.net/qq_38463737/article/details/107205696](https://blog.csdn.net/qq_38463737/article/details/107205696)
 
-- pip相关
+- pip 相关
 
   - 清除下载缓存：`pip cache purge`
 
-  - pip换源：[https://blog.csdn.net/JineD/article/details/125090904](https://blog.csdn.net/JineD/article/details/125090904)
+  - pip 换源：[https://blog.csdn.net/JineD/article/details/125090904](https://blog.csdn.net/JineD/article/details/125090904)
+
+  - pip 无法从清华源下载，报错 ERROR HTTP error 403：[https://blog.csdn.net/qq_21386397/article/details/136964624](https://blog.csdn.net/qq_21386397/article/details/136964624)
+
+  - 直接使用阿里云的源即可：`pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/`
 
 - windows下的包管理器scoop
 
