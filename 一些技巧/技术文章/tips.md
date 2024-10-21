@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-10 22:35:00
+updated: 2024-10-21 21:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -183,6 +183,8 @@ updated: 2024-10-10 22:35:00
   - [https://blog.csdn.net/qq_19922839/article/details/120697210](https://blog.csdn.net/qq_19922839/article/details/120697210)
 
   - [https://blog.csdn.net/ichenglin/article/details/124963918](https://blog.csdn.net/ichenglin/article/details/124963918)
+
+- wsl 安装出现 Installing, this may take a few minutes... 时间长。且重新打开进入 root 用户的问题的解决：[https://www.cnblogs.com/ziyulab/p/18446092](https://www.cnblogs.com/ziyulab/p/18446092)
 
 - wsl安装微软雅黑字体（解决窗体title乱码问题）
 
