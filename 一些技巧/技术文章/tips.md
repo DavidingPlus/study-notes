@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-21 21:20:00
+updated: 2024-10-24 14:55:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -380,4 +380,6 @@ updated: 2024-10-21 21:20:00
   # Absolute path where the packages and database are stored
   core.cache:storage_path = <target path>
   ```
+  
+- 安装思维导图软件 MindManager 2022 破解版：[https://www.cnblogs.com/hechangchun/p/17159229.html](https://www.cnblogs.com/hechangchun/p/17159229.html)
 
