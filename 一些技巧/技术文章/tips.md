@@ -383,3 +383,5 @@ updated: 2024-10-24 14:55:00
   
 - 安装思维导图软件 MindManager 2022 破解版：[https://www.cnblogs.com/hechangchun/p/17159229.html](https://www.cnblogs.com/hechangchun/p/17159229.html)
 
+- 编译调试 Linux 内核方法：[https://ignotusjee.github.io/2024/10/18/Linux-Debug/](https://ignotusjee.github.io/2024/10/18/Linux-Debug/)
+
