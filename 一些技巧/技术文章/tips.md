@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-24 14:55:00
+updated: 2024-10-25 16:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -384,4 +384,6 @@ updated: 2024-10-24 14:55:00
 - 安装思维导图软件 MindManager 2022 破解版：[https://www.cnblogs.com/hechangchun/p/17159229.html](https://www.cnblogs.com/hechangchun/p/17159229.html)
 
 - 编译调试 Linux 内核方法：[https://ignotusjee.github.io/2024/10/18/Linux-Debug/](https://ignotusjee.github.io/2024/10/18/Linux-Debug/)
+
+- 安装完 Wsl 以后，解决检测到 localhost 代理配置，但未镜像到 WSL，NAT 模式下的 WSL 不支持 localhost 代理的问题：[https://jasminides.com/posts/wsl_error1/](https://jasminides.com/posts/wsl_error1/)
 
