@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-25 16:00:00
+updated: 2024-10-27 01:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -386,4 +386,6 @@ updated: 2024-10-25 16:00:00
 - 编译调试 Linux 内核方法：[https://ignotusjee.github.io/2024/10/18/Linux-Debug/](https://ignotusjee.github.io/2024/10/18/Linux-Debug/)
 
 - 安装完 Wsl 以后，解决检测到 localhost 代理配置，但未镜像到 WSL，NAT 模式下的 WSL 不支持 localhost 代理的问题：[https://jasminides.com/posts/wsl_error1/](https://jasminides.com/posts/wsl_error1/)
+
+- 禁用/删除 Windows Defender，推荐使用 [windows-defender-remover](https://github.com/ionuttbara/windows-defender-remover)。推荐选择 Remove Windows Defender Antivirus (A) 而不是 Remove Windows Defender Antivirus + Disable All Security Mitigations (Y)。全删了会删除用户账户控制的功能，就是打开程序的时候有一个确认弹窗，这个我自己比较喜欢，不想删掉。
 
