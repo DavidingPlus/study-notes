@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-27 01:00:00
+updated: 2024-10-28 22:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -256,6 +256,8 @@ updated: 2024-10-27 01:00:00
 
   - [https://zhuanlan.zhihu.com/p/35283688](https://zhuanlan.zhihu.com/p/35283688)
   - [https://zhuanlan.zhihu.com/p/265525597](https://zhuanlan.zhihu.com/p/265525597)
+
+- oh-my-zsh 安装使用镜像：[https://www.cnblogs.com/chencarl/p/16824387.html](https://www.cnblogs.com/chencarl/p/16824387.html)
 
 - zsh推荐字体：[https://gitee.com/keyboardkiller/MesloLGS_NF](https://gitee.com/keyboardkiller/MesloLGS_NF)
 
