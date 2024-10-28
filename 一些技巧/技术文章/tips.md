@@ -124,17 +124,11 @@ updated: 2024-10-27 01:00:00
 
   ~~~powershell
   diskpart
+
   # 在新开的终端里面
-  select vdisk file="D:\Ubuntu\ext4.vhdx"
+  select vdisk file="D:\Wsl\Ubuntu\ext4.vhdx"
   compact vdisk
   ~~~
-
-  ```powershell
-  diskpart
-  # 在新开的终端里面
-  select vdisk file="D:\Ubuntu20.04\ext4.vhdx"
-  compact vdisk
-  ```
 
 - cmake编译器选择指定的版本：https://www.cnblogs.com/lidabo/p/15400964.html
 
