@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-10-24 15:00:00
+updated: 2024-10-29 15:55:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -138,7 +138,7 @@ Linux 内核 5 个组成部分之间的依赖关系如下：
 
 在 Linux 系统中，内核可进行任何操作，而应用程序则被禁止对硬件的直接访问和对内存的未授权访问。
 
-内核空间和用户空间这两个名词用来区分程序执行的两种不同状态，它们使用不同的地址空间。Linux 只能通过系统调用和硬件中断完成从用户空间到内核空间的控制转移。
+内核空间和用户空间这两个名词用来区分程序执行的两种不同状态，它们使用不同的地址空间。Linux 只能通过**系统调用**和**硬件中断**完成从用户空间到内核空间的控制转移。
 
 ### 内核的编译及加载
 
@@ -167,13 +167,189 @@ cp -v /boot/config-`uname -r` .config
 
 更完整的编译和调试内核的办法请参考文章 [https://ignotusjee.github.io/2024/10/18/Linux-Debug/](https://ignotusjee.github.io/2024/10/18/Linux-Debug/)。
 
-#### Kconfig 和 Makefile
-
-在 Linux 内核中增加程序需要完成以下 3 项工作：
+另外的，在 Linux 内核中增加程序需要完成以下 3 项工作：
 
 - 将编写的源代码复制到 Linux 内核源代码的相应目录中。
 - 在目录的 Kconfig 文件中增加关于新源代码对应项目的编译配置选项。
 - 在目录的 Makefile 文件中增加对新源代码的编译条目。
 
-这样就构成了内核独有的编译系统 Kbuild + Makefile。
+#### Makefile
+
+这里主要涉及内核专有的 Kbuild Makefile 编译系统。
+
+1. 目标定义
+
+定义哪些内容是编译并链接入内核，哪些是作为内核模块编译。
+
+例如这段代码：
+
+```makefile
+obj-y += foo.o
+```
+
+表示需要编译 foo.c 或者 foo.s 文件得到 foo.o 并链接进内核。这是无条件编译，所以不需要 Kconfig 配置选项。
+
+`obj-m` 表示作为内核模块编译，`obj-n` 表示不会被编译。
+
+2. 多模块文件的定义
+
+如果一个模块由多个文件组成，Makefile 会稍微复杂一点。这时应该采用模块名加 -y 或 -objs 后缀的形式定义模块的组成文件，例如：
+
+```makefile
+#
+# Makefile for the linux ext2-filesystem routines.
+#
+obj-$(CONfiG_EXT2_FS) += ext2.o
+ext2-y := balloc.o dir.o file.o fsync.o ialloc.o inode.o \
+ioctl.o namei.o super.o symlink.o
+ext2-$(CONfiG_EXT2_FS_XATTR) += xattr.o xattr_user.o xattr_trusted.o
+ext2-$(CONfiG_EXT2_FS_POSIX_ACL) += acl.o
+ext2-$(CONfiG_EXT2_FS_SECURITY) += xattr_security.o
+ext2-$(CONfiG_EXT2_FS_XIP) += xip.o
+```
+
+模块的名字是 ext2，由 balloc.o dir.o file.o 等多个目标文件最终链接生成 ext2.o 或者 ext2.ko 的目标文件（当然 Linux 2.6 以后是 .ko）。其他的目标文件是否编译生成取决于配置文件。
+
+3. 目录层次的迭代
+
+当源代码比较多的时候，处于设计和美观的目的，按照目录分层次结构是有必要的。例如：
+
+```makefile
+obj-m += ext2/
+```
+
+这代表 Kbuild 会把 ext2/ 目录列入向下迭代的目标。ext2/ 目录中理应有自己的 Kbuild Makefile 的子构建系统。
+
+#### Kconfig
+
+1. 配置选项
+
+配置选项通过 config 关键字定义，例如：
+
+```kconfig
+config MODVERSIONS
+    bool "Module versioning support"
+    help
+        Usually, you have to use modules compiled with your kernel.
+        Saying Y here makes it ...
+```
+
+config 关键字定义新的配置选项，之后的几行代码定义了该配置选项的属性。配置选项的属性包括类型、数据范围、输入提示、依赖关系、选择关系及帮助信息、默认值等。
+
+每个配置选项都必须指定类型，类型包括 bool、tristate、string、hex 和 int，其中 tristate 和 string 是两种基本类型，其他类型都基于这两种基本类型。类型定义后可以紧跟输入提示，下面两段代码是等价的：
+
+```kconfig
+bool “Networking support”
+
+# 等价于
+
+bool
+prompt "Networking support"
+```
+
+输入提示使用 prompt 关键字，一般格式如下，其中可选 if 用于表示该提示的依赖关系。
+
+```kconfig
+prompt <prompt> [if <expr>]
+```
+
+默认值的格式如下。如果用户不设置对应的选项，配置选项的值就是默认值。
+
+```kconfig
+default <expr> [if <expr>]
+```
+
+依赖关系的格式如下。如果定义了多重依赖关系，它们之间用 `&&` 间隔。
+
+```kconfig
+depends on <expr>
+```
+
+依赖关系也可以应用到该菜单中所有的其他选项 （同样接受 if 表达式）内，因此下面两段脚本是等价的：
+
+```kconfig
+bool "foo" if BAR
+default y if BAR
+
+
+# 等价于
+
+depends on BAR
+bool "foo"
+default y
+```
+
+选择关系，也成为反向依赖关系，格式如下。如果 A 选择了 B，那么 A 在被选中的情况下，B 也会自动被选中。
+
+```kconfig
+select <symbol> [if <expr>]
+```
+
+数据范围的格式为：
+
+```kconfig
+range <symbol> <symbol> [if <expr>]
+```
+
+expr 表达式定义为：
+
+```kconfig
+<expr> ::= <symbol>
+            <symbol> '=' <symbol>
+            <symbol> '!=' <symbol>
+            '(' <expr> ')'
+            '!' <expr>
+            <expr> '&&' <expr>
+            <expr> '||' <expr>
+```
+
+也就是说，expr 是由 symbol、两个 symbol 相等、两个 symbol 不等以及 expr 的赋值、非、与或运算构成。symbol 分为两类，一类是由菜单入口配置选项定义的非常数 symbol，另一类是作为 expr 组成部分的常数 symbol。
+
+举个例子就明白了，如下 expr 表示依赖条件是 ARCH_R8A73A4 被选中以及 SH_DMAE 未被选中，才能出现 SHDMA_R8A73A4。
+
+```kconfig
+config SHDMA_R8A73A4
+    bool y
+    depends on ARCH_R8A73A4 && SH_DMAE == n
+```
+
+帮助信息的格式为，完全靠文本缩进识别结束。
+
+```kconfig
+help
+# 或者：---help---
+    开始
+    …
+    结束
+```
+
+2. 菜单结构
+
+配置选项在菜单树结构的位置可以由两种方法决定。
+
+第一种如下，所有处于 menu 和 endmenu 之间的配置选项都会成为 Network device support 的子菜单，而且，所有子菜单（config）选项都会继承父菜单（menu）的依赖关系。菜单 Network device support 对 NET 的依赖会加到配置选项 NETDEVICES 的依赖列表中。
+
+```kconfig
+menu "Network device support"
+    depends on NET
+config NETDEVICES
+
+	...
+
+endmenu
+```
+
+> 注：menu 后面跟的 Network device support 项仅仅是 1 个菜单，没有对应真实的配置选项，也不具备 3 种不同的状态。这是 menu 和 config 的区别。
+
+另一种方式是通过分析依赖关系生成菜单结构。如果菜单项在一定程度上依赖于前面的选项，它就能成为该选项的子菜单。例如这里，config MODVERSIONS 直接依赖于 MODULES，只有当 MODULES 不为 n 的时候，MODVERSIONS 才可见。
+
+```kconfig
+config MODULES
+    bool "Enable loadable module support"
+config MODVERSIONS
+    bool "Set version information on all module symbols"
+    depends on MODULES
+```
+
+更详细的编写细节，请参考内核文档 Documentation 目录内的 kbuild 子目录下的 Kconfig-language.rst 和 Makefiles.rst 文件。
 
