@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-10-28 22:50:00
+updated: 2024-11-04 18:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -376,12 +376,21 @@ updated: 2024-10-28 22:50:00
   # Absolute path where the packages and database are stored
   core.cache:storage_path = <target path>
   ```
-  
-- 安装思维导图软件 MindManager 2022 破解版：[https://www.cnblogs.com/hechangchun/p/17159229.html](https://www.cnblogs.com/hechangchun/p/17159229.html)
+
+- 安装思维导图软件 MindManager 2022 破解版：[https://www.zwnblog.com/archives/mindmanager2022-an-zhuang-yu-po-jie--bao-mu-jiao-cheng-](https://www.zwnblog.com/archives/mindmanager2022-an-zhuang-yu-po-jie--bao-mu-jiao-cheng-)
+
+  - 注意安装的时候不要自定义路径，选择默认的 C 盘路径，否则程序可能无法正常启动。
+
+  - 推荐使用 mklink 作符号链接，这样既能正常启动也能节省 C 盘空间，建议目录结构保持一致（使用管理员打开 CMD）：
+
+  ```cmd
+  mklink /j "C:\Program Files\MindManager 22" "D:\Program Files\MindManager 22"
+  ```
 
 - 编译调试 Linux 内核方法：[https://ignotusjee.github.io/2024/10/18/Linux-Debug/](https://ignotusjee.github.io/2024/10/18/Linux-Debug/)
 
 - 安装完 Wsl 以后，解决检测到 localhost 代理配置，但未镜像到 WSL，NAT 模式下的 WSL 不支持 localhost 代理的问题：[https://jasminides.com/posts/wsl_error1/](https://jasminides.com/posts/wsl_error1/)
 
 - 禁用/删除 Windows Defender，推荐使用 [windows-defender-remover](https://github.com/ionuttbara/windows-defender-remover)。推荐选择 Remove Windows Defender Antivirus (A) 而不是 Remove Windows Defender Antivirus + Disable All Security Mitigations (Y)。全删了会删除用户账户控制的功能，就是打开程序的时候有一个确认弹窗，这个我自己比较喜欢，不想删掉。
+
 
