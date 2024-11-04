@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-11-04 18:30:00
+updated: 2024-11-04 23:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -60,13 +60,21 @@ updated: 2024-11-04 18:30:00
 
 - pip 相关
 
-  - 清除下载缓存：`pip cache purge`
+  - 清除下载缓存：
+  
+  ```bash
+  pip cache purge
+  ```
 
   - pip 换源：[https://blog.csdn.net/JineD/article/details/125090904](https://blog.csdn.net/JineD/article/details/125090904)
 
   - pip 无法从清华源下载，报错 ERROR HTTP error 403：[https://blog.csdn.net/qq_21386397/article/details/136964624](https://blog.csdn.net/qq_21386397/article/details/136964624)
 
-  - 直接使用阿里云的源即可：`pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/`
+  - 直接使用阿里云的源即可：
+  
+  ```bash
+  pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
+  ```
 
 - windows下的包管理器scoop
 
@@ -363,14 +371,14 @@ updated: 2024-11-04 18:30:00
 
 - conan 更改安装的包的路径（主要用于 Windows）
 
-  - conan 1：修改 ~\.conan\conan.conf 文件，参考：[https://www.cnblogs.com/bibo/p/15712445.html](https://www.cnblogs.com/bibo/p/15712445.html)
+  - conan 1：修改 `~\.conan\conan.conf` 文件，参考：[https://www.cnblogs.com/bibo/p/15712445.html](https://www.cnblogs.com/bibo/p/15712445.html)
   
   ```ini
   [storage]
   path = <target path>
   ```
 
-  - conan 2：修改 ~\.conan2\global.conf 文件，在末尾添加下面这句，参考：[https://docs.conan.io/2/reference/commands/config.html](https://docs.conan.io/2/reference/commands/config.html)
+  - conan 2：修改 `~\.conan2\global.conf` 文件，在末尾添加下面这句，参考：[https://docs.conan.io/2/reference/commands/config.html](https://docs.conan.io/2/reference/commands/config.html)
 
   ```ini
   # Absolute path where the packages and database are stored
