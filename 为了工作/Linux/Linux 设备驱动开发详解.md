@@ -4,12 +4,12 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-10-29 15:55:00
+updated: 2024-11-04 18:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
 
-本书基于 Linux 4.0 内核编写，个人作测试的内核版本是 5.15.167。
+本书基于 Linux 4.0 内核编写，个人学习测试的内核版本是 5.15.167。
 
 # Linux 内核及内核编程
 
@@ -140,9 +140,9 @@ Linux 内核 5 个组成部分之间的依赖关系如下：
 
 内核空间和用户空间这两个名词用来区分程序执行的两种不同状态，它们使用不同的地址空间。Linux 只能通过**系统调用**和**硬件中断**完成从用户空间到内核空间的控制转移。
 
-### 内核的编译及加载
+## Linux 内核的编译及加载
 
-#### 编译
+### 编译
 
 既然要学习内核，首先肯定需要动手编译一个内核出来。在编译内核之前，首先下载想要编译安装的内核源代码到本地。然后就需要配置内核，可使用以下命令配置：
 
@@ -173,7 +173,7 @@ cp -v /boot/config-`uname -r` .config
 - 在目录的 Kconfig 文件中增加关于新源代码对应项目的编译配置选项。
 - 在目录的 Makefile 文件中增加对新源代码的编译条目。
 
-#### Makefile
+### Makefile
 
 这里主要涉及内核专有的 Kbuild Makefile 编译系统。
 
@@ -220,7 +220,7 @@ obj-m += ext2/
 
 这代表 Kbuild 会把 ext2/ 目录列入向下迭代的目标。ext2/ 目录中理应有自己的 Kbuild Makefile 的子构建系统。
 
-#### Kconfig
+### Kconfig
 
 1. 配置选项
 
@@ -352,4 +352,228 @@ config MODVERSIONS
 ```
 
 更详细的编写细节，请参考内核文档 Documentation 目录内的 kbuild 子目录下的 Kconfig-language.rst 和 Makefiles.rst 文件。
+
+# Linux 内核模块
+
+## Linux 内核模块简介
+
+如果我们自己想要在 Linux 内核当中添加功能，有两种方法。
+
+1. 一是把所有需要的功能都编译到 Linux 内核中。但这样会导致生成的内核很大，并且如果需要增加或删除功能，将不得不重新编译内核。
+2. 二是让内核提供某种方法，使得原本的内核并不需要包含所有的功能，而是在需要使用的时候，将代码动态的加载到内核当中。
+
+巧了，Linux 内核就提供了第二种方法，这样的机制成为模块。模块具有如下特点：
+
+1. 模块本身不被编译入内核映像，从而控制了内核的大小。
+2. 模块一旦被加载，它就和内核中的其他部分完全一样。
+
+以一个最简单的 Hello World 模块为例，展示一下内核模块编程的大致认识：
+
+本程序通过内核的 Makefile + Kbuild 系统编译以后会生成 hello.ko 目标文件，通过 insmod 命令加载到内核中，rmmod 命令卸载。
+
+```c
+#include <linux/init.h>
+#include <linux/module.h>
+
+
+MODULE_VERSION("v1.0.0");
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_AUTHOR("DavidingPlus");
+MODULE_DESCRIPTION("A Simple Hello World Module");
+
+
+static int __init hello_init(void)
+{
+    // 内核模块中用于输出的函数是内核空间的 printk() 而不是用户空间的 printf()，printk() 的用法和 printf() 基本相似，但前者可定义输出级别。
+    printk(KERN_INFO "hello: Hello World\n");
+
+
+    return 0;
+}
+
+static void __exit hello_exit(void)
+{
+    printk(KERN_INFO "hello: Goodbye World\n");
+}
+
+
+module_init(hello_init);
+module_exit(hello_exit);
+```
+
+在 Linux 中，可通过 lsmod 命令查看系统中已加载的所有模块以及之间的依赖关系：
+
+```bash
+sudo lsmod
+
+# Module                  Size  Used by
+# ufs                    81920  0
+# qnx4                   16384  0
+# hfsplus               110592  0
+# hfs                    61440  0
+# minix                  40960  0
+# ntfs                  106496  0
+# msdos                  20480  0
+```
+
+lsmod 实际上是读取并分析 `/proc/modules` 文件，对应结果如下：
+
+```bash
+cat /proc/modules
+
+# ufs 81920 0 - Live 0x0000000000000000
+# qnx4 16384 0 - Live 0x0000000000000000
+# hfsplus 110592 0 - Live 0x0000000000000000
+# hfs 61440 0 - Live 0x0000000000000000
+# minix 40960 0 - Live 0x0000000000000000
+# ntfs 106496 0 - Live 0x0000000000000000
+# msdos 20480 0 - Live 0x0000000000000000
+```
+
+内核中已加载模块的信息也保存在 `/sys/modules/` 目录下。加载上面的 hello.ko 以后，内核中将包含 /sys/modules/hello/ 目录，该目录的结构图如下：
+
+```markdown
+.
+├── coresize
+├── holders
+├── initsize
+├── initstate
+├── notes
+│   ├── .note.gnu.build-id
+│   └── .note.Linux
+├── refcnt
+├── sections
+│   ├── .exit.data
+│   ├── .exit.text
+│   ├── .gnu.linkonce.this_module
+│   ├── .init.data
+│   ├── .init.text
+│   ├── .note.gnu.build-id
+│   ├── .note.Linux
+│   ├── .rodata.str1.1
+│   ├── .strtab
+│   ├── .symtab
+│   └── .text
+├── srcversion
+├── taint
+├── uevent
+└── version
+
+3 directories, 21 files
+```
+
+除了 insmod 命令，还有一个 modprobe 命令。与 insmod 不同的是，**modprobe 在加载某模块时，会同时加载该模块所依赖的其他模块**。使用 modprobe 命令加载的模块若以 `modprobe -r filename` 的方式卸载，将同时卸载其依赖的模块。
+
+模块之间的依赖关系存放在根文件系统的 `/lib/modules/<kernel-version>/modules.dep` 文件中，实际上是在整体编译内核的时候由 depmod 工具生成的，它的格式非常简单：
+
+```markdown
+kernel/arch/x86/events/intel/intel-cstate.ko:
+kernel/arch/x86/events/rapl.ko:
+kernel/arch/x86/kernel/cpu/mce/mce-inject.ko:
+kernel/arch/x86/kernel/msr.ko:
+kernel/arch/x86/kernel/cpuid.ko:
+kernel/arch/x86/crypto/twofish-x86_64.ko: kernel/crypto/twofish_common.ko
+kernel/arch/x86/crypto/twofish-x86_64-3way.ko: kernel/arch/x86/crypto/twofish-x86_64.ko kernel/crypto/twofish_common.ko
+kernel/arch/x86/crypto/twofish-avx-x86_64.ko: kernel/crypto/crypto_simd.ko kernel/crypto/cryptd.ko kernel/arch/x86/crypto/twofish-x86_64-3way.ko kernel/arch/x86/crypto/twofish-x86_64.ko kernel/crypto/twofish_common.ko
+...
+```
+
+使用 modinfo 命令可以获得模块的信息，包括模块作者、模块的说明、模块所支持的参数以及 vermagic：
+
+```bash
+modinfo hello.ko
+
+# filename:       /home/lzx0626/DavidingPlus/linux-kernel-learning/build/linux/x86_64/debug/hello.ko
+# description:    A Simple Hello World Module
+# author:         DavidingPlus
+# license:        Dual BSD/GPL
+# version:        1.0.0
+# srcversion:     533BB7E5866E52F63B9ACCB
+# depends:
+# retpoline:      Y
+# name:           hello
+# vermagic:       5.15.167 SMP mod_unload modversions
+```
+
+## Linux 内核模块程序结构
+
+一个 Linux 内核模块主要由以下几部分组成：
+
+1. 模块加载函数
+
+当通过 insmod 或 modprobe 命令加载内核模块时，模块的加载函数会自动被内核执行，完成本模块的相关初始化工作。
+
+2. 模块卸载函数
+
+当通过 rmmod 命令卸载某模块时，模块的卸载函数会自动被内核执行，完成与模块卸载函数相反的功能。
+
+3. 模块许可证声明
+
+许可证（LICENSE）声明描述内核模块的许可权限，如果不声明，模块被加载时，将收到内核被污染（Kernel Tainted）的警告。
+
+4. 模块参数（可选）
+
+模块参数是模块被加载的时候可以传递给它的值，它本身对应模块内部的全局变量。
+
+5. 模块导出符号（可选）
+
+内核模块可以导出的符号（symbol，对应于函数或变量）。若导出，其他模块则可以使用本模块中的变量或函数。
+
+6. 模块作者等信息声明（可选）
+
+## 模块加载函数
+
+Linux 内核模块加载函数一般以 __init 标识声明，例如：
+
+```c
+static int __init initialization_function(void)
+{
+	...
+}
+
+
+module_init(initialization_function);
+```
+
+模块加载函数 initialization_function(void) 在内核被加载的时候，通过宏 module_init 进行调用。加载函数应该有一个返回值 int，成功返回 0，失败返回一个错误编码。该错误编码是一个接近 0 的负数，在 `<linux/errno.h>` 中定义，如 -ENODEV、-ENOMEM 等。强烈建议返回有意义的错误编码宏，因为这样用户可以通过 perror() 的方法将其转化为有意义的字符串。
+
+在 Linux 内核程序代码中，可以通过 request_module(const char*fmt, …) 函数加载内核模块，例如：
+
+```c
+request_module(module_name);
+```
+
+在 Linux 内核中，所有标识为 __init 的函数如果直接编译进入内核，那么会成为内核镜像的一部分，连接的时候会放在 .init.text 区段内。
+
+```c
+#define __init		__section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi
+```
+
+所有的 `__init` 函数在区段 .initcall.init 中还保存了一份函数指针，在初始化时内核会通过这些函数指针调用这些 `__init` 函数，并在初始化完成后，释放 `__init` 区段（包括 .init.text、.initcall.init 等）的内存。
+
+除了函数以外，数据也可以被定义为 __initdata。表示**只是初始化阶段需要的数据，初始化完成以后，内核会自动释放他们占用的内存。**
+
+## 模块卸载函数
+
+Linux 内核卸载加载函数一般以 __exit 标识声明，例如：
+
+```c
+static void __exit cleanup_function(void)
+{
+    ...
+}
+
+
+module_exit(cleanup_function);
+```
+
+模块卸载函数在模块卸载的时候执行，不返回任何值。通过宏 module_exit 的形式指定调用。通常来讲会完成模块加载函数相反的功能。
+
+与模块加载函数对应的，可以使用 `__exit` 修饰模块卸载函数。如果告诉内核相关模块直接被编译进内核。这种情况下 `__exit` 修饰的模块卸载函数会被忽略，不会被链进最后的镜像。因为既然都编译进内核，被内置了，那么肯定不会被卸载了。
+
+另外对应的，数据也可以被定义为 __exitdata。
+
+## 模块参数
+
+可以使用宏 module_param(name, type, perm) 为模块指定一个参数。宏函数参数分别对应模块参数名、参数类型以及参数读/写权限。
 
