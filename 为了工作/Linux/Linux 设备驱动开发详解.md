@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-04 18:00:00
+updated: 2024-11-05 16:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -41,7 +41,7 @@ Linux 2.6 版内核增加了对日志文件系统功能的支持，解决了 Lin
 
 在文件系统方面，基于 B 树的 Btrfs，称为是下一代 Linux 文件系统，它在扩展性、数据一致性、多设备管理和针对 SSD 的优化等方面都优于 ext4。
 
-## Linux 内核的组成
+## 内核的组成
 
 ### 内核源码的目录结构
 
@@ -140,7 +140,7 @@ Linux 内核 5 个组成部分之间的依赖关系如下：
 
 内核空间和用户空间这两个名词用来区分程序执行的两种不同状态，它们使用不同的地址空间。Linux 只能通过**系统调用**和**硬件中断**完成从用户空间到内核空间的控制转移。
 
-## Linux 内核的编译及加载
+## 内核的编译及加载
 
 ### 编译
 
@@ -355,7 +355,7 @@ config MODVERSIONS
 
 # Linux 内核模块
 
-## Linux 内核模块简介
+## 内核模块简介
 
 如果我们自己想要在 Linux 内核当中添加功能，有两种方法。
 
@@ -495,7 +495,7 @@ modinfo hello.ko
 # vermagic:       5.15.167 SMP mod_unload modversions
 ```
 
-## Linux 内核模块程序结构
+## 内核模块程序结构
 
 一个 Linux 内核模块主要由以下几部分组成：
 
@@ -575,5 +575,507 @@ module_exit(cleanup_function);
 
 ## 模块参数
 
-可以使用宏 module_param(name, type, perm) 为模块指定一个参数。宏函数参数分别对应模块参数名、参数类型以及参数读/写权限。
+可以使用宏 `module_param(参数名，参数类型，参数读/写权限)` 为模块指定一个参数。宏函数参数分别对应模块参数名、参数类型以及参数读/写权限。
+
+在装载内核模块的时候，可以向模块提供参数，格式如下。多个参数传递用空格隔开。如果不传递参数，将使用模块内定义的默认值。如果模块被内置，则无法被 insmod ，但是 bootloader 可以通过在 bootargs 里设置`“模块名.参数名=值”`的形式给该内置模块传递参数。
+
+```bash
+sudo insmod <param_name>=<param_value>
+```
+
+参数类型可以是 byte、short、ushort、int、uint、long、ulong、charp（字符指针）、bool 或 invbool（bool 的反）。模块在编译的时候会检查传入变量的类型和传入的类型是否一致。
+
+另外，模块也可以拥有参数数组，通过宏 `module_param_array(数组名，数组类型，数组长，参 数读/写权限)` 指定，用法类似。
+
+> 传递数组参数的时候需要注意一下格式。参数之间用 `,` 隔开，并且不加大括号，参数之间没有空格，例如传递一个 int 数组：
+>
+> ```bash
+> sudo insmod hello.ko array=1,2,3,4
+> ```
+
+如果指定了模块参数，**并且参数读/写权限不为 0**，在装入模块以后会在 `/sys/modules/<module_name>` 下出现 parameters 子目录，用于记录内核模块的参数。
+
+```markdown
+.
+...
+├── parameters
+│   ├── helloExitParam
+│   └── helloInitParam
+...
+```
+
+例如这里，就记录了内核模块参数 helloInitParam 和 helloExitParam，使用 cat 命令能够得到他们分别记录的值，其中数组的表示方法和上面提到的一致。
+
+<img src="https://img-blog.csdnimg.cn/direct/5aa7af05728a4dcd804e5e8f16f2f25b.png" alt="image-20241105100931281" style="zoom:75%;" />
+
+实例程序如下：
+
+```c
+#include <linux/init.h>
+#include <linux/module.h>
+
+
+MODULE_VERSION("1.0.0");
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_AUTHOR("DavidingPlus");
+MODULE_DESCRIPTION("A Simple Hello World Module");
+
+
+static int helloInitData __initdata = -114514;
+
+static const char *helloExitData __exitdata = "foo";
+
+static char *helloInitParam = "gee";
+module_param(helloInitParam, charp, S_IRUGO);
+
+static int helloExitParam[2] = {-10086, 10086};
+int helloExitParamSize = sizeof(helloExitParam) / sizeof(int);
+module_param_array(helloExitParam, int, &helloExitParamSize, S_IRUGO);
+
+
+static int __init hello_init(void)
+{
+    printk(KERN_INFO "hello: Hello World %d %s\n", helloInitData, helloInitParam);
+
+
+    return 0;
+}
+
+static void __exit hello_exit(void)
+{
+    printk(KERN_INFO "hello: Goodbye World %s %d %d\n", helloExitData, helloExitParam[0], helloExitParam[1]);
+}
+
+
+module_init(hello_init);
+module_exit(hello_exit);
+```
+
+## 导出符号
+
+导出符号即内核可以将函数导出被其他模块使用。Linux 中 `/proc/kallsyms` 文件对应内核符号表，记录了符号以及符号所在的内存地址。
+
+使用如下宏函数导出符号到内核符号表中：
+
+```c
+EXPORT_SYMBOL(符号名);
+
+// EXPORT_SYMBOL_GPL() 只适用于包含 GPL 许可权的模块。
+EXPORT_SYMBOL_GPL(符号名);
+```
+
+例如这里导出函数 add() 和 sub()：
+
+```c
+...
+
+int add(int a, int b) { return a + b; }
+
+int sub(int a, int b) { return a - b; }
+
+
+EXPORT_SYMBOL(add);
+EXPORT_SYMBOL(sub);
+
+...
+```
+
+装载好内核模块以后查看 /proc/kallsyms 文件能得到对应的符号信息：
+
+```bash
+cat /proc/kallsyms | grep hello
+
+# ...
+# 0000000000000000 r __kstrtab_add        [hello]
+# 0000000000000000 r __kstrtabns_add      [hello]
+# 0000000000000000 r __ksymtab_add        [hello]
+# 0000000000000000 r __kstrtab_sub        [hello]
+# 0000000000000000 r __kstrtabns_sub      [hello]
+# 0000000000000000 r __ksymtab_sub        [hello]
+# 0000000000000000 T add  [hello]
+# 0000000000000000 T sub  [hello]
+```
+
+## 模块声明与描述
+
+在 Linux 内核模块中，我们可以用 MODULE_AUTHOR、MODULE_DESCRIPTION、MODULE_VERSION、MODULE_DEVICE_TABLE、MODULE_ALIAS 分别声明模块的作者、描述、版本、设备表和别名，例如：
+
+```c
+MODULE_AUTHOR(author);
+MODULE_DESCRIPTION(description);
+MODULE_VERSION(version_string);
+MODULE_DEVICE_TABLE(table_info);
+MODULE_ALIAS(alternate_name);
+```
+
+## 模块的使用计数
+
+Linux 2.4 内核中，模块自身通过 MOD_INC_USE_COUNT、MOD_DEC_USE_COUNT 宏来管理自己被使用的计数。
+
+Linux 2.6 以后的内核提供了模块计数管理接口 try_module_get(&module) 和 module_put(&module)，从而取代 Linux 2.4 内核中的模块使用计数管理宏。模块的使用计数一般不必由模块自身管理，而且模块计数管理还考虑了 SMP 与 PREEMPT 机制的影响。
+
+```c
+// 用于增加模块使用计数。若返回为0，表示调用失败，希望使用的模块没有被加载或正在被卸载中。
+int try_module_get(struct module *module);
+
+// 用于减少模块使用计数。
+void module_put(struct module *module);
+```
+
+Linux 2.6 以后的内核为不同类型的设备定义了 struct module *owner 域，用来指向管理此设备的模块。当开始使用某个设备时，内核使用 try_module_get(dev->owner) 去增加管理此设备的 owner 模块的使用计数；当不再使用此设备时，内核使用 module_put(dev->owner) 减少对管理此设备的管理模块的使用计数。这样，当设备在使用时，管理此设备的模块将不能被卸载。只有当设备不再被使用时，模块才允许被卸载。
+
+# Linux 文件系统与设备文件
+
+Linux 之下一些皆文件，并且由于字符设备和块设备都良好的体现了一切皆文件的思想，因此 Linux 文件系统与设备文件的基础知识就非常重要了。
+
+## 文件操作
+
+### 系统调用
+
+1. 创建
+
+```c
+int creat(const char *pathname, mode_t mode);
+```
+
+参数 mode 代表创建文件的权限，和 umask 一起共同决定文件的最终权限（`mode & ~umask`）。umask 代表文件创建的时候需要去掉的一些权限，让最终的权限合理一些。可通过 umake() 系统调用改变：
+
+```c
+mode_t umask(mode_t mask);
+```
+
+umask() 函数将 umask 设置为 newmask，然后返回旧的 umask，它只影响读、写和执行权限。
+
+2. 打开
+
+```c
+int open(const char *pathname, int flags);
+int open(const char *pathname, int flags, mode_t mode);
+```
+
+flags 参数表示文件的打开标志，可以是如下的一个或者几个的组合：
+
+<img src="https://img-blog.csdnimg.cn/direct/0f8f0abc88214db386d1501b89c64b9d.png" alt="image-20241105144109024" style="zoom:80%;" />
+
+其中，O_RDONLY、O_WRONLY、O_RDWR 三者是互斥的，只可选择其一。
+
+如果使用了 O_CREAT 标志，还需要提供第三个参数 mode 来表示新文件的权限，同前面的 creat() 函数。mode 权限如下图：
+
+<img src="https://img-blog.csdnimg.cn/direct/dbb4cddec38941e4adcd0e41f27a9795.png" alt="image-20241105144550547" style="zoom:70%;" />
+
+关于权限 mode，举个例子就明白了。Linux 下的文件权限是一个八进制数，例如 0777。3 个 7 分别表示对不同的用户（所有者，组成员，其他用户的权限）的权限。每一个都是 3 位 ，第一位表示读 R，第二位表示写 W，第三位表示可执行 X，7 对应就是 111 全有。
+
+最后，open() 函数返回一个进程唯一的文件描述符，对文件的所有操作都通过该文件描述符实现。
+
+3. 读写
+
+打开文件获得文件描述符以后，通过 read() 和 write() 函数对文件进行读写。
+
+```c
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+```
+
+参数 buf 为存放读取数据的内存的地址指针，count 为长度。
+
+函数 read() 从文件描述符 fd 所指定的文件中读取 count 个字节到 buf 所指向的内存中，返回值为实际读取的字节数。
+
+函数 write() 实现把 count 个字节从 buf 中写到文件描述符 fd 所指向的文件中，返回值为实际写入的字节数。
+
+4. 定位
+
+对于随机文件，可以指定随机位置进行读写，使用 lseek() 函数：
+
+```c
+off_t lseek(int fd, off_t offset, int whence);
+```
+
+lseek() 函数将文件指针相对 whence 位置移动 offset 个字节，操作成功后返回文件指针现在的位置。
+
+参数 whence 可使用如下值。
+
+- SEEK_SET：相对文件开头。
+- SEEK_CUR：相对文件读写指针的当前位置。
+- SEEK_END：相对文件末尾。
+
+当然 lseek() 的 offset 可以取负值，表示往前移动。一般可以通过此函数获得文件的大小：
+
+```c
+int size = lseek(fd, 0, SEEK_END);
+```
+
+5. 关闭
+
+有始有终，在结束对文件的操作以后，需要关闭文件，释放文件描述符。通过 close() 实现：
+
+```c
+int close(int fd);
+```
+
+6. 实例 Demo
+
+编写一个程序，在当前目录下创建用户可读写文件 hello.txt，在其中写入"He\nllo, software weekly."，关闭该文件。再次打开该文件，读取其中的内容并输出在屏幕上。最后删除该文件。
+
+比较简单，cpp 程序如下：
+
+```cpp
+// 使用系统调用。
+#include <iostream>
+#include <cstring>
+
+#include <unistd.h>
+#include <fcntl.h>
+
+
+// 故意搞一个不能一次读完的数组。
+#define MAX_SIZE 10
+
+
+int main()
+{
+    const char *filePath = "hello.txt";
+    const char *writeStr = "He\nllo, software weekly.";
+
+
+    int fd = open(filePath, O_RDWR | O_CREAT | O_TRUNC, 0755);
+    if (-1 == fd)
+    {
+        perror("open");
+
+
+        return -1;
+    }
+
+    write(fd, writeStr, strlen(writeStr));
+
+    close(fd);
+
+
+    int fd2 = open(filePath, O_RDONLY);
+    if (-1 == fd2)
+    {
+        perror("open");
+
+
+        return -1;
+    }
+
+
+    char readStr[MAX_SIZE] = {0};
+    ssize_t len = 0;
+
+    // 为保证读完，需循环读取。
+    while (true)
+    {
+        bzero(readStr, sizeof(readStr));
+
+        len = read(fd2, readStr, sizeof(readStr) - 1);
+        if (-1 == len)
+        {
+            perror("read");
+
+
+            return -1;
+        }
+
+        std::cout << readStr;
+
+        if (0 == len) break;
+    }
+
+    std::cout << std::endl;
+
+    close(fd2);
+
+
+    unlink(filePath);
+
+
+    return 0;
+}
+```
+
+正确的输出预期应该如图：
+
+![image-20241105160211266](https://img-blog.csdnimg.cn/direct/70e36518faf34bd4b91e1471d68d207e.png)
+
+### 标准 C 库函数
+
+1. 创建和打开
+
+这两个操作都使用 fopen() 函数：
+
+```c
+FILE *fopen(const char *pathname, const char *mode);
+```
+
+mode 表示打开模式，支持的模式如图所示：
+
+<img src="https://img-blog.csdnimg.cn/59ee39f0f9724e5aa9f7d579eae550e4.png" style="zoom:80%;" />
+
+其中，b 用于区分二进制文件和文本文件，这一点在 DOS、Windows 系统中是有区分的，但 Linux 不区分二进制文件和文本文件。
+
+2. 读写
+
+标准 C 库的 IO 函数会自动在用户层分配缓冲区，而系统调用不具有用户层缓冲区。二者都具有内核层的缓冲区。
+
+其中缓冲分为三种，**全缓冲、行缓冲和无缓冲**，自然也对应不同缓冲情况下的 IO 函数。
+
+```cpp
+int fgetc(FILE *stream);
+int fputc(int c, FILE *stream);
+char *fgets(char *s, int size, FILE *stream);
+int fputs(const char *s, FILE *stream);
+int fprintf(FILE *stream, const char *format, ...);
+int fscanf(FILE *stream, const char *format, ...);
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+```
+
+另外，标准 C 库函数还提供了读写过程的定位能力，包括：
+
+```cpp
+int fgetpos(FILE *stream, fpos_t *pos);
+int fsetpos(FILE *stream, const fpos_t *pos);
+int fseek(FILE *stream, long offset, int whence);
+```
+
+更多的具体用法和细节请参考另一篇博客 [https://blog.davidingplus.cn/posts/9e44c3b9.html](https://blog.davidingplus.cn/posts/9e44c3b9.html) 的第五章。
+
+3. 关闭
+
+同上，是非常简单的操作。
+
+```cpp
+int fclose(FILE *stream);
+```
+
+4. 实例 Demo
+
+将前面的实例 Demo 换成标准 C 库的实现方法如下：
+
+```cpp
+// 使用标准 C 库函数。
+#include <iostream>
+#include <cstring>
+
+
+#define MAX_SIZE 10
+
+
+int main()
+{
+    const char *filePath = "hello.txt";
+    const char *writeStr = "He\nllo, software weekly.";
+
+    FILE *file = fopen(filePath, "w");
+    if (!file)
+    {
+        perror("fopen");
+
+
+        return -1;
+    }
+
+    fputs(writeStr, file);
+
+    fclose(file);
+
+
+    FILE *file2 = fopen(filePath, "r");
+    if (!file2)
+    {
+        perror("fopen");
+
+
+        return -1;
+    }
+
+    char readStr[MAX_SIZE] = {0};
+
+    while (true)
+    {
+        bzero(readStr, sizeof(readStr));
+
+        fgets(readStr, sizeof(readStr) - 1, file2);
+        if (ferror(file2))
+        {
+            perror("fgets");
+
+
+            return -1;
+        }
+
+        std::cout << readStr;
+
+        if (feof(file2)) break;
+    }
+
+    std::cout << std::endl;
+
+    fclose(file2);
+
+
+    remove(filePath);
+
+
+    return 0;
+}
+```
+
+同样输出和上面一样的结果。
+
+## 文件系统
+
+### 目录结构
+
+进入 Linux 根目录（即 `/`，Linux 文件系统的入口，也是处于最高一级的目录），运行 `ls -la` 命令，包含以下目录：
+
+1. /bin
+
+包含基本命令，如 ls、cp、mkdir 等，这个目录中的文件都是可执行的。
+
+2. /sbin
+
+包含系统命令，如 modprobe、hwclock、ifconfig 等，大多是涉及系统管理的命令，这个目录中的文件都是可执行的。
+
+3. /dev
+
+设备文件存储目录，应用程序通过对这些文件的读写和控制以访问实际的设备。
+
+4. /etc
+
+系统配置文件的所在地，一些服务器的配置文件也在这里，如用户账号及密码配置文件。busybox 的启动脚本也存放在该目录。
+
+5. /lib
+
+系统库文件存放目录等。
+
+6. /mnt
+
+这个目录一般是用于存放挂载储存设备的挂载目录，比如含有 cdrom 等目录。可以参看 /etc/fstab 的定义。有时我们可以让系统开机自动挂载文件系统，并把挂载点放在这里。
+
+7. /opt
+
+opt 是可选的意思，有些软件包会被安装在这里。
+
+8. /proc
+
+操作系统运行时，进程及内核信息（比如 CPU、硬盘分区、内存信息等）存放在这里。/proc 目录为伪文件系统 proc 的挂载目录，proc 并不是真正的文件系统，它存在于内存之中。
+
+9. /tmp
+
+用户运行程序的时候，有时会产生临时文件，/tmp 用来存放临时文件。
+
+10. /usr
+
+这个是系统存放程序的目录，比如用户命令、用户库等。
+
+11. /var
+
+var 表示的是变化的意思，这个目录的内容经常变动，如 /var/log/ 目录被用来存放系统日志。
+
+12. /sys
+
+Linux 2.6 以后的内核所支持的 sysfs 文件系统被映射在此目录上。Linux 设备驱动模型中的总线、驱动 和设备都可以在 sysfs 文件系统中找到对应的节点。当内核检测到在系统中出现了新设备后，内核会在 sysfs 文件系统中为该新设备生成一项新的记录。
 
