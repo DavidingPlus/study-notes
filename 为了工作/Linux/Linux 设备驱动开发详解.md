@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-07 15:20:00
+updated: 2024-11-07 18:10:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -917,9 +917,9 @@ mode 表示打开模式，支持的模式如图所示：
 
 2. 读写
 
-标准 C 库的 IO 函数会自动在用户层分配缓冲区，而系统调用不具有用户层缓冲区。二者都具有内核层的缓冲区。
+标准 C 库的 IO 函数会自动在用户层分配缓冲区，而系统调用不具有用户层缓冲区。二者都具有内核层的缓冲区。其中缓冲分为三种，**全缓冲、行缓冲和无缓冲**。
 
-其中缓冲分为三种，**全缓冲、行缓冲和无缓冲**，自然也对应不同缓冲情况下的 IO 函数。
+罗列部分 API 接口如下：
 
 ```cpp
 int fgetc(FILE *stream);
@@ -1754,4 +1754,21 @@ struct file_operations {
 	int (*fadvise)(struct file *, loff_t, loff_t, int);
 } __randomize_layout;
 ```
+
+下面对其进行简要分析：
+
+1. llseek()：修改一个文件的当前读写位置，并返回新位置偏移指针。出错时函数返回负值。
+2. read()：**从设备读取数据。**成功时返回读取的字节数，出错时返回一个负值。与用户空间的 `ssize_t read(int fd, void *buf, size_t count);` 函数对应。返回 0 代表 EOF（end of file）。
+3. write()：**向设备发送数据。**成功时返回写入的字节数，出错时返回一个负值。如果未实现此函数，用户进行 write() 系统调用时，将得到 -EINVAL 返回值。与用户空间的 `ssize_t write(int fd, const void *buf, size_t count);` 函数对应。同样返回 0 代表 EOF（end of file）。
+4. unlocked_ioctl()：提供**设备相关控制命令的实现**（既不是读操作，也不是写操作）。成功时返回一个非负值。与用户空间的 `int fcntl(int fd, int cmd, ... /* arg */ );` 函数对应。
+5. mmap()：**将设备内存映射到进程的虚拟地址空间中。**如果未实现此函数，用户进行 mmap() 系统调用的时，会获得 -ENODEV 返回值。这个函数对于帧缓冲等设备特别有意义，帧缓冲被映射到用户空间后，应用程序可以直接访问它而无须在内核和应用间进行内存复制。与用户空间的 `void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);` 函数对应。
+6. open()、release()：当用户空间调用 open() 打开设备文件时，设备驱动的 open() 函数最终被调用。驱动程序可以不实现这个函数，在这种情况下，设备的打开操作永远成功。与 open() 函数对应的是 release() 函数，也对应用户空间的 close() 函数。
+7. poll()：一般用于询问设备是否可被非阻塞地立即读写。当询问的条件未触发时，用户空间进行 select() 和 poll() 系统调用将引起进程的阻塞。
+8. aio_read()、aio_write()：对与文件描述符对应的设备进行**异步**读、写操作。设备实现这两个函数后，用户空间可以对该设备文件描述符执行 SYS_io_setup、SYS_io_submit、SYS_io_getevents、SYS_io_destroy 等系统调用进行读写。
+
+### 字符设备驱动的组成
+
+#### 模块加载与卸载函数
+
+在模块加载函数中应实现设备号的申请和 cdev 的注册，在模块卸载函数中应实现 cdev 的注销和设备号的释放。
 
