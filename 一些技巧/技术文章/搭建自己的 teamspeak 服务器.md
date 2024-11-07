@@ -40,11 +40,10 @@ ts 服务端也是一个程序，所以显而易见，部署 ts 服务端的本�
 docker 安装成功以后，通过以下命令部署 ts 服务端：
 
 ```bash
-docker run -p 9987:9987/udp -p 10011:10011 -p 10022:10022 -p 10080:10080 -p 10443:10443 -p 30033:30033 -p 41144:41144 -e TS3SERVER_LICENSE=accept -e TS3SERVER_SERVERADMIN_PASSWORD=<your_password> --name="teamspeak-server
-" -d teamspeak
+docker run -p 9987:9987/udp -p 10011:10011 -p 10022:10022 -p 10080:10080 -p 10443:10443 -p 30033:30033 -p 41144:41144 -e TS3SERVER_LICENSE=accept -e TS3SERVER_SERVERADMIN_PASSWORD=<your_password> --name="teamspeak-server" -d teamspeak
 ```
 
-关于这些 `- xxx` 参数的含义和规则，可以参考文章[https://blog.csdn.net/weixin_39998006/article/details/99680522](https://blog.csdn.net/weixin_39998006/article/details/99680522)，这里只进行简单的阐述：
+关于这些 `-xxx` 参数的含义和规则，可以参考文章[https://blog.csdn.net/weixin_39998006/article/details/99680522](https://blog.csdn.net/weixin_39998006/article/details/99680522)，这里只进行简单的阐述：
 
 - -p：**主机端口:容器内部端口**，代表程序需要用到的端口，当然云服务器需要放开公网端口的防火墙。关于主机端口和容器内部端口，后续会做解释。
 - -e：运行程序配置的环境变量，这里非常推荐加上 `TS3SERVER_SERVERADMIN_PASSWORD=<your_password>`，`<your_password>` 改为读者自己想要设置的密码，这个在后续找回 ts 服务器权限 token 的时候非常有用，后文会解释这一点。

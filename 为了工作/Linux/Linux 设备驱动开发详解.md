@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-05 16:20:00
+updated: 2024-11-07 15:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1078,4 +1078,680 @@ var 表示的是变化的意思，这个目录的内容经常变动，如 /var/l
 12. /sys
 
 Linux 2.6 以后的内核所支持的 sysfs 文件系统被映射在此目录上。Linux 设备驱动模型中的总线、驱动 和设备都可以在 sysfs 文件系统中找到对应的节点。当内核检测到在系统中出现了新设备后，内核会在 sysfs 文件系统中为该新设备生成一项新的记录。
+
+### 文件系统与设备驱动
+
+如图所示是 Linux 下虚拟文件系统、磁盘/Flash 文件系统及一般的设备文件与设备驱动程序之间的关系。
+
+<img src="https://img-blog.csdnimg.cn/direct/82d58b796bbf4354857488563e36c251.png" alt="image-20241106093412285" style="zoom: 70%;" />
+
+应用程序和 VFS 之间的接口是系统调用，而 VFS 与文件系统以及设备文件之间的接口是 file_operations 结构体成员函数，这个结构体包含对文件进行打开、关闭、读写、控制的一系列成员函数。
+
+<img src="https://img-blog.csdnimg.cn/direct/9027b6a03dba4d2c9935f01074419824.png" alt="image-20241106093650313" style="zoom:75%;" />
+
+字符设备的上层没有类似于磁盘 ext2 等文件系统，所以字符设备的 file_operations 成员函数就直接由设备驱动提供了，并且是字符驱动的核心部分。
+
+块设备有两种访问方法，一种方法是不通过文件系统直接访问裸设备，在 Linux 内核实现了统一的 def_blk_fops 这一 file_operations，它的源代码位于 fs/block_dev.c，所以当我们运行类似于 `dd if=/dev/sdb1of=sdb1.img` 的命令把整个 /dev/sdb1 裸分区复制到 sdb1.img 的时候，内核走的是 def_blk_fops 这个 file_operations；另外一种方法是通过文件系统来访问块设备，file_operations 的实现则位于文件系统内，文件系统会把针对文件的读写转换为针对块设备原始扇区的读写。ext2、fat、Btrfs 等文件系统中会实现针对 VFS 的 file_operations 成员函数，设备驱动层将看不到 file_operations 的存在。
+
+#### file 结构体
+
+file 结构体代表一个打开的文件。系统中每个打开的文件在内核空间都会对应一个 struct file。它由内核在打开文件的时候创建，并传递给文件上进行操作的任何函数，在文件的所有实例关闭以后，内核会释放这个数据结构。一般将 struct file 的指针命名为 file 或者 filp。
+
+在内核 5.15 版本中如下定义：
+
+```c
+struct file {
+	union {
+		struct llist_node	fu_llist;
+		struct rcu_head 	fu_rcuhead;
+	} f_u;
+	struct path		f_path;
+	struct inode		*f_inode;	/* cached value */
+	const struct file_operations	*f_op; // 和文件关联的操作
+
+	/*
+	 * Protects f_ep, f_flags.
+	 * Must not be taken from IRQ context.
+	 */
+	spinlock_t		f_lock;
+	enum rw_hint		f_write_hint;
+	atomic_long_t		f_count;
+	unsigned int 		f_flags; // 文件标志，如 O_RDONLY、O_NONBLOCK、O_SYNC 等
+	fmode_t			f_mode; // 文件读/写模式，如 FMODE_READ、FMODE_WRITE 等
+	struct mutex		f_pos_lock;
+	loff_t			f_pos; // 当前读写位置
+	struct fown_struct	f_owner;
+	const struct cred	*f_cred;
+	struct file_ra_state	f_ra;
+
+	u64			f_version;
+#ifdef CONFIG_SECURITY
+	void			*f_security;
+#endif
+	/* needed for tty driver, and maybe others */
+	void			*private_data; // 文件私有数据
+
+#ifdef CONFIG_EPOLL
+	/* Used by fs/eventpoll.c to link all the hooks to this file */
+	struct hlist_head	*f_ep;
+#endif /* #ifdef CONFIG_EPOLL */
+	struct address_space	*f_mapping;
+	errseq_t		f_wb_err;
+	errseq_t		f_sb_err; /* for syncfs */
+} __randomize_layout
+  __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
+```
+
+文件读/写模式 f_mode、标志 f_flags 都是设备驱动关心的内容。私有数据指针 private_data 在设备驱动中被广泛应用，大多被指向设备驱动自定义以用于描述设备的结构体。
+
+#### inode 结构体
+
+inode 结构体包含文件访问权限、属主、组、大小、生成时间、访问时间、最后修改时间等信息。它是 Linux 管理文件系统的最基本单位，也是文件系统连接任何子目录、文件的桥梁。定义如下：
+
+```c
+struct inode {
+	umode_t			i_mode; // inode 的权限
+	unsigned short		i_opflags;
+	kuid_t			i_uid; // inode 所有者 id
+	kgid_t			i_gid; // inode 所属的群组 id
+	unsigned int		i_flags;
+
+#ifdef CONFIG_FS_POSIX_ACL
+	struct posix_acl	*i_acl;
+	struct posix_acl	*i_default_acl;
+#endif
+
+	const struct inode_operations	*i_op;
+	struct super_block	*i_sb;
+	struct address_space	*i_mapping;
+
+#ifdef CONFIG_SECURITY
+	void			*i_security;
+#endif
+
+	/* Stat data, not accessed from path walking */
+	unsigned long		i_ino;
+	/*
+	 * Filesystems may only read i_nlink directly.  They shall use the
+	 * following functions for modification:
+	 *
+	 *    (set|clear|inc|drop)_nlink
+	 *    inode_(inc|dec)_link_count
+	 */
+	union {
+		const unsigned int i_nlink;
+		unsigned int __i_nlink;
+	};
+	dev_t			i_rdev; // 若是设备文件，此字段会记录设备的设备号
+	loff_t			i_size; // inode 代表的文件大小
+	struct timespec64	i_atime; // inode 最近一次的存取时间
+	struct timespec64	i_mtime; // inode 最近一次的修改时间
+	struct timespec64	i_ctime; // inode 的产生时间
+	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
+	unsigned short          i_bytes;
+	u8			i_blkbits;
+	u8			i_write_hint;
+	blkcnt_t		i_blocks; // inode 使用的 block 数，一个 block 为 512 个字节
+
+#ifdef __NEED_I_SIZE_ORDERED
+	seqcount_t		i_size_seqcount;
+#endif
+
+	/* Misc */
+	unsigned long		i_state;
+	struct rw_semaphore	i_rwsem;
+
+	unsigned long		dirtied_when;	/* jiffies of first dirtying */
+	unsigned long		dirtied_time_when;
+
+	struct hlist_node	i_hash;
+	struct list_head	i_io_list;	/* backing dev IO list */
+#ifdef CONFIG_CGROUP_WRITEBACK
+	struct bdi_writeback	*i_wb;		/* the associated cgroup wb */
+
+	/* foreign inode detection, see wbc_detach_inode() */
+	int			i_wb_frn_winner;
+	u16			i_wb_frn_avg_time;
+	u16			i_wb_frn_history;
+#endif
+	struct list_head	i_lru;		/* inode LRU list */
+	struct list_head	i_sb_list;
+	struct list_head	i_wb_list;	/* backing dev writeback list */
+	union {
+		struct hlist_head	i_dentry;
+		struct rcu_head		i_rcu;
+	};
+	atomic64_t		i_version;
+	atomic64_t		i_sequence; /* see futex */
+	atomic_t		i_count;
+	atomic_t		i_dio_count;
+	atomic_t		i_writecount;
+#if defined(CONFIG_IMA) || defined(CONFIG_FILE_LOCKING)
+	atomic_t		i_readcount; /* struct files open RO */
+#endif
+	union {
+		const struct file_operations	*i_fop;	/* former ->i_op->default_file_ops */
+		void (*free_inode)(struct inode *);
+	};
+	struct file_lock_context	*i_flctx;
+	struct address_space	i_data;
+	struct list_head	i_devices;
+	union {
+		struct pipe_inode_info	*i_pipe;
+		struct cdev		*i_cdev; // 若是字符设备，对应其 cdev 结构体指针
+		char			*i_link;
+		unsigned		i_dir_seq;
+	};
+
+	__u32			i_generation;
+
+#ifdef CONFIG_FSNOTIFY
+	__u32			i_fsnotify_mask; /* all events this inode cares about */
+	struct fsnotify_mark_connector __rcu	*i_fsnotify_marks;
+#endif
+
+#ifdef CONFIG_FS_ENCRYPTION
+	struct fscrypt_info	*i_crypt_info;
+#endif
+
+#ifdef CONFIG_FS_VERITY
+	struct fsverity_info	*i_verity_info;
+#endif
+
+	void			*i_private; /* fs or device private pointer */
+} __randomize_layout;
+```
+
+对于表示设备文件的 inode 结构，i_rdev 字段包含设备编号。**Linux 内核设备编号分为主设备编号和次设备编号。设备号用 dev_t 类型表示，实际上是 `unsigned int`。前者为 dev_t 的高 12 位，后者为 dev_t 的低 20 位。**使用如下函数从 inode 获得主设备号和次设备号：
+
+```c
+static inline unsigned iminor(const struct inode *inode)
+{
+	return MINOR(inode->i_rdev);
+}
+
+static inline unsigned imajor(const struct inode *inode)
+{
+	return MAJOR(inode->i_rdev);
+}
+```
+
+查看 /proc/devices 文件可以看到当前系统注册的设备，第一列为主设备号，第二列为设备名，例如：
+
+```bash
+cat /proc/devices
+
+# Character devices:
+#   1 mem
+#   4 /dev/vc/0
+#   4 tty
+#   4 ttyS
+#   5 /dev/tty
+#   5 /dev/console
+#   5 /dev/ptmx
+#   5 ttyprintk
+#   7 vcs
+#  10 misc
+#  13 input
+#  21 sg
+#  29 fb
+#  89 i2c
+# 108 ppp
+# 128 ptm
+# 136 pts
+# 180 usb
+# 189 usb_device
+# 202 cpu/msr
+# 204 ttyMAX
+# 226 drm
+# 241 aux
+# 242 cec
+# 243 hidraw
+# 244 vfio
+# 245 bsg
+# 246 watchdog
+# 247 ptp
+# 248 pps
+# 249 rtc
+# 250 dax
+# 251 dimmctl
+# 252 ndctl
+# 253 tpm
+# 254 gpiochip
+
+# Block devices:
+#   7 loop
+#   8 sd
+#   9 md
+#  11 sr
+#  65 sd
+#  66 sd
+#  67 sd
+#  68 sd
+#  69 sd
+#  70 sd
+#  71 sd
+# 128 sd
+# 129 sd
+# 130 sd
+# 131 sd
+# 132 sd
+# 133 sd
+# 134 sd
+# 135 sd
+# 253 device-mapper
+# 254 mdp
+# 259 blkext
+```
+
+查看 /dev 目录可以查看系统中在上述注册的设备上建立的设备文件。一个注册的设备可以有多个设备文件，日期前面的两列分别对应主设备号和次设备号。
+
+主设备号是与驱动对应的概念。同一类设备一般使用相同的主设备号，不同类设备一般使用不同的主设备号（但是不排除在同一主设备号下包含有一定差异的设备）。**因为同一驱动可支持多个同类设备，因此用次设备号来描述使用该驱动的设备的序号**。序号一般从 0 开始。
+
+## devfs
+
+devfs（设备文件系统）是 Linux 内核 2.4 版本引入的，使得设备驱动程序能自主地管理自己的设备文件。具体来讲，有以下优点：
+
+1. 可以通过程序在设备初始化的时候在 /dev 目录下创建设备文件，卸载设备的时候删除。
+2. 设备驱动程序可以指定设备名、所有者和权限位，用户空间程序仍可以修改所有者和权限位。
+3. 不再需要为设备驱动程序分配主设备号以及处理次设备号，在程序中可以直接给 register_chrdev() 传递 0 主设备号以获得可用的主设备号，并在 devfs_register() 中指定次设备号。
+
+## udev
+
+### udev 和 devfs 的区别
+
+尽管 devfs 有很多的优点，但在 Linus 2.6 中，devfs 被认为是过时的方法，并最终被抛弃了，udev 取代了它。
+
+Linux 设计中强调的一个基本观点是机制和策略的分离。机制是做某样事情的固定步骤、方法，而策略就是每一个步骤所采取的不同方式。机制是相对固定的，而每个步骤采用的策略是不固定、灵活的。在 Linux 内核中，应该实现机制而非策略。
+
+例如，Linux 提供 API 可以让人把线程的优先级调高或者调低，或者调整调度策略为 SCHED_FIFO 什么的，但是 Linux 内核本身却不管谁高谁低。提供 API 属于机制，谁高谁低这属于策略，所以应该是应用程序自己去告诉内核要高或低，而内核不管这些杂事。属于策略的东西应该被移到用户空间中，谁爱给哪个设备创建什么名字或者想做更多的处理，谁自己去设定。内核只管把这些信息告诉用户就行了。这就是位于内核空间的 devfs 应该被位于用户空间的 udev 取代的原因，应该 devfs 管了一些它实际上不该管的事情。
+
+udev 是 Linux 系统下的一套**设备管理系统**，能在 /dev 目录下动态创建和删除设备节点。
+
+**udev 完全在用户态工作。它利用设备加入或移除时内核所发送的热插拔事件（Hotplug Event）来工作。在热插拔时，设备的详细信息会由内核通过 netlink 套接字发送出来，发出的事情叫 uevent。**udev 的设备命名策略、权限控制和事件处理都是在用户态下完成的，它利用从内核收到的信息来进行创建设备文件节点等工作。对于冷插拔的设备，在开机的时候就已经存在，在 udev 启动之前就已被插入。Linux 下提供了 sysfs 下面一个 uevent 节点。可以往该节点写一个 add，导致内核重新发送 netlink，之后 udev 就可以收到冷插拔的 netlink 消息了。
+
+udev 和 devfs 另一个区别在于：采用 devfs，当一个并不存在的 /dev 节点**被打开**的时候，devfs 能自动加载对应的驱动，而 udev 则不这么做。udev 的设计者认为 Linux 应该在设备**被发现**的时候加载驱动模块，而不是当它被访问的时候。系统中所有的设备都应该产生热插拔事件并加载恰当的驱动，而不是在设备被打开的时候。udev 能注意到这点并且为它创建对应的设备节点。
+
+### sysfs 文件系统与 Linux 设备模型
+
+Linux 2.6 以后的内核引入了 sysfs 文件系统，是一个虚拟文件系统，可以产生**包括所有系统硬件的层级视图**，与**提供进程和状态信息**的 proc 非常类似。
+
+sysfs 把连接在系统上的设备和总线组织成为一个分级的文件。它们可以由用户空间存取，向用户空间导出内核数据结构以及它们的属性。sysfs 的一个目的就是展示设备驱动模型中各组件的层次关系。
+
+其目录结构类似如下。block 目录包含所有的块设备；devices 目录包含系统所有的设备，并根据设备挂载的总线类型组织成层次结构；bus 目录包含系统中所有的总线类型；class 目录包含系统中的设备类型，如网卡设备、声卡设备、输入设备等。
+
+<img src="https://img-blog.csdnimg.cn/direct/2814968d5df14815936dfd8e0a3f636d.png" alt="image-20241107100021716" style="zoom:75%;" />
+
+在 /sys/bus/ 的 pci 等子目录下，又会再分出 drivers 和 devices 目录，而 devices 目录中的文件是对 /sys/devices/ 目录中文件的符号链接。同样地，/sys/class/ 目录下也包含许多对 /sys/devices/ 下文件的链接。Linux 设备模型与设备、驱动、总线和类的现实状况是直接对应的，如图所示：
+
+<img src="https://img-blog.csdnimg.cn/direct/bd429fa34bba4bccb6bea45b80e1e0a1.png" alt="image-20241107100653352" style="zoom:70%;" />
+
+**在 Linux 内核中，使用 bus_type、device_driver、device 来描述总线、驱动和设备。**其定义如下：
+
+```c
+// include/linux/device/bus.h
+struct bus_type {
+	const char		*name;
+	const char		*dev_name;
+	struct device		*dev_root;
+	const struct attribute_group **bus_groups;
+	const struct attribute_group **dev_groups;
+	const struct attribute_group **drv_groups;
+
+	int (*match)(struct device *dev, struct device_driver *drv);
+	int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
+	int (*probe)(struct device *dev);
+	void (*sync_state)(struct device *dev);
+	void (*remove)(struct device *dev);
+	void (*shutdown)(struct device *dev);
+
+	int (*online)(struct device *dev);
+	int (*offline)(struct device *dev);
+
+	int (*suspend)(struct device *dev, pm_message_t state);
+	int (*resume)(struct device *dev);
+
+	int (*num_vf)(struct device *dev);
+
+	int (*dma_configure)(struct device *dev);
+
+	const struct dev_pm_ops *pm;
+
+	const struct iommu_ops *iommu_ops;
+
+	struct subsys_private *p;
+	struct lock_class_key lock_key;
+
+	bool need_parent_lock;
+};
+
+// include/linux/device/driver.h
+struct device_driver {
+	const char		*name;
+	struct bus_type		*bus;
+
+	struct module		*owner;
+	const char		*mod_name;	/* used for built-in modules */
+
+	bool suppress_bind_attrs;	/* disables bind/unbind via sysfs */
+	enum probe_type probe_type;
+
+	const struct of_device_id	*of_match_table;
+	const struct acpi_device_id	*acpi_match_table;
+
+	int (*probe) (struct device *dev);
+	void (*sync_state)(struct device *dev);
+	int (*remove) (struct device *dev);
+	void (*shutdown) (struct device *dev);
+	int (*suspend) (struct device *dev, pm_message_t state);
+	int (*resume) (struct device *dev);
+	const struct attribute_group **groups;
+	const struct attribute_group **dev_groups;
+
+	const struct dev_pm_ops *pm;
+	void (*coredump) (struct device *dev);
+
+	struct driver_private *p;
+};
+
+// include/linux/device.h
+struct device {
+	struct kobject kobj;
+	struct device		*parent;
+
+	struct device_private	*p;
+
+	const char		*init_name; /* initial name of the device */
+	const struct device_type *type;
+
+	struct bus_type	*bus;		/* type of bus device is on */
+	struct device_driver *driver;	/* which driver has allocated this
+					   device */
+	void		*platform_data;	/* Platform specific data, device
+					   core doesn't touch it */
+	void		*driver_data;	/* Driver data, set and get with
+					   dev_set_drvdata/dev_get_drvdata */
+#ifdef CONFIG_PROVE_LOCKING
+	struct mutex		lockdep_mutex;
+#endif
+	struct mutex		mutex;	/* mutex to synchronize calls to
+					 * its driver.
+					 */
+
+	struct dev_links_info	links;
+	struct dev_pm_info	power;
+	struct dev_pm_domain	*pm_domain;
+
+#ifdef CONFIG_ENERGY_MODEL
+	struct em_perf_domain	*em_pd;
+#endif
+
+#ifdef CONFIG_GENERIC_MSI_IRQ_DOMAIN
+	struct irq_domain	*msi_domain;
+#endif
+#ifdef CONFIG_PINCTRL
+	struct dev_pin_info	*pins;
+#endif
+#ifdef CONFIG_GENERIC_MSI_IRQ
+	raw_spinlock_t		msi_lock;
+	struct list_head	msi_list;
+#endif
+#ifdef CONFIG_DMA_OPS
+	const struct dma_map_ops *dma_ops;
+#endif
+	u64		*dma_mask;	/* dma mask (if dma'able device) */
+	u64		coherent_dma_mask;/* Like dma_mask, but for
+					     alloc_coherent mappings as
+					     not all hardware supports
+					     64 bit addresses for consistent
+					     allocations such descriptors. */
+	u64		bus_dma_limit;	/* upstream dma constraint */
+	const struct bus_dma_region *dma_range_map;
+
+	struct device_dma_parameters *dma_parms;
+
+	struct list_head	dma_pools;	/* dma pools (if dma'ble) */
+
+#ifdef CONFIG_DMA_DECLARE_COHERENT
+	struct dma_coherent_mem	*dma_mem; /* internal for coherent mem
+					     override */
+#endif
+#ifdef CONFIG_DMA_CMA
+	struct cma *cma_area;		/* contiguous memory area for dma
+					   allocations */
+#endif
+#ifdef CONFIG_SWIOTLB
+	struct io_tlb_mem *dma_io_tlb_mem;
+#endif
+	/* arch specific additions */
+	struct dev_archdata	archdata;
+
+	struct device_node	*of_node; /* associated device tree node */
+	struct fwnode_handle	*fwnode; /* firmware device node */
+
+#ifdef CONFIG_NUMA
+	int		numa_node;	/* NUMA node this device is close to */
+#endif
+	dev_t			devt;	/* dev_t, creates the sysfs "dev" */
+	u32			id;	/* device instance */
+
+	spinlock_t		devres_lock;
+	struct list_head	devres_head;
+
+	struct class		*class;
+	const struct attribute_group **groups;	/* optional groups */
+
+	void	(*release)(struct device *dev);
+	struct iommu_group	*iommu_group;
+	struct dev_iommu	*iommu;
+
+	enum device_removable	removable;
+
+	bool			offline_disabled:1;
+	bool			offline:1;
+	bool			of_node_reused:1;
+	bool			state_synced:1;
+	bool			can_match:1;
+#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
+    defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
+    defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
+	bool			dma_coherent:1;
+#endif
+#ifdef CONFIG_DMA_OPS_BYPASS
+	bool			dma_ops_bypass : 1;
+#endif
+};
+```
+
+device_driver 和 device 分别表示驱动和设备，而这两者都必须依附于一种总线，因此都包含 bus_type 指针。**在 Linux 内核中，设备和驱动是分开注册的。**注册 1 个设备的时候，并不需要驱动已经存在。而 1 个驱动被注册的时候，也不需要对应的设备已经被注册。设备和驱动各自涌向内核，而每个设备和驱动涌入内核的时候，都会去寻找自己的另一半。而正是 bus_type 的 match() 成员函数将两者捆绑在一起。一旦匹配成功，xxx_driver 的 probe() 函数就会被执行（xxx 是总线名， 如 platform、pci、i2c、spi、usb 等）。
+
+**总线、驱动和设备最终都会落实为 sysfs 中的 1 个目录。**它们实际上都可以认为是 kobject 的派生类，**kobject 可看作是所有总线、设备和驱动的抽象基类**，1个 kobject 对应 sysfs 中的 1 个目录。
+
+另外，**总线、驱动和设备中的各个 attribute 直接落实为 sysfs 中的一个文件。**结构体中含有 show() 和 store() 两个函数，分别用于读写对应的 sysfs 文件。这几个 attribute 相关结构体的定义如下：
+
+```c
+struct attribute {
+	const char		*name;
+	umode_t			mode;
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+	bool			ignore_lockdep:1;
+	struct lock_class_key	*key;
+	struct lock_class_key	skey;
+#endif
+};
+
+struct bus_attribute {
+	struct attribute	attr;
+	ssize_t (*show)(struct bus_type *bus, char *buf);
+	ssize_t (*store)(struct bus_type *bus, const char *buf, size_t count);
+};
+
+struct driver_attribute {
+	struct attribute attr;
+	ssize_t (*show)(struct device_driver *driver, char *buf);
+	ssize_t (*store)(struct device_driver *driver, const char *buf,
+			 size_t count);
+};
+
+struct device_attribute {
+	struct attribute	attr;
+	ssize_t (*show)(struct device *dev, struct device_attribute *attr,
+			char *buf);
+	ssize_t (*store)(struct device *dev, struct device_attribute *attr,
+			 const char *buf, size_t count);
+};
+```
+
+### udev 的组成
+
+udev 目前和 systemd 项目已合并，地址：[https://github.com/systemd/systemd](https://github.com/systemd/systemd)
+
+udev 在用户空间中执行，动态建立/删除设备文件，允许每个人都不用关心主/次设备号而提供 Linux 标准规范的名称，并且可以根据需要固定名称。
+
+udev 的工作机制如下：
+
+1. udev 以守护进程的方式运行，工作于用户空间，它监听一个 netlink socket。
+2. 当有新设备接入或设备从系统中移除时，系统内核通过这个 socket 向 udev 发送 uevent。
+3. udev 获取内核发送的信息，进行规则的匹配。匹配的事物包括 SUBSYSTEM、ACTION、atttribute、内核提供的名称（通过 KERNEL =）以及其他的环境变量。
+
+### udev 规则文件
+
+udev 规则文件以行为单位，一行代表一个规则。每个规则分为一个或多个匹配部分和赋值部分。二者带有不同的关键字。
+
+匹配关键字包括：ACTION（行为）、KERNEL（匹配内核设备名）、BUS（匹配总线类型）、SUBSYSTEM（匹配子系统名）、ATTR（属性）等。
+
+赋值关键字包括：NAME（创建的设备文件名）、SYMLINK（符号创建链接名）、OWNER（设置设备的所有者）、GROUP（设置设备的组）、IMPORT（调用外部程序）、MODE（节点访问权限）等。
+
+举个例子看一下：
+
+```markdown
+SUBSYSTEM=="net", ACTION=="add", DRIVERS==" *", ATTR{address}=="08:00:27:35:be:ff", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="eth*", NAME="eth1"
+```
+
+匹配部分包括 SUBSYSTEM、ACTION、ATTR、KERNEL 等，赋值部分有一项，是 NAME。这个规则的意思是：当系统中出现的新硬件属于 net 子系统范畴，系统对该硬件采取的动作是 add 这个硬件，且这个硬件的 address 属性信息等于 "08:00:27:35:be:ff"，dev_id 属性等于 "0x0" 、type 属性为 1 等。此时，对这个硬件在 udev 层实行的动作是创建 /dev/eth1。
+
+# Linux 字符设备驱动
+
+Linux 系统将设备分为3类：**字符设备、块设备、网络设备**。架构图如下：
+
+![](https://img-blog.csdn.net/20160309214506200)
+
+**字符设备是指只能一个字节一个字节读写的设备，不能随机读取设备内存中的某一数据，读取数据需要按照先后数据。**字符设备是面向流的设备。常见的字符设备有鼠标、键盘、串口、控制台和 LED 设备等。
+
+**块设备是指可以从设备的任意位置读取一定长度数据的设备。**块设备包括硬盘、磁盘、U 盘和 SD 卡等。
+
+每一个字符设备或块设备都在 /dev 目录下对应一个设备文件。Linux 用户程序通过设备文件（或称设备节点）来使用驱动程序操作字符设备和块设备。
+
+## 字符设备驱动结构
+
+### cdev 结构体
+
+在 Linux 内核中，**使用 cdev 结构体描述字符设备**，定义如下：
+
+```c
+struct cdev {
+	struct kobject kobj; // 内嵌的 kobject 对象
+	struct module *owner; // 所属模块
+	const struct file_operations *ops; // 文件操作结构体
+	struct list_head list;
+	dev_t dev; // 设备号
+	unsigned int count;
+} __randomize_layout;
+```
+
+cdev 的一个重要成员 file_operations 定义了字符设备驱动需要提供给虚拟文件系统 VFS 的接口函数。
+
+cdev 的成员 dev_t 定义了设备号，包含主设备号和次设备号。dev_t 实际上就是 unsigned int，32 位。其中高 12 位是主设备号，低 20  位是次设备号。如下是设备号相关的宏函数：
+
+```c
+MAJOR(dev) // 通过 dev_t 获得主设备号。
+MINOR(dev) // 通过 dev_t 获得次设备号。
+MKDEV(major, minor) // 通过主设备号和次设备号构造 dev_t 的设备号。
+```
+
+Linux 提供了一系列函数用于操作 cdev 结构体：
+
+```c
+// 初始化 cdev 成员，并建立 cdev 和 file_operations 的连接。
+void cdev_init(struct cdev *, const struct file_operations *);
+
+// 用于动态申请 cdev 内存。
+struct cdev *cdev_alloc(void);
+
+void cdev_put(struct cdev *p);
+
+// 向系统中添加 cdev，完成字符设备的注册。一般用于模块加载函数中。
+int cdev_add(struct cdev *, dev_t, unsigned);
+
+// 从系统中删除 cdev，完成字符设备的注销。一般用于模块卸载函数中。
+void cdev_del(struct cdev *);
+```
+
+### 分配和释放设备号
+
+在调用 cdev_add() 函数注册字符设备之前，需要先向系统申请设备号，即主设备号和次设备号。调用函数 register_chrdev_region() 或 alloc_chrdev_region() 实现：
+
+```c
+// 用于已知起始设备的设备号的情况。
+int register_chrdev_region(dev_t from, unsigned count, const char *name);
+
+// 用于起始设备号未知，向系统动态申请设备号的情况。
+int alloc_chrdev_region(dev_t *dev, unsigned baseminor, unsigned count, const char *name);
+```
+
+注意函数中的参数 count，结合设备号的主设备号和次设备号的概念。我们发现整个流程中，首先需要向内核申请 dev_t 类型的设备号，包括主设备号和次设备号。同一类型的字符设备可共同同一个主设备号，而次设备号不同。因此，这样在添加注册字符设备的时候可以同时注册几个字符设备，这也是 count 的含义。
+
+相应的，在初始释放的时候，除了需要从系统中删除 cdev 完成字符设备的注销，还需要释放原先申请的设备号，函数如下：
+
+```c
+void unregister_chrdev_region(dev_t from, unsigned count);
+```
+
+### file_operations 结构体
+
+file_operations 结构体中的成员函数是字符设备驱动程序设计的主体内容，这些函数实际会在应用程序进行 Linux 的 open()、write()、read()、close() 等系统调用时最终被内核调用。其定义如下：
+
+```c
+struct file_operations {
+	struct module *owner;
+	loff_t (*llseek) (struct file *, loff_t, int);
+	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
+	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
+	ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
+	ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
+	int (*iopoll)(struct kiocb *kiocb, bool spin);
+	int (*iterate) (struct file *, struct dir_context *);
+	int (*iterate_shared) (struct file *, struct dir_context *);
+	__poll_t (*poll) (struct file *, struct poll_table_struct *);
+	long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
+	long (*compat_ioctl) (struct file *, unsigned int, unsigned long);
+	int (*mmap) (struct file *, struct vm_area_struct *);
+	unsigned long mmap_supported_flags;
+	int (*open) (struct inode *, struct file *);
+	int (*flush) (struct file *, fl_owner_t id);
+	int (*release) (struct inode *, struct file *);
+	int (*fsync) (struct file *, loff_t, loff_t, int datasync);
+	int (*fasync) (int, struct file *, int);
+	int (*lock) (struct file *, int, struct file_lock *);
+	ssize_t (*sendpage) (struct file *, struct page *, int, size_t, loff_t *, int);
+	unsigned long (*get_unmapped_area)(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
+	int (*check_flags)(int);
+	int (*flock) (struct file *, int, struct file_lock *);
+	ssize_t (*splice_write)(struct pipe_inode_info *, struct file *, loff_t *, size_t, unsigned int);
+	ssize_t (*splice_read)(struct file *, loff_t *, struct pipe_inode_info *, size_t, unsigned int);
+	int (*setlease)(struct file *, long, struct file_lock **, void **);
+	long (*fallocate)(struct file *file, int mode, loff_t offset,
+			  loff_t len);
+	void (*show_fdinfo)(struct seq_file *m, struct file *f);
+#ifndef CONFIG_MMU
+	unsigned (*mmap_capabilities)(struct file *);
+#endif
+	ssize_t (*copy_file_range)(struct file *, loff_t, struct file *,
+			loff_t, size_t, unsigned int);
+	loff_t (*remap_file_range)(struct file *file_in, loff_t pos_in,
+				   struct file *file_out, loff_t pos_out,
+				   loff_t len, unsigned int remap_flags);
+	int (*fadvise)(struct file *, loff_t, loff_t, int);
+} __randomize_layout;
+```
 
