@@ -1772,3 +1772,154 @@ struct file_operations {
 
 在模块加载函数中应实现设备号的申请和 cdev 的注册，在模块卸载函数中应实现 cdev 的注销和设备号的释放。
 
+类似的模板如下：
+
+```c
+// 设备结构体
+struct xxx_dev_t
+{
+    struct cdev cdev;
+
+    ...
+} xxx_dev;
+
+
+// 设备驱动模块加载函数
+static int __init xxx_init(void)
+{
+    ... 
+
+    cdev_init(&xxx_dev.cdev, &xxx_fops); // 初始化cdev
+    xxx_dev.cdev.owner = THIS_MODULE;
+
+    // 获取字符设备号
+    if (xxx_major)
+    {
+        register_chrdev_region(xxx_dev_no, 1, DEV_NAME);
+    }
+    else
+    {
+        alloc_chrdev_region(&xxx_dev_no, 0, 1, DEV_NAME);
+    }
+
+    res = cdev_add(&xxx_dev.cdev, xxx_dev_no, 1); // 注册设备
+
+    ...
+}
+
+// 设备驱动模块卸载函数
+static void __exit xxx_exit(void)
+{
+    unregister_chrdev_region(xxx_dev_no, 1); // 释放占用的设备号
+    cdev_del(&xxx_dev.cdev);                 // 注销设备
+
+    ...
+}
+```
+
+#### file_operations 结构体的成员函数
+
+file_operations 结构体的成员函数是字符设备驱动与内核虚拟文件系统的接口，是用户空间对 Linux 系统调用最终的落实者。
+
+```c
+// 读设备
+// filp：文件结构体指针，buf：用户空间内存地址；count：要读的字节数；f_pos：读的位置相对文件开头的偏移。
+ssize_t xxx_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
+{
+    ...
+
+    copy_to_user(buf, ..., ...);
+
+    ...
+}
+
+// 写设备
+// filp：文件结构体指针，buf：用户空间内存地址；count：要写的字节数；f_pos：读的位置相对文件开头的偏移。
+ssize_t xxx_write(struct file *filp, const char __user *buf, size_t count, loff_t *f_pos)
+{
+    ...
+
+    copy_from_user(..., buf, ...);
+
+    ...
+}
+
+// ioctl 函数
+// cmd 参数为事先定义的 I/O 控制命令，而 arg 为对应于该命令的参数。
+// 例如对于串行设备，若 SET_BAUDRATE 是一道设置波特率的命令，arg 就应该是波特率值。
+long xxx_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+    ...
+
+    switch (cmd)
+    {
+        case XXX_CMD1:
+        {
+            ...
+
+            break;
+        }
+        case XXX_CMD2:
+        {
+            ...
+
+            break;
+        }
+        default:
+            // 不能支持的命令
+            return -ENOTTY;
+    }
+
+
+    return 0;
+}
+```
+
+由于**用户空间不能直接访问内核空间的内存**，因此借助了函数 copy_from_user() 完成用户空间缓冲区到内核空间的复制，以及 copy_to_user() 完成内核空间到用户空间缓冲区的复制。这里注意一下语义，以读为例，注意主谓。xxx_read() 的含义是从内核空间中读，因此用户空间是接收的对象，因此使用 copy_to_user()，对应的也是用户空间的系统调用 read()。整个流程就是内核读 I/O（先不考虑用户区缓冲的事情），然后 copy_to_user() 到用户空间的内存。
+
+这两个函数的声明如下：
+
+```c
+// 两个函数均返回不能被复制的字节数。如果成功，返回 0；如果失败，返回负值。
+int copy_from_user(void *to, const void __user volatile *from, unsigned long n);
+int copy_to_user(void __user volatile *to, const void *from, unsigned long n);
+```
+
+如果复制的内存是简单类型，如 char、int、long 等，可以使用简化的 put_user() 和 get_user()：
+
+```c
+int val; // 内核空间整型变量。
+
+get_user(val, (int *) arg); // 用户 -> 内核，arg 是用户空间的地址。
+
+put_user(val, (int *) arg); // 内核 -> 用户，arg 是用户空间的地址。
+```
+
+上面读和写函数的参数中 `__user` 是一个宏，代表后面的指针属于用户空间，用于假注释和提醒的作用。类似于模块加载函数的 `__init` 和模块卸载函数的 `__exit`。
+
+内核空间虽然可以访问用户空间的数据，但是在访问之前，一般需要**检查合法性**。使用 `access_ok(addr, size)` 接口，以保证传入的数据的确属于用户空间。**此宏函数返回非 0 表示检查通过。**
+
+另外，`put_user()` 和 `__put_user()` 的区别在于，`put_user()` 的实现中调用了 `__put_user()`，并且已经手动做了 `access_ok()` 的检查。所以一般推荐使用 `put_user()` 和 `get_user()`。同时，也存在 `copy_from_user()` 和 `__copy_from_user()`，区别同上。`copy_to_user()` 同理。但是，总的来讲为了保险，内核空间在访问用户空间数据以前，我们的驱动程序中应再次手动检查一下合法性。
+
+在字符设备驱动中，需要定义一个 file_operations 的实例，将我们自己实现的函数注册给这些成员：
+
+```c
+// xxx_fops 在 cdev_init(&xxx_dev.cdev, &xxx_fops) 时同字符设备建立起连接。
+struct file_operations xxx_fops = {
+    .owner = THIS_MODULE,
+    .read = xxx_read,
+    .write = xxx_write,
+    .unlocked_ioctl = xxx_ioctl,
+
+    ...
+};
+```
+
+下面是字符设备驱动的结构示意图：
+
+<img src="https://img-blog.csdnimg.cn/direct/f0c4207c95a14c3bb342970f131afd7e.png" alt="image-20241108100951215" style="zoom:75%;" />
+
+## globalmem 虚拟设备
+
+globalmem 意为全局内存。在 globalmem 字符设备驱动中会分配一片大小为 GLOBALMEM_SIZE(4 KB) 的内存空间，并在驱动中提供针对该片内存的读写、控制和定位函数，以供用户空间的进程能通过 Linux 系统调用获取或设置这片内存的内容。
+
