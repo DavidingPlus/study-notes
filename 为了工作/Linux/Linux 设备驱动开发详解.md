@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-07 18:10:00
+updated: 2024-11-11 19:45:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1921,5 +1921,167 @@ struct file_operations xxx_fops = {
 
 ## globalmem 虚拟设备
 
-globalmem 意为全局内存。在 globalmem 字符设备驱动中会分配一片大小为 GLOBALMEM_SIZE(4 KB) 的内存空间，并在驱动中提供针对该片内存的读写、控制和定位函数，以供用户空间的进程能通过 Linux 系统调用获取或设置这片内存的内容。
+参考文章：[https://blog.csdn.net/weixin_45264425/article/details/130718602](https://blog.csdn.net/weixin_45264425/article/details/130718602)
+
+自己实现的 globalmem：[https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem](https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem)
+
+# Linux 设备驱动中的并发控制
+
+Linux 设备驱动中必须要解决的问题是多个进程对共享资源的并发访问，并发会导致竞态，所以需要格外小心。
+
+## 并发与竞态
+
+并发（Concurrency）是指多个执行单元同时、并行被执行。而并发的执行单元对共享资源（硬件资源和软件上的全局变量、静态变量等）的访问则很容易导致竞态（Race Conditions）。
+
+在 Linux 内核中，竞态主要分为以下几种情况：
+
+1. 对称多处理器（SMP）的多个 CPU
+
+SMP 是一种紧耦合、共享存储的系统模型，特点是多个 CPU 使用共同的系统总线，因此可访问共同的外设和储存器。体系结构如图：
+
+<img src="https://img-blog.csdnimg.cn/direct/c49b0702bc2d427693d8a5e7a8316158.png" alt="image-20241111152648934" style="zoom:80%;" />
+
+在 SMP 的情形下，两个核(例如 CPU 0 和 CPU 1)的竞态可能发生在 CPU 0 和 CPU 1 的进程之间，CPU 0 的进程和 CPU 1 的中断之间，CPU 0 和 CPU 1 的中断之间等，如图所示：
+
+<img src="https://img-blog.csdnimg.cn/direct/ac044c85fc434566bb7c8580d3c62a35.png" alt="image-20241111152902140" style="zoom:80%;" />
+
+2. 单 CPU 内进程与抢占它的进程
+
+Linux 2.6 以后的内核支持内核抢占调度，一个进程在内核执行的时候可能耗完了自己的时间片（timeslice），也可能被另一个高优先级进程打断，进程与抢占它的进程访问共享资源的情况类似于 SMP 的多个 CPU。
+
+3. 中断（硬中断、软中断、Tasklet、底半部）与进程之间
+
+中断可以打断正在执行的进程，如果中断服务程序访问进程正在访问的资源，竞态也会发生。
+
+另外，中断也有可能被新的更高优先级的中断打断，故多个中断之间本身也可能引起并发而导致竞态。但 Linux 2.6 之后，就取消了中断的嵌套。老版本的内核可以在申请中断时，设置标记 IRQF_DISABLED 以避免中断嵌套。但由于新内核直接就默认不嵌套中断，这个标记反而变得无用了。
+
+上述三种并发的发生，除了 SMP 是真正的并行之外，其他的都是单核上的“宏观并行、微观串行”，但遇到的问题和 SMP 类似。CPU 核内和核间的并发示意图如下：
+
+<img src="https://img-blog.csdnimg.cn/direct/ebc060fd461a42078d4aaed276dd31ee.png" alt="image-20241111153624322" style="zoom:75%;" />
+
+解决竞态问题的途径是保证对共享资源的互斥访问。互斥访问是指一个执行单元在访问共享资源的时候，其他的执行单元被禁止访问。
+
+访问共享资源的代码区域称为临界区（Critical Sections），临界区需要被以某种互斥机制加以保护。中断屏蔽、原子操作、自旋锁、信号量、互斥体等都是 Linux 设备驱动中可采用的互斥途径。
+
+## 编译乱序和执行乱序
+
+编译乱序是编译器的行为，执行乱序则是处理器运行时的行为。
+
+关于编译乱序，现代的高性能编译器在目标码优化上都具备对指令进行乱序优化的能力。编译器可以对访存的指令进行乱序，减少逻辑上不必要的访存，以及尽量提高 Cache 命中率和 CPU 的 Load/Store 单元的工作效率。因此在打开编译器优化（例如 gcc 的 -O2 优化）以后，看到生成的汇编码并没有严格按照代码的逻辑顺序，这是正常的。
+
+更多编译乱序的细节，参考：[https://chonghw.github.io/blog/2016/09/05/compilermemoryreorder/](https://chonghw.github.io/blog/2016/09/05/compilermemoryreorder/)
+
+关于执行乱序，是指即便编译的二进制指令的按照顺序排放，在处理器上执行时，后排放的指令还是可能先执行完，这是处理器的“乱序执行（Out-of-Order Execution）”策略。高级的 CPU 可以根据自己缓存的组织特性，将访存指令重新排序执行。连续地址的访问可能会先执行，因为这样缓存命中率高。有的还允许访存的非阻塞，即如果前面一条访存指令因为缓存不命中，造成长延时的存储访问时，后面的访存指令可以先执行，以便从缓存中取数。因此即使是从汇编上看顺序正确的指令，其执行的顺序也是不可预知的。
+
+更多执行乱序的细节，参考：[https://chonghw.github.io/blog/2016/09/19/sourcecontrol/](https://chonghw.github.io/blog/2016/09/19/sourcecontrol/)
+
+## 中断屏蔽
+
+在单 CPU 范围内避免竞态的一种简单而有效的方法是在进入临界区之前屏蔽系统的中断，但在驱动编程中不值得推荐，驱动通常需要考虑跨平台特点而不假定自己在单核上运行。CPU 一般都具备屏蔽中断和打开中断的功能，这项功能可以保证正在执行的内核执行路径不被中断处理程序所抢占，防止某些竞态条件的发生。具体而言，**中断屏蔽将使得中断与进程之间的并发不再发生**，并且由于 Linux 内核的进程调度等操作都依赖中断来实现，内核抢占进程之间的并发也得以避免了。
+
+**中断屏蔽的底层原理是让 CPU 本身不响应中断**，使用方法如下：
+
+```c
+local_irq_disable(); // 屏蔽中断
+. . .
+critical section // 临界区操作
+. . .
+local_irq_enable(); // 开中断
+```
+
+长时间屏蔽中断是很危险的，这有可能造成数据丢失乃至系统崩溃等后果。因此在屏蔽了中断之后，当前的内核执行路径应当尽快地执行完毕临界区的代码。
+
+local_irq_disable() 和 local_irq_enable() 都只能禁止和激活本 CPU 内的中断，故并不能解决 SMP 多 CPU 引发的竞态。因此，单独使用中断屏蔽不是值得推荐的方法，它适合与自旋锁结合起来使用。
+
+与 local_irq_disable() 不同的是，local_irq_save(flags) 除了进行禁止中断的操作以外，还保存目前 CPU 的中断位信息，local_irq_restore(flags) 进行的是与 local_irq_save(flags) 相反的操作。如果只是想禁止中断的底半部，应使用 local_bh_disable()，激活对应 local_bh_enable()。
+
+## 原子操作
+
+**原子操作可以保证对一个整型数据的修改是排他性的。**Linux 内核提供了一系列函数实现，分为两类，分别针对**位和整型变量**进行原子操作。它们都依赖于底层 CPU 的原子操作，与 CPU 架构密切相关。
+
+### 整型原子操作
+
+1. 设置原子变量的值
+
+```c
+void atomic_set(atomic_t *v, int i); // 设置原子变量的值为 i
+atomic_t v = ATOMIC_INIT(0); // 定义原子变量 v 并初始化为 0
+```
+
+2. 获取原子变量的值
+
+```c
+atomic_read(const atomic_t *v); // 返回原子变量的值
+```
+
+3. 原子变量加/减
+
+```c
+void atomic_add(int i, atomic_t *v); // 原子变量增加 i
+void atomic_sub(int i, atomic_t *v); // 原子变量减少 i
+```
+
+4. 原子变量自增/自减
+
+```c
+void atomic_inc(atomic_t *v); // 原子变量增加 1
+void atomic_dec(atomic_t *v); // 原子变量减少 1
+```
+
+5. 操作并测试
+
+这些操作对原子变量执行自增、自减和减操作后（**注意没有加**），测试其是否为 0，为 0 返回 true，否则返回 false。
+
+```c
+int atomic_inc_and_test(atomic_t *v);
+int atomic_dec_and_test(atomic_t *v);
+int atomic_sub_and_test(int i, atomic_t *v);
+```
+
+6. 操作并返回
+
+这些操作对原子变量进行加/减和自增/自减操作，并返回新的值。
+
+```c
+int atomic_add_return(int i, atomic_t *v);
+int atomic_sub_return(int i, atomic_t *v);
+int atomic_inc_return(atomic_t *v);
+int atomic_dec_return(atomic_t *v);
+```
+
+### 位原子操作
+
+1. 设置位
+
+```c
+void set_bit(int nr, void *addr); // 设置 addr 地址的第 nr 位，所谓设置位即是将位写为 1
+```
+
+2. 清除位
+
+```c
+void clear_bit(int nr, void *addr); // 清除 addr 地址的第 nr 位，所谓设置位即是将位写为 0
+```
+
+3. 改变位
+
+```c
+void change_bit(int nr, void *addr); // 将 addr 地址的第 nr 位进行反置
+```
+
+4. 测试位
+
+```c
+int change_bit(int nr, void *addr); // 返回 addr 地址的第 nr 位
+```
+
+5. 测试并操作位
+
+`test_and_xxx_bit(int nr，void *addr)` 操作等同于执行 `test_bit(int nr，void *addr)` 后再执行 `xxx_bit(int nr，void *addr)`。
+
+```c
+int test_and_set_bit(int nr, void *addr);
+int test_and_clear_bit(int nr, void *addr);
+int test_and_change_bit(int nr, void *addr);
+```
 
