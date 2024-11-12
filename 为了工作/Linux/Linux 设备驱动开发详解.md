@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-11 19:45:00
+updated: 2024-11-12 15:10:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -2083,5 +2083,563 @@ int change_bit(int nr, void *addr); // 返回 addr 地址的第 nr 位
 int test_and_set_bit(int nr, void *addr);
 int test_and_clear_bit(int nr, void *addr);
 int test_and_change_bit(int nr, void *addr);
+```
+
+## 自旋锁
+
+### 自旋锁的使用
+
+自旋锁是一种典型的对临界资源进行互斥访问的手段。为了获得一个自旋锁，进程需先进行一个原子操作，该操作测试并设置（Test-And-Set）一个内存变量。由于是原子操作，所以在该操作完成之前其他执行单元不可能访问这个内存变量。如果测试结果表明锁已经空闲，则程序获得这个自旋锁并继续执行；如果测试结果表明锁仍被占用，程序将在一个小的循环内重复这个“测试并设置”操作，即进行所谓的“自旋”，通俗地说就是“在原地打转”。当自旋锁的持有者通过重置该变量释放这个自旋锁后，某个等待的“测试并设置”操作 向其调用者报告锁已释放。
+
+自旋锁可理解为一个变量。它把一个临界区标记为“我当前在运行，请稍等一会”或“我当前不在运行，可以被使用”。如果 A 执行单元首先进入例程，它将持有自旋锁。当 B 执行单元试图进入同一个例程时，将获知自旋锁已被持有，需等到 A 执行单元释放后才能进入。
+
+自旋锁涉及的操作如下：
+
+1. 定义自旋锁
+
+```c
+spinlock_t lock;
+```
+
+2. 初始化自旋锁
+
+```c
+spin_lock_init(lock); // 动态初始化自旋锁 lock。
+```
+
+3. 获得自旋锁
+
+```c
+spin_lock(lock); // 用于获得自旋锁 lock。如果能够立即获得，就马上返回。否则，将在那里自旋，直到该自旋锁的保持者释放。
+spin_trylock(lock); // 尝试获得自旋锁 lock。如果能立即获得，它获得锁并返回 true，否则立即返回 false，实际上不再“在原地打转”。
+```
+
+4. 释放自旋锁
+
+```c
+spin_unlock(lock); // 释放自旋锁 lock，它与 spin_trylock() 或 spin_lock() 配对使用。
+```
+
+自旋锁主要针对 SMP 或单 CPU（内核可抢占）的情况，对于单 CPU（内核不支持抢占）的系统，自旋锁退化为空操作，因为此时不会出现并发和竞态。在单 CPU（内核可抢占）的系统中，自旋锁持有期间中内核的抢占将被禁止。由于单 CPU（内核可抢占）系统的行为实际上很类似于 SMP 系统，因此在这样的单 CPU 系统中使用自旋锁仍十分必要。另外，在多核 SMP 的情况下，任何一个核拿到了自旋锁，**该核**上的抢占调度也暂时禁止了，但是**没有禁止**另外一个核的抢占调度。
+
+尽管自旋锁可以保证临界区不受别的 CPU 和本 CPU 内的抢占进程打扰，但是得到锁的代码路径在执行临界区的时候，还可能受到中断和底半部（BH）的影响。因此，需要用到自旋锁的衍生。这些函数为自旋锁的使用提供保障，防止突如其来的中断对系统造成伤害。
+
+```c
+spin_lock_irq() = spin_lock() + local_irq_disable()
+spin_unlock_irq() = spin_unlock() + local_irq_enable()
+spin_lock_irqsave() = spin_lock() + local_irq_save()
+spin_unlock_irqrestore() = spin_unlock() + local_irq_restore()
+spin_lock_bh() = spin_lock() + local_bh_disable()
+spin_unlock_bh() = spin_unlock() + local_bh_enable()
+```
+
+在多核编程的时候，如果进程和中断可能访问同一片临界资源，**我们一般需要在进程上下文中调用 spin_lock_irqsave() 和 spin_unlock_irqrestore()，在中断上下文中调用 spin_lock() 和 spin_unlock()。**这样能避免一切核内和核间并发的可能性。
+
+<img src="https://img-blog.csdnimg.cn/direct/e6162c3d2ba9443eae5ed35908618d6a.png" alt="image-20241112094336501" style="zoom:75%;" />
+
+这样考虑以后，自旋锁一般这样使用：
+
+```c
+spinlock_t lock; // 定义一个自旋锁
+spin_lock_init(&lock); // 初始化自旋锁
+
+// 进程上下文
+spin_lock_irqsave(&lock); // 获取自旋锁，保护临界区
+... // 临界区
+spin_unlock_irqrestore(&lock); // 解锁
+
+// 中断上下文
+spin_lock(&lock);
+... // 临界区
+spin_unlock(&lock);
+```
+
+在使用自旋锁的时候还需注意以下几个问题：
+
+1. **自旋锁实际上是忙等锁。**当锁不可用时，CPU 一直循环执行“测试并设置”该锁直到可用而取得该锁，CPU 在等待自旋锁时不做任何有用的工作，仅仅是等待。因此，**只有在占用锁的时间极短的情况下，使用自旋锁才是合理的。**当临界区很大，或有共享设备的时候，需要较长时间占用锁，使用自旋锁会降低系统的性能。
+2. **自旋锁可能导致系统死锁。**引发这个问题最常见的情况是递归使用一个自旋锁，即如果一个已经拥有某个自旋锁的 CPU 想第二次获得这个自旋锁，则该 CPU 将死锁。
+3. **在自旋锁锁定期间不能调用可能引起进程调度的函数。**如果进程获得自旋锁之后再阻塞，如调用 copy_from_user()、copy_to_user()、kmalloc() 和 msleep() 等函数，则可能导致内核的崩溃。
+4. **在单核情况下编程的时候，也应该认为自己的 CPU 是多核的。**在单 CPU 的情况下，中断中不调用 spin_lock() 也没有问题，因为进程中的 spin_lock_irqsave() 能保证同 CPU 的中断服务程序不可能执行，但如果是多核则无法屏蔽另一个核的中断，可能出现问题。因为无论如何在中断服务程序中都应加上 spin_lock()，同时也是为了编程的统一。
+
+### 读写自旋锁
+
+自旋锁对读写操作一视同仁。但对于读操作，多个执行单元同时读取是不会有问题的。因此衍生了读写自旋锁，它是一种比自旋锁粒度更小的锁机制。它保留了“自旋”的概念，但是在写操作方面，只能最多有 1 个写进程，在读操作方面，同时可以有多个读执行单元。当然，读和写也不能同时进行。
+
+读写自旋锁涉及的操作如下：
+
+1. 定义和初始化读写自旋锁
+
+```c
+rwlock_t my_rwlock;
+rwlock_init(&my_rwlock); // 动态初始化
+```
+
+2. 读锁定
+
+```c
+void read_lock(rwlock_t *lock);
+void read_lock_irqsave(rwlock_t *lock, unsigned long flags);
+void read_lock_irq(rwlock_t *lock);
+void read_lock_bh(rwlock_t *lock);
+```
+
+3. 读解锁
+
+```c
+void read_unlock(rwlock_t *lock);
+void read_unlock_irqrestore(rwlock_t *lock, unsigned long flags);
+void read_unlock_irq(rwlock_t *lock);
+void read_unlock_bh(rwlock_t *lock);
+```
+
+4. 写锁定
+
+```c
+void write_lock(rwlock_t *lock);
+void write_lock_irqsave(rwlock_t *lock, unsigned long flags);
+void write_lock_irq(rwlock_t *lock);
+void write_lock_bh(rwlock_t *lock);
+int write_trylock(rwlock_t *lock);
+```
+
+5. 写解锁
+
+```c
+void write_unlock(rwlock_t *lock);
+void write_unlock_irqrestore(rwlock_t *lock, unsigned long flags);
+void write_unlock_irq(rwlock_t *lock);
+void write_unlock_bh(rwlock_t *lock);
+```
+
+这些接口的含义类似于自旋锁，一般这样使用：
+
+```c
+rwlock_t lock; // 定义rwlock
+rwlock_init(&lock); // 初始化rwlock
+
+read_lock(&lock); // 读时获取锁
+... // 临界资源
+read_unlock(&lock); // 读后释放锁
+
+write_lock_irqsave(&lock, flags);// 写时获取锁
+... // 临界资源
+write_unlock_irqrestore(&lock, flags); // 写后释放锁
+```
+
+### 顺序锁
+
+顺序锁（seqlock）是对读写锁的一种优化。若使用顺序锁，**读执行单元不会被写执行单元阻塞**。读执行单元在写执行单元对被顺序锁保护的共享资源进行写操作时仍然可以继续读，而不必等待写执行单元完成写操作。同样写执行单元也不需要等待所有读执行单元完成读操作才去进行写操作。但是，写执行单元与写执行单元之间仍然是互斥的。如果有写执行单元在进行写操作，其他写执行单元必须自旋在那里，直到写执行单元释放了顺序锁。
+
+但这样很容易衍生出一个问题。**尽管读写之间不互相排斥，但是如果读执行单元在读操作期间，写执行单元已经发生了写操作，那么，读执行单元必须重新读取数据，以便确保得到的数据是完整的。**在这种情况下，读端可能反复读多次同样的区域才能读到有效的数据。
+
+由此可见，顺序锁的操作分为写执行单元和读执行单元，二者分别由不同的接口。
+
+写执行单元涉及的操作如下：
+
+1. 获得顺序锁
+
+```c
+void write_seqlock(seqlock_t *sl);
+int write_tryseqlock(seqlock_t *sl);
+write_seqlock_irqsave(lock, flags);
+write_seqlock_irq(lock);
+write_seqlock_bh(lock);
+```
+
+2. 释放顺序锁
+
+```c
+void write_sequnlock(seqlock_t *sl);
+write_sequnlock_irqrestore(lock, flags);
+write_sequnlock_irq(lock);
+write_sequnlock_bh(lock);
+```
+
+使用写执行单元的模式如下：
+
+```c
+write_seqlock_irqsave(&seqlock_a, flags);
+.../* 写操作代码块 */
+write_sequnlock_irqrestore(&seqlock_a, flags);
+```
+
+读执行单元涉及的操作如下：
+
+1. 读开始
+
+读执行单元在对被顺序锁 s 保护的共享资源进行访问前需要调用该函数，该函数返回顺序锁 s 的当前顺序号。
+
+```c
+unsigned read_seqbegin(const seqlock_t *sl);
+read_seqbegin_irqsave(lock, flags) = local_irq_save() + read_seqbegin()
+```
+
+2. 重读
+
+读执行单元在访问完被顺序锁 s 保护的共享资源后需要调用该函数来检查，在读访问期间是否有写操作。如果有写操作，读执行单元就需要重新进行读操作，以保证读取的数据是最新的。
+
+```c
+int read_seqretry(const seqlock_t *sl, unsigned iv);
+read_seqretry_irqrestore(lock, iv, flags) = read_seqretry() + local_irq_restore()
+```
+
+使用读执行单元的模式如下：
+
+```c
+do {
+// 读操作代码块
+seqnum = read_seqbegin(&seqlock_a);
+...
+} while (read_seqretry(&seqlock_a, seqnum))
+```
+
+### RCU
+
+RCU，Read-Copy-Update，读-复制-更新。于 Linux 2.6 后正式包含在内核中。社区文档参考：[https://www.kernel.org/doc/ols/2001/read-copy.pdf](https://www.kernel.org/doc/ols/2001/read-copy.pdf)
+
+RCU（Read-Copy-Update），是 Linux 中比较重要的一种同步机制。顾名思义就是“读，拷贝更新”，再直白点是**“随意读，但更新数据的时候，需要先复制一份副本，在副本上完成修改，再一次性地替换旧数据”**。这是 Linux 内核实现的一种针对**“读多写少”**的共享数据的同步机制。
+
+**使用 RCU 的读端没有锁、内存屏障、原子指令类的开销，几乎可以认为是直接读（只是简单地标明读开始和读结束），而 RCU 的写执行单元在访问它的共享资源前首先复制一个副本，然后对副本进行修改，最后使用一个回调机制在适当的时机把指向原来数据的指针重新指向新的被修改的数据。这个时机就是所有引用该数据的 CPU 都退出对共享数据读操作的时候。等待适当时机的这一时期称为宽限期（Grace Period）。**
+
+RCU 可以看作读写锁的高性能版本。相比读写锁，RCU 的优点在于既允许多个读执行单元同时访问被保护的数据，又允许多个读执行单元和多个写执行单元同时访问被保护的数据。但 RCU 不能替代读写锁，因为如果写比较多时，对读执行单元的性能提高不能弥补写执行单元同步导致的损失。因为使用 RCU 时，写执行单元之间的同步开销会比较大，它需要延迟数据结构的释放，复制被修改的数据结构，也必须使用某种锁机制来同步并发的其他写执行单元的修改操作。
+
+**读者在访问被 RCU 保护的共享数据期间不能被阻塞，这是 RCU 机制得以实现的一个基本前提。**也就说当读者在引用被 RCU 保护的共享数据期间，读者所在的 CPU 不能发生上下文切换，spinlock 和 rwlock 都需要这样的前提。写者在访问被 RCU 保护的共享数据时不需要和读者竞争任何锁，只有在有多于一个写者的情况下需要获得某种锁以与其他写者同步。
+
+RCU 涉及的操作如下：
+
+1. 读锁定
+
+```c
+rcu_read_lock();
+rcu_read_lock_bh();
+```
+
+2. 读解锁
+
+```c
+rcu_read_unlock();
+rcu_read_unlock_bh();
+```
+
+使用 RCU 读的模式如下：
+
+```c
+rcu_read_lock();
+... // 读临界区
+rcu_read_unlock();
+```
+
+3. 同步 RCU
+
+```c
+synchronize_rcu();
+```
+
+该函数由 RCU 写执行单元调用，它将阻塞写执行单元，直到当前 CPU 上所有的已经存在的读执行单元完成读临界区，写执行单元才可以继续下一步操作。synchronize_rcu() 并不需要等待后续读临界区的完成。
+
+<img src="https://img-blog.csdnimg.cn/direct/c9cc45175ca946f3b0f154272a41e3be.png" alt="image-20241112104436256" style="zoom:80%;" />
+
+4. 挂接回调
+
+```c
+void call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *rcu));
+```
+
+该函数也由 RCU 写执行单元调用，与 synchronize_rcu() 不同的是，它不会使写执行单元阻塞，因而可以在中断上下文或软中断中使用。该函数把函数 func() 挂接到 RCU 回调函数链上，然后立即返回。挂接的回调函数会在一个宽限期结束（即所有已经存在的 RCU 读临界区完成）后被执行。
+
+下列的函数用于实现内存屏障的作用。
+
+给 RCU 保护的指针赋一个新的值：
+
+```c
+rcu_assign_pointer(p, v);// p 是被赋值指针，v 是赋值指针
+```
+
+读端使用 rcu_dereference() 获取一个 RCU 保护的指针，之后既可以安全地引用它（访问它指向的区域）。
+
+```c
+rcu_dereference(p);
+```
+
+读端使用 rcu_access_pointer() 获取一个 RCU 保护的指针，之后并不引用它。这种情况下，我们只关心指针本身的值，而不关心指针指向的内容。比如我们可以使用该 API 来判断指针是否为 NULL。
+
+```c
+rcu_access_pointer(p);
+```
+
+对于链表数据结构而言，Linux 内核专门增加了 RCU 保护的链表操作 API：
+
+```c
+// 把链表元素 new 插入 RCU 保护的链表 head 的开头。
+static inline void list_add_rcu(struct list_head *new, struct list_head *head);
+
+// 把链表元素 new 添加到被 RCU 保护的链表的末尾。
+static inline void list_add_tail_rcu(struct list_head *new, struct list_head *head);
+
+// 从 RCU 保护的链表中删除指定的链表元素 entry。
+static inline void list_del_rcu(struct list_head *entry);
+
+// 使用新的链表元素 new 取代旧的链表元素 old。
+static inline void list_replace_rcu(struct list_head *old, struct list_head *new);
+
+// 该宏用于遍历由 RCU 保护的链表 head。只要在读执行单元临界区使用该函数，它就可以安全地和其他 RCU 保护的链表操作函数（如 list_add_rcu() 等）并发运行。
+list_for_each_entry_rcu(pos, head)
+```
+
+更多细节和原理，请参考：[https://www.cnblogs.com/schips/p/linux_cru.html](https://www.cnblogs.com/schips/p/linux_cru.html)
+
+## 信号量
+
+信号量（Semaphore）是操作系统中最典型的用于同步和互斥的手段，信号量的值可以是 0、1 或者 n。信号量与操作系统中的经典概念 PV 操作对应。
+
+P(S)：
+
+1. 将信号量 S 的值减 1，即 S=S-1。
+2. 如果 S>=0，则该进程继续执行；否则该进程置为等待状态，排入等待队列。
+
+V(S)：
+
+1. 将信号量 S 的值加 1，即 S=S+1。
+2. 如果 S>0，唤醒队列中等待信号量的进程。
+
+信号量涉及的操作如下：
+
+1. 定义信号量
+
+```c
+struct semaphore
+{
+    raw_spinlock_t lock;
+    unsigned int count;
+    struct list_head wait_list;
+};
+```
+
+2. 初始化信号量
+
+```c
+void sema_init(struct semaphore *sem, int val); // 初始化信号量 sem 并设置为值 val。
+```
+
+3. 获得信号量
+
+```c
+// 获得信号量 sem，会导致睡眠，因此不能在中断上下文中使用。
+void down(struct semaphore *sem);
+
+// 功能与 down() 类似，不同之处为：down() 进入睡眠状态的进程不能被信号打断，down_interruptible() 进入睡眠状态的进程能被信号打断，信号也会导致该函数返回，这时候函数的返回值非 0。
+// 使用 down_interruptible() 时，对返回值一般会进行检查。如果返回的非 0，通常立即返回 -ERESTARTSYS。
+int down_interruptible(struct semaphore *sem); 
+
+// 尝试获得信号量 sem，如果能够立刻获得，它就获得该信号量并返回 0，否则返回非 0 值。它不会导致调用者睡眠，可以在中断上下文中使用。
+int down_trylock(struct semaphore *sem);
+```
+
+4. 释放信号量
+
+```c
+// 释放信号量 sem，唤醒等待者。
+void up(struct semaphore *sem);
+```
+
+信号量可以保护临界区，它的使用方式和自旋锁类似。与自旋锁相同，只有得到信号量的进程才能执行临界区代码。但与自旋锁不同的是，**当获取不到信号量时，进程不会原地打转而是进入休眠等待状态。**
+
+用作互斥时，信号量一般这样被使用：
+
+<img src="https://img-blog.csdnimg.cn/direct/3a4f97828383458cb75636c948580bdc.png" alt="image-20241112141145150" style="zoom:75%;" />
+
+关心具体数值的生产者/消费者问题，使用信号量较为合适。生产者/消费者问题也是一种同步问题。
+
+## 互斥体
+
+新的 Linux 内核倾向于直接使用互斥体 mutex 作为互斥手段，信号量作互斥不再被推荐使用，尽管信号量可以实现互斥的功能。
+
+互斥体涉及的操作如下：
+
+1. 定义互斥体
+
+```c
+struct mutex my_mutex;
+mutex_init(&my_mutex);
+```
+
+2. 初始化互斥体
+
+```c
+// mutex_lock() 不可以被信号打断，mutex_lock_interruptible() 可以。
+void mutex_lock(struct mutex *lock);
+int mutex_lock_interruptible(struct mutex *lock); 
+int mutex_trylock(struct mutex *lock);
+```
+
+3. 释放互斥体
+
+```c
+void mutex_unlock(struct mutex *lock);
+```
+
+互斥体 mutex 使用的模式如下：
+
+```c
+struct mutex my_mutex; // 定义 mutex
+mutex_init(&my_mutex); // 初始化 mutex
+mutex_lock(&my_mutex); // 获取 mutex
+... // 临界资源
+mutex_unlock(&my_mutex); // 释放 mutex
+```
+
+## 如何选择自旋锁和互斥体
+
+自旋锁和互斥体都是解决互斥问题的基本手段，面对特定的情况，如何取舍这两种手段呢？选择的依据是临界区的性质和系统的特点。
+
+从严格意义上说，**互斥体和自旋锁属于不同层次的互斥手段，前者的实现依赖于后者**。在互斥体本身的实现上，为了保证互斥体结构存取的原子性，需要自旋锁来互斥。所以自旋锁属于更底层的手段。
+
+互斥体是进程级的，用于多个进程之间对资源的互斥，虽然也是在内核中，但是该内核执行路径是以进程的身份，代表进程来争夺资源的。如果竞争失败，会发生进程上下文切换，当前进程进入睡眠状态，CPU 将运行其他进程。鉴于进程上下文切换的开销也很大，因此，只有当进程占用资源时间较长时，用互斥体才是较好的选择。
+
+当所要保护的临界区访问时间比较短时，用自旋锁是非常方便的，因为它可节省上下文切换的时间。但 CPU 得不到自旋锁会在那里空转直到其他执行单元解锁为止，所以要求锁不能在临界区里长时间停留，否则会降低系统的效率。
+
+因此，可以总结出三大原则：
+
+1. 当锁不能被获取到时，使用互斥体的开销是进程上下文切换时间，使用自旋锁的开销是等待获取自旋锁（由临界区执行时间决定）。**若临界区比较小，宜使用自旋锁，若临界区很大，应使用互斥体。**
+2. 互斥体所保护的临界区可包含可能引起阻塞的代码，而**自旋锁则绝对要避免用来保护包含可能引起阻塞代码的临界区**。因为阻塞意味着要进行进程的切换，如果进程被切换出去后，另一个进程企图获取本自旋锁，死锁就会发生。
+3. 互斥体存在于进程上下文，因此，如果被保护的共享资源需要在中断或软中断情况下使用，则在互斥体和自旋锁之间只能选择自旋锁。当然，如果一定要使用互斥体，则只能通过 mutex_trylock() 方式 进行，不能获取就立即返回以避免阻塞。
+
+## 完成量
+
+Linux 提供了完成量（completion），用于一个执行单元等待另一个执行单元执行完某事。
+
+完成量涉及的操作如下：
+
+1. 定义完成量
+
+```c
+struct completion my_completion;
+```
+
+2. 初始化完成量
+
+```c
+init_completion(&my_completion); // 初始化完成量的值为 0（未完成的状态）
+reinit_completion(&my_completion); // 重新初始化
+```
+
+3. 等待完成量
+
+```c
+void wait_for_completion(struct completion *c);
+```
+
+4. 唤醒完成量
+
+```c
+void complete(struct completion *c); // 唤醒一个等待的执行单元。
+void complete_all(struct completion *c); // 唤醒所有等待同一完成量的执行单元。
+```
+
+完成量用于同步的流程如下：
+
+<img src="https://img-blog.csdnimg.cn/direct/11c557be427a4c05b545d410d35d4f05.png" alt="image-20241112143006097" style="zoom:75%;" />
+
+## 小结
+
+Linux 内核优化了自旋锁、信号量、互斥体、完成量等的管理，**并不需要显式销毁，在数据结构生命周期结束时自动释放**。因此只有初始化的相关接口，没有销毁的相关接口。
+
+并发和竞态广泛存在，中断屏蔽、原子操作、自旋锁和互斥体都是解决并发问题的机制。中断屏蔽很少单独被使用，原子操作只能针对整数进行，因此自旋锁和互斥体应用最为广泛。
+
+**自旋锁会导致死循环，锁定期间不允许阻塞，因此要求锁定的临界区小。互斥体允许临界区阻塞，可以适用于临界区大的情况。**
+
+# Linux 设备驱动中的阻塞与非阻塞 I/O
+
+阻塞和非阻塞 I/O 是设备访问的两种不同模式，驱动程序可以灵活地支持这两种用户空间对设备的访问方式。
+
+## 阻塞与非阻塞 I/O
+
+阻塞操作是指在执行设备操作时，若不能获得资源，则挂起进程直到满足可操作的条件后再进行操作。被挂起的进程进入睡眠状态，被从调度器的运行队列移走，直到等待的条件被满足。而非阻塞操作的进程在不能进行设备操作时，并不挂起，它要么放弃，要么不停地查询（轮询），直至可以进行操作为止。
+
+驱动程序应当提供阻塞与非阻塞的能力。当应用程序阻塞 read()、write() 的时候，若资源无法获取，驱动程序的 xxx_read()、xxx_write() 需要阻塞进程知道资源可以获取。同理，应用程序非阻塞的时候且资源无法获取的时候，驱动程序的 xxx_read()、xxx_write() 操作应立即返回，系统调用也随即返回，应用程序收到 -EAGAIN 返回值。
+
+在阻塞访问时，不能获取资源的进程将进入休眠，它将 CPU 资源让给其他进程。由于阻塞的进程会进入休眠状态，所以必须确保有一个地方能够唤醒休眠的进程，否则，进程就真的醒不过来了。唤醒进程的地方最大可能发生在**中断**里面，因为在硬件资源获得的同时往往伴随着一个中断。而非阻塞的进程则不断尝试，直到可以进行 I/O。如图所示：
+
+<img src="./../../typora-user-images/04/image-20241112155206531.png" alt="image-20241112155206531" style="zoom:70%;" />
+
+### 等待队列
+
+在 Linux 驱动程序中，**可以使用等待队列（Wait Queue）来实现阻塞进程的唤醒**。它以队列为基础数据结构，与进程调度机制紧密结合，可以用来同步对系统资源的访问。
+
+等待队列涉及的操作如下：
+
+1. 定义等待队列头部
+
+```c
+struct wait_queue_head {
+	spinlock_t		lock;
+	struct list_head	head;
+};
+typedef struct wait_queue_head wait_queue_head_t;
+
+wait_queue_head_t my_queue;
+```
+
+2. 初始化等待队列头部
+
+```c
+init_waitqueue_head(&my_queue);
+```
+
+DECLARE_WAIT_QUEUE_HEAD() 宏可作为定义并初始化等待队列头部的快捷方式：
+
+```c
+DECLARE_WAIT_QUEUE_HEAD(my_queue);
+// 相当于
+{ wait_queue_head_t my_queue; init_waitqueue_head(&my_queue); }
+```
+
+3. 定义等待队列头部
+
+```c
+DECLARE_WAITQUEUE(name, tsk); // 定义并初始化一个名为 name 的等待队列元素。
+```
+
+4. 添加/移除等待队列
+
+```c
+void add_wait_queue(wait_queue_head_t *q, wait_queue_t *wait);
+void remove_wait_queue(wait_queue_head_t *q, wait_queue_t *wait);
+```
+
+5. 等待事件
+
+```c
+wait_event(queue, condition); // 阻塞等待队列，直到满足条件 condition。
+wait_event_interruptible(queue, condition); // 与上面的区别是可以被信号打断，上面不行。
+wait_event_timeout(queue, condition, timeout); // timeout 是阻塞的超时时间，超时后不管 condition 是否满足，都返回。
+wait_event_interruptible_timeout(queue, condition, timeout);
+```
+
+6. 唤醒队列
+
+该函数会唤醒 queue 为头部的等待队列中的所有进程。
+
+```c
+void wake_up(wait_queue_head_t *queue);
+void wake_up_interruptible(wait_queue_head_t *queue);
+```
+
+wake_up() 应该与 wait_event() 或 wait_event_timeout() 成对使用，而 wake_up_interruptible() 应与 wait_event_interruptible() 或 wait_event_interruptible_timeout() 成对使用。wake_up() 可唤醒处于 TASK_INTERRUPTIBLE 和 TASK_UNINTERRUPTIBLE 的进程，而 wake_up_interruptible() 只能唤醒处于 TASK_INTERRUPTIBLE 的进程。
+
+7. 在等待队列上睡眠（已废弃）
+
+老版本的接口，作用和 wait_event*() 系列函数类似，因此使用前者即可。
+
+```c
+/*
+ * These are the old interfaces to sleep waiting for an event.
+ * They are racy.  DO NOT use them, use the wait_event* interfaces above.
+ * We plan to remove these interfaces.
+ */
+extern void sleep_on(wait_queue_head_t *q);
+extern long sleep_on_timeout(wait_queue_head_t *q, signed long timeout);
+extern void interruptible_sleep_on(wait_queue_head_t *q);
+extern long interruptible_sleep_on_timeout(wait_queue_head_t *q, signed long timeout);
 ```
 
