@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-11-04 23:05:00
+updated: 2024-11-13 22:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -401,4 +401,21 @@ updated: 2024-11-04 23:05:00
 
 - 禁用/删除 Windows Defender，推荐使用 [windows-defender-remover](https://github.com/ionuttbara/windows-defender-remover)。推荐选择 Remove Windows Defender Antivirus (A) 而不是 Remove Windows Defender Antivirus + Disable All Security Mitigations (Y)。全删了会删除用户账户控制的功能，就是打开程序的时候有一个确认弹窗，这个我自己比较喜欢，不想删掉。
 
+- 安装 Nvidia 精简显卡驱动（只安装 Display Driver，不安装 GeForce Experience 以及其他组件）：[https://www.techpowerup.com/nvcleanstall/](https://www.techpowerup.com/nvcleanstall/)
+
+- OBS 及时回放的详细设置：[https://www.bilibili.com/video/BV1kXDVYkE2t/](https://www.bilibili.com/video/BV1kXDVYkE2t/)
+
+  - obs-notifier 插件无法向 N 卡一样在全屏的进程中进行提醒的显示，issue 见：[https://github.com/DmitriySalnikov/OBSNotifier/issues/9](https://github.com/DmitriySalnikov/OBSNotifier/issues/9)
+
+  - 上面插件的该功能是 enhancement 的状态，为了目前使用，个人写了一个声音提醒的脚本，仅作暂时使用：[https://github.com/DavidingPlus/obs-audio-notifier](https://github.com/DavidingPlus/obs-audio-notifier)
+
+- Windows 在默认打开方式中去掉已失效或者已删除的应用选项：[https://blog.csdn.net/qq_58995684/article/details/142319248](https://blog.csdn.net/qq_58995684/article/details/142319248)
+
+- Windows 截屏工具：[https://zh.snipaste.com/](https://zh.snipaste.com/)
+
+  - 可通过 Scoop 安装：`scoop install snipaste-beta`
+
+- Windows 照片/视频查看工具：[https://github.com/easymodo/qimgv](https://github.com/easymodo/qimgv)
+
+  - 可通过 Scoop 安装：`scoop install qimgv-video`
 
