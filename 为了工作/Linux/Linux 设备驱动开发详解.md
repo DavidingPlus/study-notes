@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-12 15:10:00
+updated: 2024-11-14 16:55:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -2586,7 +2586,7 @@ wait_queue_head_t my_queue;
 init_waitqueue_head(&my_queue);
 ```
 
-DECLARE_WAIT_QUEUE_HEAD() 宏可作为定义并初始化等待队列头部的快捷方式：
+DECLARE_WAIT_QUEUE_HEAD() 宏可作为定义并初始化等待队列头部的快捷方式。
 
 ```c
 DECLARE_WAIT_QUEUE_HEAD(my_queue);
@@ -2594,7 +2594,7 @@ DECLARE_WAIT_QUEUE_HEAD(my_queue);
 { wait_queue_head_t my_queue; init_waitqueue_head(&my_queue); }
 ```
 
-3. 定义等待队列头部
+3. 定义等待队列元素
 
 ```c
 DECLARE_WAITQUEUE(name, tsk); // 定义并初始化一个名为 name 的等待队列元素。
@@ -2642,4 +2642,143 @@ extern long sleep_on_timeout(wait_queue_head_t *q, signed long timeout);
 extern void interruptible_sleep_on(wait_queue_head_t *q);
 extern long interruptible_sleep_on_timeout(wait_queue_head_t *q, signed long timeout);
 ```
+
+以下是一个使用等待队列的模板，在写 I/O 的时候，检查设备是否可写。如果不可写，对于非阻塞 I/O，直接返回 -EAGAIN；对于阻塞 I/O，将进程睡眠并挂起至等待队列。
+
+```c
+static ssize_t xxx_write(struct file *file, const char *buffer, size_t count, loff_t *ppos)
+{
+    ...
+
+    DECLARE_WAITQUEUE(wait, current); // 定义等待队列元素
+    add_wait_queue(&xxx_wait, &wait); // 添加元素到等待队列
+
+    // 等待设备缓冲区可写
+    do
+    {
+        avail = device_writable(...);
+        if (avail < 0)
+        {
+            if (file->f_flags & O_NONBLOCK)
+            { // 非阻塞
+                res = -EAGAIN;
+                goto out;
+            }
+
+            __set_current_state(TASK_INTERRUPTIBLE); // 改变进程状态
+            schedule();                              // 调度其他进程执行
+
+            if (signal_pending(current)) // 如果是因为信号唤醒
+            {
+
+                res = -ERESTARTSYS;
+                goto out;
+            }
+        }
+    } while (avail < 0);
+
+    // 写设备缓冲区
+    device_write(...);
+
+out:
+    remove_wait_queue(&xxx_wait, &wait); // 将元素移出 xxx_wait 指引的队列
+    set_current_state(TASK_RUNNING);     // 设置进程状态为 TASK_RUNNING
+
+
+    return res;
+}
+```
+
+这段代码里面有几个注意的点：
+
+1. 对于非阻塞 I/O（O_NONBLOCK 标志位），设备忙时，返回 -EAGAIN。
+2. 对于阻塞 I/O，设备忙时，调用 `__set_current_state(TASK_INTERRUPTIBLE)` 切换进程状态并使用 `schedule()` 调度其他进程执行。但由于使用的是 TASK_INTERRUPTIBLE，因此唤醒进程的可能是信号。需通过 `signal_pending(current)` 判断是否为信号唤醒，如果是，立即返回 -ERESTARTSYS。
+
+DECLARE_WAITQUEUE()、add_wait_queue() 这两个动作加起来完成的效果如图所示。在 wait_queue_head_t 指向的链表上，新定义的 wait_queue 元素被插入，而这个新插入的元素绑定了一个 task_struct（当前做 xxx_write 的 current，这也是 DECLARE_WAITQUEUE 使用 current 作为参数的原因）。
+
+<img src="https://img-blog.csdnimg.cn/direct/bc17405d08ef467b958964720a4b2647.png" alt="image-20241114100236690" style="zoom:70%;" />
+
+### 支持阻塞操作的 globalfifo 设备驱动
+
+TODO
+
+## 轮询操作
+
+在用户程序中，使用非阻塞 I/O 的程序通常会使用 select() 和 poll() 函数来进行 I/O 多路复用的操作，从而达到对设备非阻塞的忙轮询的优化，即用户将查询过程托管给内核，内核负责通知用户时机，从而达到对用户进程的优化，并且能在一个进程中同时监听多个文件描述符。
+
+select() 和 poll() 系统调用最终会使设备驱动中的 poll() 函数被执行，在 Linux 2.5.45 内核中还引入了 epoll()，即扩展的 poll()。
+
+### 应用程序中的轮询编程
+
+此部分请参考博客 [https://blog.davidingplus.cn/posts/2adb5565.html](https://blog.davidingplus.cn/posts/2adb5565.html) 的第四章网络编程中 I/O 多路复用技术的部分。
+
+### 设备驱动中的轮询编程
+
+内核中 poll() 的定义为：
+
+```c
+// 第一个参数是 file 结构体指针，第二个是轮询表指针。
+__poll_t (*poll) (struct file *, struct poll_table_struct *);
+```
+
+该 poll() 函数进行两项工作：
+
+1. 对可能引起设备文件状态变化的等待队列调用 poll_wait() 函数。
+2. 返回表示是否能对设备进行无阻塞读、写访问的掩码。
+
+向 poll_table 注册等待队列的 poll_wait() 函数定义如下：
+
+```c
+void poll_wait(struct file *filp, wait_queue_head_t *wait_address, poll_table *p);
+```
+
+> poll_wait() 函数的名称非常容易让人产生误会，以为它和 wait_event() 等一样，会阻塞地等待某事件的发生，但其实这个函数并不会引起阻塞。poll_wait() 函数所做的工作是把当前进程添加到 p 参数指定的等待列表（poll_table）中，实际作用是让唤醒参数 wait_address 对应的等待队列可以唤醒用户层因 select()/poll()/epoll() 而睡眠的进程。
+
+上面这段是书本上的原话，我个人不是特别理解，参考了博客 [https://blog.csdn.net/weixin_42462202/article/details/100017339](https://blog.csdn.net/weixin_42462202/article/details/100017339)，总结 poll 机制如下。
+
+实际上 select()、poll()、epoll() 的实现都是利用等待队列机制，将执行这些函数的进程挂到每一个驱动程序的等待队列中，然后睡眠等待，直到被唤醒。
+
+驱动程序的 poll() 函数至少会被这些系统调用给**调用两次**。
+
+1. **第一次是 select()、poll()、epoll() 所在的进程调用驱动程序的 poll() 函数，将自己挂到驱动程序的等待队列中，这也是驱动 poll() 函数的一个作用。这样当等待队列就能在满足条件 condition 的时候唤醒本进程。**
+
+2. **第二次是 select()、poll()、epoll() 所在的进程被驱动程序唤醒，再次驱动程序的 poll() 函数，获取驱动程序满足的条件（可读或可写），返回对应的 mask，与用户进程对接起来，用户进程根据 mask 进行针对处理。**
+
+驱动程序的 poll() 函数应该返回设备资源的可获取状态，即 POLLIN、POLLOUT、POLLPRI、POLLERR、POLLNVAL 等宏的位“或”结果。每个宏的含义都表明设备的一种状态，如 POLLIN（定义为 0x0001）意味着设备可以无阻塞地读，POLLOUT（定义为0x0004）意味着设备可以无阻塞地写。
+
+因此，结合上述，在驱动中使用 poll() 函数的模板如下：
+
+```c
+static unsigned int xxx_poll(struct file *filp, poll_table *wait)
+{
+    unsigned int mask = 0;
+    struct xxx_dev *dev = filp->private_data; // 获得设备结构体指针
+
+    ...
+
+    // 第一次被调用时，将调用 select()、poll()、epoll() 的进程加入驱动的等待队列中。
+    poll_wait(filp, &dev->r_wait, wait); // 加入读等待队列
+    poll_wait(filp, &dev->w_wait, wait); // 加入写等待队列
+
+    // 第二次被调用时，如果条件满足，返回状态，之后 poll() 会返回。
+    if (...)                         // 可读
+        mask |= POLLIN | POLLRDNORM; // 标示数据可获得（对用户可读）
+
+    if (...)                          // 可写
+        mask |= POLLOUT | POLLWRNORM; // 标示数据可写入
+
+    ...
+
+
+    return mask;
+}
+```
+
+> 代码中看到了状态 POLLIN 和 POLLRDNORM，这二者都是表示可读。区别在于 POLLIN 适用于所有的可读数据情况，不仅包括普通数据，还包括优先级数据，而 POLLRDNORM 只适用于普通数据的可读情况，不包括任何优先级数据。
+>
+> POLLOUT 和 POLLWRNORM 同理。
+
+### 支持轮询操作的 globalfifo 设备驱动
+
+TODO
 
