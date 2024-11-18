@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-14 16:55:00
+updated: 2024-11-18 18:10:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -2740,7 +2740,7 @@ void poll_wait(struct file *filp, wait_queue_head_t *wait_address, poll_table *p
 
 驱动程序的 poll() 函数至少会被这些系统调用给**调用两次**。
 
-1. **第一次是 select()、poll()、epoll() 所在的进程调用驱动程序的 poll() 函数，将自己挂到驱动程序的等待队列中，这也是驱动 poll() 函数的一个作用。这样当等待队列就能在满足条件 condition 的时候唤醒本进程。**
+1. **第一次是 select()、poll()、epoll() 所在的进程调用驱动程序的 poll() 函数，将自己挂到驱动程序的等待队列中，通过内核函数 poll_wait() 实现。这也是驱动 poll() 函数的一个作用，当等待队列就能在满足条件 condition 的时候唤醒本进程。**
 
 2. **第二次是 select()、poll()、epoll() 所在的进程被驱动程序唤醒，再次驱动程序的 poll() 函数，获取驱动程序满足的条件（可读或可写），返回对应的 mask，与用户进程对接起来，用户进程根据 mask 进行针对处理。**
 
@@ -2781,4 +2781,30 @@ static unsigned int xxx_poll(struct file *filp, poll_table *wait)
 ### 支持轮询操作的 globalfifo 设备驱动
 
 TODO
+
+## 小结
+
+阻塞与非阻塞访问是 I/O 操作的两种不同模式，前者在暂时不可进行I/O操作时会让进程睡眠，后者则不然。
+
+在设备驱动中阻塞 I/O 一般基于等待队列或者基于等待队列的其他 Linux 内核 API 来实现，等待队列可用于同步驱动中事件发生的先后顺序。使用非阻塞 I/O 的应用程序也可借助轮询函数来查询设备是否能立即被访问，用户空间调用 select()、poll() 或 epoll() 接口，设备驱动提供 poll() 函数。设备驱动的 poll() 本身不会阻塞，但是与 select()、poll() 和 epoll() 相关的系统调用则会阻塞地等待至少一个文件描述符集合，直到可访问或超时。
+
+# Linux 设备驱动中的异步通知与异步 I/O
+
+异步通知的意思是：一旦设备就绪，则主动通知应用程序，这样应用程序根本就不需要查询设备状态，这一点非常类似于硬件上“中断”的概念，比较准确的称谓是“**信号驱动的异步 I/O**”。信号是在软件层次上对中断机制的一种模拟，在原理上，一个进程收到一个信号与处理器收到一个中断请求可以说是一样的。信号是异步的，一个进程不必通过任何操作来等待信号的到达，事实上，进程也不知道信号到底什么时候到达。
+
+**阻塞 I/O 意味着一直等待设备可访问后再访问，非阻塞 I/O 中使用 poll() 意味着查询设备是否可访问，而异步通知则意味着设备通知用户自身可访问，之后用户再进行 I/O 处理。**
+
+三种方式的示意图如下：
+
+<img src="https://img-blog.csdnimg.cn/direct/0cc9bc40aeb24be1890a60c49cc8af8c.png" alt="image-20241118152443949" style="zoom:75%;" />
+
+## 异步通知编程
+
+在 Linux 中，异步通信使用信号实现。同时，信号也是 Linux 进程间通信 IPC 的一种方式。Linux 常用信号如下表：
+
+<img src="https://img-blog.csdnimg.cn/direct/d55a67a98eb54d34b9244723076061fc.png" alt="image-20241118154442574" style="zoom:75%;" />
+
+<img src="https://img-blog.csdnimg.cn/direct/de0b943bc5fa40e69c2085d1b1c21f61.png" alt="image-20241118154452629" style="zoom:75%;" />
+
+除了 SIGSTOP 和 SIGKILL 两个信号外，进程能够忽略或捕获其他的全部信号。一个信号被捕获的意思是当一个信号到达时有相应的代码处理它。如果一个信号没有被这个进程所捕获，内核将采用默认行为处理。
 
