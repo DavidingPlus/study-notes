@@ -90,14 +90,14 @@ jobs:
           cd blog/
 
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add source/_posts/
           git commit -m "Sync posts from repo https://github.com/DavidingPlus/study-notes"
           git push -u origin master
 
       # 触发 blog 的 CI
-      # TODO 本来是通过 blog 的 _posts 分支进行中转的，但是 github 不允许连续两次触发 push 的 action，为了防止死循环，因此需要走手动 Trigger 的流程。现在直接一步到位，因此这一步骤注释。
+      # 本来是通过 blog 的 _posts 分支进行中转的，但是 github 不允许连续两次触发 push 的 action，为了防止死循环，因此需要走手动 Trigger 的流程。现在直接一步到位，因此这一步骤注释。
       # - name: Trigger action in branch master
       # # 链接 https://github.com/convictional/trigger-workflow-and-wait
       #   uses: convictional/trigger-workflow-and-wait@v1.6.1

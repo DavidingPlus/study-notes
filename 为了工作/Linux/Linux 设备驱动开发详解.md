@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-18 18:10:00
+updated: 2024-11-20 17:35:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -2540,6 +2540,10 @@ void complete_all(struct completion *c); // 唤醒所有等待同一完成量的
 
 <img src="https://img-blog.csdnimg.cn/direct/11c557be427a4c05b545d410d35d4f05.png" alt="image-20241112143006097" style="zoom:75%;" />
 
+## 支持并发控制的 globalmem 设备驱动
+
+TODO
+
 ## 小结
 
 Linux 内核优化了自旋锁、信号量、互斥体、完成量等的管理，**并不需要显式销毁，在数据结构生命周期结束时自动释放**。因此只有初始化的相关接口，没有销毁的相关接口。
@@ -2790,7 +2794,7 @@ TODO
 
 # Linux 设备驱动中的异步通知与异步 I/O
 
-异步通知的意思是：一旦设备就绪，则主动通知应用程序，这样应用程序根本就不需要查询设备状态，这一点非常类似于硬件上“中断”的概念，比较准确的称谓是“**信号驱动的异步 I/O**”。信号是在软件层次上对中断机制的一种模拟，在原理上，一个进程收到一个信号与处理器收到一个中断请求可以说是一样的。信号是异步的，一个进程不必通过任何操作来等待信号的到达，事实上，进程也不知道信号到底什么时候到达。
+异步通知的意思是：一旦设备就绪，则主动通知应用程序，这样应用程序根本就不需要查询设备状态，这一点非常类似于硬件上“中断”的概念，比较准确的称谓是“**信号驱动的异步 I/O**”。**信号是在软件层次上对中断机制的一种模拟。**在原理上，一个进程收到一个信号与处理器收到一个中断请求可以说是一样的。信号是异步的，一个进程不必通过任何操作来等待信号的到达，事实上，进程也不知道信号到底什么时候到达。
 
 **阻塞 I/O 意味着一直等待设备可访问后再访问，非阻塞 I/O 中使用 poll() 意味着查询设备是否可访问，而异步通知则意味着设备通知用户自身可访问，之后用户再进行 I/O 处理。**
 
@@ -2800,6 +2804,8 @@ TODO
 
 ## 异步通知编程
 
+### 关于信号
+
 在 Linux 中，异步通信使用信号实现。同时，信号也是 Linux 进程间通信 IPC 的一种方式。Linux 常用信号如下表：
 
 <img src="https://img-blog.csdnimg.cn/direct/d55a67a98eb54d34b9244723076061fc.png" alt="image-20241118154442574" style="zoom:75%;" />
@@ -2807,4 +2813,462 @@ TODO
 <img src="https://img-blog.csdnimg.cn/direct/de0b943bc5fa40e69c2085d1b1c21f61.png" alt="image-20241118154452629" style="zoom:75%;" />
 
 除了 SIGSTOP 和 SIGKILL 两个信号外，进程能够忽略或捕获其他的全部信号。一个信号被捕获的意思是当一个信号到达时有相应的代码处理它。如果一个信号没有被这个进程所捕获，内核将采用默认行为处理。
+
+### 信号的接收
+
+在用户程序当中进行捕获信号。可使用 signal() 或 sigaction() 函数捕获信号。这两个函数的具体使用见博客 [https://blog.davidingplus.cn/posts/2adb5565.html](https://blog.davidingplus.cn/posts/2adb5565.html) 的第二章进程间通信的信号部分。
+
+使用信号实现异步通知的用户层代码示例如下：
+
+```cpp
+#include <iostream>
+
+#include <unistd.h>
+#include <signal.h>
+#include <fcntl.h>
+
+
+#define MAX_SIZE BUFSIZ
+
+
+void doIt(int num)
+{
+    char data[MAX_SIZE] = {0};
+
+    // 读取并输出 STDIN_FILENO 上的输入
+    int len = read(STDIN_FILENO, &data, MAX_SIZE);
+
+    std::cout << "input data: " << data << std::endl;
+}
+
+
+int main()
+{
+    // 启动信号驱动机制
+    struct sigaction act;
+    act.sa_flags = 0;
+    act.sa_handler = doIt;
+    sigemptyset(&act.sa_mask);
+
+    sigaction(SIGIO, &act, nullptr);
+
+    // TODO 下面代码的含义是让当前进程设置为接受 SIGIO 信号，并且告诉内核是通过异步的方式接受。在这个程序中异步的感观不明显，但确实是这样用的。想办法让其感观明显一点。
+
+    // 设置将接收 SIGIO 和 SIGURG 信号的进程 id 或进程组 id
+    fcntl(STDIN_FILENO, F_SETOWN, getpid());
+    // 修改为异步通知模式
+    int flag = fcntl(STDIN_FILENO, F_GETFL);
+    fcntl(STDIN_FILENO, F_SETFL, flag | FASYNC);
+
+    // 最后进入一个死循环，仅为保持进程不终止，如果程序中没有这个死循会立即执行完毕
+    for (;;)
+    {
+    }
+
+
+    return 0;
+}
+```
+
+由此可见，为了在用户空间中处理一个设备释放的信号，需要完成 3 项工作：
+
+1. **通过 F_SETOWN IO 控制命令设置设备文件的拥有者为本进程，这样从设备驱动发出的信号才能被本进程接收到。**
+2. **通过 F_SETFL IO 控制命令设置设备文件以支持 FASYNC，即异步通知模式。**
+3. **通过 signal() 或者 sigaction() 函数连接信号和信号处理函数。**
+
+### 信号的释放
+
+在设备驱动和应用程序的异步通知交互中，仅仅在应用程序端捕获信号是不够的，因为信号的源头在设备驱动端。因此，应该在合适的时机让设备驱动释放信号，**在设备驱动程序中增加信号释放的相关代码**。
+
+与用户程序对应的，驱动程序也涉及 3 项工作：
+
+1. **支持 F_SETOWN 命令，能在这个控制命令处理中设置 filp->f_owner 为对应进程 ID。但此项工作已由内核完成，设备驱动无须处理。**
+2. **支持 F_SETFL 命令的处理，每当 FASYNC 标志改变时，驱动程序中的 fasync() 函数将得以执行。因此，驱动中应该实现 fasync() 函数。**
+3. **在设备资源可获得时，调用 kill_fasync() 函数激发相应的信号。**
+
+这些与用户层的 3 项工作是一一对应的，关系图如下：
+
+<img src="https://img-blog.csdnimg.cn/direct/4d3f6a37580e464dafbb4dbaa7bcaa87.png" alt="image-20241120095605894" style="zoom:80%;" />
+
+设备驱动中的异步通知编程涉及到一个数据结构和两个函数，具体如下：
+
+1. 结构体 fasync_struct。
+
+```c
+struct fasync_struct {
+	rwlock_t		fa_lock;
+	int			magic;
+	int			fa_fd;
+	struct fasync_struct	*fa_next; /* singly linked list */
+	struct file		*fa_file;
+	struct rcu_head		fa_rcu;
+};
+```
+
+2. 处理 FASYNC 标志变更的函数。
+
+fasync_helper() 的作用是**将一个 fasync_struct 的对象注册进内核**，应用层执行 fcntl(fd, F_SETFL, oflags | FASYNC) 时会回调驱动的 fops.fasync()，所以通常将 fasync_helper() 放到 fasync() 的实现中。
+
+```c
+int fasync_helper(int fd, struct file *filp, int mode, struct fasync_struct **fa);
+```
+
+3. 产生信号用的函数。
+
+```c
+void kill_fasync(struct fasync_struct **fa, int sig, int band);
+```
+
+## 支持异步通知的 globalfifo 驱动
+
+TODO
+
+## 异步 IO
+
+### 用户层 GNU C 库 AIO
+
+Linux 中最常用的输入/输出（I/O）模型是同步 I/O。当请求发出之后，应用程序就会阻塞，直到请求满足为止。这是一种很好的解决方案，调用应用程序在等待 I/O 请求完成时不需要占用 CPU。但是在许多应用场景中，I/O 请求可能需要与 CPU 消耗产生交叠，以充分利用 CPU 和 I/O 提高吞吐率。
+
+异步 I/O 的时序图如下。应用程序发起 I/O 动作以后，并不等待 I/O 结束，而是接着执行。它要么过一段时间来查询之前的 I/O 请求完成情况，要么 I/O 请求完成后自动被调用与 I/O 完成绑定的回调函数。
+
+<img src="https://img-blog.csdnimg.cn/direct/be82260de80e490d8e74b900db827822.png" alt="image-20241120111926095" style="zoom:75%;" />
+
+Linux 的 AIO 有多种实现。其中一种是**在用户空间的 glibc 库中实现的**。**它本质上是借用了多线程模型，用开启新的线程以同步的方法来做 I/O，新的 AIO 辅助线程与发起 AIO 的线程以 pthread_cond_signal() 的形式进行线程间的同步。**
+
+其主要接口如下：
+
+1. aio_read()
+
+aio_read() 函数请求对一个有效的文件描述符进行异步读操作。这个文件描述符可以表示一个文件、套接字，甚至管道。
+
+此函数在请求排队后就会立即返回，尽管读操作并未完成。如果执行成功，返回 0；如果出现错误，返回 -1，并设置 errno。
+
+参数 aiocb（AIO I/O Control Block）结构体包含了传输的所有信息，以及为 AIO 操作准备的用户空间缓冲区。在产生 I/O 完成通知时，aiocb 结构就被用来唯一标识所完成的 I/O 操作。
+
+```c
+int aio_read(struct aiocb *aiocbp);
+```
+
+更进一步的，aiocb 结构体的定义如下：
+
+```c
+struct aiocb
+{
+    int aio_fildes;               // 文件描述符
+    __off_t aio_offset;           // 文件偏移
+    volatile void *aio_buf;       // 缓冲区地址
+    size_t aio_nbytes;            // 传输的数据长度
+    int aio_reqprio;              // 请求优先级
+    struct sigevent aio_sigevent; // 通知方法
+    int aio_lio_opcode;           // 仅被 lio_listio() 函数使用
+
+	...
+};
+```
+
+2. aio_write()
+
+同 aio_read()，aio_write() 进行一个异步写操作。同样在请求排队后就会立即返回，返回值同上。
+
+```c
+int aio_write(struct aiocb *aiocbp);
+```
+
+3. aio_error()
+
+aio_error() 函数用于确认请求的状态。
+
+```c
+int aio_error(const struct aiocb *aiocbp);
+```
+
+这个函数可以返回以下内容：
+
+- EINPROGRESS：说明请求尚未完成。
+- ECANCELED：说明请求被应用程序取消了。
+- -1：说明发生了错误，具体错误原因由 errno 记录。
+
+4. aio_return()
+
+异步 I/O 和同步阻塞 I/O 方式之间的一个区别是不能立即访问这个函数的返回状态，因为异步 I/O 并没有阻塞在 aio_read() 调用上。在标准的同步阻塞 read() 调用中，返回状态是在该函数返回时提供的。但是在异步 I/O 中，我们要使用 aio_return() 函数，手动获取返回值。
+
+```c
+ssize_t aio_return(struct aiocb *aiocbp);
+```
+
+在实际使用的时候，只有在 aio_error() 调用确定请求已经完成（可能成功，也可能发生了错误）之后，才会调用这个函数。aio_return() 的返回值就等价于同步情况中 read() 或 write() 系统调用的返回值，即所传输的字节数。如果发生错误，返回值为负数。
+
+下面是一个例子，展示了上面 API 的使用方法。注意使用的时候链接系统库 `rt`（见 man 文档）。
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+#include <aio.h>
+#include <fcntl.h>
+
+
+#define PERROR(func)  \
+    do                \
+    {                 \
+        perror(func); \
+        return -1;    \
+    } while (0)
+
+
+int main()
+{
+    FILE *pFile = fopen("file.txt", "w");
+    if (!pFile) PERROR("fopen");
+
+    fputs("hello globalfifo module.", pFile);
+
+    fclose(pFile);
+
+    // 使用 AIO 读
+
+    int fd = open("file.txt", O_RDONLY);
+    if (-1 == fd) PERROR("open");
+
+    struct aiocb aio;
+    bzero(&aio, sizeof(aio));
+
+    aio.aio_buf = malloc(BUFSIZ + 1);
+    if (!aio.aio_buf) PERROR("malloc");
+
+    aio.aio_fildes = fd;
+    aio.aio_nbytes = BUFSIZ;
+    aio.aio_offset = 0;
+
+    int res = aio_read(&aio);
+    if (-1 == res) PERROR("aio_read");
+
+    while (aio_error(&aio) == EINPROGRESS) continue;
+
+    res = aio_return(&aio);
+    if (res < 0) PERROR("aio_return");
+
+    std::cout << "res: " << res << std::endl;
+    std::cout << "aio_read: " << (char *)aio.aio_buf << std::endl;
+
+    remove("file.txt");
+
+
+    return 0;
+}
+```
+
+5. aio_suspend()
+
+用户可以使用 aio_suspend() 函数来阻塞调用进程，直到异步请求完成为止。用户可以在参数中提供一个 aiocb 引用数组，其中任何一个完成都会导致 aio_suspend() 返回。
+
+注意，第一个参数是**存放 aiocb 结构体指针的数组**，第二个参数是数组的大小，第三个参数是阻塞超时时长（nullptr 表示阻塞，非阻塞给超时时长）。
+
+```c
+int aio_suspend(const struct aiocb *const aiocb_list[], int nitems, const struct timespec *timeout);
+```
+
+当然，在 glibc 实现的 AIO 中，除了上述同步的等待方式以外，也可以使用信号或者回调机制来异步地标明 AIO 的完成。
+
+经过修改后的示例程序如下：
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+#include <aio.h>
+#include <fcntl.h>
+
+
+#define PERROR(func)  \
+    do                \
+    {                 \
+        perror(func); \
+        return -1;    \
+    } while (0)
+
+
+int main()
+{
+    FILE *pFile = fopen("file.txt", "w");
+    if (!pFile) PERROR("fopen");
+
+    fputs("hello globalfifo module.", pFile);
+
+    fclose(pFile);
+
+    int fd = open("file.txt", O_RDONLY);
+    if (-1 == fd) PERROR("open");
+
+    struct aiocb aio;
+    std::memset(&aio, 0, sizeof(aio));
+
+    struct aiocb *aioArr[1] = {&aio};
+
+    aio.aio_buf = malloc(BUFSIZ + 1);
+    if (!aio.aio_buf) PERROR("malloc");
+
+    aio.aio_fildes = fd;
+    aio.aio_nbytes = BUFSIZ;
+    aio.aio_offset = 0;
+
+    int res = aio_read(&aio);
+    if (-1 == res) PERROR("aio_read");
+
+    res = aio_suspend(aioArr, sizeof(aioArr) / sizeof(aioArr[0]), nullptr);
+    if (-1 == res) PERROR("aio_suspend");
+
+    res = aio_return(&aio);
+    if (-1 == res) PERROR("aio_return");
+
+    std::cout << "res: " << res << std::endl;
+    std::cout << "aio_read: " << (char *)aio.aio_buf << std::endl;
+
+    remove("file.txt");
+
+
+    return 0;
+}
+```
+
+6. aio_cancel()
+
+aio_cancel() 函数允许用户取消对某个文件描述符执行的一个或所有 I/O 请求。
+
+如果是**取消一个请求**，需提供 fd 和 aiocb 指针。如果请求被成功取消，会返回 AIO_CANCELED。如果请求已完成即取消失败，会返回 AIO_NOTCANCELED。
+
+如果是取消对某个 fd 的**所有请求**。需提供这个 fd，并将 aiocb 参数设置为 NULL。如果所有的请求都取消了，会返回 AIO_CANCELED；如果至少有一个请求没有被取消，会返回 AIO_NOT_CANCELED；如果没有一个请求可以被取消，那么这个函数就会返回 AIO_ALLDONE。然后，可以使用 aio_error() 来验证每个 AIO 请求。如果某请求已经被取消了，那么 aio_error() 就会返回 -1，并且 errno 会被设置为 ECANCELED。
+
+```c
+int aio_cancel(int fd, struct aiocb *aiocbp);
+```
+
+7. lio_listio()
+
+**lio_listio() 函数可用于同时发起多个传输，使得用户可以在一个系统调用中启动大量的 I/O 操作。**
+
+mode 参数可以是 LIO_WAIT 或 LIO_NOWAIT。LIO_WAIT 会阻塞这个调用，直到所有的 I/O 都完成为止。但是若是 LIO_NOWAIT 模型，在 I/O 操作进行排队之后，该函数就会返回。list 是一个 aiocb 引用的指针的列表，最大元素的个数是由 nitems 定义的。如果 list 的元素为 nullptr，lio_listio() 会将其忽略。最后一个参数 sevp 暂时不用考虑，直接设置为 nullptr 即可。
+
+```c
+int lio_listio(int mode, struct aiocb *const aiocb_list[], int nitems, struct sigevent *sevp);
+```
+
+当使用这个函数的时候，aiocb 结构体中的成员 aio_lio_opcode 需要被设置。因为批量执行 I/O 的缘故，没有办法单独调用 aio_read() 或者 aio_write() 这些，因此需要设置标志以后托管给 lio_listio() 执行。aio_lio_opcode 值如下表：
+
+|    值     |      含义      |
+| :-------: | :------------: |
+| LIO_READ  | 发起异步读操作 |
+| LIO_WRITE | 发起异步写操作 |
+|  LIO_NOP  |  忽略该 aiocb  |
+
+经过修改后的示例程序如下：
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+#include <aio.h>
+#include <fcntl.h>
+
+
+#define ERR_EXIT(func) \
+    do                 \
+    {                  \
+        perror(func);  \
+        exit(1);       \
+    } while (0)
+
+
+int main()
+{
+    FILE *pFile = fopen("file.txt", "w");
+    if (!pFile) ERR_EXIT("fopen");
+
+    fputs("hello globalfifo module.", pFile);
+
+    fclose(pFile);
+
+    int fd = open("file.txt", O_RDONLY);
+    if (-1 == fd) ERR_EXIT("open");
+
+    struct aiocb aio;
+    std::memset(&aio, 0, sizeof(aio));
+
+    aio.aio_buf = malloc(BUFSIZ + 1);
+    if (!aio.aio_buf) ERR_EXIT("malloc");
+
+    aio.aio_fildes = fd;
+    aio.aio_nbytes = BUFSIZ;
+    aio.aio_offset = 0;
+    aio.aio_lio_opcode = LIO_READ; // 使用 lio_listio() 需要额外添加的一项。
+
+    struct aiocb *aioArr[5] = {nullptr};
+    aioArr[3] = &aio;
+
+    int res = lio_listio(LIO_WAIT, aioArr, sizeof(aioArr) / sizeof(aioArr[0]), nullptr);
+    if (-1 == res) ERR_EXIT("lio_listio");
+
+    res = aio_return(&aio);
+    if (-1 == res) ERR_EXIT("aio_return");
+
+    std::cout << "res: " << res << std::endl;
+    std::cout << "aio_read: " << (char *)aio.aio_buf << std::endl;
+
+    remove("file.txt");
+
+
+    return 0;
+}
+```
+
+### 内核 AIO 与 libaio
+
+Linux AIO 也可以**由内核空间实现**。异步 I/O 是 Linux 2.6 以后版本内核的一个标准特性。对于块设备而言，AIO 可以一次性发出大量的 read/write 调用并且通过通用块层的 I/O 调度来获得更好的性能，用户程序也可以减少过多的同步负载，还可以在业务逻辑中更灵活地进行并发控制和负载均衡。相较于 glibc 的用户空间多线程同步等实现也减少了线程的负载和上下文切换等。对于网络设备而言，在 socket 层面上，也可以使用 AIO，让 CPU 和网卡的收发动作充分交叠以改善吞吐性能。
+
+在用户空间中，需要结合 libaio 库进行内核 AIO 的系统调用。首先需要安装 libaio 库：
+
+```bash
+sudo apt install libaio-dev
+```
+
+libaio 提供的内核 AIO 的 API 主要包括：
+
+```c
+int io_setup(int maxevents, io_context_t *ctxp);
+int io_destroy(io_context_t ctx);
+int io_submit(io_context_t ctx, long nr, struct iocb *ios[]);
+int io_cancel(io_context_t ctx, struct iocb *iocb, struct io_event *evt);
+int io_getevents(io_context_t ctx, long min_nr, long nr, struct io_event *events, struct timespec *timeout);
+void io_set_callback(struct iocb *iocb, io_callback_t cb);
+void io_prep_pread(struct iocb *iocb, int fd, void *buf, size_t count, long long offset);
+void io_prep_pwrite(struct iocb *iocb, int fd, void *buf, size_t count, long long offset);
+void io_prep_preadv(struct iocb *iocb, int fd, const struct iovec *iov, int iovcnt, long long offset);
+void io_prep_pwritev(struct iocb *iocb, int fd, const struct iovec *iov, int iovcnt, long long offset);
+```
+
+AIO 的读写请求都用 io_submit() 下发。下发前通过 io_prep_pwrite() 和 io_prep_pread() 生成 iocb 的结构体。作为 io_submit() 的参数。这个结构体指定了读写类型、起始地址、长度和设备标志符等信息。读写请求下发之后，使用 io_getevents() 函数等待 I/O 完成事件。io_set_callback() 则可设置一个 AIO 完成的回调函数。
+
+示例程序见：[https://github.com/DavidingPlus/linux-kernel-learning/tree/globalfifo/snippet/LibAioTest](https://github.com/DavidingPlus/linux-kernel-learning/tree/globalfifo/snippet/LibAioTest)
+
+### AIO 与设备驱动
+
+在 Linux 4.0 版本下，用户空间调用 io_submit() 后，对应于用户传递的每一个 iocb 结构，内核会生成一个与之对应的 kiocb 结构。file_operations 包含 3 个与 AIO 相关的成员函数。
+
+io_submit() 系统调用间接引起了 file_operations 中的 aio_read() 和 aio_write() 的调用。
+
+```c
+ssize_t (*aio_read) (struct kiocb *iocb, const struct iovec *iov, unsigned long nr_segs, loff_t pos);
+ssize_t (*aio_write) (struct kiocb *iocb, const struct iovec *iov, unsigned long nr_segs, loff_t pos);
+int (*aio_fsync) (struct kiocb *iocb, int datasync);
+```
+
+Linux 5.0 版本之后的这三个接口可能已经改名（或删除并重新实现了一套逻辑），可能的对应关系如下。暂不用深究。
+
+```c
+ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
+ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
+int (*iopoll)(struct kiocb *kiocb, bool spin);
+```
+
+**AIO 一般由内核空间的通用代码处理，对于块设备和网络设备而言，一般在Linux核心层的代码已经解决。字符设备驱动一般不需要实现 AIO 支持。**Linux 内核中对字符设备驱动实现 AIO 的特例包括 drivers/char/mem.c 里实现的 null、zero 等，由于 zero 这样的虚拟设备其实也不存在在要去读的时候读不到东西的情况，所以 aio_read_zero() 本质上也不包含异步操作。
 
