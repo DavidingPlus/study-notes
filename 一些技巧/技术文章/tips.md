@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-11-13 22:00:00
+updated: 2024-11-21 13:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -418,4 +418,10 @@ updated: 2024-11-13 22:00:00
 - Windows 照片/视频查看工具：[https://github.com/easymodo/qimgv](https://github.com/easymodo/qimgv)
 
   - 可通过 Scoop 安装：`scoop install qimgv-video`
+
+- 使用 1Panel 自动申请和续签证书：[https://hin.cool/posts/sslfor1panel.html](https://hin.cool/posts/sslfor1panel.html)
+
+- 腾讯云服务器 root 远程登陆被 ssh 服务器拒绝密码（即使密码正确）：[https://blog.csdn.net/COCO56/article/details/123770645](https://blog.csdn.net/COCO56/article/details/123770645)
+
+- Github Action ssh-deploy 的配置注意事项（如何让 Github 工作流把文件自动推送到我们自己的云服务器）：[https://github.com/easingthemes/ssh-deploy/issues/143#issuecomment-2490116974](https://github.com/easingthemes/ssh-deploy/issues/143#issuecomment-2490116974)
 
