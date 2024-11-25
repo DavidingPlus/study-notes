@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-25 15:20:00
+updated: 2024-11-25 19:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -3621,5 +3621,88 @@ static irqreturn_t irq_default_primary_handler(int irq, void *dev_id)
 {
 	return IRQ_WAKE_THREAD;
 }
+```
+
+## 中断共享
+
+多个设备共享一根硬件中断线的情况在实际的硬件系统中广泛存在。Linux 也支持这种共享方法。
+
+1. 共享中断的多个设备在申请中断时，都应该使用 IRQF_SHARED 标志，而且一个设备以 IRQF_SHARED 申请某中断成功的前提是该中断未被申请，或该中断虽然被申请了，但是之前申请该中断的所有设备也都以 IRQF_SHARED 标志申请该中断。
+2. 尽管内核模块可访问的全局地址都可以作为 request_irq(..., void *dev) 的最后一个参数 dev，但是设备结构体指针显然是可传入的最佳参数。
+3. 在中断到来时，会遍历执行共享此中断的所有中断处理程序，直到某一个函数返回 IRQ_HANDLED。在中断处理程序顶半部中，应根据硬件寄存器中的信息比照传入的 dev 参数迅速地判断是否为本设备的中断，若不是，应迅速返回 IRQ_NONE。
+
+<img src="./../../typora-user-images/image-20241125184336914.png" alt="image-20241125184336914" style="zoom:75%;" />
+
+以下是使用共享中断的设备驱动程序模板：
+
+```c
+// 中断处理顶半部
+irqreturn_t xxx_interrupt(int irq, void *dev_id)
+{
+    ...
+
+    int status = read_int_status(); // 获知中断源
+    if (!is_myint(dev_id, status))      // 判断是否为本设备中断
+        return IRQ_NONE;                // 不是本设备中断，立即返回
+
+    // 是本设备中断，进行处理
+    ...
+
+    return IRQ_HANDLED; // 返回IRQ_HANDLED表明中断已被处理
+}
+
+// 设备驱动模块加载函数
+int xxx_init(void)
+{
+    ...
+
+    // 申请共享中断
+    result = request_irq(sh_irq, xxx_interrupt, IRQF_SHARED, "xxx", xxx_dev);
+
+    ...
+}
+
+// 设备驱动模块卸载函数
+void xxx_exit(void)
+{
+    ...
+
+    // 释放中断
+    free_irq(xxx_irq, xxx_interrupt);
+
+    ...
+}
+```
+
+## 内核定时器
+
+### 内核定时器编程
+
+软件意义上的定时器最终依赖硬件定时器来实现，内核在时钟中断发生后检测各定时器是否到期，到期后的定时器处理函数将作为软中断在底半部执行。实质上，**时钟中断处理程序会唤起 TIMER_SOFTIRQ 软中断，运行当前处理器上到期的所有定时器。**
+
+Linux 内核提供了一组函数和数据结构用于定时触发工作和完成某周期性的任务。编程者在多数情况无需关心具体的内核和硬件行为。
+
+书中内容基于 Linux 4.0 版本，在 Linux 5 中 API 已发生变动，参照文章 [https://blog.csdn.net/ZHONGCAI0901/article/details/120484815](https://blog.csdn.net/ZHONGCAI0901/article/details/120484815) 一同学习。
+
+1. timer_list
+
+timer_list 结构体的实例对应一个定时器。当定时器期满以后，function() 函数将被执行，expires 是定时器到期的时间。
+
+```c
+struct timer_list
+{
+    /*
+     * All fields that change during normal runtime grouped to the
+     * same cacheline
+     */
+    struct hlist_node entry;
+    unsigned long expires;
+    void (*function)(struct timer_list *);
+    u32 flags;
+
+#ifdef CONFIG_LOCKDEP
+    struct lockdep_map lockdep_map;
+#endif
+};
 ```
 
