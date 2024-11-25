@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-20 17:35:00
+updated: 2024-11-25 15:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1630,7 +1630,7 @@ SUBSYSTEM=="net", ACTION=="add", DRIVERS==" *", ATTR{address}=="08:00:27:35:be:f
 
 匹配部分包括 SUBSYSTEM、ACTION、ATTR、KERNEL 等，赋值部分有一项，是 NAME。这个规则的意思是：当系统中出现的新硬件属于 net 子系统范畴，系统对该硬件采取的动作是 add 这个硬件，且这个硬件的 address 属性信息等于 "08:00:27:35:be:ff"，dev_id 属性等于 "0x0" 、type 属性为 1 等。此时，对这个硬件在 udev 层实行的动作是创建 /dev/eth1。
 
-# Linux 字符设备驱动
+# 字符设备驱动
 
 Linux 系统将设备分为3类：**字符设备、块设备、网络设备**。架构图如下：
 
@@ -3271,4 +3271,355 @@ int (*iopoll)(struct kiocb *kiocb, bool spin);
 ```
 
 **AIO 一般由内核空间的通用代码处理，对于块设备和网络设备而言，一般在Linux核心层的代码已经解决。字符设备驱动一般不需要实现 AIO 支持。**Linux 内核中对字符设备驱动实现 AIO 的特例包括 drivers/char/mem.c 里实现的 null、zero 等，由于 zero 这样的虚拟设备其实也不存在在要去读的时候读不到东西的情况，所以 aio_read_zero() 本质上也不包含异步操作。
+
+# 中断与时钟
+
+**由于中断服务程序的执行并不存在于进程上下文中，所以要求中断服务程序的时间要尽量短。**故 Linux 在中断处理中引入了**顶半部和底半部分离**的机制。另外，内核对时钟的处理也采用中断方式，而内核软件定时器最终依赖于时钟中断。
+
+## 中断与定时器
+
+中断是指 CPU 在执行程序的过程中，出现了某些突发事件急待处理，CPU 必须暂停当前程序的执行，转去处理突发事件，处理完毕后又返回原程序被中断的位置继续执行。
+
+根据中断的来源，中断可分为**内部中断和外部中断**。内部中断的中断源来自 CPU 内部（软件中断指令、溢出、除法错误，操作系统从用户态切换到内核态需借助 CPU 内部的软件中断等）。外部中断的中断源来自 CPU 外部，由外设提出请求。
+
+根据中断是否可以屏蔽，中断可分为**可屏蔽中断与不可屏蔽中断**（NMI）。可屏蔽中断可以通过设置中断控制器寄存器等方法被屏蔽，屏蔽后，该中断不再得到响应。不可屏蔽中断不能被屏蔽。
+
+根据中断入口跳转方法的不同，中断可分为**向量中断和非向量中断**。采用向量中断的 CPU 通常为不同的中断分配不同的中断号。当检测到某中断号的中断到来后，就自动跳转到与该中断号对应的地址执行。不同中断号的中断有不同的入口地址。非向量中断的多个中断共享一个入口地址，进入该入口地址后，再通过软件判断中断标志来识别具体是哪个中断。也就是说，**向量中断由硬件提供中断服务程序入口地址，非向量中断由软件提供中断服务程序入口地址。**
+
+## 中断处理程序架构
+
+设备的中断会打断内核进程中的正常调度和运行，系统对更高吞吐率的追求势必要求中断服务程序尽量短小精悍。但在大多数真实的系统中，当中断到来时，要完成的工作往往并不会是短小的，它可能要进行较大量的耗时处理。
+
+为了在**中断执行时间尽量短和中断处理需完成的工作尽量大**之间找到一个平衡点，Linux 将中断处理程序分解为两个半部：顶半部（Top Half）和底半部（Bottom Half）。
+
+<img src="https://img-blog.csdnimg.cn/direct/b4e9122e67844610a38d7223c7225f86.png" alt="image-20241125093035072" style="zoom:75%;" />
+
+**顶半部用于完成尽量少的比较紧急的功能。**它往往只是简单地读取寄存器中的中断状态，并在清除中断标志后就进行“登记中断”的工作。“登记中断”意味着将底半部处理程序挂到该设备的底半部执行队列中去。这样，顶半部执行的速度就会很快，从而可以服务更多的中断请求。
+
+因此，**中断处理工作的重心就落在了底半部的头上，需用它来完成中断事件的绝大多数任务。**底半部几乎做了中断处理程序所有的事情，而且可以被新的中断打断，这也是底半部和顶半部的最大不同。顶半部往往被设计成不可中断。底半部相对来说并不是非常紧急的，而且相对比较耗时，不在硬件中断服务程序中执行。
+
+但设计是这样，现实是灵活的。如果中断要处理的工作本身很少，完全可以直接在顶半部中全部完成。**真正的硬件中断服务程序都应该 尽量短。**许多操作系统都提供了中断上下文和非中断上下文相结合的机制，将中断的耗时工作保留到非中断上下文去执行。
+
+在 Linux 中，查看 `/proc/interrupts` 文件可以获得系统中断的统计信息，知道每个中断号在 CPU 上发生的次数。
+
+<img src="https://img-blog.csdnimg.cn/direct/f80fa5a72c3a45c9b05830ae6e8436af.png" alt="image-20241125094233332" style="zoom:60%;" />
+
+## 中断编程
+
+### 申请和释放中断
+
+1. 申请 irq
+
+申请 irq 使用接口 request_irq()。
+
+```c
+// irq 是要申请的硬件中断号。
+// handler 是向系统登记的顶半部的中断处理函数，是一个回调函数。中断发生时，系统调用这个函数，dev 参数将被传递给它。
+// flags 是中断处理的属性，可以指定中断的触发方式以及处理方式。在触发方式上，可以是 IRQF_TRIGGER_RISING、IRQF_TRIGGER_FALLING、IRQF_TRIGGER_HIGH、IRQF_TRIGGER_LOW 等。在处理方式上，若设置了 IRQF_SHARED，则表示多个设备共享中断。
+// 此函数返回 0 表示成功，返回 -EINVAL 表示中断号无效或处理函数指针为 NULL，返回 -EBUSY 表示中断已被占用且不能共享。
+int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev);
+```
+
+当然，还有另一个接口 devm_request_irq()。与 request_irq() 的区别是 `devm_` 开头的 API 申请的是内核 managed 的资源，一般不需要在出错处理和 remove() 接口里再显式的释放。有点类似 Java 的垃圾回收机制。
+
+顶半部 hander 类型 irq_handler_t 的定义为：
+
+```c
+typedef irqreturn_t (*irq_handler_t)(int, void *);
+
+enum irqreturn {
+	IRQ_NONE		= (0 << 0),
+	IRQ_HANDLED		= (1 << 0),
+	IRQ_WAKE_THREAD		= (1 << 1),
+};
+
+typedef enum irqreturn irqreturn_t;
+```
+
+2. 释放 irq
+
+释放 irq 使用接口 free_irq()。
+
+```c
+const void *free_irq(unsigned int irq, void *dev);
+```
+
+### 使能和屏蔽中断
+
+下面函数用于使能和屏蔽一个中断源。
+
+如果在 n 号中断的顶半部调用 disable_irq(n)，会引起系统的死锁，这种情况下，只能调用 disable_irq_nosync(n)。
+
+```c
+void enable_irq(unsigned int irq);
+void disable_irq(unsigned int irq);
+void disable_irq_nosync(unsigned int irq); // 与上面的区别在于本函数会立即返回，disable_irq() 会等待目前的中断完成。
+```
+
+下面函数用于屏蔽本 CPU 内的所有中断。
+
+区别在于 local_irq_save(flags) 会将目前的中断状态保存在 flags 中（注意 flags 为 unsigned long 类型，被直接传递，而不是通过指针）。后者禁止中断而不保存状态。
+
+```c
+#define local_irq_disable()                      \
+    do                                           \
+    {                                            \
+        bool was_disabled = raw_irqs_disabled(); \
+        raw_local_irq_disable();                 \
+        if (!was_disabled)                       \
+            trace_hardirqs_off();                \
+    } while (0)
+
+#define local_irq_save(flags)                \
+    do                                       \
+    {                                        \
+        raw_local_irq_save(flags);           \
+        if (!raw_irqs_disabled_flags(flags)) \
+            trace_hardirqs_off();            \
+    } while (0)
+```
+
+与上面对应的使能函数如下。
+
+```c
+#define local_irq_enable()      \
+    do                          \
+    {                           \
+        trace_hardirqs_on();    \
+        raw_local_irq_enable(); \
+    } while (0)
+
+#define local_irq_restore(flags)             \
+    do                                       \
+    {                                        \
+        if (!raw_irqs_disabled_flags(flags)) \
+            trace_hardirqs_on();             \
+        raw_local_irq_restore(flags);        \
+    } while (0)
+```
+
+**前缀 `local_` 表示作用范围在本 CPU 内。**
+
+### 底半部机制
+
+Linux 底半部机制主要涉及 tasklet、工作队列、软中断和线程化 irq。
+
+#### tasklet
+
+**tasklet 的执行上下文是软中断，执行时机通常是顶半部返回的时候。**我们只需定义 tasklet 及其处理函数，并关联二者即可。
+
+```c
+void my_tasklet_func(unsigned long);                // 定义一个处理函数
+DECLARE_TASKLET(my_tasklet, my_tasklet_func, data); // 定义一个 tasklet 结构 my_tasklet，与 my_tasklet_func(data) 函数相关联
+```
+
+DECLARE_TASKLET(my_tasklet，my_tasklet_func，data) 实现了定义名称为 my_tasklet 的 tasklet，并将其与 my_tasklet_func() 这个函数绑定，并且传入函数的参数为 data。
+
+需要调度 tasklet 时使用 tasklet_schedule() 函数就能使系统在适当的时候（例如在顶半部的代码中）进行调度运行。
+
+```c
+tasklet_schedule(&my_tasklet);
+```
+
+使用 tasklet 作为底半部处理中断的设备驱动程序代码模板如下：
+
+```c
+// 定义 tasklet 和底半部函数并将它们关联
+void xxx_do_tasklet(unsigned long);
+DECLARE_TASKLET(xxx_tasklet, xxx_do_tasklet, 0);
+
+// 中断处理底半部
+void xxx_do_tasklet(unsigned long)
+{
+    ...
+}
+
+// 中断处理顶半部
+irqreturn_t xxx_interrupt(int irq, void *dev_id)
+{
+    ... 
+
+    tasklet_schedule(&xxx_tasklet);
+
+    ...
+}
+
+// 设备驱动模块加载函数
+int __init xxx_init(void)
+{
+    ...
+
+    // 申请中断
+    result = request_irq(xxx_irq, xxx_interrupt, 0, "xxx", NULL);
+
+    ...
+
+    return IRQ_HANDLED;
+}
+
+// 设备驱动模块卸载函数
+void __exit xxx_exit(void)
+{
+    ...
+
+    // 释放中断
+    free_irq(xxx_irq, xxx_interrupt);
+
+    ...
+}
+```
+
+上述程序在模块加载函数中申请中断，并在模块卸载函数中释放它。对应于 xxx_irq 的顶半部的中断处理程序被设置为 xxx_interrupt() 函数。在这个函数中，tasklet_schedule(&xxx_tasklet) 调度 tasklet 的函数 xxx_do_tasklet()，会在适当的时候执行，用于处理底半部。
+
+#### 工作队列
+
+工作队列的使用方法和 tasklet 很相似，但**工作队列的执行上下文是内核线程，因此可以调度和睡眠**。
+
+与 tasklet 类似，下面用于定义工作队列和底半部执行函数：
+
+```c
+struct work_struct {
+	atomic_long_t data;
+	struct list_head entry;
+	work_func_t func;
+#ifdef CONFIG_LOCKDEP
+	struct lockdep_map lockdep_map;
+#endif
+};
+
+struct work_struct my_wq; // 定义一个工作队列
+void my_wq_func(struct work_struct *work); // 定义一个处理函数
+```
+
+通过 INIT_WORK() 初始化工作队列并与处理函数绑定。
+
+```c
+INIT_WORK(&my_wq, my_wq_func); // 初始化工作队列并将其与处理函数绑定
+```
+
+与 tasklet_schedule() 对应的用于调度工作队列执行的函数为 schedule_work()。
+
+```c
+schedule_work(&my_wq); // 调度工作队列执行
+```
+
+同理可总结代码模板如下：
+
+```c
+// 定义工作队列和关联函数
+struct work_struct xxx_wq;
+void xxx_do_work(struct work_struct *work);
+
+// 中断处理底半部
+void xxx_do_work(struct work_struct *work)
+{
+    ...
+}
+
+// 中断处理顶半部
+irqreturn_t xxx_interrupt(int irq, void *dev_id)
+{
+    ...
+
+    schedule_work(&xxx_wq);
+    
+    ...
+
+    return IRQ_HANDLED;
+}
+
+// 设备驱动模块加载函数
+int xxx_init(void)
+{
+    ...
+
+    // 申请中断
+    result = request_irq(xxx_irq, xxx_interrupt, 0, "xxx", NULL);
+
+    ...
+
+    // 初始化工作队列
+    INIT_WORK(&xxx_wq, xxx_do_work);
+
+    ...
+}
+
+// 设备驱动模块卸载函数
+void xxx_exit(void)
+{
+    ...
+
+    // 释放中断
+    free_irq(xxx_irq, xxx_interrupt);
+
+    ...
+}
+```
+
+与 tasklet 不同的是，在驱动模块加载函数中加入了初始化工作队列的部分。
+
+工作队列早期的实现是在每个 CPU 核上创建一个 worker 内核线程，所有在这个核上调度的工作都在该 worker 线程中执行，其并发性显然差强人意。在 Linux 2.6 以后，转而实现了 Concurrency-managed workqueues，简称 cmwq。它会自动维护工作队列的线程池以提高并发性，同时保持了 API 的向后兼容。
+
+#### 软中断
+
+**软中断（softirq）也是一种传统的底半部处理机制，执行时机通常是顶半部返回的时候。tasklet 是基于软中断实现的，因此也运行于软中断上下文。**
+
+在 Linux 内核中，用 softirq_action 结构体表示一个软中断，包含软中断处理函数指针和传递给该函数的参数。使用 open_softirq() 函数可以注册软中断对应的处理函数，而 raise_softirq() 函数可以触发一个软中断。
+
+```c
+struct softirq_action
+{
+    void (*action)(struct softirq_action *);
+};
+
+void open_softirq(int nr, void (*action)(struct softirq_action *));
+void raise_softirq(unsigned int nr);
+```
+
+**软中断和 tasklet 运行于软中断上下文，仍属于原子上下文的一种，而工作队列则运行于进程上下文，即内核线程。故在软中断和 tasklet 处理函数中不允许睡眠，在工作队列处理函数中允许睡眠。**
+
+内核中用于禁止和使能软中断及 tasklet 底半部机制的函数如下：
+
+```c
+void local_bh_disable(void);
+void local_bh_enable(void)
+```
+
+内核中采用 softirq 的地方包括 HI_SOFTIRQ、TIMER_SOFTIRQ、NET_TX_SOFTIRQ、NET_RX_SOFTIRQ、SCSI_SOFTIRQ、TASKLET_SOFTIRQ 等。一般来说，驱动的编写者不会也不宜直接使用 softirq。因此，软中断稍微了解即可。
+
+总结一下硬中断、软中断和信号的区别。**硬中断是外部设备对 CPU 的中断，软中断（softirq）是中断底半部的一种处理机制，而信号则是由内核或其他进程对某个进程的中断。在涉及系统调用的场合，人们也常说通过软中断陷入内核（其实就是计组里面背的那个软中断），此时软中断的概念是指由软件指令引发的中断，和这里的 softirq 是两个完全不同的概念。**
+
+软中断以及基于软中断的 tasklet 如果在某段时间内大量出现的话，内核会把后续软中断放入 ksoftirqd 内核线程中执行。总的来说，**中断优先级高于软中断，软中断又高于任何一个线程**。软中断适度线程化，可以缓解高负载情况下系统的响应。
+
+#### threaded_irq
+
+在 Linux 内核中，除了可以通过 request_irq()、devm_request_irq() 申请中断以外，还可以通过 request_threaded_irq() 和 devm_request_threaded_irq() 申请。
+
+这两个函数比上面函数多一个参数 thread_fn。用这两个 API 申请中断的时候，内核会为相应的中断号分配一个对应的内核线程，来执行一些东西。这个线程只针对这个中断号，如果其他中断也通过 request_threaded_irq() 申请，会得到新的内核线程。
+
+```c
+int request_threaded_irq(unsigned int irq, irq_handler_t handler, irq_handler_t thread_fn, unsigned long flags, const char *name, void *dev);
+
+int devm_request_threaded_irq(struct device *dev, unsigned int irq, irq_handler_t handler, irq_handler_t thread_fn, unsigned long irqflags, const char *devname, void *dev_id);
+```
+
+**参数 handler 对应的函数执行于中断上下文，thread_fn 参数对应的函数则执行于内核线程。**如果顶半部 handler 结束的时候，返回值是 IRQ_WAKE_THREAD，内核会调度对应线程执行底半部 thread_fn 对应的函数。
+
+我个人理解而言，handler 是处理顶半部机制的函数，thread_fn 是处理底半部机制的函数。二者要求传入的都是回调函数的函数指针。与工作队列相比，尽管二者的底层实现可能不一样，但给使用者的感受就是 threaded_irq 是对用户封装了一层的工作队列。
+
+request_threaded_irq() 和 devm_request_threaded_irq() 支持在 irqflags 中设置 IRQF_ONESHOT 标记， 这样内核会自动帮助我们在中断上下文中屏蔽对应的中断号。在内核调度 thread_fn 执行后，重新使能该中断号。对于我们无法在上半部清除中断的情况，IRQF_ONESHOT 特别有用，避免了中断服务程序一退出，中断就洪泛的情况。
+
+handler 参数可以设置为 NULL，这样内核会使用默认的 irq_default_primary_handler() 代替 handler，并会使用 IRQF_ONESHOT 标记。
+
+```c
+/*
+ * Default primary interrupt handler for threaded interrupts. Is
+ * assigned as primary handler when request_threaded_irq is called
+ * with handler == NULL. Useful for oneshot interrupts.
+ */
+static irqreturn_t irq_default_primary_handler(int irq, void *dev_id)
+{
+	return IRQ_WAKE_THREAD;
+}
+```
 
