@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 13ca1b18
 date: 2024-04-24 20:15:00
-updated: 2024-08-29 19:25:00
+updated: 2024-11-25 20:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -89,8 +89,5 @@ updated: 2024-08-29 19:25:00
 - git status 不能显示中文：[https://blog.csdn.net/u012145252/article/details/81775362](https://blog.csdn.net/u012145252/article/details/81775362)
 - git lfs 的使用: [https://zhuanlan.zhihu.com/p/106295945](https://zhuanlan.zhihu.com/p/106295945)
 - git 项目文件大小优化（去除大文件）：[https://www.cnblogs.com/fuhua/p/15527023.html](https://www.cnblogs.com/fuhua/p/15527023.html)
-
-# TODO LIST
-
-本文的框架和结构有些乱，后续重新整理并作优化。
+  - 注意 git rev-list 和 git filter-branch 命令是可以指定分支的。默认是全部分支，也就是 --all。如果需要指定分支将 --all 替换为对应分支即可，例如 master。这样可以过滤非必要分支，例如 gh-pages。
 
