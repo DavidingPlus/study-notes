@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-25 19:20:00
+updated: 2024-11-26 19:10:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1923,7 +1923,7 @@ struct file_operations xxx_fops = {
 
 参考文章：[https://blog.csdn.net/weixin_45264425/article/details/130718602](https://blog.csdn.net/weixin_45264425/article/details/130718602)
 
-自己实现的 globalmem：[https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem](https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem)
+自己实现的版本：[https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem](https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem)
 
 # Linux 设备驱动中的并发控制
 
@@ -3705,4 +3705,221 @@ struct timer_list
 #endif
 };
 ```
+
+2. 初始化定时器
+
+`__init_timer` 是一个宏函数。用于初始化 timer_list 结构体，并设置其中的函数、flags。
+
+```c
+#define __init_timer(_timer, _fn, _flags)				\
+	do {								\
+		static struct lock_class_key __key;			\
+		init_timer_key((_timer), (_fn), (_flags), #_timer, &__key);\
+	} while (0)
+
+#define __init_timer_on_stack(_timer, _fn, _flags)			\
+	do {								\
+		static struct lock_class_key __key;			\
+		init_timer_on_stack_key((_timer), (_fn), (_flags),	\
+					#_timer, &__key);		 \
+	} while (0)
+```
+
+timer_setup 看定义应该是 `__init_timer` 的别名。
+
+```c
+#define timer_setup(timer, callback, flags)			\
+	__init_timer((timer), (callback), (flags))
+
+#define timer_setup_on_stack(timer, callback, flags)		\
+	__init_timer_on_stack((timer), (callback), (flags))
+```
+
+`__TIMER_INITIALIZER(_function, _flags)` 宏用于赋值定时器结构体的 function、flags 成员。
+
+DEFINE_TIMER 是定义并初始化名为 _name 的定时器快捷方式，从宏定义而知显而易见。
+
+```c
+#define __TIMER_INITIALIZER(_function, _flags) {		\
+		.entry = { .next = TIMER_ENTRY_STATIC },	\
+		.function = (_function),			\
+		.flags = (_flags),				\
+		__TIMER_LOCKDEP_MAP_INITIALIZER(		\
+			__FILE__ ":" __stringify(__LINE__))	\
+	}
+
+#define DEFINE_TIMER(_name, _function)				\
+	struct timer_list _name =				\
+		__TIMER_INITIALIZER(_function, 0)
+```
+
+3. 添加定时器
+
+此函数用于注册内核定时器，将定时器加入到内核动态定时器链表中。
+
+```c
+void add_timer(struct timer_list *timer);
+```
+
+4. 删除定时器
+
+del_timer_sync() 是 del_timer() 的同步版，在删除一个定时器时需等待其被处理完，故其调用不能发生在中断上下文。
+
+```c
+int del_timer(struct timer_list * timer);
+int del_timer_sync(struct timer_list *timer)
+```
+
+5. 修改定时器的到期时间 expires
+
+此函数用于修改定时器的到期时间，在新的被传入的 expires 到来后才会执行定时器函数。
+
+```c
+int mod_timer(struct timer_list *timer, unsigned long expires);
+```
+
+定时器的时间基于 jiffies，在修改超时时间时，一般使用这 2 种方法：
+
+```c
+mod_timer(&timer, jiffies + xxx); // xxx 表示多少个滴答后超时，也就是 xxx * 10ms
+mod_timer(&timer, jiffies + 2 * HZ); // HZ 等于 CONFIG_HZ，2 * HZ 就相当于 2 秒
+```
+
+在 Linux 5 版本以后，**mod_timer() 的含义不仅仅是更改定时器的到期时间，同时会将其添加到内核动态定时器链表中。**与 add_timer() 不同的是 add_timer() 使用的到期时间是其结构体自己内部预先设置的时间，mod_timer() 相当于做了赋值操作后再添加。关于 mod_timer() 新的含义，通过源码也可以猜到：
+
+```c
+void add_timer(struct timer_list *timer)
+{
+	BUG_ON(timer_pending(timer));
+	__mod_timer(timer, timer->expires, MOD_TIMER_NOTPENDING);
+}
+EXPORT_SYMBOL(add_timer);
+
+int mod_timer(struct timer_list *timer, unsigned long expires)
+{
+	return __mod_timer(timer, expires, 0);
+}
+EXPORT_SYMBOL(mod_timer);
+```
+
+另外，**当定时器到期以后，执行完回调函数后，会从内核动态定时器链表中删除。如果需要周期性地执行，需要手动每次在过期以后重新添加。**从下面的模板中也可见一斑。
+
+6. 使用模板
+
+以下是一个使用内核定时器的模板：
+
+```c
+// xxx 设备结构体
+struct xxx_dev
+{
+    struct cdev cdev;
+
+    ...
+
+    timer_list xxx_timer; // 设备要使用的定时器
+};
+
+// xxx 驱动中的加载函数
+xxx_init(…)
+{
+    struct xxx_dev *dev = filp->private_data;
+    ...
+
+    // 初始化定时器
+    timer_setup(&dev->xxx_timer, xxx_do_timer, 0);
+    // 设备结构体指针作为定时器处理函数参数
+    dev->xxx_timer.expires = jiffies + delay;
+    // 添加（注册）定时器
+    add_timer(&dev->xxx_timer);
+
+    ...
+}
+
+// xxx 驱动中的卸载函数
+xxx_exit(…)
+{
+    ...
+
+    // 删除定时器
+    del_timer(&dev->xxx_timer);
+
+    ...
+}
+
+// 定时器处理函数
+static void xxx_do_timer(unsigned long arg)
+{
+    struct xxx_device *dev = (struct xxx_device *)(arg);
+
+    ...
+
+    // 调度定时器再执行
+    // 在实际使用中，定时器的到期时间往往是在目前 jiffies 的基础上添加一个时延，若为 Hz，则表示延迟 1s。
+    dev->xxx_timer.expires = jiffies + delay;
+    // 在定时器处理函数中，在完成相应的工作后，往往会延后 expires 并将定时器再次添加到内核定时器链表中，以便定时器能再次被触发。
+    add_timer(&dev->xxx_timer);
+
+    ...
+}
+```
+
+Linux 内核在支持 tickless 和 NO_HZ 模式后，内核也包含对 hrtimer（高精度定时器）的支持，它可以支持到微秒级别的精度。内核也定义了 hrtimer 结构体，hrtimer_set_expires()、hrtimer_start_expires()、hrtimer_forward_now()、hrtimer_restart() 等类似的 API 来完成 hrtimer 的设置、时间推移以及到期回调。
+
+### delayed_work
+
+对于周期性的任务，除定时器以外，还可利用一套封装得很好的快捷机制，本质是利用工作队列和定时器实现，即 delayed_work。
+
+```c
+struct delayed_work {
+	struct work_struct work;
+	struct timer_list timer;
+
+	/* target workqueue and CPU ->timer uses to queue ->work */
+	struct workqueue_struct *wq;
+	int cpu;
+};
+
+struct work_struct {
+	atomic_long_t data;
+	struct list_head entry;
+	work_func_t func;
+#ifdef CONFIG_LOCKDEP
+	struct lockdep_map lockdep_map;
+#endif
+};
+```
+
+可以通过如下函数调度一个 delayed_work 在指定的延时以后运行：
+
+```c
+bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay);
+```
+
+当延时 delay 到来以后，delayed_work 结构体的 work_struct 类型成员 dwork 的 work_func_t 类型成员 func() 函数会被执行，work_func_t 定义为：
+
+```c
+void (*work_func_t)(struct work_struct *work);
+```
+
+另外，delay 参数的单位是 jiffies，一种常见的用法如下：
+
+```c
+// msecs_to_jiffies() 用于将毫秒转化为 jiffies。
+schedule_delayed_work(&work, msecs_to_jiffies(poll_interval));
+```
+
+同定时器，如果需要周期性的执行任务，一般需要手动在工作函数再次调用 schedule_delayed_work()，周而复始。
+
+以下函数用于取消 delay_work：
+
+```c
+bool cancel_delayed_work(struct delayed_work *dwork);
+bool cancel_delayed_work_sync(struct delayed_work *dwork);
+```
+
+### 秒字符设备
+
+编写一个字符设备 second（即“秒”）的驱动。它被打开的时候初始化一个定时器，并添加到内核定时器链表中，每秒在内核日志中输出一次当前的 jiffies，读取该字符设备的时候返回当前定时器的秒数。
+
+自己实现的版本：[https://github.com/DavidingPlus/linux-kernel-learning/tree/second](https://github.com/DavidingPlus/linux-kernel-learning/tree/second)
 
