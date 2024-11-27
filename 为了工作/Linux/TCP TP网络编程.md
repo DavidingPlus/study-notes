@@ -1,7 +1,7 @@
 ---
 title: TCP IP网络编程
 categories:
-  - Linux学习
+  - Linux 学习
 abbrlink: dd2419ed
 date: 2024-06-20 23:00:00
 updated: 2024-06-20 23:00:00

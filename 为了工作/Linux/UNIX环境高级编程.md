@@ -1,7 +1,7 @@
 ---
 title: UNIX环境高级编程
 categories:
-  - Linux学习
+  - Linux 学习
 abbrlink: 9e44c3b9
 date: 2024-06-20 23:05:00
 updated: 2024-11-07 16:25:00

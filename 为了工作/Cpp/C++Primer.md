@@ -1,7 +1,7 @@
 ---
 title: C++ Primer
 categories:
-  - Cpp学习
+  - Cpp 学习
 abbrlink: d23e5b67
 date: 2024-06-20 23:15:00
 updated: 2024-06-20 23:15:00
