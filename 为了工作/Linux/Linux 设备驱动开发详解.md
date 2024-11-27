@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-26 19:10:00
+updated: 2024-11-27 11:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1925,6 +1925,10 @@ struct file_operations xxx_fops = {
 
 自己实现的版本：[https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem](https://github.com/DavidingPlus/linux-kernel-learning/tree/globalmem)
 
+## 小结
+
+字符设备是 3 大类设备（字符设备、块设备和网络设备）中的一类。其驱动程序完成的主要工作是初始化、添加和删除 cdev 结构体，申请和释放设备号，以及填充 file_operations 结构体中的操作函数。实现 file_operations 结构体中的 read()、write() 和 ioctl() 等函数是驱动设计的主体工作。
+
 # Linux 设备驱动中的并发控制
 
 Linux 设备驱动中必须要解决的问题是多个进程对共享资源的并发访问，并发会导致竞态，所以需要格外小心。
@@ -2633,7 +2637,7 @@ wake_up() 应该与 wait_event() 或 wait_event_timeout() 成对使用，而 wak
 
 7. 在等待队列上睡眠（已废弃）
 
-老版本的接口，作用和 wait_event*() 系列函数类似，因此使用前者即可。
+老版本的接口，作用和 wait_event() 系列函数类似，因此使用前者即可。
 
 ```c
 /*
@@ -3272,6 +3276,14 @@ int (*iopoll)(struct kiocb *kiocb, bool spin);
 
 **AIO 一般由内核空间的通用代码处理，对于块设备和网络设备而言，一般在Linux核心层的代码已经解决。字符设备驱动一般不需要实现 AIO 支持。**Linux 内核中对字符设备驱动实现 AIO 的特例包括 drivers/char/mem.c 里实现的 null、zero 等，由于 zero 这样的虚拟设备其实也不存在在要去读的时候读不到东西的情况，所以 aio_read_zero() 本质上也不包含异步操作。
 
+## 小结
+
+Linux 中的异步 I/O 使得应用程序在等待 I/O 操作的同时进行其他操作。
+
+使用信号可以实现设备驱动与用户程序之间的异步通知。总体而言，设备驱动和用户空间要分别完成 3 项对应的工作，用户空间设置文件的拥有者、FASYNC 标志及捕获信号。内核空间响应对文件的拥有者、FASYNC 标志的设置并在资源可获得时释放信号。
+
+Linux 2.6 以后的内核包含对 AIO 的支持，它为用户空间提供了统一的异步 I/O 接口。另外，glibc 也提供了一个不依赖于内核的，位于用户空间的 AIO 支持。
+
 # 中断与时钟
 
 **由于中断服务程序的执行并不存在于进程上下文中，所以要求中断服务程序的时间要尽量短。**故 Linux 在中断处理中引入了**顶半部和底半部分离**的机制。另外，内核对时钟的处理也采用中断方式，而内核软件定时器最终依赖于时钟中断。
@@ -3778,7 +3790,9 @@ int del_timer_sync(struct timer_list *timer)
 int mod_timer(struct timer_list *timer, unsigned long expires);
 ```
 
-定时器的时间基于 jiffies，在修改超时时间时，一般使用这 2 种方法：
+定时器的时间基于 jiffies，在修改超时时间时，一般使用 2 种方法。
+
+从下面的示例可以看出，**expires 的含义是过期的时间点，而非经过多少时间过期，故需要加上基准时间 jiffies。**
 
 ```c
 mod_timer(&timer, jiffies + xxx); // xxx 表示多少个滴答后超时，也就是 xxx * 10ms
@@ -3922,4 +3936,155 @@ bool cancel_delayed_work_sync(struct delayed_work *dwork);
 编写一个字符设备 second（即“秒”）的驱动。它被打开的时候初始化一个定时器，并添加到内核定时器链表中，每秒在内核日志中输出一次当前的 jiffies，读取该字符设备的时候返回当前定时器的秒数。
 
 自己实现的版本：[https://github.com/DavidingPlus/linux-kernel-learning/tree/second](https://github.com/DavidingPlus/linux-kernel-learning/tree/second)
+
+## 内核延时
+
+参考文章：
+
+- [https://blog.csdn.net/liangzc1124/article/details/120835795](https://blog.csdn.net/liangzc1124/article/details/120835795)
+- [https://www.cnblogs.com/xihong2014/p/6740876.html](https://www.cnblogs.com/xihong2014/p/6740876.html)
+
+注：这两篇文章设计的 API 都不是 Linux 5 及其以后的，所以建议参考原理而非照搬 API。
+
+1. 短延时
+
+Linux 内核提供了三个函数分别进行纳秒、微妙和毫秒延迟，在 Linux 5 以后已改为宏函数。
+
+这几个短延时的本质是**忙等待**，根据 CPU 频率进行一定次数的循环。
+
+```c
+#define ndelay(n) { ... }
+#define udelay(n) { ... }
+#define mdelay(n) { ... }
+```
+
+2. 中等延时
+
+毫秒时延（以及更大的秒时延）已经比较大了。在内核中，最好不要直接使用 mdelay() 函数，因为忙等将耗费 CPU 资源。对于毫秒级以上的时延，内核提供了下述函数。
+
+这几个中等延时期间，**程序进入睡眠状态**。并且受系统 Hz 以及进程调度的影响，msleep() 类似函数的精度是有限的。
+
+```c
+void msleep(unsigned int msecs); // 延时 msecs 毫秒，程序进入睡眠，且不可被打断。
+unsigned long msleep_interruptible(unsigned int msecs); // 延时 msecs 毫秒，程序进入睡眠，但可以被打断。
+void ssleep(unsigned int seconds); // 延时 seconds 秒，程序进入睡眠，且不可被打断。
+```
+
+3. 长延时
+
+内核中延时的一个很直观的方法是比较当前的 jiffies 和目标 jiffies，直到未来的 jiffies 达到目标 jiffies。
+
+从下面的使用方法看出，很类似于内核定时器的 expires，delay 也是表示延时到期的时间点。
+
+```c
+// 延时 100 个滴答
+unsigned long delay = jiffies + 100;
+while (time_before(jiffies, delay)) { }
+
+// 延时 2s
+unsigned long delay = jiffies + 2 * Hz;
+while (time_before(jiffies, delay)) { }
+```
+
+长延时使用的宏函数 time_before() 和 time_after() 的定义如下，可见仅仅是对两个值做了一个大小比较。
+
+time_before() 的第一个参数是当前 jiffies，第二个参数是目标 jiffies，time_after() 相反。
+
+```c
+#define time_after(a,b)		\
+	(typecheck(unsigned long, a) && \
+	 typecheck(unsigned long, b) && \
+	 ((long)((b) - (a)) < 0))
+
+#define time_before(a,b)	time_after(b,a)
+```
+
+结合上述可以发现，这样使用长延时是一个**忙等待**的过程。
+
+4. 睡着延时
+
+睡着延迟显然是比忙等待更好的方式，睡着延迟是在等待的时间到来之前进程处于睡眠状态，CPU 资源被其他进程使用。
+
+schedule_timeout() 可以使当前任务休眠至指定的 jiffies 之后再重新被调度执行，msleep() 和 msleep_interruptible() 在本质上都是依靠包含了 schedule_timeout() 的 schedule_timeout_uninterruptible() 和 schedule_timeout_interruptible() 实现的。
+
+schedule_timeout() 的原理是**向系统添加一个定时器，在定时器处理函数中唤醒与参数对应的进程**。
+
+```c
+void msleep(unsigned int msecs)
+{
+	unsigned long timeout = msecs_to_jiffies(msecs) + 1;
+
+	while (timeout)
+		timeout = schedule_timeout_uninterruptible(timeout);
+}
+
+unsigned long msleep_interruptible(unsigned int msecs)
+{
+	unsigned long timeout = msecs_to_jiffies(msecs) + 1;
+
+	while (timeout && !signal_pending(current))
+		timeout = schedule_timeout_interruptible(timeout);
+	return jiffies_to_msecs(timeout);
+}
+```
+
+另外，schedule_timeout_uninterruptible() 和 schedule_timeout_interruptible() 的定义如下，均使用 `__set_current_state` 设置进程状态。
+
+```c
+signed long __sched schedule_timeout_uninterruptible(signed long timeout)
+{
+	__set_current_state(TASK_UNINTERRUPTIBLE);
+	return schedule_timeout(timeout);
+}
+
+signed long __sched schedule_timeout_interruptible(signed long timeout)
+{
+	__set_current_state(TASK_INTERRUPTIBLE);
+	return schedule_timeout(timeout);
+}
+```
+
+## 小结
+
+Linux 的中断处理分为两个半部，顶半部处理紧急的硬件操作，底半部处理不紧急的耗时操作。tasklet 和工作队列都是调度中断底半部的良好机制。tasklet 基于软中断实现。内核定时器也依靠软中断实现。
+
+内核中的延时可以采用忙等待或睡眠等待，为了充分利用 CPU 资源，使系统有更好的吞吐性能。在对延迟时间的要求并不是很精确的情况下，睡眠等待通常是值得推荐的，而 ndelay()、udelay() 忙等待机制在驱动中通常是为了配合硬件上的短时延迟要求。
+
+# 内存与 I/O 访问
+
+## CPU 与内存、I/O
+
+### 内存空间与 I/O 空间
+
+在 X86 处理器中存在着 I/O 空间的概念。I/O 空间是相对于内存空间而言的，它通过特定的指令 in、out 来访问。端口号标识了外设的寄存器地址。Intel 语法中的 in、out 指令格式如下：
+
+```asm
+IN 累加器, {端口号 │ DX}
+OUT {端口号 │ DX}, 累加器
+```
+
+目前，大多数嵌入式微控制器（如 ARM、PowerPC 等）中并不提供 I/O 空间，而仅存在内存空间。**内存空间可以直接通过地址、指针来访问，程序及在程序运行中使用的变量和其他数据都存在于内存空间中。**
+
+在 X86 处理器中，虽然提供了 I/O 空间，外设仍然可以只挂接在内存空间中。此时，CPU 可以像访问一个内存单元那样访问外设 I/O 端口，而不需要设立专门的 I/O 指令。**内存空间是必需的，而 I/O 空间是可选的。**如图是内存空间和 I/O 空间的对比。
+
+<img src="https://img-blog.csdnimg.cn/direct/6ec7abd06eb94764b1b73fac65e9fad3.png" alt="image-20241127111734557" style="zoom:75%;" />
+
+在下面这段程序中，没有定义任何一个函数实体，但是程序却执行了函数调用 lpReset()。它实际上起到了“软重启”的作用，跳转到 CPU 启动后第一条要执行的指令的位置。因此，可以通过函数指针调用一个没有函数体的“函数”，本质上只是换一个地址开始执行。
+
+```c
+typedef void (*lpFunction)();                // 定义一个无参数、无返回类型的函数指针类型
+lpFunction lpReset = (lpFunction)0xF000FFF0; // 定义一个函数指针，指向 CPU 启动后所执行的第一条指令的位置
+lpReset();                                   // 调用函数
+```
+
+### 内存管理单元
+
+高性能处理器一般会提供一个内存管理单元 MMU。**MMU 辅助操作系统进行内存管理，提供虚拟地址和物理地址的映射、内存访问权限保护和 Cache 缓存控制等硬件支持。**内核借助 MMU 可以让用户感觉到程序好像可以使用非常大的内存空间，从而使得编程人员在写程序时不用考虑计算机中物理内存的实际容量。
+
+首先需明确几个概念：
+
+1. **TLB（Translation Lookaside Buffer）：即转换旁路缓存。TLB 是 MMU 的核心部件，它缓存少量的虚拟地址与物理地址的转换关系，是转换表的 Cache，也经常被称为“快表”。**
+2. **TTW（Translation Table walk）：即转换表漫游。当 TLB 中没有缓冲对应的地址转换关系时，需要通过对内存中转换表（大多数为多级页表）的访问来获得虚拟地址和物理地址的对应关系。TTW 成功后，结果应写入 TLB 中。**
+
+<img src="https://img-blog.csdnimg.cn/direct/c9749a69b1c14bbd905a60ea98e33776.png" alt="image-20241127112853842" style="zoom:75%;" />
 
