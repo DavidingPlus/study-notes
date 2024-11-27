@@ -4,7 +4,7 @@ categories:
   - Linux学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-27 11:50:00
+updated: 2024-11-27 16:40:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -3643,7 +3643,7 @@ static irqreturn_t irq_default_primary_handler(int irq, void *dev_id)
 2. 尽管内核模块可访问的全局地址都可以作为 request_irq(..., void *dev) 的最后一个参数 dev，但是设备结构体指针显然是可传入的最佳参数。
 3. 在中断到来时，会遍历执行共享此中断的所有中断处理程序，直到某一个函数返回 IRQ_HANDLED。在中断处理程序顶半部中，应根据硬件寄存器中的信息比照传入的 dev 参数迅速地判断是否为本设备的中断，若不是，应迅速返回 IRQ_NONE。
 
-<img src="./../../typora-user-images/image-20241125184336914.png" alt="image-20241125184336914" style="zoom:75%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d920837846b14ff4beeb1944edfa78de.png" alt="image-20241125184336914" style="zoom:75%;" />
 
 以下是使用共享中断的设备驱动程序模板：
 
@@ -4077,7 +4077,7 @@ lpFunction lpReset = (lpFunction)0xF000FFF0; // 定义一个函数指针，指�
 lpReset();                                   // 调用函数
 ```
 
-### 内存管理单元
+### 内存管理单元 MMU
 
 高性能处理器一般会提供一个内存管理单元 MMU。**MMU 辅助操作系统进行内存管理，提供虚拟地址和物理地址的映射、内存访问权限保护和 Cache 缓存控制等硬件支持。**内核借助 MMU 可以让用户感觉到程序好像可以使用非常大的内存空间，从而使得编程人员在写程序时不用考虑计算机中物理内存的实际容量。
 
@@ -4087,4 +4087,191 @@ lpReset();                                   // 调用函数
 2. **TTW（Translation Table walk）：即转换表漫游。当 TLB 中没有缓冲对应的地址转换关系时，需要通过对内存中转换表（大多数为多级页表）的访问来获得虚拟地址和物理地址的对应关系。TTW 成功后，结果应写入 TLB 中。**
 
 <img src="https://img-blog.csdnimg.cn/direct/c9749a69b1c14bbd905a60ea98e33776.png" alt="image-20241127112853842" style="zoom:75%;" />
+
+不同架构的 CPU 访问数据的流程有区别，但大致流程基本如下所示：
+
+<img src="https://img-blog.csdnimg.cn/direct/ea7db2116e7641399dd6fcb691cc2e10.png" alt="image-20241127142844768" style="zoom:80%;" />
+
+MMU 具有虚拟地址和物理地址转换、内存访问权限保护等功能，使得 Linux 操作系统能单独为系统的每个用户进程分配独立的内存空间，并保证用户空间不能访问内核空间的地址，为操作系统的虚拟内存管理模块提供硬件基础。
+
+在 Linux 2.6 之前，Linux 内核硬件无关层使用了三级页表 PGD、PMD 和 PTE。从 Linux 2.6 开始，为了配合 64 位 CPU 的体系结构，硬件无关层则使用了 4 级页表目录管理的方式，即 PGD、PUD、PMD 和 PTE。这仅仅是一种软件意义上的抽象，实际硬件的页表级数可能少于 4。
+
+直到 Linux 5.0 的时候，都是如上的 4 级页表的结构。但在 Linux 5.15 版本中，在源代码中出现了一个叫 P4D 的东西，经查阅发现这是 5 级页表才需要的东西。源码如下：
+
+```c
+static int
+pin_page_for_write(const void __user *_addr, pte_t **ptep, spinlock_t **ptlp)
+{
+	unsigned long addr = (unsigned long)_addr;
+	pgd_t *pgd;
+	p4d_t *p4d;
+	pmd_t *pmd;
+	pte_t *pte;
+	pud_t *pud;
+	spinlock_t *ptl;
+
+	pgd = pgd_offset(current->mm, addr);
+	if (unlikely(pgd_none(*pgd) || pgd_bad(*pgd)))
+		return 0;
+
+	p4d = p4d_offset(pgd, addr);
+	if (unlikely(p4d_none(*p4d) || p4d_bad(*p4d)))
+		return 0;
+
+	pud = pud_offset(p4d, addr);
+	if (unlikely(pud_none(*pud) || pud_bad(*pud)))
+		return 0;
+
+	pmd = pmd_offset(pud, addr);
+	if (unlikely(pmd_none(*pmd)))
+		return 0;
+
+	/*
+	 * A pmd can be bad if it refers to a HugeTLB or THP page.
+	 *
+	 * Both THP and HugeTLB pages have the same pmd layout
+	 * and should not be manipulated by the pte functions.
+	 *
+	 * Lock the page table for the destination and check
+	 * to see that it's still huge and whether or not we will
+	 * need to fault on write.
+	 */
+	if (unlikely(pmd_thp_or_huge(*pmd))) {
+		ptl = &current->mm->page_table_lock;
+		spin_lock(ptl);
+		if (unlikely(!pmd_thp_or_huge(*pmd)
+			|| pmd_hugewillfault(*pmd))) {
+			spin_unlock(ptl);
+			return 0;
+		}
+
+		*ptep = NULL;
+		*ptlp = ptl;
+		return 1;
+	}
+
+	if (unlikely(pmd_bad(*pmd)))
+		return 0;
+
+	pte = pte_offset_map_lock(current->mm, pmd, addr, &ptl);
+	if (unlikely(!pte_present(*pte) || !pte_young(*pte) ||
+	    !pte_write(*pte) || !pte_dirty(*pte))) {
+		pte_unmap_unlock(pte, ptl);
+		return 0;
+	}
+
+	*ptep = pte;
+	*ptlp = ptl;
+
+	return 1;
+}
+```
+
+为什么会出现 p4d 呢？参考了文章 [https://zhuanlan.zhihu.com/p/641479824](https://zhuanlan.zhihu.com/p/641479824) 才明白为什么。这里只做总结提炼，具体请参考原文。更多关于 Linux 内核页表管理的机制，请自行查阅资料。
+
+Linux 修改了这部分代码，保证了目前的 4 级页表可用，又能对 5 级页表兼容。在 4 级页表索引中，虽然添加了 p4d，但是其对 p4d 实际上并未做任何有效操作，相当于将 p4d 折叠和忽略了。而 5 级页表需要的 p4d 就能正常工作，做到了设计统一。虽然 4 级页表能支持 256 TB 的地址空间，目前看来用不完。但大数据时代已经来临，未雨绸缪的考虑是值得肯定的。这样以来，针对使用 5 级页表的系统无需大量修改代码，直接可以使用现有的内核代码。
+
+MMU 并不是对所有的处理器都是必需的。Linux 2.6 以后也支持不带 MMU 的处理器。Linux 为了更广泛地应用于嵌入式系统，融合了 mClinux，以支持这些无 MMU 系统。
+
+## 内存管理
+
+内核空间和用户空间的内存映射关系请参考文章 [https://blog.csdn.net/Luckiers/article/details/141750008](https://blog.csdn.net/Luckiers/article/details/141750008)
+
+**每个进程的用户空间是完全独立、互不相干的，用户进程各自有不同的页表。而内核空间是由内核负责映射，它并不会跟着进程改变，是固定的。内核空间的虚拟地址到物理地址映射是被所有进程共享的，内核的虚拟空间独立于其他程序。**
+
+通常 32 位 Linux 的内核地址空间划分为 0~3 G（3 G 的位置为 PAGE_OFFSET）的用户空间，3~4 G 的内核空间。
+
+![](https://i-blog.csdnimg.cn/direct/9ea9e41fd42d4329a5f555cc7a26214e.png)
+
+通常 64 位 Linux 系统的内核地址空间分为三个部分，256 TB 的用户空间、非规范区域和 256 TB 的内核空间。
+
+![](https://i-blog.csdnimg.cn/direct/e40b698bbe064254a22ae2f36f689a9d.png)
+
+关于映射空间解析的部分，书中讲的甚是繁杂，没怎么看懂。参考上面文章以及其他资料吧。
+
+## 内存存取
+
+### 用户空间内存申请
+
+在用户态中动态申请内存的函数是标准 C 库函数 malloc()，与之对应的释放函数是 free()。**对 Linux 而言，malloc() 一般通过 brk() 和 mmap() 两个系统调用从内核申请内存。**
+
+**用户空间 C 库的 malloc 算法实际上具备一个二次管理能力，并不是每次申请和释放内存都一定伴随着对内核的系统调用。**下面的代码展示了这点，下面进行解释。
+
+应用程序从内核拿到内存后，立即调用 free()，但由于 free() 之前调用了 mallopt(M_TRIM_THRESHOLD, -1) 和 mallopt(M_MMAP_MAX, 0)。
+
+mallopt(M_TRIM_THRESHOLD, -1) 设置 M_TRIM_THRESHOLD 为 -1，关闭内存修剪功能，即使释放的内存块超过一定阈值，也不会通过 brk 归还给内核，而是保留在进程的地址空间中供分配器复用。
+
+mallopt(M_MMAP_MAX, 0) 设置 M_MMAP_MAX 为 0，禁止分配器使用 mmap 分配内存，所有分配强制通过进程堆（sbrk）完成。释放的内存不会通过 munmap 归还给内核，而是由分配器管理。
+
+如此以来，这个 free() 并不会把内存还给内核，而只是还给了 C 库的分配算法，内存仍然属于这个进程。后续的 malloc 调用会优先使用这块已经分配好的内存，而不需要进行系统调用（brk 或 mmap）。
+
+```c
+#include <malloc.h>
+#include <sys/mman.h>
+
+#define SOMESIZE (100 * 1024 * 1024) // 100MB
+
+int main(int argc, char *argv[])
+{
+    unsigned char *buffer;
+    int i;
+
+    if (mlockall(MCL_CURRENT | MCL_FUTURE))
+        mallopt(M_TRIM_THRESHOLD, -1);
+    mallopt(M_MMAP_MAX, 0);
+
+    buffer = malloc(SOMESIZE);
+    if (!buffer)
+        exit(-1);
+
+    /*
+     * Touch each page in this piece of memory to get it
+     * mapped into RAM
+     */
+    for (i = 0; i < SOMESIZE; i += page_size)
+        buffer[i] = 0;
+    free(buffer);
+    /* <do your RT-thing> */
+
+    return 0;
+}
+```
+
+另外，**Linux 内核总是按需调页（Demand Paging）**。当 malloc() 返回的时候，虽然是成功返回，但内核并没有真正给这个进程内存，这个时候如果去读申请的内存，内容全部是 0，并且这个页面的映射是只读的。只有当写到某个页面的时候，内核才会在页错误后，真正把这个页面给这个进程。
+
+### 内核空间内存申请
+
+在 Linux 内核空间中动态申请内存主要涉及 kmalloc()、`__get_free_pages()` 和 vmalloc() 等。
+
+**kmalloc() 和 `__get_free_pages()`申请的内存位于 DMA 和常规区域的映射区，在物理上也是连续的，它们与真实的物理地址只有一个固定的偏移，存在较简单的转换关系。**
+
+**vmalloc() 在虚拟内存空间给出一块连续的内存区。实质上，这片连续的虚拟内存在物理内存中并不一定连续，vmalloc() 申请的虚拟内存和物理内存之间也没有简单的换算关系。**
+
+#### kmalloc()
+
+```c
+// 第一个参数是要分配的块的大小；第二个参数为分配标志，用于控制 kmalloc() 的行为。
+void *kmalloc(size_t size, gfp_t flags)
+```
+
+**最常用的分配标志是 GFP_KERNEL，含义是在内核空间的进程中申请内存。**kmalloc() 的底层是依赖 `__get_free_pages()` 实现。使用 GFP_KERNEL 标志申请内存时，若暂时不能满足，进程会睡眠等待，即会引起阻塞，因此**不能在中断上下文或持有自旋锁的时候使用 GFP_KERNEL 申请内存**。
+
+**在中断处理函数、tasklet 和内核定时器等非进程上下文中不能阻塞，应当使用 GFP_ATOMIC 标志申请内存。**当使用 GFP_ATOMIC 标志申请内存时，若不存在空闲页，则不等待，直接返回，避免了睡眠阻塞的问题。
+
+其他的申请标志包括：
+
+- GFP_USER：用来为用户空间页分配内存，可能阻塞。
+- GFP_HIGHUSER：类似 GFP_USER，但是它从高端内存分配。
+- GFP_DMA：从 DMA 区域分配内存。
+- GFP_NOIO：不允许任何 I/O 初始化。
+- GFP_NOFS：不允许进行任何文件系统调用。
+- `__GFP_HIGHMEM`：指示分配的内存可以位于高端内存。
+- `__GFP_COLD`：请求一个较长时间不访问的页。
+- `__GFP_NOWARN`：当一个分配无法满足时，阻止内核发出警告。
+- `__GFP_HIGH`：高优先级请求，允许获得被内核保留给紧急状况使用的最后的内存页。
+- `__GFP_REPEAT`：分配失败，则尽力重复尝试。
+- `__GFP_NOFAIL`：标志只许申请成功，不推荐。
+- `__GFP_NORETRY`：若申请不到，则立即放弃。
+
+kmalloc() 申请的内存应使用 kfree() 函数释放，类似用户空间的标准 C 库函数 malloc() 和 free() 的关系。
 
