@@ -4,7 +4,7 @@ categories:
   - Linux 学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-27 16:40:00
+updated: 2024-11-27 18:15:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -4254,7 +4254,7 @@ int main(int argc, char *argv[])
 void *kmalloc(size_t size, gfp_t flags)
 ```
 
-**最常用的分配标志是 GFP_KERNEL，含义是在内核空间的进程中申请内存。**kmalloc() 的底层是依赖 `__get_free_pages()` 实现。使用 GFP_KERNEL 标志申请内存时，若暂时不能满足，进程会睡眠等待，即会引起阻塞，因此**不能在中断上下文或持有自旋锁的时候使用 GFP_KERNEL 申请内存**。
+**最常用的分配标志是 GFP_KERNEL，含义是在内核空间的进程中申请内存。kmalloc() 的底层是依赖 `__get_free_pages()` 实现的。使用 GFP_KERNEL 标志申请内存时，若暂时不能满足，进程会睡眠等待，即会引起阻塞，因此不能在中断上下文或持有自旋锁的时候使用 GFP_KERNEL 申请内存。**
 
 **在中断处理函数、tasklet 和内核定时器等非进程上下文中不能阻塞，应当使用 GFP_ATOMIC 标志申请内存。**当使用 GFP_ATOMIC 标志申请内存时，若不存在空闲页，则不等待，直接返回，避免了睡眠阻塞的问题。
 
@@ -4274,4 +4274,55 @@ void *kmalloc(size_t size, gfp_t flags)
 - `__GFP_NORETRY`：若申请不到，则立即放弃。
 
 kmalloc() 申请的内存应使用 kfree() 函数释放，类似用户空间的标准 C 库函数 malloc() 和 free() 的关系。
+
+#### __get_free_pages() 系列函数
+
+**`__get_free_pages()` 系列函数/宏本质上是 Linux 内核最底层用于获取空闲内存的方法。底层的 buddy 算法以 2n 页为单位管理空闲内存，故最底层的内存申请总是以 2n 页为单位的。**
+
+`__get_free_pages()` 系列函数/宏包括 get_zeroed_page()、`__get_free_page()` 和 `__get_free_pages()`。
+
+```c
+// 该函数返回一个指向新页的指针并且将该页清零。
+// 注意这里的指针使用 unsigned long 类型表示，类似 LarkSDK 中 LLog 对指针的处理。
+unsigned long get_zeroed_page(gfp_t gfp_mask);
+
+// 该宏返回一个指向新页的指针但是该页不清零。
+#define __get_free_page(gfp_mask) \
+		__get_free_pages((gfp_mask), 0)
+
+// 该函数可分配多个页并返回分配内存的首地址，分配的页数为 2 的 order 次方，分配的页不清零。order 允许的最大值是 10（1024 页）或者11（2048 页），这取决于具体的硬件平台。
+unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);
+```
+
+`__get_free_pages()` 和 get_zeroed_page() 在实现中调用了 alloc_pages() 函数。**alloc_pages() 既可以在内核空间分配，也可以在用户空间分配。**
+
+```c
+// 参数含义与 __get_free_pages() 类似，但它返回分配的第一个页的描述符而非首地址（前面的 unsigned long）。
+// 这里的描述符使用 struct page * 指针描述的。
+struct page *alloc_pages(gfp_t gfp_mask, unsigned int order);
+```
+
+该系列函数使用如下接口释放：
+
+```c
+void free_pages(unsigned long addr, unsigned int order);
+#define free_page(addr) free_pages((addr), 0)
+```
+
+`__get_free_pages()` 系列函数在使用时，申请标志的值与 kmalloc() 完全一致，各标志的含义也与完全一致。显而易见，因为 kmalloc() 底层是基于 `__get_free_pages()` 实现的。
+
+#### vmalloc()
+
+**vmalloc() 一般只为存在于软件中（没有对应的硬件意义）的较大的顺序缓冲区分配内存，vmalloc() 远大于 `__get_free_pages()` 的开销。**为了完成 vmalloc()，新的页表项需要被建立。因此，调用 vmalloc() 来分配少量的内存（如 1 页以内的内存）是不妥的。
+
+类似的，分配使用 vmalloc()，释放使用 vfree()。
+
+```c
+void *vmalloc(unsigned long size);
+void vfree(const void *addr);
+```
+
+**vmalloc() 不能用在原子上下文中，因为内部实现使用了标志为 GFP_KERNEL 的 kmalloc()。**
+
+**vmalloc() 在申请内存时，会进行内存的映射，改变页表项，不像 kmalloc() 实际用的是开机过程中就映射好的 DMA 和常规区域的页表项。**故 vmalloc() 的虚拟地址和物理地址不是一个简单的线性映射。
 
