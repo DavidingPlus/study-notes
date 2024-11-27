@@ -1,8 +1,8 @@
 ---
-title: 编译缓存工具CCache介绍与基本使用
+title: 编译缓存工具 CCache 介绍与基本使用
 categories:
   - 一些技巧
-abbrlink: 4ae62486
+abbrlink: 2f8a8633
 date: 2024-07-30 17:05:00
 updated: 2024-08-19 16:35:00
 ---

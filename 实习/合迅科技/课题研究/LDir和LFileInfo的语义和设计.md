@@ -1,10 +1,10 @@
 ---
-title: LDir和LFileInfo的语义和设计
+title: LDir 和 LFileInfo 的语义和设计
 categories:
   - 实习
   - 合迅科技
   - 课题研究
-abbrlink: '567667e8'
+abbrlink: fceabd3a
 date: 2024-04-15 21:55:00
 updated: 2024-06-05 23:30:00
 ---

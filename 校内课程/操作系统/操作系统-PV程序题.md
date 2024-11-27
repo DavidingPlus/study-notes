@@ -1,9 +1,9 @@
 ---
-title: 操作系统-PV程序题
+title: 操作系统 PV 程序题
 categories:
   - 校内课程
   - 操作系统
-abbrlink: 8cb26668
+abbrlink: cc15ddd9
 date: 2023-09-18 04:00:00
 updated: 2023-09-18 04:00:00
 ---

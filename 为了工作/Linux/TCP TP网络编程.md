@@ -1,8 +1,8 @@
 ---
-title: TCP IP网络编程
+title: TCP IP 网络编程
 categories:
   - Linux 学习
-abbrlink: dd2419ed
+abbrlink: c5690fb7
 date: 2024-06-20 23:00:00
 updated: 2024-06-20 23:00:00
 ---
@@ -335,7 +335,7 @@ ssize_t write(int fd, const void *buf, size_t count);
      ==0 文件已经写入完了
   - 失败 -1 并且修改errno
 
-程序我就不写了，之前学牛客Linux的时候写了无数遍了，需要自查
+程序我就不写了，之前学牛客 Linux的时候写了无数遍了，需要自查
 
 # 第二章 套接字类型与协议设置
 

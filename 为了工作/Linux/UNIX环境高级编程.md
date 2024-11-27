@@ -1,8 +1,8 @@
 ---
-title: UNIX环境高级编程
+title: UNIX 环境高级编程
 categories:
   - Linux 学习
-abbrlink: 9e44c3b9
+abbrlink: 6fbfe9af
 date: 2024-06-20 23:05:00
 updated: 2024-11-07 16:25:00
 ---
@@ -2841,7 +2841,7 @@ using namespace std;
 
 int main() {
     // 创建一个新目录，这次我用绝对路径
-    int ret = mkdirat(-1, "/mnt/d/Code/Cpp/为了工作/Linux/Unix环境高级编程/第4章-文件和目录/12/test", 0664);
+    int ret = mkdirat(-1, "/mnt/d/Code/Cpp/为了工作/Linux/UNIX 环境高级编程/第4章-文件和目录/12/test", 0664);
     if (-1 == ret) {
         perror("mkdirat");
         return -1;

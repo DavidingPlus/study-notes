@@ -1,10 +1,10 @@
 ---
-title: 在X11下使用Cairo引擎绘制图形
+title: 在 X11 下使用 cairo 引擎绘制图形
 categories:
   - 实习
   - 合迅科技
   - 课题研究
-abbrlink: f29dfbb5
+abbrlink: '70513923'
 date: 2024-07-02 18:30:00
 updated: 2024-07-16 16:30:00
 top: 2
