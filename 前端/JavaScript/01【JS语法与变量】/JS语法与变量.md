@@ -116,7 +116,7 @@
 
 - 效果图
 
-<img src="mark-img/0d866c75fe28487690055fd1df962c30.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/03cb8afba50940e98795e6eb37f8cc7a.png" style="zoom:50%;" />
 
 ## 2.2 将 JS 代码单独保存为 \.js 文件
 
@@ -124,7 +124,7 @@
 
 - 文件结构
 
-![](mark-img/4d53e352499946449f4f088e75de2d4e.png)
+![](https://img-blog.csdnimg.cn/direct/4441f3cb4c0f415ab259bfa3a91760b2.png)
 
 - index.html
 
@@ -158,7 +158,7 @@ alert('你好，JavaScript！');
 
 - 效果图
 
-<img src="mark-img/0d866c75fe28487690055fd1df962c30-16430340384343.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4a37c702dc474bec8449fb8157b12073.png" style="zoom:50%;" />
 
 > 以上两种 JS 的书写方法，对于复杂的 js 代码，强烈推荐第二种！
 
@@ -189,7 +189,7 @@ alert('周吉瑞');
 
 【效果】
 
-<img src="mark-img/ee8c0f52c66a450a9705da7cc7dca76c.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/0402fedd3db546b99eed8b47bb3ab768.png" style="zoom:50%;" />
 
 【功能】
 
@@ -210,7 +210,7 @@ console.log('周吉瑞');
 
 【效果】
 
-<img src="mark-img/4b310166a93949ad88d6341b52d2b40b.png" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/780aff8d5dc8435aa61679616d35b523.png" style="zoom: 67%;" />
 
 > F12 打开浏览器调试面板，点击 Console 控制台菜单。
 
@@ -275,7 +275,7 @@ console.log(b);
 
 > 注意：使用变量时，变量名不能用引号包裹，否则会被识别为字符串！
 
-<img src="mark-img/924c799fce78444589fedb480f9d919b.png" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ed2cefd392414405b4d1c006e35e5906.png" style="zoom:67%;" />
 
 ## 5.3 改变变量的值
 
@@ -287,7 +287,7 @@ a = 24;
 console.log(a);
 ```
 
-<img src="mark-img/9118456966244c57bea455cf8bc172aa.png" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5c8710d16fbc4f02a3fa988e092a7b84.png" style="zoom:67%;" />
 
 ## 5.4 变量的合法命名
 

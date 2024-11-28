@@ -8,7 +8,7 @@
 
 多个盒子紧挨在一起，当鼠标放在其中一个盒子上时该盒子的边框自动变色。
 
-![](mark-img/20210422102946635.png)
+![](https://img-blog.csdnimg.cn/direct/764c2b777464444ba93d5fa281ab8383.png)
 
 1. 让每个盒子 margin 往左侧移动 -1px 正好压住相邻盒子边框（否则边框会发生叠加 * 2）
 2. 鼠标经过某个盒子的时候，提高当前盒子的层级即可（如果周围盒子没有定位，则对当前盒子加相对定位（保留位置并显示在其他盒子之上）；如果周围有定位，则提高当前盒子的 z-index）
@@ -60,11 +60,11 @@
 </html>
 ```
 
-![](mark-img/20210422131248993.gif)
+![](https://img-blog.csdnimg.cn/direct/bc3da05ad76c4272af1acc16c25dcb7f.png)
 
 # 二、文字围绕浮动元素
 
-![](mark-img/20210422131515567.png)
+![](https://img-blog.csdnimg.cn/direct/ea29bdf96b2f47a0bb71925dedd5a9ac.png)
 
 在制作文字位于图片周围的效果时，可以巧妙运用浮动元素不会压住文字的特性。
 
@@ -113,11 +113,11 @@
 </html>
 ```
 
-![](mark-img/20210422131929234.png)
+![](https://img-blog.csdnimg.cn/direct/3d7ad5a768b942099829ceebef043a20.png)
 
 # 三、行内块的巧妙运用
 
-![](mark-img/20210422132128826.png)
+![](https://img-blog.csdnimg.cn/direct/d210f01dbca2494d92df72b7a63bc32c.png)
 
 页码在页面中间显示：
 
@@ -200,11 +200,11 @@
 </html>
 ```
 
-![](mark-img/image-20220116233824235.png)
+![](https://img-blog.csdnimg.cn/direct/5a4a828c37d44d8c8bde170ba0a99c49.png)
 
 # 四、CSS三角强化
 
-![](mark-img/20210422132739686.png)
+![](https://img-blog.csdnimg.cn/direct/172aea5e6fb0449f8fc8d4f19a843e1b.png)
 
 代码：
 
@@ -296,7 +296,7 @@ border-width: 22px 8px 0 0;
 </html>
 ```
 
-![](mark-img/20210422132922414.png)
+![](https://img-blog.csdnimg.cn/direct/19e41a37346f47b5bfec7a24ef1fdd64.png)
 
 # 五、CSS初始化
 

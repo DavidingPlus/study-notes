@@ -103,13 +103,13 @@ div {
 
 ## 1.5 VSCode px->vw 插件
 
-![](mark-img/415a42d4c6244380b0bb6565c5467514.png)
+![](https://img-blog.csdnimg.cn/direct/794c2f2637344416a0d8ed3133917c2a.png)
 
 记得进行设置：
 
 > 打开 px2vw 插件主页、点击设置按钮、点击扩展设置。
 
-![](mark-img/f736d42ebcae42fd8aaf845841dcdbed.png)
+![](https://img-blog.csdnimg.cn/direct/5fc076189c52441a9045ca56846817d3.png)
 
 # 二、移动端布局推荐
 

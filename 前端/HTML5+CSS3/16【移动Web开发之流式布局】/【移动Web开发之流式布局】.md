@@ -48,14 +48,14 @@
 - 为了解决早期 PC 端网页在手机上显示的问题，移动端浏览器都默认设置了一个布局视口。
 - IOS、Android 基本都将布局视口分辨率设置为 980px，所以 PC 上的网页大多也能在手机上呈现，但是网页元素看上去会非常小，一般可以通过手动缩放网页。
 
-<img src="mark-img/image-20220127131341363.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/106c65d3579b4254a57a54d403b589f0.png" style="zoom:50%;" />
 
 ## 2.2 视觉视口
 
 - 字面意思，它是用户正在看到的网站的区域。注意：是网站的区域。
 - 我们可以通过缩放去操作视觉视口，但不会影响布局视口，布局视口仍保持原来的宽度。
 
-<img src="mark-img/image-20220127131506809.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/754291ae6e1b4f88baa4237e77678112.png" style="zoom:50%;" />
 
 ## 2.3 理想视口
 
@@ -122,7 +122,7 @@ content="内容中包含若干个属性，用逗号隔开"
 - 在早期，PC及移动端都是：1CSS像素 = 1物理像素
 - 随着 Retina（视网膜屏幕）显示技术的普及，可以将更多的物理像素点压缩至一块屏幕里，从而达到更高的分辨率，并提高屏幕显示的细腻程度。
 
-![](mark-img/20210717222122438.png)
+![](https://img-blog.csdnimg.cn/direct/70ea8931ba7b44a89ae5c20db6e14a68.png)
 
 常见 iPhone 设备屏幕参数：
 
@@ -215,7 +215,7 @@ content="内容中包含若干个属性，用逗号隔开"
 
 手机模拟效果：
 
-<img src="mark-img/20210717225458818.jpg" style="zoom: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/dfc0616955104e78a91bd0d1a7da8595.png" style="zoom: 25%;" />
 
 【附：二倍精灵图做法】
 
@@ -242,7 +242,7 @@ background-size: 背景图片宽度 背景图片高度;
 
 【cover & contain 案例】
 
-![](mark-img/20210717230434452.png)
+![](https://img-blog.csdnimg.cn/direct/92dc292859234874a20c0860b934eb89.png)
 
 cover 案例：
 
@@ -250,7 +250,7 @@ cover 案例：
 background-size: cover;
 ```
 
-![](mark-img/20210717230641170.png)
+![](https://img-blog.csdnimg.cn/direct/85c5f0d3f82f4e7cb56ae97ce9e27847.png)
 
 contain 案例：
 
@@ -258,11 +258,11 @@ contain 案例：
 background-size: contain;
 ```
 
-![](mark-img/20210717230744247.png)
+![](https://img-blog.csdnimg.cn/direct/b4e9c94604a6485abdc63fd59d8ae9a8.png)
 
 当图片是竖直放置时：
 
-![](mark-img/20210717231105402.png)
+![](https://img-blog.csdnimg.cn/direct/6b8ad0b65be44a2a83d6246556e72526.png)
 
 【背景缩放案例】
 
@@ -298,7 +298,7 @@ background-size: contain;
 
 ## 3.4 多倍图切工具 cutterman
 
-![](mark-img/2021071723515666.png)
+![](https://img-blog.csdnimg.cn/direct/a2a8a46660704815bea4964c0dcab231.png)
 
 一次性导出多种倍数的图片。
 
@@ -415,9 +415,9 @@ box-sizing: content-box;
 </html>
 ```
 
-![](mark-img/20210718112530377.png)
+![](https://img-blog.csdnimg.cn/direct/1a683e8f95cf497a9cccabeccd0d17f0.png)
 
-![](mark-img/20210718112624778.png)
+![](https://img-blog.csdnimg.cn/direct/550c96a1d15f4a518ae4272274f79ae0.png)
 
 ## 5.4 移动端特殊样式
 
@@ -523,13 +523,13 @@ img, a { -webkit-touch-callout: none; }
 </html>
 ```
 
-![](mark-img/20210718144002640.gif)
+![](https://img-blog.csdnimg.cn/direct/66bc8912b3bc45a583a3eb9601ea758f.png)
 
 ## 6.2 案例：京东移动端首页
 
 【项目结构】
 
-![](mark-img/20210719141508481.png)
+![](https://img-blog.csdnimg.cn/direct/df9c92e41708423aad35a973a4d3433d.png)
 
 【HTML】
 
@@ -936,19 +936,19 @@ nav a span {
 
 【效果图】
 
-<img src="mark-img/20210719141842628.png" style="zoom: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3d3f022365894bd68300e70a46586e4e.png" style="zoom: 50%;" />
 
 ## 6.3 京东移动端案例重点强调
 
 ### 6.3.1 搜索框
 
-![](mark-img/image-20220127234728776.png)
+![](https://img-blog.csdnimg.cn/direct/920ae7f95ecd480091fd7d2a6ff35346.png)
 
-<img src="mark-img/ssk.gif" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9f62dc01b5554839988fee71950a83f5.png" style="zoom: 33%;" />
 
 可以看到，当页面宽度变化时，搜索框会同步变宽，但是左右两边的按钮是不会变化的，实现这个功能的原理是：
 
-![](mark-img/image-20220128001743288.png)
+![](https://img-blog.csdnimg.cn/direct/14edf6b343304429b78e67f281adfbd6.png)
 
 代码：
 
@@ -1044,7 +1044,7 @@ nav a span {
 
 ### 6.3.2 图片底部空白
 
-<img src="mark-img/Snipaste_2022-01-27_22-42-00.jpg" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/26e3042c1c6e415eb6f032fc1da8aa4d.png" style="zoom: 33%;" />
 
 图片底部默认会带有一个空白，所以通常在开发中会设置：
 
@@ -1064,7 +1064,7 @@ img {
 
 **情况一**
 
-![](mark-img/image-20220128004718671.png)
+![](https://img-blog.csdnimg.cn/direct/faed8db176c145e68b495b8eb5f7e282.png)
 
 这里 JD 与 搜索按钮之间有一个 `|`，之前我们使用盒子模型的右边框来实现，但是这里使用边框并不是一个好的选择，原因有二：
 
@@ -1088,7 +1088,7 @@ img {
 
 **情况二**
 
-![](mark-img/Snipaste_2022-01-27_22-57-57.jpg)
+![](https://img-blog.csdnimg.cn/direct/5bda148ac77549dc907dafffdd6cbb1c.png)
 
 这里的一排盒子用百分比布局，所以如果我们利用伪元素法加竖线的话，整体的大小加起来就大于 100% 了，所以最优的解法为直接给盒子加边框，但是加边框后盒子就变大了，所以正确的做法是先设置 CSS3 盒子模型，然后再设置边框就可以了。
 

@@ -202,11 +202,11 @@ div {
 
 效果图：
 
-![](mark-img/fe17e956fc9240abb9f1fd5a0f078ca4-16425672282032.gif)
+![](https://img-blog.csdnimg.cn/direct/a2da127e5aaa47cb84ea1de78ac478ae.png)
 
 媒体查询从小到大优势代码分析：
 
-![](mark-img/5a71a41d1a774eed989c89ac6bdeaa67.png)
+![](https://img-blog.csdnimg.cn/direct/4e9b9519826b4a47ae276ce769aaecdd.png)
 
 ## 2.3 媒体查询+rem实现元素动态大小变化
 
@@ -268,7 +268,7 @@ div {
 </html>
 ```
 
-![](mark-img/9dae0ae46a98435a8ca29752112c16de.gif)
+![](https://img-blog.csdnimg.cn/direct/d64d1441a3414f75ba1bf01d30bacfb3.png)
 
 ## 2.4 引入资源（理解）
 
@@ -358,7 +358,7 @@ div:nth-child(2) {
 
 - 效果
 
-![](mark-img/ccefc55643bc4f0c81e7a3432455411e.gif)
+![](https://img-blog.csdnimg.cn/direct/8b27c60132c443df86409f1dba01fe67.png)
 
 # 三、Less基础
 
@@ -680,7 +680,7 @@ img {
 
 （2）CSS 中，设计稿元素的宽、高、相对位置等取值，按照同等比例换算为 rem 为单位的值。
 
-![](mark-img/9435637e10964d7db3c17d685a9f3149-16425702425997.png)
+![](https://img-blog.csdnimg.cn/direct/8699e7c33d4147069d30168dbb59b2a1.png)
 
 ## 4.2 rem适配方案技术使用（市场主流）
 
@@ -775,7 +775,7 @@ rem + 媒体查询 + less
 </html>
 ```
 
-![](mark-img/c4c2188152c1492fae4aacd85a57b2a3.gif)
+![](https://img-blog.csdnimg.cn/direct/cd35f9421a954b619770b33e22f5054c.png)
 
 # 五、苏宁网首页案例制作
 
@@ -793,7 +793,7 @@ rem + 媒体查询 + less
 
 【搭建相关文件夹结构】
 
-<img src="mark-img/6270ce05173f439a8a53df94e5e69762.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/74b8f3b1840c4fe2aa1fc7dc6fdaeb49.png" style="zoom:50%;" />
 
 【设置视口标签以及引入初始化样式】
 
@@ -1642,7 +1642,7 @@ template {
 
 - 效果图
 
-<img src="mark-img/746ec6bda83e449b9889798e54bf73b8.jpg" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4c2593b2421547fd82eccf110be51eda.png" style="zoom:33%;" />
 
 
 
@@ -1678,7 +1678,7 @@ github 地址：https://github.com/amfe/lib-flexible/
 
 【搭建相关文件夹结构】
 
-<img src="mark-img/dd39c883c1334ece911cfdb43d8db16c.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/23c80b7c2091466b9f43e3dbc00695f4.png" style="zoom:50%;" />
 
 【设置视口标签以及引入初始化样式还有 js 文件】
 
@@ -1897,5 +1897,5 @@ img {
 
 - 效果图
 
-![](mark-img/5a3ca61b12864cd78b087df54411b8ae.png)
+![](https://img-blog.csdnimg.cn/direct/ee1b0d0945ec40179b48b308783643b7.png)
 

@@ -290,7 +290,7 @@ a:hover {
 </html>
 ```
 
-<img src="mark-img/20210405203010954.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5ea18c9d41f642709f106cafa81d286a.png" style="width:50%;" />
 
 > 注意：`:hover` `:active` 也适用于其他标签元素。
 
@@ -333,7 +333,7 @@ input:focus {
 </html>
 ```
 
-![](mark-img/20210405202554834.gif)
+![](https://img-blog.csdnimg.cn/direct/3999d649705c4facb89fdf8aa3b97f5a.png)
 
 ## 1.8 复合选择器总结
 
@@ -472,7 +472,7 @@ HTML 元素一般分为 `块元素` 和 `行内元素` 两种类型。
 </html>
 ```
 
-<img src="mark-img/20210405205009406.jpg" style="width:70%;" />
+<img src="https://img-blog.csdnimg.cn/direct/192915aa0a26402cbf1f4403ceead4d9.png" style="width:70%;" />
 
 ## 2.7 简洁版小米侧边栏案例
 
@@ -524,7 +524,7 @@ HTML 元素一般分为 `块元素` 和 `行内元素` 两种类型。
 </html>
 ```
 
-<img src="mark-img/20210405205628339.gif" style="width:30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c9bf0ceba1e74d829190eda5df54769f.png" style="width:30%;" />
 
 ## 2.8 小技巧：单行文字垂直居中
 
@@ -594,7 +594,7 @@ CSS 没有给我们提供文字垂直居中的代码，这里我们可以使用�
 </html>
 ```
 
-<img src="mark-img/image-20220125215313482.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f01433f30f8742d7be3f84a19622b426.png" style="width:50%;" />
 
 # 三、CSS 的背景
 
@@ -649,7 +649,7 @@ background-color: transparent;
 </html>
 ```
 
-![](mark-img/20210405211456978.jpg)
+![](https://img-blog.csdnimg.cn/direct/ddd0015544ce4dc2af12bc46c045ef67.png)
 
 ## 3.2 背景图片
 
@@ -811,7 +811,7 @@ background-attachment : scroll | fixed
 </html>
 ```
 
-<img src="mark-img/20210405212447451-16422629370077.gif" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/46636d1e2f8340d49865d4cc39c8c829.png" style="width: 50%;" />
 
 ## 3.6 背景复合写法
 
@@ -921,7 +921,7 @@ background: rgba(0, 0, 0, 0.3);
 </html>
 ```
 
-<img src="mark-img/20210405213212859.jpg" style="zoom:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f57481aaca644744b79a19ad732b2504.png" style="zoom:80%;" />
 
 ```html
 <!doctype html>
@@ -953,4 +953,4 @@ background: rgba(0, 0, 0, 0.3);
 </html>
 ```
 
-![](mark-img/202104052132139.jpg)
+![](https://img-blog.csdnimg.cn/direct/538a1f33da3e43bba52b3cc4176ba28c.png)

@@ -597,7 +597,7 @@ div {
 
 > 当然实际开发中通常浏览器请求时，会把字体文件随 HTML CSS JS 等一同传送到客服端。
 
-![](mark-img/2021041511462678.png)
+![](https://img-blog.csdnimg.cn/direct/2dd30a5012624825b48bef4d37d75440.png)
 
 ## 3.2 字体大小
 
@@ -1120,7 +1120,7 @@ p {
 
 补充：行间距测量技巧：上一行文字的底部与本行文字的底部之间的距离就是行间距。
 
-![](mark-img/20210405144715962.jpg)
+![](https://img-blog.csdnimg.cn/direct/8e77db3723054660ba177c16a12d5ad6.png)
 
 ## 4.6 文本属性总结
 

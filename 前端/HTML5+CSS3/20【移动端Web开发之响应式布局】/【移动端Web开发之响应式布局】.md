@@ -92,7 +92,7 @@
 
 - 效果图
 
-![](mark-img/45d51731a2614a0cae9df498a64bea64.gif)
+![](https://img-blog.csdnimg.cn/direct/ac41dcc868b24993af5eb8453571467c.png)
 
 【案例：响应式导航】
 
@@ -164,7 +164,7 @@
 </html>
 ```
 
-![](mark-img/7b155ee6c30e41d0a36509ce252d0303.gif)
+![](https://img-blog.csdnimg.cn/direct/7c0d12e41b6843c88ea7652f33e11e73.png)
 
 # 二、Bootstrap前端开发框架
 
@@ -209,7 +209,7 @@ Bootstrap 使用四步曲：
 
 **（1）创建文件夹结构**
 
-![](mark-img/f84946596761497ea552ee065b30ec66.png)
+![](https://img-blog.csdnimg.cn/direct/9b9b8b9f6fae4b458ea427275a103761.png)
 
 **（2）创建 html 骨架结构**
 
@@ -245,7 +245,7 @@ Bootstrap 使用四步曲：
 
 - 项目结构
 
-<img src="mark-img/61fa58a38bb14d67af4f58d341b9cc48.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/938e23fef4f642f9adcd13b752daefa7.png" style="zoom:50%;" />
 
 > 注意：Bootstrap 中默认使用的就是 normalize.css 初始化样式表，所以我们就不用再引入了。
 
@@ -332,7 +332,7 @@ Bootstrap 使用四步曲：
 
 - 效果图
 
-![](mark-img/d7878ac1c8004f42a5f481364d9335ae.gif)
+![](https://img-blog.csdnimg.cn/direct/026a501f71c840869a9c232df709fa84.png)
 
 ## 2.3 布局容器
 
@@ -378,7 +378,7 @@ Bootstrap 需要为页面内容和栅格系统包裹一个 `.container` 容器�
 </html>
 ```
 
-![](mark-img/15675dcea09d4c8d8ebe54c46e499bd7.gif)
+![](https://img-blog.csdnimg.cn/direct/a140cf12b3bb4c9f8768363f5c020f7b.png)
 
 # 三、Bootstrap栅格系统
 
@@ -474,13 +474,13 @@ Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，�
 </html>
 ```
 
-![](mark-img/c4df532362b5414a899b8cd5fdd48331.gif)
+![](https://img-blog.csdnimg.cn/direct/93a278f6a5644034a48793a5225274f9.png)
 
 ## 3.3 列嵌套
 
 栅格系统内置的栅格系统将内容再次嵌套。简单理解就是一个列内再分成若干份小列。我们可以通过添加一个新的 `.row` 元素和一系列 `.col-sm-*` 元素到已经存在的 `.col-sm-*` 元素内。
 
-![](mark-img/b250aff077584e3a8e5fab79ad47819a.png)
+![](https://img-blog.csdnimg.cn/direct/85397dbd39504c97b63697c2cc7f35d7.png)
 
 ```html
 <!-- 列嵌套 -->
@@ -536,7 +536,7 @@ Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，�
 </html>
 ```
 
-![](mark-img/e431096d8f6c41418c9b22856647becb.gif)
+![](https://img-blog.csdnimg.cn/direct/d8a3e6d7007c4559a803be272318956e.png)
 
 注：b 被 2 盖住了。
 
@@ -546,7 +546,7 @@ Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，�
 
 这些类实际是通过使用 `*` 选择器为当前元素增加了左侧的边距（margin）。
 
-![](mark-img/6814a8cf7b6f4308b334874582a39dec.png)
+![](https://img-blog.csdnimg.cn/direct/910e48f0f76b4839913643c73b3f180e.png)
 
 ```html
 <!-- 列偏移 -->
@@ -599,13 +599,13 @@ Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，�
 </html>
 ```
 
-![](mark-img/62166996c283487d8e8aabae0cd7dc9c.png)
+![](https://img-blog.csdnimg.cn/direct/c7ef73e674624fe58872db99fed169b8.png)
 
 ## 3.5 列排序
 
 通过使用 `.col-md-push-*` 和 `.col-md-pull-*` 类就可以很容易的改变列（column）的顺序。
 
-![](mark-img/8577d3a2ac704a48b60598b6d0f6eaf4.png)
+![](https://img-blog.csdnimg.cn/direct/9e09fa79fdc74a6aa9ec903f2fc840fd.png)
 
 ```html
 <!-- 列排序 -->
@@ -652,7 +652,7 @@ Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，�
 </html>
 ```
 
-![](mark-img/380d710525194630b18035fce10e8983.png)
+![](https://img-blog.csdnimg.cn/direct/fc09d9c63e204372ad01f1c92217bbce.png)
 
 ## 3.6 响应式工具
 
@@ -718,7 +718,7 @@ Bootstrap 其他（按钮、表单、表格）请参考 Bootstrap 文档。
 </html>
 ```
 
-![](mark-img/b0650415303d4c9fac58ee3711ee94e1.gif)
+![](https://img-blog.csdnimg.cn/direct/bbfc2c773a1f4290b419a5fd65d8ec8a.png)
 
 # 四、阿里百秀首页案例
 
@@ -732,7 +732,7 @@ Bootstrap 其他（按钮、表单、表格）请参考 Bootstrap 文档。
 
 【页面布局分析】
 
-![](mark-img/00667e2e04ea479ca08c5659285a63e5.png)
+![](https://img-blog.csdnimg.cn/direct/b3081b8f3ae746228a1609ce35d4fa21.png)
 
 【屏幕划分分析】
 
@@ -743,7 +743,7 @@ Bootstrap 其他（按钮、表单、表格）请参考 Bootstrap 文档。
 
 【创建文件夹结构】
 
-<img src="mark-img/cb3e0ac0ecc843cd9d2e7429ffa86ea5.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/133bf6c12aa741b2acf252411aa2a7ab.png" style="zoom:50%;" />
 
 【container 宽度修改】
 
@@ -1144,7 +1144,7 @@ header {
 </html>
 ```
 
-![](mark-img/21fa9898f5ca4f399bff5e63153bc4da.gif)
+![](https://img-blog.csdnimg.cn/direct/7a09344eec384b28a07067acc9354d56.png)
 
 # 五、移动端技术选型
 

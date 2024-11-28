@@ -656,7 +656,7 @@ console.log(resultArr);
 
 > 时间复杂度：`O(n²)`
 
-![](mark-img/5c4ac9feb8ce4e3289acb75376e667b8.gif)
+![](https://img-blog.csdnimg.cn/direct/235de77213904543937df76074f239c9.png)
 
 ```javascript
 var arr = [9, 5, 6, 8, 2, 7, 3, 4, 1];
@@ -677,7 +677,7 @@ console.log(arr);
 
 快速排序（Quicksort）是使用得最广泛，速度也较快的排序算法。它是图灵奖得主 C. A. R. Hoare（1934--）于 1960 时提出来的。是二十世纪 10 大算法之一，非常重要！时间复杂度：`O(nlogn)`，稳定性：`不稳定`。
 
-![Sorting_quicksort_anim](mark-img/Sorting_quicksort_anim.gif)
+![Sorting_quicksort_anim](https://img-blog.csdnimg.cn/direct/b8c0ee05dc574a79ba86f9dfe86d415a.png)
 
 快速排序与冒泡排序同属交换排序，不过快速排序采用了 “分治法” 的思想大大提高了排序的时间性能。
 
@@ -693,21 +693,21 @@ console.log(arr);
 
 第一步，选择中间的元素 45 作为 "基准"（基准值可以任意选择，但是选择中间的值比较容易理解）。
 
-<img src="mark-img/bg2011040403.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6f23379751584da1bed4878e2bac1d3b.png" alt="img" style="zoom:50%;" />
 
 第二步，按照顺序，将每个元素与 "基准" 进行比较，形成两个子集，一个 "小于45"，另一个 "大于等于45"。
 
-<img src="mark-img/bg2011040404.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a80d2b20ce124a3b9e398986fbfeb4e3.png" alt="img" style="zoom:50%;" />
 
 第三步，对两个子集不断重复第一步和第二步，直到所有子集只剩下一个元素为止。
 
-<img src="mark-img/bg2011040405.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f22de427f52548b38f992e7ca57066c2.png" alt="img" style="zoom:50%;" />
 
-<img src="mark-img/bg2011040406.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1d3b8391a3d24560acf8ddb72e7637f8.png" alt="img" style="zoom:50%;" />
 
-<img src="mark-img/bg2011040407.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/dc4d7a7d648d4420abbb7328c7b19a66.png" alt="img" style="zoom:50%;" />
 
-<img src="mark-img/bg2011040408.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/8b28deb54afa4fc3b7da3117755afb2a.png" alt="img" style="zoom:50%;" />
 
 下面用 Javascript 语言实现上面的算法。
 

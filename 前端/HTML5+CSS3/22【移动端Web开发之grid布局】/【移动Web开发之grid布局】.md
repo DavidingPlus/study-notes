@@ -10,7 +10,7 @@
 
 它将网页划分成一个个网格，可以任意组合不同的网格，做出各种各样的布局。以前，只能通过复杂的 CSS 框架达到的效果，现在浏览器内置了。
 
-<img src="mark-img/1_bg2019032501.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6f88895f211843c887bf57abf62ffe73.png" alt="img" style="zoom:50%;" />
 
 上图这样的布局，就是 Grid 布局的拿手好戏。
 
@@ -22,7 +22,7 @@ Flex 布局是轴线布局，只能指定 “项目” 针对轴线的位置，�
 
 # 二、基本概念
 
-![webp](mark-img/webp.jpg)
+![webp](https://img-blog.csdnimg.cn/direct/08915ff0ebf84cdcaddea3f99d7675b6.png)
 
 ## 2.1 容器和项目
 
@@ -44,7 +44,7 @@ Flex 布局是轴线布局，只能指定 “项目” 针对轴线的位置，�
 
 容器里面的水平区域称为 “行”（row），垂直区域称为 “列”（column）。
 
-<img src="mark-img/1_bg2019032502.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/671c9f729f5548889e2fbb0bf09373a4.png" alt="img" style="zoom:50%;" />
 
 上图中，水平的深色区域就是 “行”，垂直的深色区域就是 “列”。
 
@@ -60,7 +60,7 @@ Flex 布局是轴线布局，只能指定 “项目” 针对轴线的位置，�
 
 正常情况下，`n` 行有 `n + 1` 根水平网格线，`m` 列有 `m + 1` 根垂直网格线，比如三行就有四根水平网格线。
 
-<img src="mark-img/1_bg2019032503.png" alt="img" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/794bcf3395314842b3265c88391c18bf.png" alt="img" style="zoom: 67%;" />
 
 上图是一个 4 x 4 的网格，共有 5 根水平网格线和 5 根垂直网格线。
 
@@ -74,7 +74,7 @@ Grid 布局的属性分成两类。一类定义在容器上面，称为**容器�
 
 - 默认情况下，容器元素都是块级元素
 
-![img](mark-img/bg2019032504.png)
+![img](https://img-blog.csdnimg.cn/direct/9cdc175fe02a4db99fa4c270a5a79e4d.png)
 
 ```html
 <!doctype html>
@@ -161,7 +161,7 @@ Grid 布局的属性分成两类。一类定义在容器上面，称为**容器�
 
 - 容器元素也可以设成行内元素。
 
-![img](mark-img/bg2019032505.png)
+![img](https://img-blog.csdnimg.cn/direct/8e075c409b15414fbc4da31ee8deb21c.png)
 
 ```html
 <!doctype html>
@@ -264,7 +264,7 @@ Grid 布局的属性分成两类。一类定义在容器上面，称为**容器�
 
 上面代码指定了一个三行三列的网格，列宽和行高都是 `100px`。
 
-<img src="mark-img/bg2019032506.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/8b130daf2f1b45eda1b1b4c04f56595a.png" alt="img" style="zoom:50%;" />
 
 除了使用绝对单位，也可以使用百分比。
 
@@ -302,7 +302,7 @@ grid-template-columns: repeat(2, 100px 20px 80px);
 
 上面代码定义了 6 列，第一列和第四列的宽度为 `100px`，第二列和第五列为 `20px`，第三列和第六列为 `80px`。
 
-<img src="mark-img/bg2019032507.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/0889d4babb844c4488dfcb7620616126.png" alt="img" style="zoom:50%;" />
 
 **（2）auto-fill 关键字**
 
@@ -317,7 +317,7 @@ grid-template-columns: repeat(2, 100px 20px 80px);
 
 上面代码表示每列宽度 `100px`，然后自动填充，直到容器不能放置更多的列，然后换行继续依次排列。
 
-<img src="mark-img/bg2019032508.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ca81f9208b7044efb615b3f936f30dde.png" alt="img" style="zoom:50%;" />
 
 **（3）fr 关键字**
 
@@ -332,7 +332,7 @@ grid-template-columns: repeat(2, 100px 20px 80px);
 
 上面代码表示两个相同宽度的列。
 
-<img src="mark-img/1_bg2019032509.png" alt="img" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9a70cbecee4e47eeb5057a3acdcf7182.png" alt="img" style="zoom: 33%;" />
 
 `fr` 可以与绝对长度的单位结合使用，这时会非常方便。
 
@@ -345,7 +345,7 @@ grid-template-columns: repeat(2, 100px 20px 80px);
 
 上面代码表示，第一列的宽度为 150 像素，第二列的宽度是第三列的一半。
 
-<img src="mark-img/image-20220227180532881-164595711490010.png" alt="image-20220227180532881" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/25139db3e909446b8a235be092fa1532.png" alt="image-20220227180532881" style="zoom:33%;" />
 
 **（4）minmax()**
 
@@ -357,7 +357,7 @@ grid-template-columns: 1fr 1fr minmax(100px, 1fr);
 
 上面代码中，`minmax(100px, 1fr)` 表示列宽不小于 `100px`，不大于 `1fr`。
 
-![1](mark-img/1.gif)
+![1](https://img-blog.csdnimg.cn/direct/8f19c20aa877454c960385cf6f63c1fe.png)
 
 **（5）auto 关键字**
 
@@ -417,7 +417,7 @@ grid-template-columns: repeat(12, 1fr);
 
 上面代码中，`grid-row-gap` 用于设置行间距，`grid-column-gap` 用于设置列间距。
 
-<img src="mark-img/bg2019032511.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/21060dacf55f4172bf062370699bac42.png" alt="img" style="zoom:50%;" />
 
 `grid-gap` 属性是 `grid-column-gap` 和 `grid-row-gap` 的合并简写形式，语法如下。
 
@@ -540,13 +540,13 @@ grid-template-areas: 'a . c'
 </html>
 ```
 
-![image-20220227184302178](mark-img/image-20220227184302178.png)
+![image-20220227184302178](https://img-blog.csdnimg.cn/direct/20238307c82b4ece9fcb730dc842892c.png)
 
 ## 3.5 grid-auto-flow 属性
 
 划分网格以后，容器的子元素会按照顺序，自动放置在每一个网格。默认的放置顺序是 “先行后列”，即先填满第一行，再开始放入第二行，即下图数字的顺序。
 
-<img src="mark-img/bg2019032506-164595896089512.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/980f0d93188c46e2975f1672ced7a215.png" alt="img" style="zoom:50%;" />
 
 这个顺序由 `grid-auto-flow` 属性决定，默认值是 `row`，即 “先行后列”。也可以将它设成 `column`，变成 “先列后行”。
 
@@ -556,13 +556,13 @@ grid-auto-flow: column;
 
 上面代码设置了 `column` 以后，放置顺序就变成了下图。
 
-<img src="mark-img/bg2019032512.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3919da3518a344d892d2fbfaeb36145d.png" alt="img" style="zoom:50%;" />
 
 `grid-auto-flow` 属性除了设置成 `row` 和 `column`，还可以设成 `row dense` 和 `column dense`。这两个值主要用于，某些项目指定位置以后，剩下的项目怎么自动放置。
 
 下面的例子让 1 号项目和 2 号项目各占据两个单元格，然后在默认的 `grid-auto-flow: row` 情况下，会产生下面这样的布局。
 
-<img src="mark-img/bg2019032513.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c35fc7e3825947d18743a958cafb7a10.png" alt="img" style="zoom:50%;" />
 
 上图中，1 号项目后面的位置是空的，这是因为 3 号项目默认跟着 2 号项目，所以会排在 2 号项目后面。
 
@@ -574,7 +574,7 @@ grid-auto-flow: row dense;
 
 上面代码的效果如下。
 
-<img src="mark-img/bg2019032514.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ba6e3b1eaecc43a687792a862c176b92.png" alt="img" style="zoom:50%;" />
 
 上图会先填满第一行，再填满第二行，所以 3 号项目就会紧跟在 1 号项目的后面。8 号项目和 9 号项目就会排到第四行。
 
@@ -586,7 +586,7 @@ grid-auto-flow: column dense;
 
 上面代码的效果如下。
 
-<img src="mark-img/bg2019032515.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/caf4496db48e4ae1983fcb4092721ada.png" alt="img" style="zoom:50%;" />
 
 上图会先填满第一列，再填满第 2 列，所以 3 号项目在第一列，4 号项目在第二列。8 号项目和 9 号项目被挤到了第四列。
 
@@ -616,7 +616,7 @@ grid-auto-flow: column dense;
 
 上面代码表示，单元格的内容左对齐，效果如下图。
 
-![img](mark-img/bg2019032516.png)
+![img](https://img-blog.csdnimg.cn/direct/8804573254414d9b88966bfa489939e5.png)
 
 ```css
 .container {
@@ -626,7 +626,7 @@ grid-auto-flow: column dense;
 
 上面代码表示，单元格的内容头部对齐，效果如下图。
 
-![img](mark-img/bg2019032517.png)
+![img](https://img-blog.csdnimg.cn/direct/9ebf40e30be34abc9eaaca7e5497f8fb.png)
 
 `place-items` 属性是 `align-items` 属性和 `justify-items` 属性的合并简写形式。
 
@@ -657,31 +657,31 @@ place-items: start end;
 
 > - start - 对齐容器的起始边框。
 
-![img](mark-img/bg2019032519.png)
+![img](https://img-blog.csdnimg.cn/direct/0d4e64c93e5f4dd082bfed2950e1853b.png)
 
 > - end - 对齐容器的结束边框。
 
-![img](mark-img/bg2019032518.png)
+![img](https://img-blog.csdnimg.cn/direct/a41253cad60743dbb4013d8b23c582d4.png)
 
 > - center - 容器内部居中。
 
-![img](mark-img/bg2019032520.png)
+![img](https://img-blog.csdnimg.cn/direct/449b9c13a5ed4d79bbd969adfc48511b.png)
 
 > - stretch - 项目大小没有指定时，拉伸占据整个网格容器。
 
-![img](mark-img/bg2019032521.png)
+![img](https://img-blog.csdnimg.cn/direct/d0b5c818669542ec9703c5cd57ceec7b.png)
 
 > - space-around - 每个项目两侧的间隔相等。所以，项目之间的间隔比项目与容器边框的间隔大一倍。
 
-![img](mark-img/bg2019032522.png)
+![img](https://img-blog.csdnimg.cn/direct/b126233d04924de7b4da16ddc500d276.png)
 
 > - space-between - 项目与项目的间隔相等，项目与容器边框之间没有间隔。
 
-![img](mark-img/bg2019032523.png)
+![img](https://img-blog.csdnimg.cn/direct/097115580d6f46e79073a9c049e47b25.png)
 
 > - space-evenly - 项目与项目的间隔相等，项目与容器边框之间也是同样长度的间隔。
 
-![img](mark-img/bg2019032524.png)
+![img](https://img-blog.csdnimg.cn/direct/2d4905d5a02a4d0a9423de45245f6119.png)
 
 `place-content` 属性是 `align-content` 属性和 `justify-content` 属性的合并简写形式。
 
@@ -783,7 +783,7 @@ place-content: space-around space-evenly;
 
 上面代码指定新增的行高统一为 50px（原始的行高为 100px）。
 
-<img src="mark-img/bg2019032525.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/86140d83dde440bfb47ffb9b5967cfdd.png" alt="img" style="zoom:50%;" />
 
 ## 3.9 grid-template 属性，grid 属性
 
@@ -815,7 +815,7 @@ place-content: space-around space-evenly;
 
 上面代码指定，1 号项目的左边框是第二根垂直网格线，右边框是第四根垂直网格线。
 
-<img src="mark-img/bg2019032526-164601330014529.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/85abae9db5f448729dc03886f9904aad.png" alt="img" style="zoom:50%;" />
 
 上图中，只指定了 1 号项目的左右边框，没有指定上下边框，所以会采用默认位置，即上边框是第一根水平网格线，下边框是第二根水平网格线。
 
@@ -832,7 +832,7 @@ place-content: space-around space-evenly;
 }
 ```
 
-<img src="mark-img/bg2019032527.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/47561b55a70848d9a240d3461dfea666.png" alt="img" style="zoom:50%;" />
 
 这四个属性的值，除了指定为第几个网格线，还可以指定为网格线的名字。
 
@@ -855,7 +855,7 @@ place-content: space-around space-evenly;
 
 上面代码表示，1 号项目的左边框距离右边框跨越 2 个网格。
 
-<img src="mark-img/bg2019032528.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6d300f9a8cf046dcab25b448783c5023.png" alt="img" style="zoom:50%;" />
 
 这与下面的代码效果完全一样。
 
@@ -870,9 +870,9 @@ place-content: space-around space-evenly;
 > > 在 CSS Grid 布局中，我们可以通过网格项目放置的方式，让不同的元素重叠在一起，并且通过 CSS 的 `z-index` 来控制网格项目在 `z` 轴上的层叠顺序。也就是说，以往需要使用 CSS 的 [`position` 的绝对定位（`absolute`）来实现的布局](https://www.w3cplus.com/css/css-position-and-z-index.html)，现在可以直接使用 CSS Grid 来解决。
 > > 原文: https://www.w3cplus.com/css/overlapping-grid-layout.html © [w3cplus.com](https://www.w3cplus.com/)
 > >
-> > <img src="mark-img/css-grid-case-overlay-1-164602172605438.jpg" alt="img" style="zoom: 25%;" />
+> > <img src="https://img-blog.csdnimg.cn/direct/8b958acb7a5e4297aabeec56e785dec8.png" alt="img" style="zoom: 25%;" />
 > >
-> > <img src="mark-img/css-grid-case-overlay-5.jpg" alt="img" style="zoom:25%;" />
+> > <img src="https://img-blog.csdnimg.cn/direct/a9b4acb288d148c78ce614a227646c54.png" alt="img" style="zoom:25%;" />
 
 ## 4.2 grid-column 属性，grid-row 属性
 
@@ -921,7 +921,7 @@ place-content: space-around space-evenly;
 
 上面代码中，项目 `item-1` 占据的区域，包括第一行 + 第二行、第一列 + 第二列。
 
-<img src="mark-img/bg2019032529.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cd9c6763e35c42f688f49cca353f7c46.png" alt="img" style="zoom:50%;" />
 
 斜杠以及后面的部分可以省略，默认跨越一个网格。
 
@@ -946,7 +946,7 @@ place-content: space-around space-evenly;
 
 上面代码中，1 号项目位于 `e` 区域，效果如下图。
 
-<img src="mark-img/bg2019032530.png" alt="img" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cc1e04aa943e45fdbbb1d67d55ae339a.png" alt="img" style="zoom:50%;" />
 
 `grid-area` 属性还可用作 `grid-row-start`、`grid-column-start`、`grid-row-end`、`grid-column-end` 的合并简写形式，直接指定项目的位置。
 
@@ -964,7 +964,7 @@ place-content: space-around space-evenly;
 }
 ```
 
-<img src="mark-img/image-20220228102207300.png" alt="image-20220228102207300" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d91d787941a34d3fa2f75831df4cff7e.png" alt="image-20220228102207300" style="zoom: 33%;" />
 
 ## 4.4 justify-self 属性，align-self 属性，place-self 属性
 
@@ -994,7 +994,7 @@ place-content: space-around space-evenly;
 }
 ```
 
-![img](mark-img/bg2019032532.png)
+![img](https://img-blog.csdnimg.cn/direct/9a3e35fe41b4438aa3c266f311b3dd57.png)
 
 `place-self` 属性是 `align-self` 属性和 `justify-self` 属性的合并简写形式。
 
@@ -1014,4 +1014,4 @@ place-self: center center;
 
 [零代码 - 在线快速设计CSS网页布局 (lingdaima.com)](https://www.lingdaima.com/grid/)
 
-![image-20220228120835928](mark-img/image-20220228120835928.png)
+![image-20220228120835928](https://img-blog.csdnimg.cn/direct/261db9f4e21d4ff48224b2b7c5d2c469.png)

@@ -182,13 +182,13 @@ add(3, 5);
 
 ### 6.1.1 “形实结合”
 
-<img src="mark-img/c38893c56a12445d83b3a84ed997059e.png" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9936a9c93ef9459fa6917f69788cfa0f.png" style="zoom: 33%;" />
 
 ### 6.1.2 形参和实参个数不同的情况
 
-<img src="mark-img/7b6e6bb7f6cf44e6891c1b7a211348a9.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/52920966c17e4493af00435c4eeb912b.png" style="zoom:33%;" />
 
-<img src="mark-img/7921db6a75974fa6ac83c6ea03dbf6d7.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/66e3cb8a15874169bf3ffdd192260c27.png" style="zoom:33%;" />
 
 ### 6.1.3 arguments
 
@@ -430,11 +430,11 @@ console.log(a);	// 10
 
 ## 10.5 注意考虑变量声明提升的情况
 
-<img src="mark-img/3a580e202bd540cf8bab85e0bd4fad4f.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ad1906657718412e92ea129582d937d6.png" style="zoom:33%;" />
 
 ## 10.6 形参也是局部变量
 
-<img src="mark-img/016853547142485a8a9e6fef3f7dc86e.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/facd241188ea4cf2983fc13208f2ca36.png" style="zoom:33%;" />
 
 ## 10.7 作用域链
 
@@ -638,11 +638,11 @@ IIFE 立即调用函数表达式，是一种特殊的 JS 函数写法，一旦�
 
 ## 12.1 形成 IIFE 的方法
 
-<img src="mark-img/10a9c2cdf09b4c66b37a909a2eccc599.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/969c6838860948e2a3a2d70df19fe0f8.png" style="zoom:33%;" />
 
 > 蓝色括号里写传递的参数。
 
-<img src="mark-img/ee937365ccea4aa58b5393028fe7dd66.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cb32ca6451c5435f9007e9c15d11c8fe.png" style="zoom:33%;" />
 
 > 常用 `()` 来将函数转为 “函数表达式”。
 

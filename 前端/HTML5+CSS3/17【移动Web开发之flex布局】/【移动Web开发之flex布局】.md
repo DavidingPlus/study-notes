@@ -65,7 +65,7 @@
 </html>
 ```
 
-![](mark-img/64fd881a1eef4c89a6fcb00097f3148b.png)
+![](https://img-blog.csdnimg.cn/direct/839fa38dcc934e608e3619bd4bb9b50a.png)
 
 **等间距分布**
 
@@ -108,7 +108,7 @@
 </html>
 ```
 
-![](mark-img/23e4d8a8d2744e8eab0b5ec0b647a853.gif)
+![](https://img-blog.csdnimg.cn/direct/dd870d1f5c72480491127cf3401742f3.png)
 
 **平均分为三等分**
 
@@ -152,7 +152,7 @@
 </html>
 ```
 
-![](mark-img/91471912c9304a67b5266502b67baec7.gif)
+![](https://img-blog.csdnimg.cn/direct/cab4f36acc9d4990b01f19b646abfacd.png)
 
 # 二、flex布局原理
 
@@ -171,7 +171,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 
 【子容器横向排列时的图示】
 
-![](mark-img/7f22d8ac7852446f869984a7a5841eb6.png)
+![](https://img-blog.csdnimg.cn/direct/cca02f676e6d4b67b5d67686c76053ea.png)
 
 【总结 flex 布局原理】
 
@@ -199,7 +199,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 - 默认主轴方向就是 x轴 方向，水平向右
 - 默认侧轴方向就是 y轴 方向，水平向下
 
-![](mark-img/fa87013b3a3b43c48256b2ed15b670e4.png)
+![](https://img-blog.csdnimg.cn/direct/279177aacf7c423aa2f2613f828c893d.png)
 
 **（2）属性值**
 
@@ -260,7 +260,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/e203d92f12b64482ba5ea5e99360ede1.png)
+![](https://img-blog.csdnimg.cn/direct/b2b5c3d22bf347ffa482b0db6d4a25a6.png)
 
 ```html
 <!doctype html>
@@ -306,7 +306,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/6765176e8adb4b9dac8117df043795fd.png)
+![](https://img-blog.csdnimg.cn/direct/8ee91909c3584465ae7f4a8f3d249ed6.png)
 
 ```html
 <!doctype html>
@@ -352,7 +352,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/4e52189e5aae4108805c8c027df4934c.png)
+![](https://img-blog.csdnimg.cn/direct/db7a38b758f74c2f840d831b00f06e44.png)
 
 ## 3.3 justify-content设置主轴上的子元素排列方式
 
@@ -420,7 +420,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/408e7c1570d44daa9bc4a62372d27baa.png)
+![](https://img-blog.csdnimg.cn/direct/e3c713b0850b44e7a4970ec9acfc6d8e.png)
 
 ```html
 <!doctype html>
@@ -472,7 +472,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/201e75d13fc8475b84a23e10b5011609.png)
+![](https://img-blog.csdnimg.cn/direct/f3d05d9cede14fc9b674bad01f6274fd.png)
 
 ```html
 <!doctype html>
@@ -524,7 +524,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/79b89bb112374435bad2705726e16aab.png)
+![](https://img-blog.csdnimg.cn/direct/9f522804394745e8b679c8aa9801a032.png)
 
 ```html
 <!doctype html>
@@ -576,9 +576,9 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/0035cfe000b24b15b78ee9a9dad02fb5.png)
+![](https://img-blog.csdnimg.cn/direct/05fd6c9cd95d45738830c49f134f1dbc.png)
 
-![](mark-img/40be74d06a4c43d888edddda10e80d16.png)
+![](https://img-blog.csdnimg.cn/direct/c299a82db87b4acbafa8d2f9adfdb109.png)
 
 ```html
 <!doctype html>
@@ -630,23 +630,23 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/8bc9d4554a9546569c350576c429a739.png)
+![](https://img-blog.csdnimg.cn/direct/597fdec0d98c4a66b04a89400eb08324.png)
 
 > 注意：以上例子并不能根据浏览器窗口大小自动调整子项之间的间距，因为父盒子的宽度是固定死 800px 的，假如我们把父盒子宽度设为 80%，那么就可以有效果了。
 
 `div {width: 800px;}`
 
-![](mark-img/2345234532.gif)
+![](https://img-blog.csdnimg.cn/direct/e7fbf3bbb0f049928d7ec332b3d57dab.png)
 
 `div {width: 80%;}`
 
-![](mark-img/45235324.gif)
+![](https://img-blog.csdnimg.cn/direct/cef1412634f7475f89168cb8d1660eb1.png)
 
 `div {width: 80%;}`
 
 `div span {width: 80%;}`
 
-![](mark-img/349857.gif)
+![](https://img-blog.csdnimg.cn/direct/b848cbde21494418a02721bda962c69a.png)
 
 【以上到下为主轴的案例】
 
@@ -699,7 +699,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/ceb344ce1a3340e48cf18c89f6b3a563.png)
+![](https://img-blog.csdnimg.cn/direct/fa3780f81f7840c2b5a9106fe0b7a5eb.png)
 
 ```html
 <!doctype html>
@@ -750,7 +750,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/c27f6656f46144f3bac38ff8754b6aa9.png)
+![](https://img-blog.csdnimg.cn/direct/bca63f5c52e14f7aa901236c49df7639.png)
 
 ```html
 <!doctype html>
@@ -803,7 +803,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 
 盒子自动垂直居中的困扰终于解决啦！！！
 
-![](mark-img/e3df7d958bd84be6b4acb4a5d44e2ea0.png)
+![](https://img-blog.csdnimg.cn/direct/fba3aa55abab446c95382184ea4903f6.png)
 
 ```html
 <!doctype html>
@@ -854,7 +854,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/b28d83e992824ef381b7c9ef662633ef.png)
+![](https://img-blog.csdnimg.cn/direct/45ed7e75b9304b579a9c588dd508d5de.png)
 
 ```html
 <!doctype html>
@@ -905,7 +905,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/ff3f75db39de49edaa70f9e722ce3262.png)
+![](https://img-blog.csdnimg.cn/direct/a6aa620450c243d293923062f0bb595b.png)
 
 ## 3.4 flex-wrap设置子元素是否换行
 
@@ -963,7 +963,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-<img src="mark-img/image-20220119004923437.png" alt="image-20220119004923437" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b18115d3a0c44c94a3311cc1bd48f58a.png" alt="image-20220119004923437" style="zoom:50%;" />
 
 ```html
 <!doctype html>
@@ -1010,7 +1010,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-<img src="mark-img/image-20220119004814017.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/7e9d0cd0069f40daa804434e224d03d2.png" style="zoom:50%;" />
 
 ## 3.5 align-items设置侧轴上的子元素排列方式（单行）
 
@@ -1068,7 +1068,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/50d2926f0d9c483794b81138df42d132.png)
+![](https://img-blog.csdnimg.cn/direct/afc54a8e96964e308deaf228092f4614.png)
 
 ```html
 <!doctype html>
@@ -1113,7 +1113,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/43173bfa7ed349c89d4003c33192941d.png)
+![](https://img-blog.csdnimg.cn/direct/69a399d8ef3147ed9cb6113ef2bceb56.png)
 
 ```html
 <!doctype html>
@@ -1158,7 +1158,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/f515660386034bc29da90af33b5947c5.png)
+![](https://img-blog.csdnimg.cn/direct/42573abd8d9a4d70b7cb064498d24950.png)
 
 ```html
 <!doctype html>
@@ -1204,7 +1204,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/9d77308724964371a55c2b88e79522f0.png)
+![](https://img-blog.csdnimg.cn/direct/aeb7bdbca17b4c4d94394e7c761d2910.png)
 
 > align-items 只能统一对侧轴上的子元素排列方式，假如有多行子元素，要分别对不同的行设置不同的排列方式，那么此种方式就无法做了。
 
@@ -1274,7 +1274,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/aac0655dd5044255a703a1b084f89962.png)
+![](https://img-blog.csdnimg.cn/direct/535290e7a94f4f03b4dd12aafd057713.png)
 
 ```html
 <!doctype html>
@@ -1327,7 +1327,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/43d771e31287418a839a644229b6e604.png)
+![](https://img-blog.csdnimg.cn/direct/8fc8cc180a274495a9a134e097320cec.png)
 
 ```html
 <!doctype html>
@@ -1380,7 +1380,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/af5d93c39b134dc3958497f57876de05.png)
+![](https://img-blog.csdnimg.cn/direct/bd34390bd2214b30963b552a2e55aa3a.png)
 
 ```html
 <!doctype html>
@@ -1433,7 +1433,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/463ca268100a4df0b092622931cbf05b.png)
+![](https://img-blog.csdnimg.cn/direct/5fe37a95f3cf481c8bcc553148df7544.png)
 
 ```html
 <!doctype html>
@@ -1486,7 +1486,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/b85cdc0e53e649d1bba4979efe7b2b97.png)
+![](https://img-blog.csdnimg.cn/direct/d7d724a06b5e42ac8ba3db2df7863a4c.png)
 
 ## 3.7 align-content和align-items区别
 
@@ -1494,7 +1494,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 - align-content 适应于换行（多行）的情况下（单行情况下无效），可以设置上对齐、下对齐、居中、拉伸以及平均分配剩余空间等属性值
 - 总结就是单行找 align-items 多行找 align-content
 
-![](mark-img/d84394df9abd463f9b15096f838920ec.png)
+![](https://img-blog.csdnimg.cn/direct/555e203d814a457a9684911a882d9440.png)
 
 ## 3.8 flex-flow
 
@@ -1553,7 +1553,7 @@ flex 是 flexible Box 的缩写，意为 “弹性布局”，用来为盒状模
 </html>
 ```
 
-![](mark-img/209dea57f86a4bb8be262eb10e469012.png)
+![](https://img-blog.csdnimg.cn/direct/46861b882cc94de099e14df8785cc39a.png)
 
 # 四、flex布局子项常见属性
 
@@ -1645,9 +1645,9 @@ flex 属性定义子项目分配剩余空间，用 flex 来表示占多少份数
 </html>
 ```
 
-![](mark-img/8bab533107f2414586bb63a80855afae.png)
+![](https://img-blog.csdnimg.cn/direct/e7dbcd43e6e84185ad9f763930d730d5.png)
 
-![](mark-img/e65b01f3144544a0b6b167c7bf01a11a.gif)
+![](https://img-blog.csdnimg.cn/direct/afd6286fffac464bb61f8cd442cc7b2f.png)
 
 ## 4.2 align-self控制子项自己在侧轴上的排列方式
 
@@ -1709,7 +1709,7 @@ span:nth-child(2) {
 </html>
 ```
 
-![](mark-img/image-20220119013638909.png)
+![](https://img-blog.csdnimg.cn/direct/68c219c7937a41eebc33309ff0ed0d8e.png)
 
 ## 4.3 order属性定义项目的排列顺序
 
@@ -1776,7 +1776,7 @@ span:nth-child(2) {
 </html>
 ```
 
-![](mark-img/b6f1452b4b354803b5a656bc68289881.png)
+![](https://img-blog.csdnimg.cn/direct/74308e37d4a14469925ec5909954c1f6.png)
 
 # 五、携程网首页案例制作
 
@@ -1792,7 +1792,7 @@ span:nth-child(2) {
 
 **（2）搭建相关文件夹结构**
 
-![](mark-img/c06c94c2caa54ad4ab5d2d9f869eae34.png)
+![](https://img-blog.csdnimg.cn/direct/e18c4ba58fae48adaf66327c51e646f9.png)
 
 **（3）设置视口标签以及引入初始化样式**
 
@@ -1821,13 +1821,13 @@ body {
 
 **（5）常见模块命名**
 
-<img src="mark-img/98a85f8a2e8d4f299e55688847ce5527.png" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/61a5c9d4e18849f99f40c78237ef43f2.png" style="zoom: 33%;" />
 
-<img src="mark-img/57c3144a357c47fb89dbf95f23a5f45d.png" style="zoom:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/886fa72551d7411aa8df60779aff96bf.png" style="zoom:33%;" />
 
 **（6）常见 flex 布局思路**
 
-![](mark-img/4b29644d4f634122a8619a17ba22b9fd.png)
+![](https://img-blog.csdnimg.cn/direct/ee4eb4a31a3d4a979ef8198fb59862c3.png)
 
 【完整代码】
 
@@ -2352,15 +2352,15 @@ nav {
 }
 ```
 
-<img src="mark-img/a27c42ea2d884fedb216313af830c18e.png" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/75e7634db9a54453a7b64f34df325662.png" style="zoom: 67%;" />
 
-<img src="mark-img/3dfa71998f534aecb36292e1e072ccdf.png" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e451a1e8297544d4bc49e5004e35768c.png" style="zoom:67%;" />
 
 # 六、携程网首页案例重点强调
 
 ## 6.1 搜索模块
 
-<img src="mark-img/image-20220128192810458.png" alt="" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/004f59c423644c6db6d499f2e90dff4f.png" alt="" style="zoom:50%;" />
 
 ```html
 <!-- 顶部搜索 -->
@@ -2431,7 +2431,7 @@ display: flex;
 
 最终实现的结构：
 
-![](mark-img/image-20220128194425850.png)
+![](https://img-blog.csdnimg.cn/direct/8da8518ee8c148218091da4d514c2676.png)
 
 ## 6.2 渐变
 
@@ -2457,7 +2457,7 @@ background: -webkit-linear-gradient(45deg, red, blue);
 
 - 度数：角度是指水平线和渐变线之间的角度，逆时针方向计算。换句话说，0deg 将创建一个从下到上的渐变，90deg 将创建一个从左到右的渐变。
 
-  <img src="mark-img/image-20220128181903220.png" style="zoom:50%;" />
+  <img src="https://img-blog.csdnimg.cn/direct/89fc41ee81aa4fed8329a9e2b60fd9c1.png" style="zoom:50%;" />
 
   > 注意很多浏览器（Chrome、Safari、firefox等）的使用了旧的标准，即 0deg 将创建一个从左到右的渐变，90deg 将创建一个从下到上的渐变。换算公式 **90 - x = y** 其中 x 为标准角度，y为非标准角度。
 
@@ -2491,7 +2491,7 @@ background: -webkit-linear-gradient(45deg, red, blue);
 </html>
 ```
 
-![](mark-img/f6d079aad03f4013b60a124619a11523.png)
+![](https://img-blog.csdnimg.cn/direct/e3dd12f452b0474b99b78b9a77c86f2c.png)
 
 ```html
 <!doctype html>
@@ -2521,7 +2521,7 @@ background: -webkit-linear-gradient(45deg, red, blue);
 </html>
 ```
 
-![](mark-img/313c9d5d71814cdf876df9107f18faa9.png)
+![](https://img-blog.csdnimg.cn/direct/fc62b1bf5e964f0aa9545db1f9286a48.png)
 
 ```html
 <!doctype html>
@@ -2551,7 +2551,7 @@ background: -webkit-linear-gradient(45deg, red, blue);
 </html>
 ```
 
-![](mark-img/d94d2dd28f4243a0b6fc2f5efe391c1d.png)
+![](https://img-blog.csdnimg.cn/direct/bf7d679f803944bcba9d306893a9d0c0.png)
 
 【使用透明度】
 
@@ -2588,7 +2588,7 @@ CSS3 渐变也支持透明度（transparent），可用于创建减弱变淡的�
 </html>
 ```
 
-<img src="mark-img/image-20220128182622106.png" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f850df0cdba74e4bbf91aff022d22319.png" style="zoom: 67%;" />
 
 **（2）径向渐变**
 
@@ -2606,7 +2606,7 @@ height: 300px;
 background: radial-gradient(red, green, blue);
 ```
 
-<img src="mark-img/image-20220128185054290.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4a576f5ace884f5789d2457586f95751.png" style="zoom:50%;" />
 
 **径向渐变 - 颜色节点不均匀分布**
 
@@ -2616,7 +2616,7 @@ height: 300px;
 background: radial-gradient(red 5%, green 15%, blue 60%);
 ```
 
-<img src="mark-img/image-20220128185317175.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1054b19e2ca942ef85c09a028cbb11ab.png" style="zoom:50%;" />
 
 **设置形状**
 
@@ -2629,7 +2629,7 @@ background: radial-gradient(red, yellow, green);
 background: radial-gradient(circle, red, yellow, green); 
 ```
 
-<img src="mark-img/image-20220128185852176.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/8dcf751e4a364c688fb9fbea7bda0600.png" style="zoom:50%;" />
 
 **不同尺寸大小关键字的使用**
 
@@ -2696,7 +2696,7 @@ background: radial-gradient(circle, red, yellow, green);
 </html>
 ```
 
-<img src="mark-img/image-20220128190728826.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f04f281577c445088c8636882e90bc27.png" style="zoom:50%;" />
 
 ### 6.2.2 文字渐变
 
@@ -2724,7 +2724,7 @@ background: radial-gradient(circle, red, yellow, green);
 </html>
 ```
 
-<img src="mark-img/image-20220128191209061.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/2dc872f4eb554b8cb9ce5399700edce3.png" style="zoom:50%;" />
 
 **核心内容说明**
 
@@ -2732,6 +2732,6 @@ background 属性：设置背景图片为线性渐变色。
 
 background-clip 属性：规定背景的绘制区域（我们注意到该属性上的-webkit-，说明该属性还存在兼容问题，并不是所有浏览器都支持，在 W3C 是没有 text 这个值的，这里的 text 是背景被裁剪到文字）。
 
-![](mark-img/image-20220128191422675.png)
+![](https://img-blog.csdnimg.cn/direct/9e5f9ab783f94b788c87de4072242d60.png)
 
 color 属性：设置文字颜色为透明，然后面的背景色显示出来。

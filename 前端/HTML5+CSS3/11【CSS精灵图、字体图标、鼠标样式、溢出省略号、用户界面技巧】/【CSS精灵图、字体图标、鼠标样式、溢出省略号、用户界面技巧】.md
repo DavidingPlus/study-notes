@@ -35,7 +35,7 @@ CSS Sprites、CSS 雪碧）。
 
 【王者荣耀案例】
 
-![](mark-img/20210420081150387.png)
+![](https://img-blog.csdnimg.cn/direct/3dc0c83fbaa74144aa8928b7c842a854.png)
 
 ```html
 <!doctype html>
@@ -74,11 +74,11 @@ CSS Sprites、CSS 雪碧）。
 </html>
 ```
 
-![](mark-img/202104200817544.png)
+![](https://img-blog.csdnimg.cn/direct/3e9058ca3ab34f779e285e1d239f3e2a.png)
 
 ## 1.3 案例：拼单词
 
-<img src="mark-img/20210420081150457.jpg" style="zoom:67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/83699946f3224df192c5f21d16750b80.png" style="zoom:67%;" />
 
 ```html
 <!doctype html>
@@ -135,17 +135,17 @@ CSS Sprites、CSS 雪碧）。
 </html>
 ```
 
-![](mark-img/20210420083302981.png)
+![](https://img-blog.csdnimg.cn/direct/62eb294d7b4d4deeaf4d01d8dd0802ee.png)
 
 【PS 切片工具的使用】
 
-<img src="mark-img/20210424224831926.png" style="zoom: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/562d352826d5464bb5ed4407404b31e4.png" style="zoom: 50%;" />
 
-![](mark-img/8141d1fc65ba4b31acfc903b948a09a8.png)
+![](https://img-blog.csdnimg.cn/direct/56ecd3dc7a9941cb8b40614a3e8fc8b3.png)
 
-![](mark-img/b9b0bf21c37a40a6a37a09f759218c16.png)
+![](https://img-blog.csdnimg.cn/direct/7c4520f7d6514a85b4ec6a74f4fa0a26.png)
 
-![](mark-img/d8fea6eba89048dfb6cf0421f620d04e.png)
+![](https://img-blog.csdnimg.cn/direct/f57bca97554644a0b9d7a10b231364c2.png)
 
 # 二、字体图标
 
@@ -289,13 +289,13 @@ span {
 </html>
 ```
 
-![](mark-img/20210420093539188.png)
+![](https://img-blog.csdnimg.cn/direct/61731eb9c6f64a0a8f0279d3d0de3499.png)
 
 # 三、CSS三角
 
 网页中常见一些三角形，使用 CSS 直接画出来就可以，不必做成图片或者字体图标。
 
-![](mark-img/20210420102851826.png)
+![](https://img-blog.csdnimg.cn/direct/58f449346fde46999aeb856ebd23ad29.png)
 
 CSS 三角是怎么来的？原理如下：
 
@@ -368,7 +368,7 @@ CSS 三角是怎么来的？原理如下：
 </html>
 ```
 
-![](mark-img/20210420104336278.png)
+![](https://img-blog.csdnimg.cn/direct/6cb09591d5324c2686a5374f98651e72.png)
 
 # 四、CSS用户界面样式
 
@@ -422,7 +422,7 @@ li { cursor: pointer; }
 </html>
 ```
 
-![](mark-img/2021042011003289.gif)
+![](https://img-blog.csdnimg.cn/direct/fd43df7a074e4b7ba1f0d116dfc6c203.png)
 
 ## 4.3 轮廓线 outline
 
@@ -434,7 +434,7 @@ input { outline: none; }
 
 默认样式：
 
-![](mark-img/20210420111135354.gif)
+![](https://img-blog.csdnimg.cn/direct/9ed43ac11dca49c98a9ab0db69e3e939.png)
 
 修改后样式：
 
@@ -463,7 +463,7 @@ input { outline: none; }
 </html>
 ```
 
-![](mark-img/20210420111315285.gif)
+![](https://img-blog.csdnimg.cn/direct/f08510932d134260af53f68b0b59a566.png)
 
 ## 4.4 防止拖拽文本域 resize
 
@@ -475,7 +475,7 @@ textarea { resize: none; }
 
 默认样式：
 
-![](mark-img/2021042011203862.gif)
+![](https://img-blog.csdnimg.cn/direct/c3f7cdae998542279290006bcfd216f3.png)
 
 修改后样式：
 
@@ -508,7 +508,7 @@ textarea { resize: none; }
 </html>
 ```
 
-![](mark-img/202104201120370.gif)
+![](https://img-blog.csdnimg.cn/direct/762b516df74a4811b0201a9a061795b1.png)
 
 # 五、vertical-align 属性应用
 
@@ -529,7 +529,7 @@ vertical-align: baseline | top | middle | bottom
 | `middle`   | 把此元素放置在父元素的中部             |
 | `bottom`   | 把元素的顶端与行中最低的元素的顶端对齐 |
 
-![](mark-img/20210420124542850.png)
+![](https://img-blog.csdnimg.cn/direct/7fa3ff62dcb742ddaf98a5993136896f.png)
 
 ## 5.1 图片、表单和文字对齐
 
@@ -570,7 +570,7 @@ vertical-align: baseline | top | middle | bottom
 </html>
 ```
 
-![](mark-img/20210420124932560.png)
+![](https://img-blog.csdnimg.cn/direct/01e19a81c3284024920614520afb0513.png)
 
 > 运用重点：
 >
@@ -580,7 +580,7 @@ vertical-align: baseline | top | middle | bottom
 
 图片底侧会有一个空白缝隙，原因是行内块元素会和文字的基线对齐。
 
-![](mark-img/20210420125635475.png)
+![](https://img-blog.csdnimg.cn/direct/3e2baf808aeb426993c83525d96869e9.png)
 
 主要解决方法有两种：
 
@@ -617,7 +617,7 @@ vertical-align: baseline | top | middle | bottom
 </html>
 ```
 
-![](mark-img/20210420125750954.png)
+![](https://img-blog.csdnimg.cn/direct/2c2d1fdd267747e891b2a8535190b2f6.png)
 
 # 六、溢出的文字省略号显示
 
@@ -672,7 +672,7 @@ text-overflow: ellipsis;
 </html>
 ```
 
-![](mark-img/20210420132753998.png)
+![](https://img-blog.csdnimg.cn/direct/04afe90187bd4374b33fd475365ab856.png)
 
 ## 6.2 多行文本溢出省略号显示
 
@@ -731,4 +731,4 @@ display: -webkit-box;
 
 Chrome 浏览器效果：
 
-![](mark-img/20210420132822674.png)
+![](https://img-blog.csdnimg.cn/direct/78d1cedeba8f40ffadc1cfbd1debe1f7.png)

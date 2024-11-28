@@ -139,7 +139,7 @@ HTML 标签通常是成对出现的，例如：`<html>` 和 `</html>`，我们�
 
 **网页 title 示例：**
 
-![](mark-img/image-20220115163652252.png)
+![](https://img-blog.csdnimg.cn/direct/3544462709e741d683c95204a979cad1.png)
 
 ## 2.3 网页开发工具
 
@@ -274,7 +274,7 @@ HTML 提供了 6 个等级的网页标题，即：`<h1>` 到 `<h6>`。
 <h6>六级标题</h6>
 ```
 
-<img src="mark-img/image-20220115165012637.png" style="width: 30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5ba7a2c19eb447b5957fb3c2b532d8fa.png" style="width: 30%;" />
 
 > 单词 head 的缩写，意为：头部、标题。
 
@@ -311,7 +311,7 @@ HTML 提供了 6 个等级的网页标题，即：`<h1>` 到 `<h6>`。
 
 - 同一段落里的不同行文字之间也有一定的空隙（行间距）
 
-![](mark-img/d9b00c3588a14988a0eee7baf8782ca3.png)
+![](https://img-blog.csdnimg.cn/direct/35a9780ebd0b49aeb7643805a8690b3d.png)
 
 在 HTML 中，一个段落中的文字会从左到右依次排列，直到浏览器窗口的右端，然后才自动换行。
 
@@ -337,7 +337,7 @@ HTML 提供了 6 个等级的网页标题，即：`<h1>` 到 `<h6>`。
 <!-- 某些时候需要对内容块进行分割时会用到分割线标签 -->
 ```
 
-![](mark-img/2d74ab3a559a4df5b69a32aa0bc5dd09.png)
+![](https://img-blog.csdnimg.cn/direct/e590a07ee17148349f4b1bfc7128bf57.png)
 
 > 注意：实际开发中并不常用 hr 作为分割线，而是使用 CSS 盒子模型中的边框来实现分割线效果，或是利用一个空盒子设置长宽高及背景颜色来实现分割线效果。
 
@@ -511,7 +511,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 
 ## 2.6 表格标签
 
-![](mark-img/image-20220121161018164.png)
+![](https://img-blog.csdnimg.cn/direct/2c8530349bec490f876504fd8a33adb6.png)
 
 ### 2.6.1 表格的主要作用
 
@@ -666,7 +666,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 </html>
 ```
 
-<img src="mark-img/20210405002235373.jpg" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/108e0110e0b846d7af32d242aef8c848.png" style="width:50%;" />
 
 【综合案例】
 
@@ -718,7 +718,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 </html>
 ```
 
-![](mark-img/699b0d89c1727c05e1a200e21867c8e5-16422502360695.png)
+![](https://img-blog.csdnimg.cn/direct/29715452b81c4fdf826d9696148b4b3a.png)
 
 ## 2.7 列表标签
 
@@ -742,19 +742,19 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 
 - 无序列表
 
-![](mark-img/20210405004003554.jpg)
+![](https://img-blog.csdnimg.cn/direct/097c246fe486417b96058b6773f36203.png)
 
-![](mark-img/20210405004003542.jpg)
+![](https://img-blog.csdnimg.cn/direct/43671071418941e5a8ff18f272510f67.png)
 
 - 有序列表
 
 > 注意：微博热搜是为方便理解举例，实际上此处并非使用有序列表！
 
-![](mark-img/20210405004003545.jpg)
+![](https://img-blog.csdnimg.cn/direct/66c7ed6c85154c28acbe186c8ae887fd.png)
 
 - 自定义列表
 
-![](mark-img/20210405004003460.jpg)
+![](https://img-blog.csdnimg.cn/direct/527c0fa1317e490a8acd3b71fa86fa27.png)
 
 ### 2.7.1 无序列表
 
@@ -776,7 +776,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 - `<li>` 与 `</li>` 之间相当于一个容器，可以容纳所有的元素
 - 无序列表会带有自己的样式属性（比如圆点），但在实际开发中，我们会使用 CSS 来设置
 
-<img src="mark-img/20210409111633420-16422555387621.jpg" style="width:30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/086498047e724247a87829611a74e16f.png" style="width:30%;" />
 
 > 附：去除 li 前符号的方法：`style="list-style: none;"`
 
@@ -801,7 +801,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 - `<li>` 与 `</li>` 之间相当于一个容器，可以容纳所有的元素
 - 有序列表会带有自己样式属性（比如序号），但在实际使用时，我们会使用 CSS 来设置
 
-<img src="mark-img/20210409111633549-16422555479543.jpg" style="width:30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/841025b3867d43dda5384b834b604d25.png" style="width:30%;" />
 
 > 附：去除 li 前符号的方法：`style="list-style: none;"`
 
@@ -828,7 +828,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 - `<dl>` `</dl>` 里面只包含 `<dt>`、`<dd>`
 - `<dt>` 和 `<dd>` 个数没有限制，经常是一个 `<dt>` 对应多个 `<dd>`
 
-<img src="mark-img/20210409111710669-16422555546745.jpg" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/df73e101446846db83a5127a9d6a0ac5.png" style="zoom:50%;" />
 
 ## 2.8 表单标签
 
@@ -910,9 +910,9 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 </html>
 ```
 
-<img src="mark-img/06b66d16e62dca2951179ec536cc484a.png" style="width:60%;" />
+<img src="https://img-blog.csdnimg.cn/direct/94dbaa3205fc470e98622c4a675389c3.png" style="width:60%;" />
 
-<img src="mark-img/a280fd4d6fbdc45784adf7627e4a679e.png" style="width:60%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6f1650caf3634e58a89d86e01d6c67af.png" style="width:60%;" />
 
 【POST案例】
 
@@ -937,9 +937,9 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 </html>
 ```
 
-<img src="mark-img/06b66d16e62dca2951179ec536cc484a-164225152462516.png" style="width:60%;" />
+<img src="https://img-blog.csdnimg.cn/direct/92a17cbd0dd0494c896299db9f35b468.png" style="width:60%;" />
 
-<img src="mark-img/2666b32b23643c2c8959491a1989a5af.png" style="width:60%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3c7173f0d3844c35a2b523bfa5bd9e25.png" style="width:60%;" />
 
 ### 2.8.4 表单控件（表单元素）
 
@@ -1013,9 +1013,9 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 > </html>
 > ```
 >
-> <img src="mark-img/685d11e4bfbb4d8094e722211359c634.png" style="width:60%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/c04c85cc54674ee09694cad4350730f0.png" style="width:60%;" />
 >
-> <img src="mark-img/e6d3e820f2a14536b44b4dec9b7ab3c1.png" style="width:60%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/5c0e8bbc734a430ab9528cb3fa305ff1.png" style="width:60%;" />
 
 **除 type 属性外，`<input>` 标签还有很多其他属性，其常用属性如下：**
 
@@ -1096,7 +1096,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 
 **核心：** `<label>` 标签的 for 属性应当与相关元素的 id 属性相同。
 
-<img src="mark-img/20210409111229906-164225496209822.gif" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/91dd5215b90145e0a85df0186241216c.png" style="zoom:50%;" />
 
 **（2）\<select> 表单元素**
 
@@ -1330,11 +1330,11 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 
 **效果：**
 
-<img src="mark-img/2021040501112593-164225533222026.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1c52ffd7e8774f73ab02dd4e88ce6641.png" style="width:50%;" />
 
 **本质：**
 
-<img src="mark-img/20210405011125140-16422553843201.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/92bacd5a088147a4977f9717624ef9eb.png" style="width:50%;" />
 
 ## 2.10 内联框架
 
@@ -1362,7 +1362,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 <iframe src="https://www.bilibili.com/" width="70%" height="500px"></iframe>
 ```
 
-![](mark-img/image-20220121173139191.png)
+![](https://img-blog.csdnimg.cn/direct/258501446fa3420fb9dcfd4048d07e2a.png)
 
 > **提示：**您可以把需要的文本放置在 `<iframe>` 和 `</iframe>` 之间，这样就可以应对不支持 `<iframe>` 的浏览器。
 >
@@ -1397,7 +1397,7 @@ HTML 中的注释以：`<!--` 开头，以 `-->` 结束。
 
 SEO（Search Engine Optimization）：汉译为**搜索引擎优化**。是一种方式：利用[搜索引擎](https://baike.baidu.com/item/搜索引擎/104812)的规则提高网站在有关搜索引擎内的[自然排名](https://baike.baidu.com/item/自然排名/2092669)。目的是让其在行业内占据领先地位，获得[品牌](https://baike.baidu.com/item/品牌/235720)收益。很大程度上是网站经营者的一种商业行为，将自己或自己公司的排名前移。（百度百科）
 
-![](mark-img/image-20220214165430495.png)
+![](https://img-blog.csdnimg.cn/direct/bfeba8c407864fc48bc953ea4f13970b.png)
 
 > 外链：链接到外部网页的链接，外链不是越多越好，而是外链的质量越高、越合理、越方便越好。
 >

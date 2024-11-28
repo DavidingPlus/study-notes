@@ -24,9 +24,9 @@
 
 CSS 盒子模型本质上是一个盒子，封装周围的 HTML 元素，它包括：`外边距`、`边框`、`内边距`、和 `内容`。
 
-![](mark-img/20210406122442654.png)
+![](https://img-blog.csdnimg.cn/direct/83f05d567d384d72bad0a5c5e9d8f519.png)
 
-![](mark-img/v2-6cbd8a1b054611f584f56ce791739a3f_1440w.jpg)
+![](https://img-blog.csdnimg.cn/direct/aa0d0a73e68241548393bff6ea675488.png)
 
 # 三、边框（border）
 
@@ -104,7 +104,7 @@ border-top: 1px solid red; 		/* 只设定上边框，其余同理 */
 </html>
 ```
 
-<img src="mark-img/20210406123444188.jpg" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f7d7026b60b54a9e9d0e39871acd74bd.png" style="width:50%;" />
 
 ## 3.1 表格的细线边框
 
@@ -210,7 +210,7 @@ border-top: 1px solid red; 		/* 只设定上边框，其余同理 */
 </html>
 ```
 
-![](mark-img/image-20220116025240291.png)
+![](https://img-blog.csdnimg.cn/direct/e1d9c428474e428497b4e2e6a3f046f0.png)
 
 `border-collapse` 属性控制浏览器绘制表格边框的方式。
 
@@ -237,7 +237,7 @@ th {
 }
 ```
 
-![](mark-img/image-20220116025315666.png)
+![](https://img-blog.csdnimg.cn/direct/bb8a1e5a98ee4748b3b1ae95e5a70b30.png)
 
 ## 3.2 边框会影响盒子实际大小
 
@@ -311,7 +311,7 @@ th {
 </html>
 ```
 
-![](mark-img/20210406125405658.gif)
+![](https://img-blog.csdnimg.cn/direct/621f75463dc84f858a593fba2a60f428.png)
 
 # 四、内边距（padding）
 
@@ -375,7 +375,7 @@ padding 属性（简写属性）可以有一到四个值。
 </html>
 ```
 
-<img src="mark-img/00914ec7f1e04382af64f589013d6d59.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e6f80113d2db4bfbbb72ed499fc82ce9.png" style="width:50%;" />
 
 ```html
 <!doctype html>
@@ -403,7 +403,7 @@ padding 属性（简写属性）可以有一到四个值。
 </html>
 ```
 
-<img src="mark-img/6d3ff73d65154f358ba03b447f9daec8.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1ab330840d2f458cb234ba0cf2448239.png" style="width:50%;" />
 
 案例：
 
@@ -447,7 +447,7 @@ padding 属性（简写属性）可以有一到四个值。
 
 padding 的使用技巧：
 
-![](mark-img/20210406131156754.jpg)
+![](https://img-blog.csdnimg.cn/direct/ee7fb47281b849afb0a1479521be43af.png)
 
 ```html
 <!doctype html>
@@ -501,7 +501,7 @@ padding 的使用技巧：
 </html>
 ```
 
-![](mark-img/20210406131403183.gif)
+![](https://img-blog.csdnimg.cn/direct/96c0b2e88175406bb879bd0eef080dd5.png)
 
 ```html
 <!doctype html>
@@ -548,7 +548,7 @@ padding 的使用技巧：
 </html>
 ```
 
-<img src="mark-img/20210406132137553.gif" style="width:40%;" />
+<img src="https://img-blog.csdnimg.cn/direct/7d09635798c1465aad1cdb6e2f94ba28.png" style="width:40%;" />
 
 # 五、外边距（margin）
 
@@ -620,7 +620,7 @@ padding 的使用技巧：
 </html>
 ```
 
-<img src="mark-img/20210406133231459.jpg" style="width:30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/7122894c81514145bfb548c68f4ab3d6.png" style="width:30%;" />
 
 ```html
 <!doctype html>
@@ -649,7 +649,7 @@ padding 的使用技巧：
 </html>
 ```
 
-![](mark-img/20210406133231524.jpg)
+![](https://img-blog.csdnimg.cn/direct/08bd311a94cc48b2b26e38b6b3eb2d8b.png)
 
 ```html
 <!doctype html>
@@ -691,7 +691,7 @@ padding 的使用技巧：
 </html>
 ```
 
-![](mark-img/20210406133231531.jpg)
+![](https://img-blog.csdnimg.cn/direct/e541a10734974f4ba9f81b2cc7aeb08f.png)
 
 ## 5.1 外边距合并
 
@@ -708,9 +708,9 @@ padding 的使用技巧：
 
 当上下相邻的两个块元素（兄弟关系）相遇时，如果上面的元素有下外边距 `margin-bottom`，下面的元素有上外边距 `margin-top` ，则他们之间的垂直间距不是 `margin-bottom` 与 `margin-top` 之和。而是取两个值中的**较大者**，这种现象被称为相邻块元素垂直外边距的合并（准确的描述应该是：**大的外边距覆盖小的**）。
 
-![](mark-img/20210406134634404.jpg)
+![](https://img-blog.csdnimg.cn/direct/e41e57d3f3e2409d8f4feb3fb92ca2c0.png)
 
-![](mark-img/20210412112840415.jpg)
+![](https://img-blog.csdnimg.cn/direct/2629f5cea8dd49658aba5bd0450d907e.png)
 
 **解决方案：**
 
@@ -750,15 +750,15 @@ padding 的使用技巧：
 </html>
 ```
 
-![](mark-img/20210410205508662.gif)
+![](https://img-blog.csdnimg.cn/direct/fcf59d8a7b1747df8567a4098a320679.png)
 
 ### 5.1.2 嵌套块元素垂直外边距的塌陷
 
 对于两个嵌套关系（父子关系）的块元素，当子元素有上外边距，此时父元素会塌陷较大的外边距值（**外边距效果显示在父元素之上**）。
 
-![](mark-img/image-20220116024700165.png)
+![](https://img-blog.csdnimg.cn/direct/d40271c08db34dbe97060a5d3be41665.png)
 
-![](mark-img/20210412112840510.jpg)
+![](https://img-blog.csdnimg.cn/direct/2fc2694d3e8b49aaa7da41a5439e3054.png)
 
 **解决方案：**
 
@@ -805,7 +805,7 @@ padding 的使用技巧：
 </html>
 ```
 
-![](mark-img/20210410205223833.gif)
+![](https://img-blog.csdnimg.cn/direct/e639ea06ab5148a4a571a2d3420f4c03.png)
 
 ---
 
@@ -846,7 +846,7 @@ padding 的使用技巧：
 </html>
 ```
 
-<img src="mark-img/20210406134634343-164227252890423.jpg" style="width:40%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d38186be49a9478aa51d1b976735a535.png" style="width:40%;" />
 
 **注意：外边距的合并在利用盒子布局页面的时候是经常发生的！**
 
@@ -865,7 +865,7 @@ padding 的使用技巧：
 
 # 七、案例
 
-![](mark-img/20210406135403826.jpg)
+![](https://img-blog.csdnimg.cn/direct/04590bb1d0ae4eb194fed4a273e0db97.png)
 
 ```html
 <!doctype html>
@@ -963,7 +963,7 @@ padding 的使用技巧：
 </html>
 ```
 
-<img src="mark-img/20210406135403703.jpg" style="width:30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c556534d25264bb7b1a8cced434a020e.png" style="width:30%;" />
 
 ```html
 <!doctype html>
@@ -1042,7 +1042,7 @@ padding 的使用技巧：
 </html>
 ```
 
-<img src="mark-img/20210406135403715.gif" style="width:40%;" />
+<img src="https://img-blog.csdnimg.cn/direct/aeac5dfb637348139b7269017c61629d.png" style="width:40%;" />
 
 # 八、总结
 

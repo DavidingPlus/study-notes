@@ -39,7 +39,7 @@ typeof 5;		  // number
 typeof '周吉瑞';	// string
 ```
 
-<img src="mark-img/2d58a5fb189647d5a91ff84ff317f057.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/01d452f01c0143c5b4cd685e5eb2435b.png" style="zoom:50%;" />
 
 > 利用浏览器控制台进行交互测试……
 
@@ -50,7 +50,7 @@ var a = '5';
 console.log(typeof a);
 ```
 
-<img src="mark-img/a9e0293e0228434cb0cd0af7bad15f71.png" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9de68663fe564dda98a5e64373e78db1.png" style="zoom: 67%;" />
 
 > 从以上测试也可以看出，JS 是一个弱类型的语言，变量值是什么类型，那么变量就是什么类型，而不用显式地指出变量的类型。
 
@@ -80,7 +80,7 @@ typeof -24; // number
 
 在表达小数的时候，整数个位的 `0` 可以省略。
 
-<img src="mark-img/8c25035cbf374017bff1fe6d65c24cce.png" style="zoom: 67%;" />
+<img src="https://img-blog.csdnimg.cn/direct/569acdb914834531b91cd510a41c6400.png" style="zoom: 67%;" />
 
 ## 2.3 科学计数法
 
@@ -94,7 +94,7 @@ typeof 3e8;		// number
 typeof 3e-4;	// number
 ```
 
-<img src="mark-img/780e65666c1c45eb8e6c9e08565464e8.png" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4159e4ab0417415aa5f78c0c87a9f23d.png" style="zoom: 33%;" />
 
 ## 2.4 不同进制的数字
 
@@ -600,11 +600,11 @@ String(null);		// 'null'
 
 > 纯数字不能直接 “打点” 调用 toString() 方法，要把纯数字用 `()` 包裹起来，此时 JS 会提升该数字为一个 Number 对象（包装对象）
 
-<img src="mark-img/878d37e5173e437da326d2feedf9fbb7.png" style="zoom: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d93c26fe79ba480eb6086480f7a4d781.png" style="zoom: 33%;" />
 
 > toString() 方法依旧是返回一个字符串，并不改变变量原有的类型！
 
-<img src="mark-img/8a39843577404c8fb96839908c5c6def.png" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6767dfb06b1a4f4b9245b69dd4553470.png" style="zoom:50%;" />
 
 ## 7.3 其他值 ——> 布尔值
 

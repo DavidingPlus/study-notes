@@ -123,7 +123,7 @@
 </html>
 ```
 
-<img src="mark-img/2021041022482559.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cdf17298f9014871910c9b0bd3627e4f.png" style="width:50%;" />
 
 ## 1.5 绝对定位 absolute（重要）
 
@@ -183,7 +183,7 @@
 </html>
 ```
 
-<img src="mark-img/20210410225323359.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/17ee63e5358c4107b20e204dcaf9743b.png" style="width:50%;" />
 
 ---
 
@@ -228,7 +228,7 @@
 </html>
 ```
 
-<img src="mark-img/20210410225829682.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/034767b129a2473db565c13904f74a69.png" style="width:50%;" />
 
 ---
 
@@ -280,7 +280,7 @@
 </html>
 ```
 
-<img src="mark-img/20210410230310223.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/98eeed455b34409da81e17ac660e766f.png" style="width:50%;" />
 
 ---
 
@@ -329,7 +329,7 @@
 </html>
 ```
 
-<img src="mark-img/20210410231150803.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/bc147c3fac384786983fc267dee5f1ad.png" style="width:50%;" />
 
 **问题：**
 
@@ -356,7 +356,7 @@
 
 答案：用浮动做某些布局远远没有定位简单和方便！例如，轮播图。
 
-<img src="mark-img/20210410231958333-164233328088033.jpg" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/2fc3074bf349415287086870774d538d.png" style="width:50%;" />
 
 - 左右两边的图片切换按钮，利用浮动也可以做。但是，假如放置图片的盒子是在切换按钮之前添加的，那么根据浮动元素只能影响后面盒子的特性，切换按钮就只可能在图片底部之下，不可能浮于图片之上！
 - 就算切换按钮用浮动实现了，但是左下角的轮播序号点图如果也用浮动实现，结果就是轮播序号点图会与切换按钮在一行并排浮动！
@@ -431,7 +431,7 @@
 }
 ```
 
-![](mark-img/20210411001207402.jpg)
+![](https://img-blog.csdnimg.cn/direct/5c35c9cdfab046c98a1ebaed789e4a2f.png)
 
 ## 1.7 固定定位 fixed （重要）
 
@@ -455,7 +455,7 @@
 
 应用举例：
 
-<img src="mark-img/20210411000419348.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e190df7a28c7460082d23d53adbf89c1.png" style="width:50%;" />
 
 ```html
 <!doctype html>
@@ -537,7 +537,7 @@
 </html>
 ```
 
-<img src="mark-img/20210411002138603.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/14c6484c3152470ab505c76e14b7d7ee.png" style="width:50%;" />
 
 ## 1.8 固定定位小技巧：固定在版心右侧位置
 
@@ -587,7 +587,7 @@
 </html>
 ```
 
-![](mark-img/20210411002750577.gif)
+![](https://img-blog.csdnimg.cn/direct/7f86a6e1e1b6412293a0cf1e0c75f356.png)
 
 ## 1.9 粘性定位 sticky（了解）
 
@@ -613,7 +613,7 @@ Sticky 粘性的。
 
 应用举例：
 
-<img src="mark-img/20210411000442416.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9587e6f9e1264d31abf492e1cbb9800f.png" style="width:50%;" />
 
 ```html
 <!doctype html>
@@ -648,9 +648,9 @@ Sticky 粘性的。
 </html>
 ```
 
-![](mark-img/20210411003401335.gif)
+![](https://img-blog.csdnimg.cn/direct/6255a661d9524d8da2a790d9a3128ac9.png)
 
-![](mark-img/a6b709f41c9f42558b8d6870202bc171.gif)
+![](https://img-blog.csdnimg.cn/direct/0f198a7fa945464d8af9879beac900dc.png)
 
 ## 1.10 定位的总结
 
@@ -723,7 +723,7 @@ Sticky 粘性的。
 </html>
 ```
 
-![](mark-img/20210411004813982.jpg)
+![](https://img-blog.csdnimg.cn/direct/eb1a914e9bfe4d58ba8e07da38df6621.png)
 
 **（2）定位特殊特性**
 
@@ -766,7 +766,7 @@ Sticky 粘性的。
 </html>
 ```
 
-![](mark-img/20210411005338704.jpg)
+![](https://img-blog.csdnimg.cn/direct/2a195d98629e44db81d7522504ebc38d.png)
 
 **（3）脱标的盒子不会触发外边距塌陷**
 
@@ -810,7 +810,7 @@ Sticky 粘性的。
 </html>
 ```
 
-![](mark-img/20210411005813237.jpg)
+![](https://img-blog.csdnimg.cn/direct/2aa0d8d821cc4a5b8296d2f8f610ad37.png)
 
 ---
 
@@ -844,17 +844,17 @@ Sticky 粘性的。
 </html>
 ```
 
-![](mark-img/20210411005914370.jpg)
+![](https://img-blog.csdnimg.cn/direct/fa5703094401412ea120628edc374fd4.png)
 
 # 二、综合案例
 
 **【案例：淘宝焦点图布局】**
 
-![](mark-img/20210411010357458.jpg)
+![](https://img-blog.csdnimg.cn/direct/f93bc583a42b460c941671e28436229e.png)
 
 布局分析：
 
-![](mark-img/20210411010357453.jpg)
+![](https://img-blog.csdnimg.cn/direct/a2e5aa6285014af795d9bd8bd12d39f5.png)
 
 制作：
 
@@ -977,7 +977,7 @@ Sticky 粘性的。
 </html>
 ```
 
-![](mark-img/20210411010727218.jpg)
+![](https://img-blog.csdnimg.cn/direct/58769d31769247d395a37653658b7038.png)
 
 # 三、网页布局总结
 
@@ -1059,7 +1059,7 @@ display 隐藏元素后，不再占有原来的位置（**脱标**）。
 </html>
 ```
 
-![](mark-img/2021041101335757.gif)
+![](https://img-blog.csdnimg.cn/direct/a75369fa3d534046a711758fe2bedadd.png)
 
 ---
 
@@ -1098,7 +1098,7 @@ display 隐藏元素后，不再占有原来的位置（**脱标**）。
 </html>
 ```
 
-![](mark-img/20210411013334551.gif)
+![](https://img-blog.csdnimg.cn/direct/24538c3633c441e88b23841336f6b666.png)
 
 ## 4.2 visibility 可见性
 
@@ -1147,7 +1147,7 @@ visibility **隐藏元素后，继续占有原来的位置**。
 </html>
 ```
 
-![](mark-img/20210411013759206.gif)
+![](https://img-blog.csdnimg.cn/direct/92906c72ece0482db9a59e9839aa1255.png)
 
 ## 4.3 overflow 溢出
 
@@ -1203,7 +1203,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411015310864.jpg)
+![](https://img-blog.csdnimg.cn/direct/5421a184012c497887c1991378ebbbe3.png)
 
 ---
 
@@ -1246,7 +1246,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411015310864-164232733571925.jpg)
+![](https://img-blog.csdnimg.cn/direct/ab7ea201c0d845479c704d35e6b4234a.png)
 
 ---
 
@@ -1289,7 +1289,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411015442418.jpg)
+![](https://img-blog.csdnimg.cn/direct/971197c26e794251a15024a33582df5b.png)
 
 ---
 
@@ -1332,7 +1332,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411015532804.jpg)
+![](https://img-blog.csdnimg.cn/direct/ba15540f712d4e7fb728d1768911d8dd.png)
 
 ---
 
@@ -1372,7 +1372,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411015657674.jpg)
+![](https://img-blog.csdnimg.cn/direct/8667778873874b37a81114b3910c0340.png)
 
 ---
 
@@ -1415,7 +1415,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/2021041101581715.jpg)
+![](https://img-blog.csdnimg.cn/direct/49e2095a466c459a9b59090999163607.png)
 
 ---
 
@@ -1455,7 +1455,7 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411015908937.jpg)
+![](https://img-blog.csdnimg.cn/direct/406e8be0e25e41609fde1b511a2cbd83.png)
 
 ## 4.4 总结
 
@@ -1527,4 +1527,4 @@ overflow 属性指定了如果内容溢出一个元素的框（**超过其指定
 </html>
 ```
 
-![](mark-img/20210411020723514.gif)
+![](https://img-blog.csdnimg.cn/direct/86c8374344ca4ee5b04fe0d868f2cd88.png)

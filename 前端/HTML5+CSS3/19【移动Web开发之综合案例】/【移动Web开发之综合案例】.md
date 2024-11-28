@@ -201,7 +201,7 @@ git 可以把我们的本地网站提交上传到远程仓库（码云 gitee）�
 
 - 项目结构
 
-<img src="mark-img/59ed503bf6b34ef6ad667adf4ecb9af7.png" style="zoom: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c6fbf2afacf8401aa1e5415fdfdadfc7.png" style="zoom: 50%;" />
 
 - index.less
 
@@ -681,4 +681,4 @@ a {
 
 - 效果图
 
-<img src="mark-img/d8f84eb44a8a4414aae4bae285eaf186.gif" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e6564c1516144ae590c8f5ab94e9fc25.png" style="zoom:50%;" />
