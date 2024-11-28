@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 13ca1b18
 date: 2024-04-24 20:15:00
-updated: 2024-11-25 20:05:00
+updated: 2024-11-28 20:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -90,4 +90,5 @@ updated: 2024-11-25 20:05:00
 - git lfs 的使用: [https://zhuanlan.zhihu.com/p/106295945](https://zhuanlan.zhihu.com/p/106295945)
 - git 项目文件大小优化（去除大文件）：[https://www.cnblogs.com/fuhua/p/15527023.html](https://www.cnblogs.com/fuhua/p/15527023.html)
   - 注意 git rev-list 和 git filter-branch 命令是可以指定分支的。默认是全部分支，也就是 --all。如果需要指定分支将 --all 替换为对应分支即可，例如 master。这样可以过滤非必要分支，例如 gh-pages。
+  - 移除某个目录下所有文件的引用，命令 `git filter-branch --force --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch report/app/public/pdf/*.*' --tag-name-filter cat -- --all` 中 `*.*` 建议替换为 `*` 防止无法匹配无后缀的文件，例如 Makefile。另外例如想要匹配任何目录下名为 images 的目录可使用 `*/images/*`。
 
