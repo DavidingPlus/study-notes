@@ -250,7 +250,7 @@ console.log(imObj.age);				// 18
 // export default 也同样有效：imObj.default
 ```
 
-<img src="mark-img/image-20220602154710981.png" alt="image-20220602154710981" style="width:40%;" />
+<img src="https://img-blog.csdnimg.cn/direct/258e1bf6e50a439088122a89649e1617.png" alt="image-20220602154710981" style="width:40%;" />
 
 **（5）同时导入**
 
@@ -386,7 +386,7 @@ Node.js 中文官网：[Node.js (nodejs.org)](https://nodejs.org/zh-cn/)
 
 - 确认配置并正式生成项目
 
-<img src="mark-img/image-20220604001956543.png" alt="image-20220604001956543" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/02f3e11b83764fda9e735e134b6f7689.png" alt="image-20220604001956543" style="width:80%;" />
 
 > 我们也可以用 `npm init -y` -y 就是 yes 的意思，可以省去敲击回车的操作！
 
@@ -418,9 +418,9 @@ Node.js 中文官网：[Node.js (nodejs.org)](https://nodejs.org/zh-cn/)
 
 当我们安装成功后，会得到一个依赖及包代码的放置目录和两个 json 文件，其中 package.json 文件会新增一个 `devDependencies` （开发依赖）属性，并记录下我们的安装记录。
 
-<img src="mark-img/image-20220604003001083.png" alt="image-20220604003001083" style="width:30%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cabef339b7e84bf0a3911e666d93e1d0.png" alt="image-20220604003001083" style="width:30%;" />
 
-<img src="mark-img/image-20220604002444370.png" alt="image-20220604002444370" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a21f9c3e840e4851b75b58a98eb1ca39.png" alt="image-20220604002444370" style="width:80%;" />
 
 - @babel/cli：CLI 中使用 Babel 必须的包，实现了命令行中 Babel 命令的识别与执行等
 - @babel/core：Babel 中用于完成 “发号施令” 的包，即：指挥控制其它 Babel 包的行为
@@ -505,7 +505,7 @@ Webpack 根据配置中的入口信息，先找到打包入口（一般是一个
 
 [webpack 中文文档 | webpack 中文网 (webpackjs.com)](https://www.webpackjs.com/)
 
-<img src="mark-img/image-20230127105737221.png" alt="image-20230127105737221" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/514b43249b6444d49439fe8722ceefb6.png" alt="image-20230127105737221" style="width:80%;" />
 
 ## 2.5 Webpack初体验
 
@@ -1170,7 +1170,7 @@ body {
 
 - `npm run webpack`
 
-<img src="mark-img/image-20220716214929353.png" alt="image-20220716214929353" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/066884af5f4f4015be910f420426422c.png" alt="image-20220716214929353" style="width:80%;" />
 
 可见，css 以 `<style>` 的方式引入了 HTML 中！
 
@@ -1235,7 +1235,7 @@ module.exports = {
 
 再次 `npm run webpack`：
 
-<img src="mark-img/image-20220717000236167.png" alt="image-20220717000236167" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b65c40bc179a4fe395fa53d644243c6a.png" alt="image-20220717000236167" style="width:80%;" />
 
 ## 2.10 处理CSS图片
 
@@ -1250,7 +1250,7 @@ body {
 
 - `npm run webpack`
 
-<img src="mark-img/image-20220717002428302.png" alt="image-20220717002428302" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/730befd3018c4277977627e40e91c060.png" alt="image-20220717002428302" style="width:80%;" />
 
 乍一看，一切正常啊！确实默认可以处理 CSS 图片啊！为什么还要单独讲解如何处理 CSS 图片呢？这是因为上面的例子中 CSS 的图片是一个网络地址的图片，而 webpack 本身就不会处理网络的内容，只会对本地的内容进行处理，网络的内容没有任何的影响，而当我们把图片地址换成一个本地图片时：
 
@@ -1263,7 +1263,7 @@ body {
 }
 ```
 
-<img src="mark-img/image-20220717003134658.png" alt="image-20220717003134658" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/15a5e2481408443ea9bdbfaa132a8de7.png" alt="image-20220717003134658" style="width:80%;" />
 
 webpack 直接报错！因为 webpack 当处理网络内容时直接跳过，而对于本地内容时就要处理，可 webpack 本身并不能处理 css 图片。
 
@@ -1330,7 +1330,7 @@ module.exports = {
 
 - `npm run webpack`
 
-<img src="mark-img/image-20220717004103633.png" alt="image-20220717004103633" style="width:40%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b34c83f015c143b2b2dc8feb9b0edc81.png" alt="image-20220717004103633" style="width:40%;" />
 
 - /dist/css/index.css
 
@@ -1341,7 +1341,7 @@ body {
 }
 ```
 
-<img src="mark-img/image-20220717004339980.png" alt="image-20220717004339980" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e5d1c0dd6fa14ed78889c57704d1ac53.png" alt="image-20220717004339980" style="width:80%;" />
 
 发现图片并没有成功引入，那是因为路径有问题。
 
@@ -1496,7 +1496,7 @@ module.exports = {
 };
 ```
 
-<img src="mark-img/image-20220717005549792.png" alt="image-20220717005549792" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/8074a413591b4cf49d36c600f943e9bd.png" alt="image-20220717005549792" style="width:80%;" />
 
 > 注意：file-loader 的本质是把文件直接进行拷贝并重设地址，不只是对图片有用，对其它文件也有用！
 
@@ -1719,9 +1719,9 @@ module.exports = {
 
 执行 `npm run webpack`：
 
-<img src="mark-img/image-20220717021246176.png" alt="image-20220717021246176" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b5638b18f53b4d7290e5cb89df7e46ae.png" alt="image-20220717021246176" style="width:80%;" />
 
-<img src="mark-img/image-20220717021324142.png" alt="image-20220717021324142" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/635c2c05ad0242d7b5c6d60373706950.png" alt="image-20220717021324142" style="width:80%;" />
 
 ## 2.14 webpack-dev-server
 

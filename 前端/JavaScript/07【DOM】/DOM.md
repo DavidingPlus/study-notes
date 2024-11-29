@@ -37,7 +37,7 @@ DOM 元素/节点：就是渲染到页面上的，一个个的 HTML 标签体（
 
 【DOM】
 
-<img src="mark-img/5782ab2ac7a34aaca8b1380ee9f21089.png" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/36ff498975964540955615bce82bdce0.png" style="width: 50%;" />
 
 > 整个 html 文档就对应一个 document 对象，可以操作 html 文档里面所有的标签及其属性和文本。
 
@@ -405,7 +405,7 @@ querySelector() 方法从 IE8 开始兼容，但从 IE9 开始支持 CSS3 的选
 
 # 五、节点的关系
 
-<img src="mark-img/3c085acf7fcb4bb98af133369c922241.png" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/176878fb20684eacbd3656e0eb971a62.png" style="width: 50%;" />
 
 | 关系           | 考虑所有结点      |
 | -------------- | ----------------- |
@@ -496,11 +496,11 @@ DOM 中，文本节点也属于节点，在使用节点的关系时一定要注�
 
 - 结果
 
-<img src="mark-img/59691c6f0d424e538657b10a99e55a1e.png" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a018ea0f7eac4440b89d98c0f5fad957.png" style="width: 50%;" />
 
 注意：文本也算作节点（如图选中空白部分）
 
-<img src="mark-img/5236374c628640628b2be7c232cd99b7.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/56fd161bf9e34bcfbcdcde052f26ee28.png" style="width:50%;" />
 
 # 六、书写常见的节点关系函数
 
@@ -653,7 +653,7 @@ DOM 中，文本节点也属于节点，在使用节点的关系时一定要注�
 </html>
 ```
 
-<img src="mark-img/5a0f6903a8dc4f35977d19e63360f167.png" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b341e9ee28004c9eba57718505936d6f.png" style="width: 33%;" />
 
 - innerHTML
 
@@ -680,7 +680,7 @@ DOM 中，文本节点也属于节点，在使用节点的关系时一定要注�
 </html>
 ```
 
-<img src="mark-img/93d396b4ae784751b781fb2e9402c53c.png" style="width: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/840443a3d8cb44b4902008bf12dc05c2.png" style="width: 25%;" />
 
 - innerText
 
@@ -706,7 +706,7 @@ DOM 中，文本节点也属于节点，在使用节点的关系时一定要注�
 </html>
 ```
 
-<img src="mark-img/3492cc06309c4c08a156e35cd06eab45.png" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5cd6e03a42f8411d99596ce53578982f.png" style="width: 33%;" />
 
 - innerText
 
@@ -732,7 +732,7 @@ DOM 中，文本节点也属于节点，在使用节点的关系时一定要注�
 </html>
 ```
 
-<img src="mark-img/c8210b44616242fc9b3465ac93d23c23.png" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/7072fc15585b414da6dfad3d45339b16.png" style="width: 33%;" />
 
 ## 7.2 如何改变元素节点的CSS样式
 
@@ -857,7 +857,7 @@ alert(n);
 </html>
 ```
 
-<img src="mark-img/2fba8d550d464f37ae300e2b54eed0ce.png" style="width:35%;" />
+<img src="https://img-blog.csdnimg.cn/direct/38239828cb3b44f88b7c9963bd6183ce.png" style="width:35%;" />
 
 # 八、节点的创建、移动、删除和克隆
 
@@ -915,7 +915,7 @@ var oDiv = document.createElement('div');
 </html>
 ```
 
-<img src="mark-img/e2ffcdd3c509446280c97bc1450c49f3.png" style="width:24%;" />
+<img src="https://img-blog.csdnimg.cn/direct/fe8581810510411e808d29aa664a7434.png" style="width:24%;" />
 
 ### 8.2.2 insertBefore()
 
@@ -958,7 +958,7 @@ var oDiv = document.createElement('div');
 </html>
 ```
 
-<img src="mark-img/de9796a998234c4b9bfaa3bddf70687d.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d285976903fc4b12b8176b86876d7efb.png" style="width:25%;" />
 
 ## 8.3 节点创建小案例
 
@@ -1006,7 +1006,7 @@ var oDiv = document.createElement('div');
 </html>
 ```
 
-<img src="mark-img/260e2e4ae2b54cdcb2e60c6e29a0d9ca.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3a8e34c3e2a2416f974c90d7f30c212e.png" style="width:25%;" />
 
 【九九乘法表】
 
@@ -1055,7 +1055,7 @@ var oDiv = document.createElement('div');
 </html>
 ```
 
-<img src="mark-img/86dcaf404820444abe361c3a5ea4a670.png" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/0fd9c03ed9a64032b8daabf446724b6c.png" style="width: 50%;" />
 
 ## 8.4 移动节点
 
@@ -1107,7 +1107,7 @@ var oDiv = document.createElement('div');
 </html>
 ```
 
-<img src="mark-img/7cd9c894d8e04e0cbb64ce710df9aab6.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/0e211f9be8bf424fb02349c51464783c.png" style="width:25%;" />
 
 ## 8.5 删除节点
 
@@ -1149,7 +1149,7 @@ var oDiv = document.createElement('div');
 </html>
 ```
 
-<img src="mark-img/8ba0e61b217a42a28e3e3ecec215ff58.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e8fb3dc57d374764bc0db367eb11d3f5.png" style="width:25%;" />
 
 ## 8.6 克隆节点
 
@@ -1198,7 +1198,7 @@ var 孤儿节点 = 老节点.cloneNode(true);
 </html>
 ```
 
-<img src="mark-img/fe25a44f19804275a1ff3d8e7a750759.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/dcce25f17ec54a2f9c0f4d73e7673dd6.png" style="width:25%;" />
 
 ```html
 <!DOCTYPE html>
@@ -1232,7 +1232,7 @@ var 孤儿节点 = 老节点.cloneNode(true);
 </html>
 ```
 
-<img src="mark-img/41d2b250d63e4fd3bf14752815602cfe.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/61cbb529ab4c48f2a6091a2a0a8238a4.png" style="width:25%;" />
 
 # 九、事件监听
 
@@ -1468,19 +1468,19 @@ oBox.onclick = fun;
 </html>
 ```
 
-<img src="mark-img/7732a11fa88f4524985552ac4080e6ae.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4d09cdc879af4b9bb8d42d2707220d36.png" style="width:25%;" />
 
-<img src="mark-img/949aed65331840478a6749dac642a196.png" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5e5d73a5bf8f406989ec987c9cc011d8.png" style="width: 50%;" />
 
-<img src="mark-img/87664139d4af41c9b2040f3eca05171e.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/98918589d4a943b9a1efcc308307fb1a.png" style="width:50%;" />
 
 ## 10.1 捕获阶段和冒泡阶段
 
-<img src="mark-img/28a5ea37ffba43a5bf367b9f7033efb8.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/916aa9d57e2a451e97b3d1bfc425977f.png" style="width:50%;" />
 
 ## 10.2 onxxx写法只能监听冒泡阶段
 
-<img src="mark-img/518daf0ad2e94eb09e7545e0eeea489e.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/375773982ffc4baaa81f20958f2b6f3d.png" style="width:50%;" />
 
 ## 10.3 addEventListener()方法
 
@@ -1490,7 +1490,7 @@ oBox.addEventListener('click', function(){}, true);
 
 > Event：事件
 
-<img src="mark-img/8d112b4208944d75bdd3e655b4b8a7b4.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/58f83ec32e4c4c6a89e9a1a6769a53a2.png" style="width:50%;" />
 
 【小案例】
 
@@ -1578,7 +1578,7 @@ oBox.addEventListener('click', function(){}, true);
 </html>
 ```
 
-<img src="mark-img/b1d04ae4a389469cb9612cf9399bd838.png" style="width: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e086c054acc145a0ad99043b532c9423.png" style="width: 25%;" />
 
 【注意事项】
 
@@ -1718,7 +1718,7 @@ oBox.addEventListener('click', function(){}, true);
 </html>
 ```
 
-<img src="mark-img/22f213b615f64aef95c28b60c3fdd260.png" style="width: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d3746c4db96e44418e5879c89d6ce528.png" style="width: 25%;" />
 
 ## 10.4 removeEventListener()方法
 
@@ -1836,15 +1836,15 @@ oBox.onmousemove = function(e) {
 
 - 浏览器
 
-<img src="mark-img/cfd65b2855084028ac209f18da9ab32f.png" style="width:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3ce419a6de8047dbb9def652377dde4f.png" style="width:33%;" />
 
 - 整张网页
 
-<img src="mark-img/b8e255e4f8f54dd4aefd2139a518ceb1.png" style="width:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/2b1e385504a840658d3f6557876bc8c4.png" style="width:33%;" />
 
 - 事件源
 
-<img src="mark-img/96059664dd5e4ceb8535973c9b17dbb5.png" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a6f0e515e0c042648fad27a1e1f118d7.png" style="width: 33%;" />
 
 【小案例】
 
@@ -1900,7 +1900,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/709b6caf822e40e1af8d3b262244d786.gif" style="width: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/97d7933602254310bbb2f6f122eac478.png" style="width: 25%;" />
 
 【注意事项】
 
@@ -1968,7 +1968,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/b64bdf28426a44b79b412db5fb20ccb6.gif" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/fa31f5c8425c40d79bc938417758a86d.png" style="width:25%;" />
 
 ## 11.3 e.charCode和e.keyCode属性
 
@@ -2043,7 +2043,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/99770e9c9af8412ca9db1aa8552d6d83.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5fcdccd4f30f471d8a8543b4d84054b5.png" style="width:50%;" />
 
 【小案例 - 盒子移动】
 
@@ -2114,7 +2114,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/f8a977b365214fbea637f829c704a014.gif" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/84c7bfe2e9ec47eab6c9dc7656e9cec2.png" style="width: 33%;" />
 
 ## 11.4 e.preventDefault()方法
 
@@ -2161,7 +2161,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/27548b611bfe406b957870b4256f655f.gif" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b163fb53b89449cda2ca2b51da68588f.png" style="width: 33%;" />
 
 【小案例2】
 
@@ -2218,7 +2218,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/973fb9858bf542b6815b3b1f2f77249c.gif" style="width: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9fd418f6cf4d481b9c42648fb1894157.png" style="width: 25%;" />
 
 - 阻止事件的 “默认动作” 后
 
@@ -2272,7 +2272,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/5c65bcd5518f4175bd6227fdd767b962.gif" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/95e317d737bf48959420404decb09605.png" style="width:25%;" />
 
 【小案例3】
 
@@ -2312,7 +2312,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/bdde5ade8da44af8aadf8e536e9e5b15.gif" style="width: 33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6f6f09e335ec4738adefd68ce3ddc834.png" style="width: 33%;" />
 
 - 阻止事件的 “默认动作” 后
 
@@ -2349,7 +2349,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/11cf64b786754582bd21671a5b9f92ea.gif" style="width:33%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f80731afa8c64f608e27b98c4eacfe1c.png" style="width:33%;" />
 
 ## 11.5 e.stopPropagation()方法
 
@@ -2395,7 +2395,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/c1b81c5b9a5c4dc98adda42fee50173e.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ae8aa4312e844934a76f6dba436ec5ae.png" style="width:25%;" />
 
 【阻止冒泡】
 
@@ -2439,7 +2439,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/28487ac4a75644d4a968196ebd516961.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/82853efe0b2b4eb19f0fd4d97b93521a.png" style="width:25%;" />
 
 【阻止传播】
 
@@ -2483,7 +2483,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/1d37cdf849424fb5b3eaa0efcee9f424.png" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e40278b0102d48ad9f02bd876d4cbe9d.png" style="width:25%;" />
 
 【小案例】
 
@@ -2543,7 +2543,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/8f0ca4fd795748cf8140bc3b59409d3d.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3a420b7e96c24a67af7a6cdfb554c382.png" style="width:50%;" />
 
 # 十二、事件委托
 
@@ -2659,7 +2659,7 @@ oBox.onmousemove = function(e) {
 
 利用事件冒泡机制，将后代元素事件委托给祖先元素。
 
-<img src="mark-img/ca442d80a9424d399391760d58060803.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/338bb1f71192403cb10ad2492a2cb9a0.png" style="width:50%;" />
 
 ## 12.6 e.target和e.currentTarget属性
 
@@ -2710,7 +2710,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/ee71ffa8650645779a52081ad329d2a7.gif" style="width: 25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/016419b585804be491f3c25b6afb0aba.png" style="width: 25%;" />
 
 ## 12.7 事件委托的使用场景
 
@@ -2776,7 +2776,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/f53b135d49874c24965c6b525aef3f9e.gif" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3111c2429c4745b1a0cfd383b2ee6cb0.png" style="width:25%;" />
 
 【onmouseover】
 
@@ -2828,11 +2828,11 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/1ea54cba540d46efa5eb9bcffab9ec99.gif" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6dedbbfe70984cb99210dabaafe736f2.png" style="width:25%;" />
 
 （2）最内层元素不能再有额外的内层元素了，比如：
 
-<img src="mark-img/9619f89a852d40b2881d7cac91e9fc7f.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f7e2abf61be843b28f922fbdee691821.png" style="width:50%;" />
 
 这会导致点击 li 时效果正常，但是点击 span 时，只有 span 会变色。
 
@@ -2878,7 +2878,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/6ea82efcbc0e431e994f6109e48a3043.gif" style="width:25%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b13c4d9299544e5a8bd7d92fd2d5433b.png" style="width:25%;" />
 
 # 十三、定时器和延时器
 
@@ -2888,7 +2888,7 @@ oBox.onmousemove = function(e) {
 
 > Interval：间隔
 
-<img src="mark-img/4d70d6d2a23e430cb7825498629929bf.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/239528f2333f420d86fe0a9e28baecd5.png" style="width:50%;" />
 
 ```html
 <!DOCTYPE html>
@@ -2913,13 +2913,13 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/75e9d6efb7cf4e0daf0bfbb959bfe9ff.gif" style="width:24%;" />
+<img src="https://img-blog.csdnimg.cn/direct/0b362dd01dcf4b0baf236da7ab099579.png" style="width:24%;" />
 
 ## 13.2 函数的参数
 
 `setInterval()` 函数可以接收第 3、4、…… 个参数，它们将按顺序传入函数。
 
-<img src="mark-img/7af3cab742ca4aa3a12f10f166438cf6.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e36ec2ff6cd342b8abe4297f2e858f3b.png" style="width:50%;" />
 
 ## 13.3 具名函数也可以传入setInterval
 
@@ -2929,13 +2929,13 @@ oBox.onmousemove = function(e) {
 >
 > 匿名函数：无名称的函数。
 
-<img src="mark-img/c99d6095b3c941538c8db2a2c1d75fe3.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f565322cc06c4b71bfa02074e00dd4b9.png" style="width:50%;" />
 
 ## 13.4 清除定时器
 
 `clearInterval()` 函数可以清除一个定时器。
 
-<img src="mark-img/8e6c49ba5a044ddfa7c54741bd69d800.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/94ab4c36a398486ebac2913648fdaab0.png" style="width:50%;" />
 
 ```html
 <!DOCTYPE html>
@@ -2978,13 +2978,13 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-![](mark-img/29a4a59f27474586835c03a03161e6c2.gif)
+![](https://img-blog.csdnimg.cn/direct/a0d03ba00d2f47959a413045a694b22b.png)
 
 但是，此时有一个 BUG，那就是当重复点击时，会发生定时器叠加。
 
 > 定时器叠加：同一时间有多个定时器在同时工作。
 
-![](mark-img/91287644df004f6e9a212bba504d5c24.gif)
+![](https://img-blog.csdnimg.cn/direct/22333d5aab974404baa4ec7dfb44be3c.png)
 
 改进：
 
@@ -3031,13 +3031,13 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-![](mark-img/bda8b440190f4de690e33cedc1bd8d4d.gif)
+![](https://img-blog.csdnimg.cn/direct/2300cf23e0704bf595b02aed3b0e4826.png)
 
 ## 13.5 延时器
 
 `setTimeout()` 函数可以设置一个延时器，当指定时间到了之后，会执行函数一次，不再重复执行。
 
-<img src="mark-img/fddf2a5fc5af41d3892796071e325dbe.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/94d80a883ef548b6bab4036362ce8c2d.png" style="width:50%;" />
 
 ## 13.6 清除延时器
 
@@ -3083,7 +3083,7 @@ oBox.onmousemove = function(e) {
 
 异步（asynchronous）：不会阻塞 CPU 继续执行其他语句，当异步完成时，会执行 “回调函数”（callback）。
 
-<img src="mark-img/e3423b0d66af49b5a113b2fce2c1dc62.png" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/23caf51bcfe4430d848bd196d894e398.png" style="width:50%;" />
 
 ## 13.8 使用定时器实现动画
 
@@ -3141,7 +3141,7 @@ oBox.onmousemove = function(e) {
 </html>
 ```
 
-<img src="mark-img/9cdd8fb6242143858bd1a9df1899ce6f.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/86287d32a4b1469a8d0aa2a989708bbc.png" style="width:50%;" />
 
 使用定时器实现动画较为不便：
 
@@ -3264,17 +3264,17 @@ function 需要节流的函数() {
 </html>
 ```
 
-<img src="mark-img/cd2d762739b64d9b9aeca7bb69a1874b.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/700c80db7d1a45f28896a1fb7e3c2eb7.png" style="width:50%;" />
 
 # 十五、常见动画制作
 
 ## 15.1 动画效果开发1-无缝连续滚动特效
 
-<img src="mark-img/ec75f87bc4aa4922aecb45262157b4b7.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f0031ce619ce43a4a621263885b10e0e.png" style="width:50%;" />
 
 原理:
 
-<img src="mark-img/e97c8629d8a748aba71398b87638d4a3.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/da1151967ca34eab94bea7fb3541b944.png" style="width:50%;" />
 
 代码：
 
@@ -3526,13 +3526,13 @@ function 需要节流的函数() {
 </html>
 ```
 
-<img src="mark-img/73872995bfae4c37bae88638ca30aea9.gif" style="width:70%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3fbe877e70ed4012ae31d72706f96ec1.png" style="width:70%;" />
 
 原理：
 
-<img src="mark-img/410afbfa99594640bf979eff8a62dd9b.gif" style="width:70%;" />
+<img src="https://img-blog.csdnimg.cn/direct/fdc832689ba24c0ebd3f8fee82a9499d.png" style="width:70%;" />
 
-<img src="mark-img/7bd01d838eae44a3ac0e07f2e4b2e013.gif" style="width:70%;" />
+<img src="https://img-blog.csdnimg.cn/direct/526cc088b7fd431aa93ceef4391f586f.png" style="width:70%;" />
 
 ## 15.3 动画效果开发3-呼吸灯轮播图特效
 
@@ -3673,7 +3673,7 @@ function 需要节流的函数() {
 </html>
 ```
 
-<img src="mark-img/6ce3942a0d204578b8025195c37f48aa.gif" style="width:70%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ee34060c8fdc4b699d7e458292f27c47.png" style="width:70%;" />
 
 # 十六、JQuery
 

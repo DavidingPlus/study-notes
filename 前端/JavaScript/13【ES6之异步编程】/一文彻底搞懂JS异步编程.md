@@ -67,59 +67,59 @@ console.log('结束');
 
 > JS 单线程的同步模式，其实就是 JS 引擎在维护一个 JS 执行时的调用栈来实现的。
 
-<img src="mark-img/image-20230108224847768.png" alt="image-20230108224847768" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/122561a0cf024277a673577da889f14e.png" alt="image-20230108224847768" style="zoom:50%;" />
 
 - 首先，JS 代码被 JS 引擎加载，调用栈中会自动压入一个匿名的全局调用
 
 > 匿名的全局调用可以理解为 JS 代码被全部放入了一个匿名函数中来执行。
 
-<img src="mark-img/image-20230108225414296.png" alt="image-20230108225414296" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b4ea81b76c93442485645327ec08c53d.png" alt="image-20230108225414296" style="zoom:50%;" />
 
 - 逐句执行，`console.log()` 被压入调用栈，执行后在控制台打印出 `global begin`
 
-<img src="mark-img/image-20230108225801004.png" alt="image-20230108225801004" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/65cfc6485e184748b711241821ab6fbd.png" alt="image-20230108225801004" style="zoom:50%;" />
 
 - `console.log()` 调用结束，随即被弹出调用栈 
 
-<img src="mark-img/image-20230108230011691.png" alt="image-20230108230011691" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/7c2c85a565024753a2d739944f4d3702.png" alt="image-20230108230011691" style="zoom:50%;" />
 
 - 接下来遇到两个函数的声明，函数的声明不会被压入调用栈，会自动向后执行
 
-<img src="mark-img/image-20230108230221058.png" alt="image-20230108230221058" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/781202e4d4484cf9a5ad5f4653532084.png" alt="image-20230108230221058" style="zoom:50%;" />
 
-<img src="mark-img/image-20230108230228669.png" alt="image-20230108230228669" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1c1c6574d2a240fdb070883f9bc8b431.png" alt="image-20230108230228669" style="zoom:50%;" />
 
 - 遇到 `foo()`（函数的调用），随即 foo 函数被压入调用栈
 
-<img src="mark-img/image-20230108230511468.png" alt="image-20230108230511468" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f5a98d6687ab47aa8fd8203b6058b1bf.png" alt="image-20230108230511468" style="zoom:50%;" />
 
 - foo 中的 `console.log()` 被压入调用栈中，并执行打印 `foo task`，随即 `console.log()` 被弹出栈
 
-<img src="mark-img/image-20230108230620350.png" alt="image-20230108230620350" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/57c0561e32544f8a841d4c4491fd993c.png" alt="image-20230108230620350" style="zoom:50%;" />
 
-<img src="mark-img/image-20230108230818890.png" alt="image-20230108230818890" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/40b633457e5840188d2656bc8f15ccfe.png" alt="image-20230108230818890" style="zoom:50%;" />
 
 - 调用 bar 函数，随即 `bar()` 被压入调用栈中
 
-<img src="mark-img/image-20230108231021864.png" alt="image-20230108231021864" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f8111ed3a8f54d09940aef9735b7a3d6.png" alt="image-20230108231021864" style="zoom:50%;" />
 
 - bar 函数调用了 `console.log()`，`console.log()` 被压入栈中，并执行打印了 `bar task`，随即 `console.log()` 被弹出栈，此时 bar 函数也执行完了，所以 `bar()` 也随即被弹出栈
 
-<img src="mark-img/image-20230108231412554.png" alt="image-20230108231412554" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ac608eb58612417b95e14e30e4caca96.png" alt="image-20230108231412554" style="zoom:50%;" />
 
 - 由于 bar 函数执行完了，所以 foo 函数也就执行完了，故 `foo()` 被弹出栈
 
-<img src="mark-img/image-20230108231537940.png" alt="image-20230108231537940" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3ca43fdbb33b4f909e9099be2e842cae.png" alt="image-20230108231537940" style="zoom:50%;" />
 
 - 最后，压入 `console.log()`，执行打印 `global end`，弹出 `console.log()`
 
-<img src="mark-img/image-20230108231709764.png" alt="image-20230108231709764" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1239800f03a84c3d9c7dfcdf3237d8ae.png" alt="image-20230108231709764" style="zoom:50%;" />
 
-<img src="mark-img/image-20230108231726265.png" alt="image-20230108231726265" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d7a5105860e14ea5bff3a9322127eb56.png" alt="image-20230108231726265" style="zoom:50%;" />
 
 - 代码全部执行完毕，调用栈被清空
 
-<img src="mark-img/image-20230108231759669.png" alt="image-20230108231759669" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d3d8f6a5c7cd4b9a9a9ad43a0bd131cf.png" alt="image-20230108231759669" style="zoom:50%;" />
 
 ## 三、异步模式
 
@@ -135,87 +135,87 @@ Consol：控制台；Call stack：调用栈；Web APIs：异步 API 执行线程
 
 - JS 引擎加载 JS 代码，调用栈中压入匿名的全局调用
 
-<img src="mark-img/image-20230109091324514.png" alt="image-20230109091324514" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5ea092eab60b4663bcfaac3619a5501b.png" alt="image-20230109091324514" style="zoom:50%;" />
 
 - `console.log()` 压入调用栈，执行打印 `global begin`，随即弹出调用栈
 
-<img src="mark-img/image-20230109091739002.png" alt="image-20230109091739002" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b6f38a778efe4223bf9e94082697f077.png" alt="image-20230109091739002" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109091755523.png" alt="image-20230109091755523" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/150a1b2693fe4e329e5b39e636ea6536.png" alt="image-20230109091755523" style="zoom:50%;" />
 
 - `setTimeout()` 压入调用栈，由于 setTimeout 是一个异步 API，所以 JS 引擎会单独用一个线程去负责执行该异步 API 中的异步逻辑，所以这里 Web APIs 就会开始独立地开启 1.8s 的倒计器，同时 `setTimeout()` 会立马被弹出调用栈（避免在调用栈中阻塞）
 
-<img src="mark-img/image-20230109091918171.png" alt="image-20230109091918171" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/40b3afd4bd9249478237e438a26fc03a.png" alt="image-20230109091918171" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109092419909.png" alt="image-20230109092419909" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c7fddeea8c644e8496094fec07009f31.png" alt="image-20230109092419909" style="zoom:50%;" />
 
 - 之后又遇到一个倒计时器，所以先压栈，开启倒计时器，弹栈
 
-<img src="mark-img/image-20230109092708177.png" alt="image-20230109092708177" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cc4bc592113d4e6daeed06931a7a47b6.png" alt="image-20230109092708177" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109092747747.png" alt="image-20230109092747747" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d49177b7bef447fe97342a4af6d4ec7d.png" alt="image-20230109092747747" style="zoom:50%;" />
 
 - 最后遇到一个 console.log 调用，所以压栈，执行打印，弹栈
 
-<img src="mark-img/image-20230109092850798.png" alt="image-20230109092850798" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/810bed7d46454423bfb7f36a08d53bae.png" alt="image-20230109092850798" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109092928472.png" alt="image-20230109092928472" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b65abffc95444a45abb8606600ad1838.png" alt="image-20230109092928472" style="zoom:50%;" />
 
 - 调用栈被清空
 
-<img src="mark-img/image-20230109093205068.png" alt="image-20230109093205068" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1934b223aa26467580a3d393902451d6.png" alt="image-20230109093205068" style="zoom:50%;" />
 
 - 由于 Call stack（调用栈）为空，所以 Event loop（事件循环）机制就会去 Queue（任务队列）中取任务（回调函数）放入调用栈中去执行，而目前 Queue 中没有任务，所以就不进行任何操作
 
-<img src="mark-img/image-20230109093404324.png" alt="image-20230109093404324" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e22e8e58be224d028f46859353f7ded2.png" alt="image-20230109093404324" style="zoom:50%;" />
 
 - 1s 后，timer2 率先完成，从 Web APIs 中结束，其对应的回调函数便会被放入到 Queue 中的第一位
 
-<img src="mark-img/image-20230109101052757.png" alt="image-20230109101052757" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1755ba185e4a49a699d8a8f385b6f4e6.png" alt="image-20230109101052757" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109101324984.png" alt="image-20230109101324984" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c07605d86a1140b685de5b912d886be4.png" alt="image-20230109101324984" style="zoom:50%;" />
 
 - 同理，1.8s 后 timer2 完成，从 Web APIs 中结束，其对应的回调函数便会被放入到 Queue 中的第二位
 
-<img src="mark-img/image-20230109101519527.png" alt="image-20230109101519527" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d45b2e7449204e7790475bc034ca38fc.png" alt="image-20230109101519527" style="zoom:50%;" />
 
 - 由于 Call stack 为空，且 Queue 不为空，所以 Event loop 便会将 Queue 中的第一位任务 timer2 压入 Call stack 中
 
-<img src="mark-img/image-20230109101732535.png" alt="image-20230109101732535" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d40e5711c8a04728ad5163305f88b267.png" alt="image-20230109101732535" style="zoom:50%;" />
 
 - 此时，调用栈开启了新一轮的执行，压入 console.log，执行打印，弹出 console.log，压入 setTimeout，独立开启倒计时器，弹出 setTimeout，清空调用栈
 
-<img src="mark-img/image-20230109101846000.png" alt="image-20230109101846000" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/36d1601472794c409d9d127b32acd620.png" alt="image-20230109101846000" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109101948049.png" alt="image-20230109101948049" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b03bfd19b27f4b65a89c41012aa894d1.png" alt="image-20230109101948049" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109101914536.png" alt="image-20230109101914536" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/428ac28354894f358ffb671c8f5dc59b.png" alt="image-20230109101914536" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102158812.png" alt="image-20230109102158812" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/9c1d025e6c5a481883f69d163c061707.png" alt="image-20230109102158812" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102312806.png" alt="image-20230109102312806" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/c476c1733e0d4cefb0093286a56712f4.png" alt="image-20230109102312806" style="zoom:50%;" />
 
 - Call stack 为空，Queue 不为空，Event loop 将 Queue 中第一位任务 timer1 压入 Call stack，开启新一轮执行
 
-<img src="mark-img/image-20230109102653837.png" alt="image-20230109102653837" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/7796ffd64f8f44bab3c282856c0f4204.png" alt="image-20230109102653837" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102713610.png" alt="image-20230109102713610" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/fe37cf48dec74522b728c347856d1d4c.png" alt="image-20230109102713610" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102725010.png" alt="image-20230109102725010" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6b2100da96b24ea2859ea9506c22293f.png" alt="image-20230109102725010" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102735753.png" alt="image-20230109102735753" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a441f5ae91e2462b925a15ca8c36abb4.png" alt="image-20230109102735753" style="zoom:50%;" />
 
 - 后续同理，直至结束……
 
-<img src="mark-img/image-20230109102846014.png" alt="image-20230109102846014" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/56f203e72d724909bef2bd3a4623275e.png" alt="image-20230109102846014" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102858771.png" alt="image-20230109102858771" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/958758f38d814fad99d634cd056fc1d0.png" alt="image-20230109102858771" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102911421.png" alt="image-20230109102911421" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5e5733735f0049bcb5e47d85d1cb09fb.png" alt="image-20230109102911421" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102923226.png" alt="image-20230109102923226" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/bae9979f515743b59f84f30a06b9c6a3.png" alt="image-20230109102923226" style="zoom:50%;" />
 
-<img src="mark-img/image-20230109102930806.png" alt="image-20230109102930806" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/e2fcf049ad994198803a8c3718439612.png" alt="image-20230109102930806" style="zoom:50%;" />
 
 > 说明：
 >
@@ -225,7 +225,7 @@ Consol：控制台；Call stack：调用栈；Web APIs：异步 API 执行线程
 
 JS 异步模式执行流程图：
 
-<img src="mark-img/image-20230109103710015.png" alt="image-20230109103710015" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/bfee20331ffb4a1db9a837e5236bd0c3.png" alt="image-20230109103710015" style="zoom:50%;" />
 
 ## 四、回调函数
 
@@ -423,7 +423,7 @@ Promise 有三种状态：Pending（等待）、Fulfilled（成功）、Rejected
 
 在最终状态（要么成功，要么失败）确定后，相对应的任务便会被自动执行。
 
-<img src="mark-img/image-20230109142042303.png" alt="image-20230109142042303" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b18d6bae21e9498eae274fa6c6581f4a.png" alt="image-20230109142042303" style="zoom:50%;" />
 
 **那 Promise 怎么用呢？**
 
@@ -469,7 +469,7 @@ const promise = new Promise((resolve, reject) => {
 
 我们通过这幅图，可以看出，Fulfilled 和 Rejected 应该都有一个各自的回调函数来处理成功或失败后的逻辑，问题是这两个回调函数在哪？
 
-<img src="mark-img/image-20230109142042303.png" alt="image-20230109142042303" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/b18d6bae21e9498eae274fa6c6581f4a.png" alt="image-20230109142042303" style="zoom:50%;" />
 
 答案是：then 方法里！
 
@@ -808,7 +808,7 @@ new Promise(resolve => {
 */
 ```
 
-<img src="mark-img/链式调用.png" alt="链式调用" style="zoom:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1c78bbb685f2430eba8b483a8e05a6ee.png" alt="链式调用" style="zoom:50%;" />
 
 可见 Promise 的链式调用设计得非常巧妙！通过每轮 then 中 return 出一个新的 Promise，就把嵌套的 then 变为了链式的 then！
 
@@ -1274,7 +1274,7 @@ promise 2
 
 可惜，事情没有我们想的简单，真实的执行结果是：
 
-<img src="mark-img/image-20230109222047704.png" alt="image-20230109222047704"  />
+<img src="https://img-blog.csdnimg.cn/direct/3a38473ae52a40a88a31d2af21e0f639.png" alt="image-20230109222047704"  />
 
 Promise 在 setTimeout 之前，这是为什么呢？
 
@@ -2053,7 +2053,7 @@ try {
 </html>
 ```
 
-<img src="mark-img/image-20230110170600878.png" alt="image-20230110170600878"  />
+<img src="https://img-blog.csdnimg.cn/direct/88b5370f004d47f696832f893d84d37f.png" alt="image-20230110170600878"  />
 
 > 如果我们必须兼容旧版本浏览器，那么可以利用之前的方法包装到匿名的立即执行函数中。
 

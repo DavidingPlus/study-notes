@@ -18,7 +18,7 @@
 
 ## 1.2 前后端通信过程与概念解释
 
-<img src="mark-img/1152162627-0.jpg" alt="前后端通信" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/1ec196459f83448e9c0d8b6cf3f8c285.png" alt="前后端通信" style="width:50%;" />
 
 【概念解释】
 
@@ -89,7 +89,7 @@ HTML、JS、CSS、图片、字体、音频、视频都是通过 HTTP 协议在�
 
 - 【**请求报文**】
 
-  ![image-20220717123316141](mark-img/image-20220717123316141.png)
+  ![image-20220717123316141](https://img-blog.csdnimg.cn/direct/a182501869a245cca44c785c58f5a927.png)
 
   - **请求行：**HTTP 请求中的第一行数据，请求行包含三块内容，分别是 `GET[请求方式]` `/[请求URL路径]` `HTTP/1.1[HTTP协议及版本]`，请求方式有七种,最常用的是 GET 和 POST
 
@@ -113,7 +113,7 @@ HTML、JS、CSS、图片、字体、音频、视频都是通过 HTTP 协议在�
 
   - **请求体：**POST 请求的最后一部分，存储请求参数（GET 请求没有请求体，GET 的请求内容在请求行的请求URL路径中）
 
-    ![image-20220717115935153](mark-img/image-20220717115935153.png)
+    ![image-20220717115935153](https://img-blog.csdnimg.cn/direct/1e7049484cdf41109ba5df18fb080c76.png)
 
     如上图红线框的内容就是请求体的内容，请求体和请求头之间是有一个空行隔开。此时浏览器发送的是 POST 请求，为什么不能使用 GET 呢？这时就需要回顾 GET 和 POST 两个请求之间的区别了：
 
@@ -122,7 +122,7 @@ HTML、JS、CSS、图片、字体、音频、视频都是通过 HTTP 协议在�
 
 - 【**响应报文**】
 
-  ![image-20220717123336777](mark-img/image-20220717123336777.png)
+  ![image-20220717123336777](https://img-blog.csdnimg.cn/direct/707982988e7647449f26c071de55026b.png)
 
   - **响应行：**响应数据的第一行，响应行包含三块内容，分别是 `HTTP/1.1[HTTP协议及版本]` `200[响应状态码]` `ok[状态码的描述]`
 
@@ -328,7 +328,7 @@ Token：令牌会话跟踪技术。
 
 JWT 原理：
 
-<img src="mark-img/image-20230127182050299.png" alt="image-20230127182050299" style="width:70%;" />
+<img src="https://img-blog.csdnimg.cn/direct/fa0e311045d4499fbc481fe13a82e89f.png" alt="image-20230127182050299" style="width:70%;" />
 
 > 说明：服务端也是可以设置 Token 存活时间的！同时也可以借助一些技术实现 “Token 钝化” 和 “Token 活化”。
 
@@ -362,7 +362,7 @@ Cookie 一般都是以 网址 或 IP 的形式进行标识。
 
 当浏览器向服务器发送请求时，会连同一起发送 Cookie。
 
-<img src="mark-img/image-20220717180630574.png" alt="image-20220717180630574" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/f3b8b11d06ea476a80e6ce0f9fbb86a4.png" alt="image-20220717180630574" style="width:80%;" />
 
 ### 2.2.2 Cookie的基本用法
 
@@ -374,13 +374,13 @@ Cookie 一般都是以 网址 或 IP 的形式进行标识。
 
 注意：不能同时设置多个 Cookie `document.cookie = 'username=jerry; age=18'`，只能一个一个设置。
 
-<img src="mark-img/image-20230127202642005.png" alt="image-20230127202642005" style="width:90%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4184a02d81a84629be12bb67b5948828.png" alt="image-20230127202642005" style="width:90%;" />
 
-<img src="mark-img/image-20230127202459587.png" alt="image-20230127202459587" style="width:90%;" />
+<img src="https://img-blog.csdnimg.cn/direct/8b9a11f6d3e849feb61969a5e45ec1dc.png" alt="image-20230127202459587" style="width:90%;" />
 
-<img src="mark-img/image-20230127202737276.png" alt="image-20230127202737276" style="width:90%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6c658fe358e64f6e99706fbdeab3341d.png" alt="image-20230127202737276" style="width:90%;" />
 
-<img src="mark-img/image-20230127202825706.png" alt="image-20230127202825706" style="width:90%;" />
+<img src="https://img-blog.csdnimg.cn/direct/5f514d88b1044049986121ec2ed20ae3.png" alt="image-20230127202825706" style="width:90%;" />
 
 ### 2.2.3 Cookie的属性
 
@@ -400,7 +400,7 @@ Cookie 一般都是以 网址 或 IP 的形式进行标识。
 
 > 如果没有设置失效时间，那么这样的 Cookie 称为：会话 Cookie（到期时间默认值为 Session，注意这个 Session 单纯是 “会话” 的意思！和服务器那个 Session 无关！），它存在内存中，当会话结束，也就是浏览器关闭时，Cookie 会消失。
 >
-> <img src="mark-img/image-20230127203620505.png" alt="image-20230127203620505" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/6d8c7b7a7d6c487c945e98b86d33b899.png" alt="image-20230127203620505" style="width:80%;" />
 >
 > 想长时间存在，设置 Expires 或 Max-Age：
 >
@@ -433,37 +433,37 @@ Cookie 一般都是以 网址 或 IP 的形式进行标识。
 >
 > - 我们清空 B站 PC端的 Cookie，然后自己添加一条 Cookie，浏览器会自动帮我们把 Domain 设置为 `www.bilibili.com`
 >
-> <img src="mark-img/image-20230127211643060.png" alt="image-20230127211643060" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/90e80ebd636e4303855d139f57432b11.png" alt="image-20230127211643060" style="width:80%;" />
 >
 > - 我们清空 B站 移动端的 Cookie，然后自己添加一条 Cookie，浏览器会自动帮我们把 Domain 设置为 `m.bilibili.com`
 >
-> <img src="mark-img/image-20230127211317239.png" alt="image-20230127211317239" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/9b8637748d994f64989522e6365c4308.png" alt="image-20230127211317239" style="width:80%;" />
 >
 > - 现在我们在 PC 端只能访问 Domain 为 `www.bilibili.com` 的 Cookie，我们在移动端只能访问 Domain 为 `m.bilibili.com` 的 Cookie
 >
-> <img src="mark-img/image-20230127211909818.png" alt="image-20230127211909818" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/0d710910fe10442c91207228465fa4c5.png" alt="image-20230127211909818" style="width:80%;" />
 >
-> <img src="mark-img/image-20230127211950705.png" alt="image-20230127211950705" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/df7d05a36ec045eebf3556baa8d2c17f.png" alt="image-20230127211950705" style="width:80%;" />
 >
 > 
 >
 > - 我们在 PC 端添加一个 Domain 为 `.bilibili.com` 的域名，则 PC 端与 移动端 都能访问到，因为这是它们的父域名
 >
-> <img src="mark-img/image-20230127212308350.png" alt="image-20230127212308350" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/05d6bb77ed9246c8ae8e57d1853d1a9d.png" alt="image-20230127212308350" style="width:80%;" />
 >
-> <img src="mark-img/image-20230127212352150.png" alt="image-20230127212352150" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/57faefd99d884e58918cd851e2d10bfc.png" alt="image-20230127212352150" style="width:80%;" />
 >
-> <img src="mark-img/image-20230127212458776.png" alt="image-20230127212458776" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/c2ac2293ba684a01959b615cfcb2679b.png" alt="image-20230127212458776" style="width:80%;" />
 >
 > - 当然，在移动端里添加 Domain 为 `www.bilibili.com` 的 Cookie 也是可以的，不过添加了移动端也访问不了，但是 PC 端能访问
 >
-> <img src="mark-img/image-20230127213301897.png" alt="image-20230127213301897" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/7d167b7e2b8346cb95cbcab437fc9584.png" alt="image-20230127213301897" style="width:80%;" />
 >
-> <img src="mark-img/image-20230127213346726.png" alt="image-20230127213346726" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/7318a0f7a0f64b168c3860c1be75858e.png" alt="image-20230127213346726" style="width:80%;" />
 >
-> <img src="mark-img/image-20230127213654822.png" alt="image-20230127213654822" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/df309aea47bd4d0589379b334ded5c0e.png" alt="image-20230127213654822" style="width:80%;" />
 >
-> <img src="mark-img/image-20230127213720876.png" alt="image-20230127213720876" style="width:80%;" />
+> <img src="https://img-blog.csdnimg.cn/direct/cdf99bcf89ad49f390984fec14f8eb8e.png" alt="image-20230127213720876" style="width:80%;" />
 >
 > 
 >
@@ -530,7 +530,7 @@ localStrorage 是 key-value 形式。
 
 【在浏览器中操作 localStrorage】
 
-<img src="mark-img/image-20230127215003828.png" alt="image-20230127215003828" style="width:90%;" />
+<img src="https://img-blog.csdnimg.cn/direct/316f303eb44e4063b568cad796360579.png" alt="image-20230127215003828" style="width:90%;" />
 
 【基本用法】
 
@@ -616,7 +616,7 @@ localStorage.clear();
 
 sessionStorage 当会话结束（比如关闭浏览器）的时候，sessionStorage 中的数据会被清空，其它用法与 localStorage 一致。
 
-<img src="mark-img/image-20230127215308863.png" alt="image-20230127215308863" style="width:90%;" />
+<img src="https://img-blog.csdnimg.cn/direct/80144313d6a14e48baca789e17f5617e.png" alt="image-20230127215308863" style="width:90%;" />
 
 # 三、Ajax
 
@@ -1724,7 +1724,7 @@ xhr.send(myForm);
 
 ```
 
-<img src="mark-img/wow.gif" alt="wow" style="width:60%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d14b2c1f0ea04ff6985d25b512ad5ca6.png" alt="wow" style="width:60%;" />
 
 而对于 Ajax 而言，我们上传文件时，需要使用 FormData 的方法，默认 Content-Type 的值就是 multipart/form-data 的形式。
 
@@ -1785,7 +1785,7 @@ xhr.send(myForm);
 
 上传 3 张图片，并提交后的请求体数据：
 
-<img src="mark-img/file.gif" alt="file" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/3b418c68042e47ceb7ba4ed8dffaa020.png" alt="file" style="width:50%;" />
 
 当然，我们也可以直接用 form 对象来直接初始化一个 FormData：
 
@@ -1846,13 +1846,13 @@ xhr.send(myForm);
 </html>
 ```
 
-<img src="mark-img/image-20230129215216885.png" alt="image-20230129215216885" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d616b73baae741f5a2afdcf6157f3f8d.png" alt="image-20230129215216885" style="width:80%;" />
 
-<img src="mark-img/image-20230129215309243.png" alt="image-20230129215309243" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/225793c2351647b8aa77a004a55b54ae.png" alt="image-20230129215309243" style="width:80%;" />
 
 ## 3.10 封装Ajax
 
-<img src="mark-img/image-20220719130924846.png" alt="image-20220719130924846" style="width:20%;" />
+<img src="https://img-blog.csdnimg.cn/direct/27b45db0a7d64db6b5442899ad8ba5d5.png" alt="image-20220719130924846" style="width:20%;" />
 
 - ajax.js
 

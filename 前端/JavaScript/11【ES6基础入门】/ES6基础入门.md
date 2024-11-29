@@ -247,7 +247,7 @@ console.log(i);		// 报错
 </html>
 ```
 
-<img src="mark-img/1.gif" alt="1" style="width: 50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d6255e8a6bd44cf58f1914bfd919c180.png" alt="1" style="width: 50%;" />
 
 无论点击谁都是 3，这是因为 var 没有块级作用域，三个点击事件函数中的 i 都是同一个全局变量，最终 i 都为 3 了，所以固然都输出 3。
 
@@ -300,7 +300,7 @@ console.log(i);		// 报错
 </html>
 ```
 
-<img src="mark-img/1-16471758864061.gif" alt="1" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a0a93c6c570440a2b9ea09d191d4d235.png" alt="1" style="width:50%;" />
 
 - 使用 let
 
@@ -348,7 +348,7 @@ console.log(i);		// 报错
 </html>
 ```
 
-<img src="mark-img/1-16471758864061.gif" alt="1" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/a0a93c6c570440a2b9ea09d191d4d235.png" alt="1" style="width:50%;" />
 
 # 二、模板字符串
 
@@ -529,7 +529,7 @@ console.log(info);
 </html>
 ```
 
-<img src="mark-img/image-20220315130229559.png" alt="image-20220315130229559" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/553b384ed6ba4244bb34b03c4f1ddf7d.png" alt="image-20220315130229559" style="width:50%;" />
 
 # 三、箭头函数
 
@@ -734,7 +734,7 @@ adder();		// 指向 undefined（非严格模式下指向 window）
 </body>
 </html>
 ```
-<img src="mark-img/1-16473495911521.gif" alt="1" style="width:20%;" />
+<img src="https://img-blog.csdnimg.cn/direct/ac5766cc152349dbab0f106cfd14cc8c.png" alt="1" style="width:20%;" />
 
 ```html
 <!DOCTYPE html>
@@ -789,7 +789,7 @@ adder();		// 指向 undefined（非严格模式下指向 window）
 </body>
 </html>
 ```
-<img src="mark-img/2.gif" alt="2" style="width:20%;" />
+<img src="https://img-blog.csdnimg.cn/direct/6f8d770c98714dfd94c90a66460e8d84.png" alt="2" style="width:20%;" />
 
 ```html
 <!DOCTYPE html>
@@ -847,7 +847,7 @@ adder();		// 指向 undefined（非严格模式下指向 window）
 </html>
 ```
 
-<img src="mark-img/2-16473496264402.gif" alt="2" style="width:20%;" />
+<img src="https://img-blog.csdnimg.cn/direct/4f8ffd73b8924e2aa59d4764b49136a7.png" alt="2" style="width:20%;" />
 
 # 四、解构赋值
 

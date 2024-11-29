@@ -109,7 +109,7 @@ var scrollTop = window.scrollY || document.documentElement.scrollTop;
 </html>
 ```
 
-![](mark-img/ee10e3c3552940359198256a6304d806.png)
+![](https://img-blog.csdnimg.cn/direct/479d86a97548457f8edba3dbb3b8cd5f.png)
 
 # 十、识别用户浏览器品牌
 
@@ -191,7 +191,7 @@ history.go(-1);	// 等同于 history.back();
 </html>
 ```
 
-<img src="mark-img/1fdace562f72414c8a3839383e14be69.gif" style="width:50%;" />
+<img src="https://img-blog.csdnimg.cn/direct/64cbee73ee87449980b1c3df92068a4f.png" style="width:50%;" />
 
 # 十二、Location对象
 
@@ -477,7 +477,7 @@ DOM 元素都有 `offsetTop` 属性，表示此元素到定位祖先元素的垂
 </html>
 ```
 
-<img src="mark-img/e37cf208422d4177afb2f4691e141232.gif" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/cf4d3d8bdb18452c84c1319e4c22116e.png" style="width:80%;" />
 
-<img src="mark-img/2491bae6d5f747f995cc22476b14513e.gif" style="width:80%;" />
+<img src="https://img-blog.csdnimg.cn/direct/d0cad3cca6e04ef09cc1c49d5f2306e8.png" style="width:80%;" />
 
