@@ -4,7 +4,7 @@ categories:
   - Linux 学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-11-27 18:15:00
+updated: 2024-12-04 21:35:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -4325,4 +4325,126 @@ void vfree(const void *addr);
 **vmalloc() 不能用在原子上下文中，因为内部实现使用了标志为 GFP_KERNEL 的 kmalloc()。**
 
 **vmalloc() 在申请内存时，会进行内存的映射，改变页表项，不像 kmalloc() 实际用的是开机过程中就映射好的 DMA 和常规区域的页表项。**故 vmalloc() 的虚拟地址和物理地址不是一个简单的线性映射。
+
+#### slab
+
+**完全使用页为单元申请和释放内存容易导致浪费（若要申请少量字节，也需要用 1 页）。另外在操作系统的运作过程中，经常会涉及大量对象的重复生成、使用和释放内存问题。**在 Linux 系统中所用到的对象，比较典型的例子是 inode、task_struct 等。**若能用合适的方法使得对象在前后两次被使用时分配在同一块内存或同一类内存空间且保留了基本的数据结构，就可以大大提高效率。**slab 算法就是针对上述特点设计的。**实际上 kmalloc() 就是使用 slab 机制实现的。**
+
+**slab 是建立在 buddy 算法之上的，它从 buddy 算法拿到 2n 页面后再次进行二次管理**，和用户空间的 C 库很像。slab 申请的内存以及基于 slab 的 kmalloc() 申请的内存，与物理内存之间也是一个简单的线性偏移。
+
+1. 创建 slab 缓存
+
+kmem_cache_create() 用于创建一个缓存，是一个可以保留任意数目且全部同样大小的后备缓存。
+
+```c
+// size：要分配的每个数据结构的大小。
+// flags：控制如何进行分配的位掩码，如 SLAB_HWCACHE_ALIGN（每个数据对象被对齐到一个缓存行）、SLAB_CACHE_DMA（要求数据对象在 DMA 区域中分配）等。
+struct kmem_cache *kmem_cache_create(const char *name, unsigned int size, unsigned int align, slab_flags_t flags, void (*ctor)(void *));
+```
+
+2. 分配 slab 缓存
+
+kmem_cache_alloc() 在创建的 slab 后备缓存中分配一块并返回首地址指针。
+
+```c
+void *kmem_cache_alloc(struct kmem_cache *, gfp_t flags) __assume_slab_alignment __malloc;
+```
+
+3. 释放 slab 缓存
+
+```c
+void kmem_cache_free(struct kmem_cache *, void *);
+```
+
+4. 收回 slab 缓存
+
+```c
+void kmem_cache_destroy(struct kmem_cache *);
+```
+
+5. 使用模板
+
+```c
+// 创建 slab 缓存
+static kmem_cache_t *xxx_cachep;
+xxx_cachep = kmem_cache_create("xxx", sizeof(struct xxx), 0, SLAB_HWCACHE_ALIGN | SLAB_PANIC, NULL, NULL);
+
+// 分配 slab 缓存
+struct xxx *ctx;
+ctx = kmem_cache_alloc(xxx_cachep, GFP_KERNEL);
+
+// 使用 slab 缓存
+...
+
+// 释放 slab 缓存
+kmem_cache_free(xxx_cachep, ctx);
+
+// 收回 slab 缓存
+kmem_cache_destroy(xxx_cachep);
+```
+
+系统中通过查看 /proc/slabinfo 可查看当前 slab 的分配和使用情况，结果可能如下：
+
+```bash
+cat /proc/slabinfo
+
+# slabinfo - version: 2.1
+# # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+# AF_VSOCK              50     50   1280   25    8 : tunables    0    0    0 : slabdata      2      2      0
+# ext4_groupinfo_4k    420    420    192   21    1 : tunables    0    0    0 : slabdata     20     20      0
+# btrfs_delayed_node      0      0    312   26    2 : tunables    0    0    0 : slabdata      0      0      0
+# btrfs_ordered_extent      0      0    424   19    2 : tunables    0    0    0 : slabdata      0      0      0
+# btrfs_extent_map       0      0    144   28    1 : tunables    0    0    0 : slabdata      0      0      0
+# btrfs_trans_handle      0      0    112   36    1 : tunables    0    0    0 : slabdata      0      0      0
+# btrfs_inode            0      0   1208   27    8 : tunables    0    0    0 : slabdata      0      0      0
+# fsverity_info          0      0    256   16    1 : tunables    0    0    0 : slabdata      0      0      0
+# fscrypt_info           0      0    128   32    1 : tunables    0    0    0 : slabdata      0      0      0
+# ip6-frags              0      0    184   22    1 : tunables    0    0    0 : slabdata      0      0      0
+# PINGv6                 0      0   1216   26    8 : tunables    0    0    0 : slabdata      0      0      0
+# RAWv6                288    416   1216   26    8 : tunables    0    0    0 : slabdata     16     16      0
+# UDPv6                 96     96   1344   24    8 : tunables    0    0    0 : slabdata      4      4      0
+# tw_sock_TCPv6          0      0    248   16    1 : tunables    0    0    0 : slabdata      0      0      0
+# ...
+```
+
+> 注：slab 不是要代替 `__get_free_pages()`，其最底层仍然依赖于 `__get_free_pages()`，slab 在底层每次申请 1 页或多页，之后再分隔这些页为更小的单元进行管理，从而节省了内存，也提高了 slab 缓冲对象的访问效率。
+
+#### 内存池
+
+除 slab 以外，内存池也是一种非常经典的分配大量小对象的技术。
+
+1. 创建内存池
+
+```c
+// min_nr：预分配对象的数目。
+// alloc_fn：指向内存池机制提供的标准对象分配函数的指针。
+// free_fn：指向内存池机制提供的标准对象回收函数的指针。
+mempool_t *mempool_create(int min_nr, mempool_alloc_t *alloc_fn, mempool_free_t *free_fn, void *pool_data);
+```
+
+这两个函数指针定义如下：
+
+```c
+// pool_data：分配函数用到的指针。
+// gfp_mask：分配标记。只有当 __GFP_WAIT 被指定时，分配函数才会休眠。
+typedef void * (mempool_alloc_t)(gfp_t gfp_mask, void *pool_data);
+
+// pool_data：回收函数用到的指针。
+typedef void (mempool_free_t)(void *element, void *pool_data);
+```
+
+2. 分配和回收对象
+
+mempool_alloc() 用于分配对象。若内存池分配器无法提供内存，可以使用预分配的池。mempool_free() 用于回收对象。
+
+```c
+void *mempool_alloc(mempool_t *pool, gfp_t gfp_mask) __malloc;
+void mempool_free(void *element, mempool_t *pool);
+```
+
+3. 回收内存池
+
+```c
+void mempool_destroy(mempool_t *pool);
+```
 
