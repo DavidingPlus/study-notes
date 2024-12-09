@@ -4,7 +4,7 @@ categories:
   - Linux 学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-12-04 21:35:00
+updated: 2024-12-09 17:40:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -4447,4 +4447,540 @@ void mempool_free(void *element, mempool_t *pool);
 ```c
 void mempool_destroy(mempool_t *pool);
 ```
+
+## 设备 I/O 端口与 I/O 内存的访问
+
+**设备通常会提供一组寄存器来控制设备、读写设备和获取设备状态，即控制寄存器、数据寄存器和状态寄存器。**这些寄存器可能位于 I/O 空间中，也可能位于内存空间中。**当位于 I/O 空间时，通常被称为 I/O 端口；当位于内存空间时，对应的内存空间被称为 I/O 内存。二者的操作有非常多的相似之处。**
+
+### I/O 端口和 I/O 内存访问接口
+
+#### I/O 端口
+
+Linux 内核提供了函数访问 I/O 空间的端口，具体如下：
+
+1. 读写字节端口（8 位宽）。
+
+```c
+u8 inb(unsigned long port)
+{
+	return ioread8(ioport_map(port, 1));
+}
+
+void outb(u8 b, unsigned long port)
+{
+	iowrite8(b, ioport_map(port, 1));
+}
+```
+
+2. 读写字端口（16 位宽）。
+
+```c
+u16 inw(unsigned long port)
+{
+	return ioread16(ioport_map(port, 2));
+}
+
+void outw(u16 b, unsigned long port)
+{
+	iowrite16(b, ioport_map(port, 2));
+}
+```
+
+3. 读写长字节端口（32 位宽）。
+
+```c
+u32 inl(unsigned long port)
+{
+	return ioread32(ioport_map(port, 4));
+}
+
+void outl(u32 b, unsigned long port)
+{
+	iowrite32(b, ioport_map(port, 4));
+}
+```
+
+4. 读写一串字节。
+
+insb() 从端口 port 开始读 count 个字节端口，并将读取结果写入 dst 指向的内存；outsb() 将 addr 指向的内存中的 count 个字节连续写入以 port 开始的端口。
+
+```c
+void insb (unsigned long port, void *dst, unsigned long count);
+void outsb (unsigned long port, const void *src, unsigned long count);
+```
+
+5. 读写一串字。
+
+```c
+void insw (unsigned long port, void *dst, unsigned long count);
+void outsw (unsigned long port, const void *src, unsigned long count);
+```
+
+6. 读写一串长字。
+
+```c
+void insl (unsigned long port, void *dst, unsigned long count);
+void outsl (unsigned long port, const void *src, unsigned long count);
+```
+
+上述函数 I/O 端口号 port 的类型高度依赖于具体的硬件平台，因此只写出了 unsigned。
+
+#### I/O 内存
+
+I/O 内存通常是芯片内部的各个 I2C、SPI、USB 等控制器的寄存器或者外部内存总线上的设备。**在内核中访问 I/O 内存之前，需首先使用 ioremap() 函数将设备的物理地址映射到虚拟地址上。**
+
+```c
+void __iomem *ioremap(unsigned long port, unsigned long size);
+```
+
+ioremap() 与 vmalloc() 类似，也需建立新的页表，**但并不进行 vmalloc() 中所执行的内存分配行为，类似于 reservation**。ioremap() 返回一个特殊的虚拟地址，该地址可用来存取特定的物理地址范围，这个虚拟地址位于 vmalloc 映射区域。
+
+ioremap() 获得的虚拟地址用 iounmap() 函数释放。
+
+```c
+void iounmap(volatile void __iomem *addr);
+```
+
+ioremap() 有个变体 devm_ioremap()，类似其他以 devm_ 开头的函数，通过 devm_ioremap() 进行的映射通常不需要在驱动退出和出错处理的时候进行 iounmap()。
+
+```c
+void __iomem *devm_ioremap(struct device *dev, resource_size_t offset, resource_size_t size)
+{
+	return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);
+}
+EXPORT_SYMBOL(devm_ioremap);
+```
+
+**在设备物理地址（一般都是寄存器）被映射到虚拟地址之后，尽管可以直接通过指针访问这些地址，但还是推荐用一组标准的 API 来完成这个虚拟地址的读写。**
+
+读寄存器用 readb_relaxed()、readw_relaxed()、readl_relaxed()、readb()、readw()、readl() 这组 API，分别读 8 bit、16 bit、32 bit 的寄存器。有无 `_relaxed` 后缀的区别是没有 `_relaxed` 后缀的函数包含一个内存屏障。
+
+```c
+#define readb(c)		({ u8  __v = readb_relaxed(c); __iormb(); __v; })
+#define readw(c)		({ u16 __v = readw_relaxed(c); __iormb(); __v; })
+#define readl(c)		({ u32 __v = readl_relaxed(c); __iormb(); __v; })
+// similar functions
+#define readsb(p,d,l)		({ __raw_readsb(p,d,l); __iormb(); })
+#define readsw(p,d,l)		({ __raw_readsw(p,d,l); __iormb(); })
+#define readsl(p,d,l)		({ __raw_readsl(p,d,l); __iormb(); })
+```
+
+同理写操作如下：
+
+```c
+#define writeb(v,c)		({ __iowmb(); writeb_relaxed(v,c); })
+#define writew(v,c)		({ __iowmb(); writew_relaxed(v,c); })
+#define writel(v,c)		({ __iowmb(); writel_relaxed(v,c); })
+// similar functions
+#define writesb(p,d,l)		({ __iowmb(); __raw_writesb(p,d,l); })
+#define writesw(p,d,l)		({ __iowmb(); __raw_writesw(p,d,l); })
+#define writesl(p,d,l)		({ __iowmb(); __raw_writesl(p,d,l); })
+```
+
+### 申请与释放设备的 I/O 端口和 I/O 内存
+
+#### I/O 端口申请
+
+Linux 内核提供了函数用于申请和释放 I/O 端口，表明该驱动要访问这片区域。
+
+```c
+#define request_region(start,n,name)		__request_region(&ioport_resource, (start), (n), (name), 0)
+
+// 函数向内核申请 n 个端口，这些端口从 start 开始，name 为设备的名称。若分配成功，返回值不是 NULL，若返回 NULL，意味着申请端口失败。
+struct resource *__request_region(struct resource *parent, resource_size_t start, resource_size_t n, const char *name, int flags);
+```
+
+使用 request_region() 申请的 I/O 端口使用完毕后，通过 release_region() 归还给系统。
+
+```c
+#define release_region(start,n)	__release_region(&ioport_resource, (start), (n))
+
+void __release_region(struct resource *parent, resource_size_t start, resource_size_t n);
+```
+
+request_region() 有变体，即不用考虑释放问题的 devm_request_region()。
+
+```c
+#define devm_request_region(dev,start,n,name) \
+	__devm_request_region(dev, &ioport_resource, (start), (n), (name))
+
+struct resource *__devm_request_region(struct device *dev, struct resource *parent, resource_size_t start, resource_size_t n, const char *name);
+```
+
+#### I/O 内存申请
+
+同理，Linux 内核提供了函数用于申请和释放 I/O 内存。这里的申请代表该驱动要访问这片区域，但不会做任何内存映射的动作，类似于 reservation 的概念。
+
+从源码中可以发现，不管是 I/O 端口还是 I/O 内存，底层都调用 __request_region() 函数，只是 parent 参数不同。这也恰好反映了二者操作上的类似和语义上的不同。
+
+```c
+#define request_mem_region(start,n,name) __request_region(&iomem_resource, (start), (n), (name), 0)
+```
+
+同理，使用 release_mem_region() 归还给系统。
+
+```c
+#define release_mem_region(start,n)	__release_region(&iomem_resource, (start), (n))
+```
+
+同理，存在变体 devm_request_mem_region()。
+
+```c
+#define devm_request_mem_region(dev,start,n,name) \
+	__devm_request_region(dev, &iomem_resource, (start), (n), (name))
+```
+
+### 设备 I/O 端口和 I/O 内存访问流程
+
+关于 I/O 端口的访问，在设备打开或驱动模块加载时申请 I/O 端口，之后使用 inb()、outb() 等进行端口访问，最后在设备关闭或驱动被卸载时释放 I/O 端口。
+
+<img src="https://img-blog.csdnimg.cn/direct/c87a0e7fce384b1187be59a9252c089d.png" alt="image-20241209112015738" style="zoom:75%;" />
+
+关于 I/O 内存的访问，首先调用 request_mem_region() 申请资源，接着将寄存器地址通过 ioremap() 映射到内核空间虚拟地址，之后通过 Linux 设备访问编程接口访问这些设备的寄存器。访问完成后，对 ioremap() 申请的虚拟地址进行释放，并释放 release_mem_region() 申请的 I/O 内存资源。
+
+<img src="https://img-blog.csdnimg.cn/direct/6eac24bf296c45da8c4e5494ab26bf1c.png" alt="image-20241209112025950" style="zoom:75%;" />
+
+### 映射设备地址到内存空间
+
+#### 内存映射与 VMA
+
+**一般情况下，用户空间是不可能也不应该直接访问设备的，但设备驱动程序可实现 mmap() 函数，可使得用户空间能直接访问设备的物理地址。**实际上 mmap() 实现了这样的一个映射过程：**它将用户空间的一段内存与设备内存关联，当用户访问用户空间的这段地址范围时，实际上会转化为对设备的访问。**
+
+这种能力对于显示适配器一类的设备非常有意义，若用户空间可直接通过内存映射访问显存的话，屏幕帧的各点像素不再需要一个从用户空间到内核空间复制的过程。
+
+驱动的 mmap() 函数通过 file_operations 结构体注册。**mmap（）必须以 PAGE_SIZE 为单位进行映射。实际上，内存只能以页为单位进行映射，若要映射非 PAGE_SIZE 整数倍的地址范围，要先进行页对齐，强行以 PAGE_SIZE 的倍数大小进行映射。**
+
+```c
+// kernel space
+struct file_operations
+{
+    ...
+
+int (*mmap) (struct file *, struct vm_area_struct *);
+
+    ...
+};
+```
+
+用户空间进行系统调用 mmap() 的时候，最终会走到驱动的 mmap() 函数中。系统调用 mmap() 原型如下：
+
+```c
+// user space
+// fd 为文件描述符，一般由 open() 返回。fd 可指定为 -1，此时需指定 flags 参数中的 MAP_ANON，表明是匿名映射。
+// len 是映射到调用用户空间的字节数，从被映射文件开头 offset 个字节开始算起。offset 参数一般设为 0，表示从文件头开始映射。
+// prot 参数指定访问权限，可取如下几个值的 "|"：PROT_READ（可读）、PROT_WRITE（可写）、PROT_EXEC（可执行）和 PROT_NONE（不可访问）。
+// addr 指定文件应被映射到用户空间的起始地址，一般指定为 NULL，这样选择起始地址的任务将由内核完成，函数的返回值就是映射到用户空间的地址。
+void *mmap(void *__addr, size_t __len, int __prot, int __flags, int __fd, __off_t __offset);
+```
+
+进行系统调用 mmap() 的时候，内核会如下处理：
+
+1. **在进程的虚拟空间查找一块 VMA。**
+2. **将这块 VMA 进行映射。**
+3. **如果设备驱动程序或文件系统的 file_operations 定义了 mmap()，调用此函数。**
+4. **将这个 VMA 插入进程的 VMA 链表中。**
+
+file_operations 的 mmap() 的参数 struct vm_area_struct * 就是第一步找到的 VMA。
+
+系统 mmap() 映射的内存通过 munmap() 解除映射。
+
+```c
+int munmap(void *__addr, size_t __len);
+```
+
+**驱动程序中 mmap() 的实现机制是建立页表，并填充 VMA 结构体的 vm_operations_struct 指针。VMA 就是 vm_area_struct，用于描述一个虚拟内存区域。**
+
+```c
+/*
+ * This struct describes a virtual memory area. There is one of these
+ * per VM-area/task. A VM area is any part of the process virtual memory
+ * space that has a special rule for the page-fault handlers (ie a shared
+ * library, the executable area etc).
+ */
+struct vm_area_struct {
+	/* The first cache line has the info for VMA tree walking. */
+
+	unsigned long vm_start;		/* Our start address within vm_mm. */
+	unsigned long vm_end;		/* The first byte after our end address
+					   within vm_mm. */
+
+	/* linked list of VM areas per task, sorted by address */
+	struct vm_area_struct *vm_next, *vm_prev;
+
+	struct rb_node vm_rb;
+
+	/*
+	 * Largest free memory gap in bytes to the left of this VMA.
+	 * Either between this VMA and vma->vm_prev, or between one of the
+	 * VMAs below us in the VMA rbtree and its ->vm_prev. This helps
+	 * get_unmapped_area find a free area of the right size.
+	 */
+	unsigned long rb_subtree_gap;
+
+	/* Second cache line starts here. */
+
+	struct mm_struct *vm_mm;	/* The address space we belong to. */
+
+	/*
+	 * Access permissions of this VMA.
+	 * See vmf_insert_mixed_prot() for discussion.
+	 */
+	pgprot_t vm_page_prot;
+	unsigned long vm_flags;		/* Flags, see mm.h. */
+
+	/*
+	 * For areas with an address space and backing store,
+	 * linkage into the address_space->i_mmap interval tree.
+	 */
+	struct {
+		struct rb_node rb;
+		unsigned long rb_subtree_last;
+	} shared;
+
+	/*
+	 * A file's MAP_PRIVATE vma can be in both i_mmap tree and anon_vma
+	 * list, after a COW of one of the file pages.	A MAP_SHARED vma
+	 * can only be in the i_mmap tree.  An anonymous MAP_PRIVATE, stack
+	 * or brk vma (with NULL file) can only be in an anon_vma list.
+	 */
+	struct list_head anon_vma_chain; /* Serialized by mmap_lock &
+					  * page_table_lock */
+	struct anon_vma *anon_vma;	/* Serialized by page_table_lock */
+
+	/* Function pointers to deal with this struct. */
+	const struct vm_operations_struct *vm_ops;
+
+	/* Information about our backing store: */
+	unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE
+					   units */
+	struct file * vm_file;		/* File we map to (can be NULL). */
+	void * vm_private_data;		/* was vm_pte (shared mem) */
+
+#ifdef CONFIG_SWAP
+	atomic_long_t swap_readahead_info;
+#endif
+#ifndef CONFIG_MMU
+	struct vm_region *vm_region;	/* NOMMU mapping region */
+#endif
+#ifdef CONFIG_NUMA
+	struct mempolicy *vm_policy;	/* NUMA policy for the VMA */
+#endif
+	struct vm_userfaultfd_ctx vm_userfaultfd_ctx;
+} __randomize_layout;
+```
+
+VMA 结构体描述的虚地址介于 vm_start 和 vm_end 之间。vm_ops 成员指向这个 VMA 的操作集。针对 VMA 的操作都被包含在 vm_operations_struct 结构体中。
+
+```c
+/*
+ * These are the virtual MM functions - opening of an area, closing and
+ * unmapping it (needed to keep files on disk up-to-date etc), pointer
+ * to the functions called when a no-page or a wp-page exception occurs.
+ */
+struct vm_operations_struct {
+	void (*open)(struct vm_area_struct * area);
+	void (*close)(struct vm_area_struct * area);
+	/* Called any time before splitting to check if it's allowed */
+	int (*may_split)(struct vm_area_struct *area, unsigned long addr);
+	int (*mremap)(struct vm_area_struct *area);
+	/*
+	 * Called by mprotect() to make driver-specific permission
+	 * checks before mprotect() is finalised.   The VMA must not
+	 * be modified.  Returns 0 if eprotect() can proceed.
+	 */
+	int (*mprotect)(struct vm_area_struct *vma, unsigned long start,
+			unsigned long end, unsigned long newflags);
+	vm_fault_t (*fault)(struct vm_fault *vmf);
+	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+			enum page_entry_size pe_size);
+	vm_fault_t (*map_pages)(struct vm_fault *vmf,
+			pgoff_t start_pgoff, pgoff_t end_pgoff);
+	unsigned long (*pagesize)(struct vm_area_struct * area);
+
+	/* notification that a previously read-only page is about to become
+	 * writable, if an error is returned it will cause a SIGBUS */
+	vm_fault_t (*page_mkwrite)(struct vm_fault *vmf);
+
+	/* same as page_mkwrite when using VM_PFNMAP|VM_MIXEDMAP */
+	vm_fault_t (*pfn_mkwrite)(struct vm_fault *vmf);
+
+	/* called by access_process_vm when get_user_pages() fails, typically
+	 * for use by special VMAs. See also generic_access_phys() for a generic
+	 * implementation useful for any iomem mapping.
+	 */
+	int (*access)(struct vm_area_struct *vma, unsigned long addr,
+		      void *buf, int len, int write);
+
+	/* Called by the /proc/PID/maps code to ask the vma whether it
+	 * has a special name.  Returning non-NULL will also cause this
+	 * vma to be dumped unconditionally. */
+	const char *(*name)(struct vm_area_struct *vma);
+
+#ifdef CONFIG_NUMA
+	/*
+	 * set_policy() op must add a reference to any non-NULL @new mempolicy
+	 * to hold the policy upon return.  Caller should pass NULL @new to
+	 * remove a policy and fall back to surrounding context--i.e. do not
+	 * install a MPOL_DEFAULT policy, nor the task or system default
+	 * mempolicy.
+	 */
+	int (*set_policy)(struct vm_area_struct *vma, struct mempolicy *new);
+
+	/*
+	 * get_policy() op must add reference [mpol_get()] to any policy at
+	 * (vma,addr) marked as MPOL_SHARED.  The shared policy infrastructure
+	 * in mm/mempolicy.c will do this automatically.
+	 * get_policy() must NOT add a ref if the policy at (vma,addr) is not
+	 * marked as MPOL_SHARED. vma policies are protected by the mmap_lock.
+	 * If no [shared/vma] mempolicy exists at the addr, get_policy() op
+	 * must return NULL--i.e., do not "fallback" to task or system default
+	 * policy.
+	 */
+	struct mempolicy *(*get_policy)(struct vm_area_struct *vma,
+					unsigned long addr);
+#endif
+	/*
+	 * Called by vm_normal_page() for special PTEs to find the
+	 * page for @addr.  This is useful if the default behavior
+	 * (using pte_page()) would not find the correct page.
+	 */
+	struct page *(*find_special_page)(struct vm_area_struct *vma,
+					  unsigned long addr);
+};
+```
+
+vm_operations_struct 结构体的实体会在 file_operations 的 mmap() 成员函数里被赋值给相应的 vm_ops。上述 open() 函数通常在驱动的 mmap() 里调用，close() 函数通常会在 munmap() 的时候被调用到。
+
+一个 vm_operations_struct 的使用示例如下：
+
+```c
+static int xxx_mmap(struct file *filp, struct vm_area_struct *vma)
+{
+    // 创建页表项，以 VMA 结构体的成员作为 remap_pfn_range() 的参数，映射的虚拟地址范围是 vma->vm_start 至 vma->vm_end。
+    if (remap_pfn_range(vma, vma->vm_start, vm->vm_pgoff, vma->vm_end - vma->vm_start, vma->vm_page_prot)) return -EAGAIN;
+
+    vma->vm_ops = &xxx_remap_vm_ops;
+    xxx_vma_open(vma);
+
+
+    return 0;
+}
+
+// VMA 打开函数
+static void xxx_vma_open(struct vm_area_struct *vma)
+{
+    ...
+
+    printk(KERN_NOTICE "xxx VMA open, virt %lx, phys %lx\n", vma->vm_start, vma->vm_pgoff << PAGE_SHIFT);
+}
+
+// VMA 关闭函数
+static void xxx_vma_close(struct vm_area_struct *vma)
+{
+    ...
+
+    printk(KERN_NOTICE "xxx VMA close.\n");
+}
+
+// VMA 操作结构体
+static struct vm_operations_struct xxx_remap_vm_ops = {
+    .open = xxx_vma_open,
+    .close = xxx_vma_close,
+    ...
+};
+```
+
+remap_pfn_range() 函数的原型如下：
+
+```c
+// addr：内存映射开始处的虚拟地址，虚拟地址范围是 [addr, addr + size]
+// pfn：虚拟地址应该映射到的物理地址的页帧号。实际上是物理地址右移 PAGE_SHIFT 位。若 PAGE_SIZE 为 4 KB，则 PAGE_SHIFT 为 12，因为 PAGE_SIZE 等于 1 << PAGE_SHIFT。
+// prot：新页所要求的保护属性。
+int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn, unsigned long size, pgprot_t prot);
+```
+
+在驱动程序中，使用 remap_pfn_range() 能映射内存中的保留页、设备 I/O、framebuffer、camera 等内存。在此函数基础上可封装 io_remap_pfn_range()、vm_iomap_memory() 等 API。
+
+```c
+int io_remap_pfn_range(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn, unsigned long size, pgprot_t prot)
+{
+	return remap_pfn_range(vma, addr, pfn, size, pgprot_decrypted(prot));
+}
+
+int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long len);
+```
+
+**通常 I/O 内存被映射时是需要 nocache 的。这时应该设置 vma->vm_page_prot 为 nocache 标志再映射。**
+
+```c
+static int xxx_nocache_mmap(struct file *filp, struct vm_area_struct *vma)
+{
+    // 设置 nocache 标志
+    vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+    vma->vm_pgoff = ((u32)map_start >> PAGE_SHIFT);
+
+    // 映射
+    if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff, vma->vm_end - vma->vm_start, vma->vm_page_prot)) return -EAGAIN;
+
+
+    return 0;
+}
+```
+
+pgprot_noncached() 是一个宏函数，实现高度依赖于 CPU 架构，另一个限制少一点的宏是 pgprot_writecombine()。pgprot_noncached() 实际禁止了相关页的 Cache 和写缓冲，pgprot_writecombine() 则没有禁止写缓冲。
+
+#### fault() 函数
+
+除 remap_pfn_range() 以外，在驱动程序中实现 VMA 的 fault() 函数可以为设备提供更加灵活的内存映射途径。当访问的页不在内存里，即发生缺页异常时，fault() 会被内核自动调用，而 fault() 的具体行为可以自定义。
+
+当发生缺页异常的时候，系统会如下处理：
+
+1. 找到缺页的虚拟地址所在的 VMA。
+2. 如果必要，分配中间页目录表和页表。
+3. 如果页表项对应的物理页面不存在，调用这个 VMA 的 fault() 方法，它返回物理页面的页描迏符。
+4. 将物理页面的地址填充到页表中。
+
+一个使用示例如下：
+
+```c
+static int xxx_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
+{
+    unsigned long paddr;
+    unsigned long pfn;
+    pgoff_t index = vmf->pgoff;
+    struct vma_data *vdata = vma->vm_private_data;
+
+    ...
+
+    pfn = paddr >> PAGE_SHIFT;
+
+    vm_insert_pfn(vma, (unsigned long)vmf->virtual_address, pfn);
+
+    return VM_FAULT_NOPAGE;
+}
+```
+
+> 大多数设备驱动其实都不需要提供设备内存到用户空间的映射能力。因为对于串口等面向流的设备而言，实现这种映射毫无意义。而对于显示、视频等设备，建立映射可减少用户空间和内核空间之间的内存复制，这种情形下的映射是有意义的。
+
+## DMA
+
+**DMA 是一种无需 CPU 的参与就可以让外设与系统内存之间进行双向数据传输的硬件机制。DMA 使系统 CPU 从实际的 I/O 数据传输过程中摆脱出来，大大提高系统的吞吐率。**DMA 通常与硬件体系结构，特别是外设的总线技术密切相关。
+
+DMA 的数据传输由 DMA 控制器（DMAC）控制，在传输期间，CPU 可以并发地执行其他任务。当 DMA 结束后，DMAC 通过中断通知 CPU 数据传输已经结束，然后由 CPU 执行相应的中断服务程序进行后处理。
+
+### DMA 与 Cache 一致性
+
+Cache 和 DMA 本身似乎是两个毫不相关的事物。Cache 被用作 CPU 针对内存的缓存，利用程序的空间和时间的局部性原理，达到较高的命中率，从而避免 CPU 每次都必须要与相对慢速的内存交互数据来提高数据的访问速率。DMA 可以作为内存与外设之间传输数据的方式，在这种传输方式之下，数据并不需要经过 CPU 中转。
+
+若 DMA 针对内存的目的地址与 Cache 缓存的对象没有重叠区域，DMA 和 Cache 将相安无事。**若 DMA 的目的地址与 Cache 所缓存的内存地址有重叠，经过 DMA 操作，目的地址的内存已被修改，而 CPU 并不知道，它仍然认为 Cache 中的老数据就是内存中的数据，那在以后访问 Cache 映射的内存时，它仍然使用陈旧的 Cache 数据。这样就会发生 Cache 与内存之间数据“不一致性”的错误。**所谓 Cache 数据与内存数据的不一致性，是指在采用 Cache 的系统中，同样一个数据可能既存在于 Cache 中，也存在于主存中，Cache 与主存中的数据一样则具有一致性，数据若不一样则具有不一致性。
+
+<img src="https://img-blog.csdnimg.cn/direct/a91e589c759542dabf3c2d2ffd889839.png" alt="image-20241209172643859" style="zoom:65%;" />
+
+> Cache 与内存的一致性问题经常被遗忘。在发生 Cache 与内存不一致性错误后，驱动将无法正常运行。Cache 的不一致性问题并不是只发生在 DMA 的情况下，实际上，还存在于 Cache 使能和关闭的时刻。
+
+### DMA 编程
+
+**DMA 本身不属于一种等同于字符设备、块设备和网络设备的外设，它只是一种外设与内存交互数据的方式。**故更合理的称呼方式是 DMA 编程而非 DMA 驱动。
+
+**内存中用于与外设交互数据的区域称为 DMA 缓冲区。**在设备不支持 scatter/gather（分散/聚集，简称 SG）操作的情况下，DMA 缓冲区在物理上必须是连续的。
 
