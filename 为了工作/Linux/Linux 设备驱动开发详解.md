@@ -4,7 +4,7 @@ categories:
   - Linux 学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-12-09 17:40:00
+updated: 2024-12-10 20:15:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -4983,4 +4983,294 @@ Cache 和 DMA 本身似乎是两个毫不相关的事物。Cache 被用作 CPU �
 **DMA 本身不属于一种等同于字符设备、块设备和网络设备的外设，它只是一种外设与内存交互数据的方式。**故更合理的称呼方式是 DMA 编程而非 DMA 驱动。
 
 **内存中用于与外设交互数据的区域称为 DMA 缓冲区。**在设备不支持 scatter/gather（分散/聚集，简称 SG）操作的情况下，DMA 缓冲区在物理上必须是连续的。
+
+#### DMA 区域
+
+对于 x86 架构的 ISA 设备而言，其 DMA 操作只能在 16 MB 以下的内存中进行，因此，在使用 kmalloc()、`__get_free_pages()` 及其类似函数申请 DMA 缓冲区时应使用 GFP_DMA 标志，这样能保证获得的内存位于 DMA 区域中，并具备 DMA 能力。
+
+关于 ISA、PCI、PCIE 等总线协议的了解，参考：[https://blog.csdn.net/yinqiusheng/article/details/140387774](https://blog.csdn.net/yinqiusheng/article/details/140387774)
+
+内核中定义了使用 GFP_DMA 标志的申请 DMA 缓冲区的快捷函数 `__get_dma_pages()`，定义如下：
+
+```c
+#define __get_dma_pages(gfp_mask, order) \
+		__get_free_pages((gfp_mask) | GFP_DMA, (order))
+```
+
+如果不想使用参数 order 申请 DMA 内存，可使用另一个函数 dma_mem_alloc()，定义如下：
+
+```c
+static unsigned long dma_mem_alloc(unsigned long size)
+{
+    // get_order()：order = log2(size)
+	return __get_dma_pages(GFP_KERNEL, get_order(size));
+}
+```
+
+#### 虚拟地址、物理地址和总线地址
+
+基于 DMA 的硬件使用的是总线地址而不是物理地址，总线地址是从设备角度上看到的内存地址，物理地址则是从 CPU MMU 控制器外围角度上看到的内存地址（从 CPU 核角度看到的是虚拟地址）。虽然在 PC 上，对于 ISA 和 PCI 而言，总线地址即为物理地址，但并不是每个平台都是如此。因为有时候接口总线通过桥接电路连接，桥接电路会将 I/O 地址映射为不同的物理地址。
+
+内核提供了如下函数进行简单的虚拟地址/总线地址转换：
+
+```c
+unsigned long virt_to_bus(void *address)
+{
+	return (unsigned long)address;
+}
+
+void *bus_to_virt(unsigned long address)
+{
+	return (void *)address;
+}
+```
+
+#### DMA 地址掩码
+
+设备不一定能在所有的内存地址上执行 DMA 操作，在这种情况下应该通过下列函数执行 DMA 地址掩码：
+
+```c
+int dma_set_mask(struct device *dev, u64 mask);
+```
+
+这个函数的本质是修改 device 结构体中的 dma_mask 成员。在 device 结构体中，除了 dma_mask 以外，还有 coherent_dma_mask 成员。dma_mask 是设备 DMA 可寻址的范围，coherent_dma_mask 用作申请一致性 DMA 缓冲区。
+
+```c
+struct device {
+
+    ...
+
+	u64		*dma_mask;	/* dma mask (if dma'able device) */
+	u64		coherent_dma_mask;/* Like dma_mask, but for
+					     alloc_coherent mappings as
+					     not all hardware supports
+					     64 bit addresses for consistent
+					     allocations such descriptors. */
+
+    ...
+};
+```
+
+#### 一致性 DMA 缓冲区
+
+**DMA 映射包括两部分工作：分配一片 DMA 缓冲区；为这片缓冲区产生设备可访问的地址。**同时 DMA 映射也必须考虑 Cache 一致性问题。内核中提供了如下函数以分配一个 DMA 一致性的内存区域：
+
+```c
+// 返回申请到的 DMA 缓冲区的虚拟地址。
+// 通过参数 dma_handle 返回 DMA 缓冲区的总线地址。
+void *dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t gfp)
+{
+	return dma_alloc_attrs(dev, size, dma_handle, gfp,
+			(gfp & __GFP_NOWARN) ? DMA_ATTR_NO_WARN : 0);
+}
+```
+
+dma_alloc_coherent() 申请一片 DMA 缓冲区，进行地址映射并保证该缓冲区的 Cache 一致性。对应的释放函数为 dma_free_coherent()。
+
+```c
+void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr_t dma_handle)
+{
+	return dma_free_attrs(dev, size, cpu_addr, dma_handle, 0);
+}
+```
+
+使用函数 dma_alloc_writecombine() 分配一个写合并（Writecombining）的 DMA 缓冲区，释放函数是 dma_free_coherent()。这两个接口在 Linux 5.15 以后已移除。
+
+Linux 内核还提供了 PCI 设备申请 DMA 缓冲区的函数 pci_alloc_consistent()，释放函数是 pci_free_consistent()。
+
+```c
+void *pci_alloc_consistent(struct pci_dev *hwdev, size_t size, dma_addr_t *dma_handle)
+{
+	return dma_alloc_coherent(&hwdev->dev, size, dma_handle, GFP_ATOMIC);
+}
+
+void pci_free_consistent(struct pci_dev *hwdev, size_t size, void *vaddr, dma_addr_t dma_handle)
+{
+	dma_free_coherent(&hwdev->dev, size, vaddr, dma_handle);
+}
+```
+
+> dma_alloc_xxx() 函数虽然以 `dma_alloc_` 开头，但是申请的区域不一定在 DMA 区域里。以 32 位 ARM 处理器为例，当 coherent_dma_mask 小于 0xffffffff 时，才会设置 GFP_DMA 标记，并从 DMA 区域申请内存。
+
+#### 流式 DMA 映射
+
+**并不是所有的 DMA 缓冲区都是驱动申请的，如果是驱动申请的，用一致性 DMA 缓冲区自然最方便，这直接考虑了 Cache 一致性问题。**但在许多情况下，缓冲区来自内核的较上层（如网卡驱动中的网络报文、块设备驱动中要写入设备的数据等），上层很可能用普通的 kmalloc()、`__get_free_pages()` 等方法申请，这时就要使用流式 DMA 映射。使用步骤一般如下：
+
+1. 进行流式 DMA 映射。
+2. 执行 DMA 操作。
+3. 进行流式 DMA 去映射（去掉映射）。
+
+**流式 DMA 映射操作本质上大多是进行 Cache 的使无效或清除操作，以解决 Cache 一致性问题。**
+
+##### 单一缓冲区下的流式 DMA 映射
+
+对于单个已经分配的缓冲区而言，使用 dma_map_single() 可实现流式 DMA 映射。
+
+```c
+#define dma_map_single(d, a, s, r) dma_map_single_attrs(d, a, s, r, 0)
+
+// 映射成功返回总线地址，失败返回 NULL。
+// dir：DMA 的方向，包括 DMA_TO_DEVICE、DMA_FROM_DEVICE、DMA_BIDIRECTIONAL 和 DMA_NONE 等。
+dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr, size_t size, enum dma_data_direction dir, unsigned long attrs)
+{
+	/* DMA must never operate on areas that might be remapped. */
+	if (dev_WARN_ONCE(dev, is_vmalloc_addr(ptr),
+			  "rejecting DMA map of vmalloc memory\n"))
+		return DMA_MAPPING_ERROR;
+	debug_dma_map_single(dev, ptr, size);
+	return dma_map_page_attrs(dev, virt_to_page(ptr), offset_in_page(ptr),
+			size, dir, attrs);
+}
+```
+
+dma_map_single() 对应的去映射函数是 dma_unmap_single()。
+
+```c
+#define dma_unmap_single(d, a, s, r) dma_unmap_single_attrs(d, a, s, r, 0)
+
+void dma_unmap_single_attrs(struct device *dev, dma_addr_t addr,
+		size_t size, enum dma_data_direction dir, unsigned long attrs)
+{
+	return dma_unmap_page_attrs(dev, addr, size, dir, attrs);
+}
+```
+
+通常情况下，设备驱动不应访问未映射的流式 DMA 缓冲区。如果一定要这么做，可使用如下函数获得 DMA 缓冲区的拥有权。
+
+```c
+void dma_sync_single_for_cpu(struct device *dev, dma_addr_t addr, size_t size, enum dma_data_direction dir);
+```
+
+在驱动访问完 DMA 缓冲区后，使用如下函数将其所有权返还给设备。
+
+```c
+void dma_sync_single_for_device(struct device *dev, dma_addr_t addr, size_t size, enum dma_data_direction dir);
+```
+
+##### SG 映射
+
+如果设备要求较大的 DMA 缓冲区，在其支持 SG 模式的情况下，申请多个相对较小不连续的 DMA 缓冲区通常是防止申请太大的连续物理空间的方法。使用函数 dma_map_sg() 申请，对应的释放函数是 dma_unmap_sg()。
+
+```c
+#define dma_map_sg(d, s, n, r) dma_map_sg_attrs(d, s, n, r, 0)
+
+// 函数返回 DMA 缓冲区的数量，可能小于 nents。
+// nents：散列表（scatterlist）入口的数量。
+// 对于 scatterlist 的每个项目，dma_map_sg() 为设备产生恰当的总线地址，它会合并物理上临近的内存区域。
+unsigned int dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents, enum dma_data_direction dir, unsigned long attrs)
+{
+	int ret;
+
+	ret = __dma_map_sg_attrs(dev, sg, nents, dir, attrs);
+	if (ret < 0)
+		return 0;
+	return ret;
+}
+EXPORT_SYMBOL(dma_map_sg_attrs);
+
+#define dma_unmap_sg(d, s, n, r) dma_unmap_sg_attrs(d, s, n, r, 0)
+
+void dma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg, int nents, enum dma_data_direction dir, unsigned long attrs)
+{
+	const struct dma_map_ops *ops = get_dma_ops(dev);
+
+	BUG_ON(!valid_dma_direction(dir));
+	debug_dma_unmap_sg(dev, sg, nents, dir);
+	if (dma_map_direct(dev, ops) ||
+	    arch_dma_unmap_sg_direct(dev, sg, nents))
+		dma_direct_unmap_sg(dev, sg, nents, dir, attrs);
+	else if (ops->unmap_sg)
+		ops->unmap_sg(dev, sg, nents, dir, attrs);
+}
+EXPORT_SYMBOL(dma_unmap_sg_attrs);
+```
+
+scatterlist 结构体定义如下，包含与 scatterlist 对应的页结构体指针、缓冲区在页中的偏移 offset、缓冲区长度 length 以及总线地址 dma_address。
+
+```c
+struct scatterlist {
+	unsigned long	page_link;
+	unsigned int	offset;
+	unsigned int	length;
+	dma_addr_t	dma_address;
+#ifdef CONFIG_NEED_SG_DMA_LENGTH
+	unsigned int	dma_length;
+#endif
+};
+```
+
+执行 dma_map_sg() 后，通过 sg_dma_address() 返回 scatterlist 对应缓冲区的总线地址，sg_dma_len() 返回 scatterlist 对应缓冲区的长度。
+
+```c
+#define sg_dma_address(sg)	((sg)->dma_address)
+
+#define sg_dma_len(sg)		((sg)->dma_length)
+```
+
+同单一缓冲区的情况，如果设备驱动一定要访问未映射的 SG 缓冲区，应先调用函数 dma_sync_sg_for_cpu()，归还所有权的函数是 dma_sync_sg_for_device()。
+
+```c
+void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nelems, enum dma_data_direction dir);
+
+void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg, int nelems, enum dma_data_direction dir);
+```
+
+#### dmaengine 标准 API
+
+推荐使用 dmaengine 的驱动架构来编写 DMA 控制器的驱动，外设的驱动使用标准的 dmaengine API 进行 DMA 的准备、发起和完成时的回调工作。
+
+和中断一样，在使用 DMA 前，设备驱动程序需首先向 dmaengine 系统申请 DMA 通道，申请 DMA 通道的函数如下：
+
+```c
+/* Deprecated, please use dma_request_chan() directly */
+struct dma_chan * __deprecated dma_request_slave_channel(struct device *dev, const char *name)
+{
+	struct dma_chan *ch = dma_request_chan(dev, name);
+
+	return IS_ERR(ch) ? NULL : ch;
+}
+
+struct dma_chan *dma_request_chan(struct device *dev, const char *name);
+```
+
+对应的释放通道的函数是 dma_release_channel()。
+
+```c
+void dma_release_channel(struct dma_chan *chan);
+```
+
+下面是利用 dmaengine API 发起一次 DMA 操作的示例：
+
+```c
+static void xxx_dma_fini_callback(void *data)
+{
+    struct completion *dma_complete = data;
+
+    complete(dma_complete);
+}
+
+issue_xxx_dma(...)
+{
+    // 通过 dmaengine_prep_slave_single() 准备好一些 DMA 描述符。
+    rx_desc = dmaengine_prep_slave_single(xxx->rx_chan, xxx->dst_start, t->len, DMA_DEV_TO_MEM, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+
+    // 填充完成回调为 xxx_dma_fini_callback()。
+    rx_desc->callback = xxx_dma_fini_callback;
+    rx_desc->callback_param = &xxx->rx_done;
+
+    // 通过 dmaengine_submit() 把这个描述符插入队列。
+    dmaengine_submit(rx_desc);
+
+    // 通过 dma_async_issue_pending() 发起这次 DMA 动作。完成后 xxx_dma_fini_callback() 函数会被 dmaengine 驱动自动调用。
+    dma_async_issue_pending(xxx->rx_chan);
+}
+```
+
+## 小结
+
+外设可处于 CPU 的内存空间和 I/O 空间。除 x86 外，嵌入式处理器一般只存在内存空间。Linux 为 I/O 内存和 I/O 端口的访问提高了一套统一的方法，访问流程一般为**申请资源->映射->访问->去映射->释放资源**。
+
+对于有 MMU 的处理器而言，Linux 的内部布局比较复杂，可直接映射的物理内存称为常规内存，超出部分为高端内存。kmalloc() 和 `__get_free_pages()` 申请的内存在物理上连续，vmalloc() 申请的内存在物理上不连续。
+
+DMA 操作可能导致 Cache 不一致性的问题，故对于 DMA 缓冲，应使用 dma_alloc_coherent() 等方法申请。在 DMA 操作中涉及总线地址、物理地址和虚拟地址等概念，区分这 3 类地址非常重要。
 
