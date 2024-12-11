@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-12-10 11:45:00
+updated: 2024-12-11 12:15:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -413,11 +413,15 @@ updated: 2024-12-10 11:45:00
 
 - Windows 截屏工具：[https://zh.snipaste.com/](https://zh.snipaste.com/)
 
-  - 可通过 Scoop 安装：`scoop install snipaste-beta`
+  - 通过 Scoop 安装：`scoop install snipaste-beta`
 
 - Windows 照片/视频查看工具：[https://github.com/easymodo/qimgv](https://github.com/easymodo/qimgv)
 
-  - 可通过 Scoop 安装：`scoop install qimgv-video`
+  - 通过 Scoop 安装：`scoop install qimgv-video`
+
+- Windows PDF 阅读器：[https://github.com/sumatrapdfreader/sumatrapdf](https://github.com/sumatrapdfreader/sumatrapdf)
+
+  - 通过 Scoop 安装：`scoop install sumatrapdf`
 
 - 使用 1Panel 自动申请和续签证书：[https://hin.cool/posts/sslfor1panel.html](https://hin.cool/posts/sslfor1panel.html)
 

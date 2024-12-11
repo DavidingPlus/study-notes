@@ -4,14 +4,14 @@ categories:
   - Linux 学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-12-10 20:15:00
+updated: 2024-12-11 12:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
 
 本书基于 Linux 4.0 内核编写，个人学习测试的内核版本是 5.15.167。
 
-# Linux 内核及内核编程
+# 内核及内核编程
 
 ## Linux 2.6 后的内核特点
 
@@ -353,7 +353,7 @@ config MODVERSIONS
 
 更详细的编写细节，请参考内核文档 Documentation 目录内的 kbuild 子目录下的 Kconfig-language.rst 和 Makefiles.rst 文件。
 
-# Linux 内核模块
+# 内核模块
 
 ## 内核模块简介
 
@@ -724,7 +724,7 @@ void module_put(struct module *module);
 
 Linux 2.6 以后的内核为不同类型的设备定义了 struct module *owner 域，用来指向管理此设备的模块。当开始使用某个设备时，内核使用 try_module_get(dev->owner) 去增加管理此设备的 owner 模块的使用计数；当不再使用此设备时，内核使用 module_put(dev->owner) 减少对管理此设备的管理模块的使用计数。这样，当设备在使用时，管理此设备的模块将不能被卸载。只有当设备不再被使用时，模块才允许被卸载。
 
-# Linux 文件系统与设备文件
+# 文件系统与设备文件
 
 Linux 之下一些皆文件，并且由于字符设备和块设备都良好的体现了一切皆文件的思想，因此 Linux 文件系统与设备文件的基础知识就非常重要了。
 
@@ -1929,7 +1929,7 @@ struct file_operations xxx_fops = {
 
 字符设备是 3 大类设备（字符设备、块设备和网络设备）中的一类。其驱动程序完成的主要工作是初始化、添加和删除 cdev 结构体，申请和释放设备号，以及填充 file_operations 结构体中的操作函数。实现 file_operations 结构体中的 read()、write() 和 ioctl() 等函数是驱动设计的主体工作。
 
-# Linux 设备驱动中的并发控制
+# 设备驱动中的并发控制
 
 Linux 设备驱动中必须要解决的问题是多个进程对共享资源的并发访问，并发会导致竞态，所以需要格外小心。
 
@@ -2556,7 +2556,7 @@ Linux 内核优化了自旋锁、信号量、互斥体、完成量等的管理�
 
 **自旋锁会导致死循环，锁定期间不允许阻塞，因此要求锁定的临界区小。互斥体允许临界区阻塞，可以适用于临界区大的情况。**
 
-# Linux 设备驱动中的阻塞与非阻塞 I/O
+# 设备驱动中的阻塞与非阻塞 I/O
 
 阻塞和非阻塞 I/O 是设备访问的两种不同模式，驱动程序可以灵活地支持这两种用户空间对设备的访问方式。
 
@@ -2796,7 +2796,7 @@ TODO
 
 在设备驱动中阻塞 I/O 一般基于等待队列或者基于等待队列的其他 Linux 内核 API 来实现，等待队列可用于同步驱动中事件发生的先后顺序。使用非阻塞 I/O 的应用程序也可借助轮询函数来查询设备是否能立即被访问，用户空间调用 select()、poll() 或 epoll() 接口，设备驱动提供 poll() 函数。设备驱动的 poll() 本身不会阻塞，但是与 select()、poll() 和 epoll() 相关的系统调用则会阻塞地等待至少一个文件描述符集合，直到可访问或超时。
 
-# Linux 设备驱动中的异步通知与异步 I/O
+# 设备驱动中的异步通知与异步 I/O
 
 异步通知的意思是：一旦设备就绪，则主动通知应用程序，这样应用程序根本就不需要查询设备状态，这一点非常类似于硬件上“中断”的概念，比较准确的称谓是“**信号驱动的异步 I/O**”。**信号是在软件层次上对中断机制的一种模拟。**在原理上，一个进程收到一个信号与处理器收到一个中断请求可以说是一样的。信号是异步的，一个进程不必通过任何操作来等待信号的到达，事实上，进程也不知道信号到底什么时候到达。
 
@@ -5273,4 +5273,406 @@ issue_xxx_dma(...)
 对于有 MMU 的处理器而言，Linux 的内部布局比较复杂，可直接映射的物理内存称为常规内存，超出部分为高端内存。kmalloc() 和 `__get_free_pages()` 申请的内存在物理上连续，vmalloc() 申请的内存在物理上不连续。
 
 DMA 操作可能导致 Cache 不一致性的问题，故对于 DMA 缓冲，应使用 dma_alloc_coherent() 等方法申请。在 DMA 操作中涉及总线地址、物理地址和虚拟地址等概念，区分这 3 类地址非常重要。
+
+# 设备驱动的软件架构思想
+
+TODO
+
+# 块设备驱动
+
+块设备是与字符设备并列的概念，这两类设备（一共三类，还有一类是网络设备）在 Linux 中的驱动结构有较大差异。总体而言，块设备驱动比字符设备驱动复杂得多，在 I/O 操作上也有极大的不同。缓冲、I/O 调度、请求队列等都是与块设备驱动相关的概念。
+
+## 块设备的 I/O 操作特点
+
+块设备 I/O 操作与字符设备的不同之处如下：
+
+1. **块设备只能以块为单位接收输入和返回输出，而字符设备则以字节为单位。大多数设备是字符设备，因为它们不需要缓冲而且不以固定块大小进行操作。**
+2. **块设备对于 I/O 请求有对应的缓冲区，故它们可以选择以什么顺序进行响应，而字符设备无须缓冲且被直接读写。对存储设备而言，调整读写的顺序作用巨大，因为在读写连续的扇区的存储速度比分离的扇区更快。**
+3. **字符设备只能顺序读写，而块设备能随机访问。**
+
+虽然块设备可随机访问，但对于磁盘这类机械设备而言，顺序地组织块设备的访问可以提高性能。
+
+<img src="https://img-blog.csdnimg.cn/direct/edfc4b53d32746b8b0cd0e861d0a57a9.png" alt="image-20241211095908580" style="zoom:70%;" />
+
+在 Linux 中通常通过磁盘文件系统 EXT4、UBIFS 等访问磁盘，但磁盘也有一种原始设备的访问方式，如直接访问 /dev/sdb1 等。所有的 EXT4、UBIFS、原始块设备都工作于 VFS 之下，而 EXT4、UBIFS、原始块设备之下又包含块 I/O 调度层以进行排序和合并。**I/O 调度层的基本目的是将请求按照它们对应在块设备上的扇区号进行排列，以减少磁头的移动，提高效率。**
+
+<img src="https://img-blog.csdnimg.cn/direct/a9bebb3b046a4db594b929bd3522d2af.png" alt="image-20241211100707232" style="zoom:75%;" />
+
+## 块设备驱动结构
+
+### block_device_operations 结构体
+
+块设备驱动有个类似字符设备驱动 file_operations 的 block_device_operations 结构体，是对块设备操作的集合。
+
+```c
+struct block_device_operations {
+	blk_qc_t (*submit_bio) (struct bio *bio);
+	int (*open) (struct block_device *, fmode_t);
+	void (*release) (struct gendisk *, fmode_t);
+	int (*rw_page)(struct block_device *, sector_t, struct page *, unsigned int);
+	int (*ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
+	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
+	unsigned int (*check_events) (struct gendisk *disk,
+				      unsigned int clearing);
+    /* ->media_changed() is DEPRECATED, use ->check_events() instead */
+	void (*unlock_native_capacity) (struct gendisk *);
+	int (*getgeo)(struct block_device *, struct hd_geometry *);
+	int (*set_read_only)(struct block_device *bdev, bool ro);
+	/* this callback is with swap_lock and sometimes page table lock held */
+	void (*swap_slot_free_notify) (struct block_device *, unsigned long);
+	int (*report_zones)(struct gendisk *, sector_t sector,
+			unsigned int nr_zones, report_zones_cb cb, void *data);
+	char *(*devnode)(struct gendisk *disk, umode_t *mode);
+	struct module *owner;
+	const struct pr_ops *pr_ops;
+
+	/*
+	 * Special callback for probing GPT entry at a given sector.
+	 * Needed by Android devices, used by GPT scanner and MMC blk
+	 * driver.
+	 */
+	int (*alternative_gpt_sector)(struct gendisk *disk, sector_t *sector);
+};
+```
+
+1. 打开与释放
+
+当设备被打开和关闭的时会调用这两个函数。
+
+```c
+int (*open) (struct block_device *, fmode_t);
+void (*release) (struct gendisk *, fmode_t);
+```
+
+2. I/O 控制
+
+同字符设备，进行系统调用 ioctl() 时会走到驱动的这两个函数，具体调用哪个看具体情况。块设备包含大量的标准请求，这些请求由 Linux 通用块设备层处理，故大部分块设备驱动的 ioctl() 函数相当短。一个 64 位系统内的 32 位进程调用 ioctl() 时，调用的是 compat_ioctl()。
+
+```c
+int (*ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
+int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
+```
+
+3. 介质改变
+
+老版本使用的是函数 media_changed()，Linux 4.0 以后已废除，改而使用 check_events()。
+
+内核调用此函数检查驱动器中的介质是否已经改变。若是，返回一个非 0 值，否则返回 0。此函数仅适用于支持可移动介质的驱动器，通常需要在驱动中增加一个表示介质状态是否改变的标志变量，非可移动设备的驱动无需实现此方法。
+
+media_changed() 在用户空间轮询可移动磁盘介质是否存在，而 check_events() 在内核空间里轮询。check_events() 检查有无挂起事件，若有 DISK_EVENT_MEDIA_CHANGE 和 DISK_EVENT_EJECT_REQUEST 事件，就返回。
+
+```c
+int (*media_changed) (struct gendisk *gd);
+unsigned int (*check_events) (struct gendisk *disk, unsigned int clearing);
+```
+
+4. 使介质有效
+
+Linux 5.15 以前存在接口 revalidate_disk()，目前已移除。暂未找到替代接口，可能牵扯到了部分设计。
+
+```c
+// 用于响应一个介质改变，它给驱动一个机会进行必要的工作以使新介质准备好。
+int (*revalidate_disk) (struct gendisk *gd);
+```
+
+5. 获得驱动器信息
+
+getgeo() 函数根据驱动器的几何信息填充一个 hd_geometry 结构体，包含磁头、扇区、柱面等信息。
+
+```c
+int (*getgeo)(struct block_device *, struct hd_geometry *);
+
+struct hd_geometry {
+      unsigned char heads;
+      unsigned char sectors;
+      unsigned short cylinders;
+      unsigned long start;
+};
+```
+
+6. 模块指针
+
+拥有这个结构体的模块的指针，通常被初始化为 THIS_MODULE。
+
+```c
+struct module *owner;
+```
+
+### gendisk 结构体
+
+Linux 内核使用 gendisk（通用磁盘）结构体表示一个独立的磁盘设备（例如分区）。
+
+```c
+struct gendisk {
+	/* major, first_minor and minors are input parameters only,
+	 * don't use directly.  Use disk_devt() and disk_max_parts().
+	 */
+	int major;			/* major number of driver */
+	int first_minor;
+	int minors;                     /* maximum number of minors, =1 for
+                                         * disks that can't be partitioned. */
+
+	char disk_name[DISK_NAME_LEN];	/* name of major driver */
+
+	unsigned short events;		/* supported events */
+	unsigned short event_flags;	/* flags related to event processing */
+
+	struct xarray part_tbl;
+	struct block_device *part0;
+
+	const struct block_device_operations *fops;
+	struct request_queue *queue;
+	void *private_data;
+
+	int flags;
+	unsigned long state;
+#define GD_NEED_PART_SCAN		0
+#define GD_READ_ONLY			1
+#define GD_DEAD				2
+#define GD_NATIVE_CAPACITY		3
+
+	struct mutex open_mutex;	/* open/close mutex */
+	unsigned open_partitions;	/* number of open partitions */
+
+	struct backing_dev_info	*bdi;
+	struct kobject *slave_dir;
+#ifdef CONFIG_BLOCK_HOLDER_DEPRECATED
+	struct list_head slave_bdevs;
+#endif
+	struct timer_rand_state *random;
+	atomic_t sync_io;		/* RAID */
+	struct disk_events *ev;
+#ifdef  CONFIG_BLK_DEV_INTEGRITY
+	struct kobject integrity_kobj;
+#endif	/* CONFIG_BLK_DEV_INTEGRITY */
+#if IS_ENABLED(CONFIG_CDROM)
+	struct cdrom_device_info *cdi;
+#endif
+	int node_id;
+	struct badblocks *bb;
+	struct lockdep_map lockdep_map;
+	u64 diskseq;
+};
+```
+
+major、first_minor 和 minors 共同代表磁盘的主、次设备号，同一个磁盘的各个分区共享一个主设备号，而次设备号则不同。fops 为 block_device_operations，即块设备的操作集合。queue 是内核用来管理这个设备的 I/O 请求队列的指针。private_data 指向磁盘的任何私有数据，用法类似字符设备的 private_data。
+
+Linux 提供了一组函数操作 gendisk。
+
+1. 分配 gendisk
+
+gendisk 结构体是个动态分配的结构体，需要特别的内核操作来初始化，驱动不能自己分配这个结构体。
+
+旧版使用接口 alloc_disk() 分配 gendisk。注意下面新版和旧版代码的区别。 
+
+```c
+// 旧版
+// minors 参数是这个磁盘使用的次设备号的数量，一般也是磁盘分区的数量，此后不能被修改。
+#define alloc_disk(minors) alloc_disk_node(minors, NUMA_NO_NODE)
+
+#define alloc_disk_node(minors, node_id)				\
+({									\
+	static struct lock_class_key __key;				\
+	const char *__name;						\
+	struct gendisk *__disk;						\
+									\
+	__name = "(gendisk_completion)"#minors"("#node_id")";		\
+									\
+	__disk = __alloc_disk_node(minors, node_id);			\
+									\
+	if (__disk)							\
+		lockdep_init_map(&__disk->lockdep_map, __name, &__key, 0); \
+									\
+	__disk;								\
+})
+```
+
+在 __alloc_disk_node() 函数中将 minors 参数赋值给 disk->minors。
+
+<img src="https://img-blog.csdnimg.cn/direct/b3d2b4270af94eed9bbbffae010f8932.png" alt="image-20241211113728841" style="zoom:85%;" />
+
+Linux 5.15 以后已移除 alloc_disk() 接口，转而使用宏函数 blk_alloc_disk()。
+
+新版本让用户传入参数 node_id，根据注释知道是类似之前 NUMA_NO_NODE 的东西，一般传这个就可以了，当然也可以手动指定。关于 NUMA 的含义，请参考 [https://www.kernel.org/doc/html/latest/translations/zh_CN/mm/numa.html](https://www.kernel.org/doc/html/latest/translations/zh_CN/mm/numa.html)。至于 minors 参数，结合旧版的处理，猜测新版中在分配以后对 gendisk 结构体的属性赋值即可。
+
+```c
+// 新版
+/**
+ * blk_alloc_disk - allocate a gendisk structure
+ * @node_id: numa node to allocate on
+ *
+ * Allocate and pre-initialize a gendisk structure for use with BIO based
+ * drivers.
+ *
+ * Context: can sleep
+ */
+#define blk_alloc_disk(node_id)						\
+({									\
+	static struct lock_class_key __key;				\
+									\
+	__blk_alloc_disk(node_id, &__key);				\
+})
+
+// 在 __blk_alloc_disk() 中调用了 __alloc_disk_node()。
+struct gendisk *__blk_alloc_disk(int node, struct lock_class_key *lkclass)
+{
+	struct request_queue *q;
+	struct gendisk *disk;
+
+	q = blk_alloc_queue(node);
+	if (!q)
+		return NULL;
+
+	disk = __alloc_disk_node(q, node, lkclass);
+	if (!disk) {
+		blk_cleanup_queue(q);
+		return NULL;
+	}
+	return disk;
+}
+EXPORT_SYMBOL(__blk_alloc_disk);
+
+struct gendisk *__alloc_disk_node(struct request_queue *q, int node_id, struct lock_class_key *lkclass);
+```
+
+2. 增加 gendisk
+
+gendisk 结构体被分配之后，系统还不能使用这个磁盘，需调用 add_disk() 函数来注册这个磁盘设备。
+
+```c
+int add_disk(struct gendisk *disk)
+{
+	return device_add_disk(NULL, disk, NULL);
+}
+
+int device_add_disk(struct device *parent, struct gendisk *disk, const struct attribute_group **groups);
+```
+
+> 特别注意：add_disk() 的调用必须在驱动程序的初始化工作完成并能响应磁盘的请求之后。
+
+3. 释放 gendisk
+
+不再需要磁盘时，使用 del_gendisk() 函数释放 gendisk。
+
+```c
+void del_gendisk(struct gendisk *gp);
+```
+
+4. gendisk 引用计数
+
+使用 put_disk() 可操作 gendisk 的引用计数，这个工作一般无需驱动亲自做。
+
+```c
+void put_disk(struct gendisk *disk)
+{
+	if (disk)
+		put_device(disk_to_dev(disk));
+}
+EXPORT_SYMBOL(put_disk);
+```
+
+旧版还有 get_disk() 函数，可以获取引用计数，返回 kobject * 类型。新版中已移除，可能可以直接通过 gendisk 结构体获得相关结果。
+
+```c
+// 旧版
+struct kobject *get_disk(struct gendisk *disk);
+```
+
+### bio、request 和 request_queue
+
+通常一个 bio 对应上层传给块层的 I/O 请求。每个 bio 结构体及其包含的 bvec_iter、bio_vec 结构体描述了该 I/O 请求的开始扇区、数据方向（读还是写）、数据放入的页等。
+
+```c
+struct bio {
+	struct bio		*bi_next;	/* request queue link */
+	struct block_device	*bi_bdev;
+	unsigned int		bi_opf;		/* bottom bits REQ_OP, top bits
+						 * req_flags.
+						 */
+	unsigned short		bi_flags;	/* BIO_* below */
+	unsigned short		bi_ioprio;
+	unsigned short		bi_write_hint;
+	blk_status_t		bi_status;
+	atomic_t		__bi_remaining;
+
+	struct bvec_iter	bi_iter;
+
+	bio_end_io_t		*bi_end_io;
+
+	void			*bi_private;
+#ifdef CONFIG_BLK_CGROUP
+	/*
+	 * Represents the association of the css and request_queue for the bio.
+	 * If a bio goes direct to device, it will not have a blkg as it will
+	 * not have a request_queue associated with it.  The reference is put
+	 * on release of the bio.
+	 */
+	struct blkcg_gq		*bi_blkg;
+	struct bio_issue	bi_issue;
+#ifdef CONFIG_BLK_CGROUP_IOCOST
+	u64			bi_iocost_cost;
+#endif
+#endif
+
+#ifdef CONFIG_BLK_INLINE_ENCRYPTION
+	struct bio_crypt_ctx	*bi_crypt_context;
+#endif
+
+	union {
+#if defined(CONFIG_BLK_DEV_INTEGRITY)
+		struct bio_integrity_payload *bi_integrity; /* data integrity */
+#endif
+	};
+
+	unsigned short		bi_vcnt;	/* how many bio_vec's */
+
+	/*
+	 * Everything starting with bi_max_vecs will be preserved by bio_reset()
+	 */
+
+	unsigned short		bi_max_vecs;	/* max bvl_vecs we can hold */
+
+	atomic_t		__bi_cnt;	/* pin count */
+
+	struct bio_vec		*bi_io_vec;	/* the actual vec list */
+
+	struct bio_set		*bi_pool;
+
+	/*
+	 * We can inline a number of vecs at the end of the bio, to avoid
+	 * double allocations for a small number of bio_vecs. This member
+	 * MUST obviously be kept at the very end of the bio.
+	 */
+	struct bio_vec		bi_inline_vecs[];
+};
+
+struct bvec_iter {
+	sector_t		bi_sector;	/* device address in 512 byte
+						   sectors */
+	unsigned int		bi_size;	/* residual I/O count */
+
+	unsigned int		bi_idx;		/* current index into bvl_vec */
+
+	unsigned int            bi_bvec_done;	/* number of bytes completed in
+						   current bvec */
+};
+```
+
+**与 bio 对应的数据每次存放的内存不一定是连续的。**bio_vec 结构体用来描述与这个 bio 请求对应的所有的内存，它可能不总是在一个页面里面，故需要一个向量。向量中的每个元素实际是一个 [page，offset，len]，一般也称为一个片段。
+
+```c
+struct bio_vec {
+	struct page	*bv_page;
+	unsigned int	bv_len;
+	unsigned int	bv_offset;
+};
+```
+
+**I/O 调度算法可将连续的 bio 合并成一个请求。请求是 bio 经 I/O 调度调整后的结果，这是二者的区别。**故一个 request 可包含多个 bio。当 bio 被提交给 I/O 调度器时，I/O 调度器可能会将这个 bio 插入现存的请求中，也可能生成新的请求。
+
+每个块设备或者块设备的分区都有自身的 request_queue，从 I/O 调度器合并和排序出来的请求会被分发（Dispatch）到设备级别的 request_queue。
+
+<img src="https://img-blog.csdnimg.cn/direct/c7f4444f5c9b400d8c136e73cba8e50a.png" alt="image-20241211121458861" style="zoom:70%;" />
+
+下面是涉及处理 bio、request 和 request_queue 的 API。
 
