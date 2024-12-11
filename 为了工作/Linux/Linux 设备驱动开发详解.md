@@ -4,7 +4,7 @@ categories:
   - Linux 学习
 abbrlink: 484892ff
 date: 2024-10-24 15:00:00
-updated: 2024-12-11 12:20:00
+updated: 2024-12-11 15:40:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -5578,7 +5578,9 @@ EXPORT_SYMBOL(put_disk);
 struct kobject *get_disk(struct gendisk *disk);
 ```
 
-### bio、request 和 request_queue
+### bio、request和request_queue
+
+#### bio
 
 通常一个 bio 对应上层传给块层的 I/O 请求。每个 bio 结构体及其包含的 bvec_iter、bio_vec 结构体描述了该 I/O 请求的开始扇区、数据方向（读还是写）、数据放入的页等。
 
@@ -5658,7 +5660,7 @@ struct bvec_iter {
 };
 ```
 
-**与 bio 对应的数据每次存放的内存不一定是连续的。**bio_vec 结构体用来描述与这个 bio 请求对应的所有的内存，它可能不总是在一个页面里面，故需要一个向量。向量中的每个元素实际是一个 [page，offset，len]，一般也称为一个片段。
+**与 bio 对应的数据每次存放的内存不一定是连续的。**bio_vec 结构体用来描述与这个 bio 请求对应的所有的内存，它可能不总是在一个页面里面，故需要一个向量来记录。向量中的每个元素实际是一个 [page，offset，len]，也称为一个片段。
 
 ```c
 struct bio_vec {
@@ -5668,11 +5670,186 @@ struct bio_vec {
 };
 ```
 
-**I/O 调度算法可将连续的 bio 合并成一个请求。请求是 bio 经 I/O 调度调整后的结果，这是二者的区别。**故一个 request 可包含多个 bio。当 bio 被提交给 I/O 调度器时，I/O 调度器可能会将这个 bio 插入现存的请求中，也可能生成新的请求。
+#### request 和 request_queue
+
+**I/O 调度算法可将连续的 bio 合并成一个请求。请求是 bio 经 I/O 调度调整后的结果，这是二者的区别。**一个 request 可包含多个 bio。当 bio 被提交给 I/O 调度器时，I/O 调度器可能会将这个 bio 插入现存的请求中，也可能生成新的请求。
 
 每个块设备或者块设备的分区都有自身的 request_queue，从 I/O 调度器合并和排序出来的请求会被分发（Dispatch）到设备级别的 request_queue。
 
 <img src="https://img-blog.csdnimg.cn/direct/c7f4444f5c9b400d8c136e73cba8e50a.png" alt="image-20241211121458861" style="zoom:70%;" />
 
+**随着高速 SSD 的出现并展现出越来越高的性能，传统的块设备层已无法满足这么高的 IOPS（IOs per second），逐渐成为系统 I/O 性能的瓶颈。故在 Linux 5 后废弃了原有的 blk-sq（block single queue）架构，而采用新的 blk-mq（block multi queue）架构。**API 发生了非常大的变化。关于更多 blk-mq 的细节，可参考 [https://blog.csdn.net/Wang20122013/article/details/120544642](https://blog.csdn.net/Wang20122013/article/details/120544642)。
+
 下面是涉及处理 bio、request 和 request_queue 的 API。
+
+1. 初始化请求队列
+
+blk_mq_init_queue() 一般在块设备的初始化过程中使用。此函数会发生内存分配的行为，可能会失败，需检查它的返回值。
+
+```c
+struct request_queue *blk_mq_init_queue(struct blk_mq_tag_set *set)
+{
+	return blk_mq_init_queue_data(set, NULL);
+}
+EXPORT_SYMBOL(blk_mq_init_queue);
+
+// 此函数的主要流程：
+// 1. 调用 blk_alloc_queue() 分配请求队列的内存，分配的内存节点与设备连接的 NUMA 节点一致，避免远端内存访问问题。
+// 2. 调用 blk_mq_init_allocated_queue() 初始化分配的请求队列。
+struct request_queue *blk_mq_init_queue_data(struct blk_mq_tag_set *set, void *queuedata)
+{
+	struct request_queue *q;
+	int ret;
+
+	q = blk_alloc_queue(set->numa_node);
+	if (!q)
+		return ERR_PTR(-ENOMEM);
+	q->queuedata = queuedata;
+	ret = blk_mq_init_allocated_queue(set, q);
+	if (ret) {
+		blk_cleanup_queue(q);
+		return ERR_PTR(ret);
+	}
+	return q;
+}
+```
+
+其中 blk_mq_tag_set 结构体定义为：
+
+```c
+struct blk_mq_tag_set {
+	struct blk_mq_queue_map	map[HCTX_MAX_TYPES];
+	unsigned int		nr_maps;
+	const struct blk_mq_ops	*ops;
+	unsigned int		nr_hw_queues;
+	unsigned int		queue_depth;
+	unsigned int		reserved_tags;
+	unsigned int		cmd_size;
+	int			numa_node;
+	unsigned int		timeout;
+	unsigned int		flags;
+	void			*driver_data;
+	atomic_t		active_queues_shared_sbitmap;
+
+	struct sbitmap_queue	__bitmap_tags;
+	struct sbitmap_queue	__breserved_tags;
+	struct blk_mq_tags	**tags;
+
+	struct mutex		tag_list_lock;
+	struct list_head	tag_list;
+};
+```
+
+2. 清除请求队列
+
+此函数将请求队列归还给系统，一般在块设备驱动卸载过程中调用。
+
+```c
+static inline void blk_mq_cleanup_rq(struct request *rq)
+{
+	if (rq->q->mq_ops->cleanup_rq)
+		rq->q->mq_ops->cleanup_rq(rq);
+}
+```
+
+3. 分配请求队列
+
+此函数在初始化请求队列的 blk_mq_init_queue_data() 函数中被调用过。
+
+```c
+struct request_queue *blk_alloc_queue(int node_id);
+```
+
+4. 提取请求
+
+TODO。暂未找到替代函数。可能是设计和语义发生了改变导致的。后续调研。
+
+5. 启动请求
+
+```c
+// 启动并从请求队列中移除请求。
+void blk_mq_start_request(struct request *rq);
+```
+
+6. 遍历 I/O 和片段
+
+`__rq_for_each_bio()` 遍历一个请求的所有 bio。
+
+```c
+#define __rq_for_each_bio(_bio, rq)	\
+	if ((rq->bio))			\
+		for (_bio = (rq)->bio; _bio; _bio = _bio->bi_next)
+```
+
+bio_for_each_segment() 遍历一个 bio 的所有 bio_vec。
+
+```c
+#define __bio_for_each_segment(bvl, bio, iter, start)			\
+	for (iter = (start);						\
+	     (iter).bi_size &&						\
+		((bvl = bio_iter_iovec((bio), (iter))), 1);		\
+	     bio_advance_iter_single((bio), &(iter), (bvl).bv_len))
+
+#define bio_for_each_segment(bvl, bio, iter)				\
+	__bio_for_each_segment(bvl, bio, iter, (bio)->bi_iter)
+```
+
+rq_for_each_segment() 遍历一个请求所有 bio 中的所有 segment。
+
+```c
+#define rq_for_each_segment(bvl, _rq, _iter)			\
+	__rq_for_each_bio(_iter.bio, _rq)			\
+		bio_for_each_segment(bvl, _iter.bio, _iter.iter)
+```
+
+7. 报告完成
+
+这两个函数用于报告请求是否完成，error 为 0 表示成功，小于 0 表示失败。
+
+```c
+void blk_mq_end_request(struct request *rq, blk_status_t error)
+{
+	if (blk_update_request(rq, error, blk_rq_bytes(rq)))
+		BUG();
+	__blk_mq_end_request(rq, error);
+}
+EXPORT_SYMBOL(blk_mq_end_request);
+
+void __blk_mq_end_request(struct request *rq, blk_status_t error)
+{
+	u64 now = 0;
+
+	if (blk_mq_need_time_stamp(rq))
+		now = ktime_get_ns();
+
+	if (rq->rq_flags & RQF_STATS) {
+		blk_mq_poll_stats_start(rq->q);
+		blk_stat_add(rq, now);
+	}
+
+	blk_mq_sched_completed_request(rq, now);
+
+	blk_account_io_done(rq, now);
+
+	if (rq->end_io) {
+		rq_qos_done(rq->q, rq);
+		rq->end_io(rq, error);
+	} else {
+		blk_mq_free_request(rq);
+	}
+}
+EXPORT_SYMBOL(__blk_mq_end_request);
+```
+
+### I/O 调度器
+
+Linux 2.6 以后的内核包含 4 个 I/O 调度器，分别是 Noop I/O 调度器、Anticipatory I/O 调度器、Deadline I/O 调度器与 CFQ I/O 调度器。其中，Anticipatory I/O 调度器算法已经在 2010 年从内核中去掉了。
+
+Noop I/O 调度器是一个简化的调度程序，实现了一个简单 FIFO 队列，它只进行最基本的合并，比较适合基于 Flash 的存储器。
+
+Anticipatory I/O 调度器算法推迟 I/O 请求，以期能对它们进行排序，获得最高的效率。在每次处理完读请求之后，不是立即返回，而是等待几个微秒。在这段时间内，任何来自临近区域的请求都被立即执行。超时以后，继续原来的处理。
+
+Deadline I/O 调度器针对 Anticipatory I/O 调度器的缺点进行改善而得来，试图把每次请求的延迟降至最低，并重排了请求的顺序来提高性能。它使用轮询的调度器，简洁小巧，提供最小的读取迟和尚佳的吞吐量，特别适合于读取较多的环境（例如数据库）。
+
+CFQ I/O 调度器为系统内的所有任务分配均匀的 I/O 带宽，提供一个公平的工作环境，在多媒体应用中，能保证音、视频及时从磁盘中读取数据。
 
