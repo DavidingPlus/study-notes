@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-25 16:10:00
+updated: 2024-12-25 17:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -85,7 +85,7 @@ dentry 将 inode 和 文件名关联起来，存储以下信息：
 1. 用于标识 inode 的整数。
 2. 表示文件名的字符串。
 
-dentry 是目录或文件路径的特定部分。例如，对于路径 `/bin/vi`，为 `/`, `bin` 和 `vi` 创建共 3 个 dentry 对象。
+dentry 是目录或文件路径的特定部分。例如，对于路径 `/bin/vi`，为 `/`、`bin` 和 `vi` 创建共 3 个 dentry 对象。
 
 dentry 在磁盘上有对应物，但对应关系不是直接的。每个文件系统都有特定的方式维护 dentry。
 
@@ -372,6 +372,154 @@ struct buffer_head
 
 1. S_ISDIR(inode->i_mode)：用于检查索引节点是否为目录。
 2. S_ISREG(inode->i_mode)：用于检查索引节点是否为普通文件（非链接或设备文件）。
+
+# inode
+
+inode 是文件系统的元数据（它包含信息的信息）。inode 是磁盘上文件的唯一标识，保存文件的信息（uid、gid、访问权限、访问时间以及指向数据块的指针等）。重要的一点是，inode 不保存文件名信息，文件名由相关的 `struct dentry` 结构保存。
+
+inode 用于引用磁盘上的文件。对于进程打开的文件，使用 `struct file` 结构。一个 inode 可以关联一个或多个 `struct file` 结构。多个进程可以打开同一个文件，一个进程可以多次打开同一个文件。
+
+inode 既存在于内存中的 VFS 结构，也存在于磁盘中（UNIX、HFS 以及 NTFS 等）。VFS 中的 inode 由 `struct inode` 结构表示。和 VFS 中的其他结构一样，`struct inode` 是通用结构，涵盖了所有支持的文件类型的选项，甚至包括那些没有关联磁盘实体的文件类型（例如 FAT 文件系统）。
+
+## inode 结构
+
+`struct inode` 定义如下：
+
+```c
+struct inode
+{
+    umode_t i_mode; // i_uid 以及 i_gid：访问权限、uid 以及 gid。
+    unsigned short i_opflags;
+    kuid_t i_uid;
+    kgid_t i_gid;
+    unsigned int i_flags;
+
+#ifdef CONFIG_FS_POSIX_ACL
+    struct posix_acl *i_acl;
+    struct posix_acl *i_default_acl;
+#endif
+
+    const struct inode_operations *i_op; // 指向结构 inode_operations 的指针。
+    struct super_block *i_sb;            // inode 所属的文件系统的超级块结构。
+    struct address_space *i_mapping;     // i_mapping->a_ops 包含指向 struct address_space_operations 的指针。
+
+#ifdef CONFIG_SECURITY
+    void *i_security;
+#endif
+
+    /* Stat data, not accessed from path walking */
+    unsigned long i_ino; // inode 的编号（在文件系统内唯一标识 inode）。
+    /*
+     * Filesystems may only read i_nlink directly.  They shall use the
+     * following functions for modification:
+     *
+     *    (set|clear|inc|drop)_nlink
+     *    inode_(inc|dec)_link_count
+     */
+
+    // 使用此 inode 的名称条目（dentry）的数量；对于没有链接（既没有硬链接也没有符号链接）的文件系统，这个值总是设置为 1。
+    union
+    {
+        const unsigned int i_nlink;
+        unsigned int __i_nlink;
+    };
+
+    dev_t i_rdev;              // 挂载的文件系统所在的设备。
+    loff_t i_size;             // 文件/目录等的大小（以字节为单位）。
+    struct timespec64 i_atime; // 访问时间。
+    struct timespec64 i_mtime; // 修改时间。
+    struct timespec64 i_ctime; // 创建时间。
+    spinlock_t i_lock;         /* i_blocks, i_bytes, maybe i_size */
+    unsigned short i_bytes;
+    u8 i_blkbits; // 块大小使用的比特数 == log2(块大小)。
+    u8 i_write_hint;
+    blkcnt_t i_blocks; // 文件使用的块数（所有块，不仅仅是数据块）。这仅由配额子系统使用。
+
+#ifdef __NEED_I_SIZE_ORDERED
+    seqcount_t i_size_seqcount;
+#endif
+
+    /* Misc */
+    unsigned long i_state;
+    struct rw_semaphore i_rwsem;
+
+    unsigned long dirtied_when; /* jiffies of first dirtying */
+    unsigned long dirtied_time_when;
+
+    struct hlist_node i_hash;
+    struct list_head i_io_list; /* backing dev IO list */
+#ifdef CONFIG_CGROUP_WRITEBACK
+    struct bdi_writeback *i_wb; /* the associated cgroup wb */
+
+    /* foreign inode detection, see wbc_detach_inode() */
+    int i_wb_frn_winner;
+    u16 i_wb_frn_avg_time;
+    u16 i_wb_frn_history;
+#endif
+    struct list_head i_lru; /* inode LRU list */
+    struct list_head i_sb_list;
+    struct list_head i_wb_list; /* backing dev writeback list */
+    union
+    {
+        struct hlist_head i_dentry;
+        struct rcu_head i_rcu;
+    };
+    atomic64_t i_version;
+    atomic64_t i_sequence; /* see futex */
+    atomic_t i_count;      // inode 计数器，指示有多少内核组件在使用它。
+    atomic_t i_dio_count;
+    atomic_t i_writecount;
+#if defined(CONFIG_IMA) || defined(CONFIG_FILE_LOCKING)
+    atomic_t i_readcount; /* struct files open RO */
+#endif
+    union
+    {
+        const struct file_operations *i_fop; // 指向结构 file_operations 的指针。former ->i_op->default_file_ops
+        void (*free_inode)(struct inode *);
+    };
+    struct file_lock_context *i_flctx;
+    struct address_space i_data;
+    struct list_head i_devices;
+    union
+    {
+        struct pipe_inode_info *i_pipe;
+        struct cdev *i_cdev;
+        char *i_link;
+        unsigned i_dir_seq;
+    };
+
+    __u32 i_generation;
+
+#ifdef CONFIG_FSNOTIFY
+    __u32 i_fsnotify_mask; /* all events this inode cares about */
+    struct fsnotify_mark_connector __rcu *i_fsnotify_marks;
+#endif
+
+#ifdef CONFIG_FS_ENCRYPTION
+    struct fscrypt_info *i_crypt_info;
+#endif
+
+#ifdef CONFIG_FS_VERITY
+    struct fsverity_info *i_verity_info;
+#endif
+
+    void *i_private; /* fs or device private pointer */
+} __randomize_layout;
+```
+
+一些可用于处理 inode 的函数如下：
+
+1. new_inode()：创建新的 inode，将 i_nlink 字段设置为 1，并初始化 i_blkbits, i_sb 和 i_dev。
+2. insert_inode_hash()：将 inode 添加到 inode 哈希表中。这个调用的一个有趣的效果是，如果 inode 被标记为脏，它将被写入磁盘。
+3. mark_inode_dirty()：将 inode 标记为脏，稍后它将被写入磁盘。
+4. iget_locked()：从磁盘加载具有给定编号的 inode，如果它尚未加载。
+5. unlock_new_inode()：与 iget_locked() 一起使用，释放对 inode 的锁定。
+6. iput()：告诉内核对 inode 的操作已经完成。若没有其他进程在使用，它将被销毁（如果被标记为脏，则写入磁盘后再销毁）。
+7. make_bad_inode()：告诉内核该 inode 无法使用；通常在从磁盘读取 inode 时发现无法读取的情况下使用，表示该 inode 无效。
+
+## inode 操作
+
+TODO
 
 # 参考文章
 
