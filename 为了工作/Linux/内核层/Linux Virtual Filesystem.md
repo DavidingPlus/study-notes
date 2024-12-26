@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-25 17:30:00
+updated: 2024-12-26 15:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -80,7 +80,7 @@ file 存储了以下信息：
 
 ## dentry
 
-dentry 将 inode 和 文件名关联起来，存储以下信息：
+**dentry 将 inode 和 文件名关联起来。**存储以下信息：
 
 1. 用于标识 inode 的整数。
 2. 表示文件名的字符串。
@@ -519,7 +519,543 @@ struct inode
 
 ## inode 操作
 
-TODO
+### 获取 inode
+
+获取 inode 是 inode 的主要操作之一。Linux 2.6 以前，存在 read_inode() 函数。Linux 2.6 以后，编程者必须自己定义 `<fsname>_get()` 函数，`fsname` 是文件系统的名称。此函数负责查找 VFS 中的 inode，如果存在则获取该 inode，否则创建一个新的 inode，并用磁盘中的信息填充它。
+
+一般情况下，这个函数会调用 iget_locked() 从 VFS 中获取 inode 结构。如果 inode 是新创建的，则需要使用 sb_bread() 从磁盘中读取 inode，并填充有用的信息。
+
+实例函数是 minix_iget()：
+
+```c
+static struct inode *V1_minix_iget(struct inode *inode)
+{
+    struct buffer_head *bh;
+    struct minix_inode *raw_inode;
+    struct minix_inode_info *minix_inode = minix_i(inode);
+    int i;
+
+    raw_inode = minix_V1_raw_inode(inode->i_sb, inode->i_ino, &bh);
+    if (!raw_inode)
+    {
+        iget_failed(inode);
+        return ERR_PTR(-EIO);
+    }
+
+    ...
+}
+
+// 此函数通过 iget_locked() 获取 inode。如果 inode 已经存在即不是新建的，则函数返回。否则使用 V1_minix_iget() 函数从磁盘读取 inode，然后使用读取的信息初始化 VFS inode。
+struct inode *minix_iget(struct super_block *sb, unsigned long ino)
+{
+    struct inode *inode;
+
+    inode = iget_locked(sb, ino);
+    if (!inode)
+        return ERR_PTR(-ENOMEM);
+    // I_NEW 标志表示 inode 是否为新建的。
+    if (!(inode->i_state & I_NEW))
+        return inode;
+
+    if (INODE_VERSION(inode) == MINIX_V1)
+        return V1_minix_iget(inode);
+
+    ...
+}
+```
+
+### 超级块操作
+
+许多超级块操作在处理 inode 的时候使用，如下：
+
+1. alloc_inode()：分配 inode()。通常，此函数会分配一个 `struct <fsname>_inode_info` 结构，并使用 inode_init_once() 执行基本的 VFS inode 初始化。minix 文件系统使用 kmem_cache_alloc() 函数进行分配，该函数与 SLAB 子系统交互。对于每个分配，都会调用缓存构造函数，在 minix 下是 init_once() 函数。或者也可以使用 kmalloc()。在这种情况下，应调用 inode_init_once() 函数。alloc_inode() 函数将由 new_inode() 和 iget_locked() 函数调用。
+2. write_inode()：将作为参数接收的 inode 保存或更新到磁盘。此函数要更新 inode，尽管效率不高。对初学者而言，建议使用以下操作：
+   - 使用 sb_bread() 函数从磁盘加载 inode。
+   - 根据保存的 inode 修改缓冲区。
+   - 使用 mark_buffer_dirty() 将缓冲区标记为脏。内核将处理其在磁盘上的写入。
+3. evict_inode()：从磁盘和内存中移除通过 i_ino 字段接收的 inode 的任何信息，包括磁盘上的 inode 和相关的数据块。涉及以下操作：
+   - 从磁盘中删除 inode。
+   - 更新磁盘位图（如果有）。
+   - 通过调用 truncate_inode_pages() 从 page cache 中删除 inode。
+   - 通过调用 clear_inode() 从内存中删除 inode。
+4. destroy_inode()：释放 inode 占用的内存。
+
+### inode_operations
+
+inode 索引节点的相关操作由 `struct inode_operations` 结构描述。
+
+索引节点分为多种类型：文件、目录、特殊文件（管道、FIFO）、块设备、字符设备以及链接等。每种类型需要实现的操作都不同。
+
+访问 `struct inode` 中的 i_op 字段可以对索引节点的操作进行初始化和访问。
+
+# file
+
+**file 结构对应于由进程打开的文件，仅存在于内存中，并与 inode 索引节点关联。**它是最接近用户空间的 VFS 实体。结构字段包含用户空间文件的熟悉信息（访问模式、文件位置等），与之相关的操作由已知的系统调用（read, write 等）执行。
+
+文件操作由 `struct file_operations` 结构描述。文件系统的文件操作使用 `struct inode` 结构中的 i_fop 字段进行初始化。在打开文件时，VFS 使用 inode->i_fop 的地址初始化 `struct file` 结构的 f_op 字段。后续的系统调用使用存储在 file->f_op 中的值。
+
+# 常规文件索引节点
+
+使用索引节点必须要填充 inode 结构的 i_op 和 i_fop 字段。索引节点的类型决定了他要实现的操作。
+
+## 常规文件索引节点操作
+
+一个例子是 minix 文件系统的对象实例 minix_file_operations 和 minix_file_inode_operations。
+
+Linux 内核实现了 generic_file_llseek()、generic_file_read_iter()、generic_file_write_iter()、generic_file_mmap() 函数，定义了一些通用的 file 操作，具体做了哪些处理可参见源码。
+
+```c
+const struct file_operations minix_file_operations = {
+    .llseek = generic_file_llseek,
+    .read_iter = generic_file_read_iter,
+    //...
+    .write_iter = generic_file_write_iter,
+    //...
+    .mmap = generic_file_mmap,
+    //...
+};
+
+const struct inode_operations minix_file_inode_operations = {
+    .setattr = minix_setattr,
+    .getattr = minix_getattr,
+};
+
+
+{
+    //...
+
+    if (S_ISREG(inode->i_mode))
+    {
+        inode->i_op = &minix_file_inode_operations;
+        inode->i_fop = &minix_file_operations;
+    }
+
+    //...
+}
+```
+
+对于简单的文件系统，只需实现截断 truncate() 系统调用。从 Linux 3.14 开始，该操作已嵌入到 setattr() 中。如果粘贴大小与索引节点的当前大小不同，则必须执行截断操作。
+
+一个例子是 minix_setattr() 函数：
+
+```c
+static int minix_setattr(struct dentry *dentry, struct iattr *attr)
+{
+    struct inode *inode = d_inode(dentry);
+    int error;
+
+    error = setattr_prepare(dentry, attr);
+    if (error)
+        return error;
+
+    if ((attr->ia_valid & ATTR_SIZE) &&
+        attr->ia_size != i_size_read(inode))
+    {
+        error = inode_newsize_ok(inode, attr->ia_size);
+        if (error)
+            return error;
+
+        truncate_setsize(inode, attr->ia_size);
+        minix_truncate(inode);
+    }
+
+    setattr_copy(inode, attr);
+    mark_inode_dirty(inode);
+
+    return 0;
+}
+```
+
+截断操作涉及以下内容：
+
+1. 释放磁盘上多余的数据块（如果新尺寸小于旧尺寸），或者分配新的数据块（当新尺寸较大时）。
+2. 更新磁盘位图（如果使用）。
+3. 更新索引节点。
+4. 使用 block_truncate_page() 函数，将上一个块中未使用的空间填充为零。
+
+## 地址空间操作
+
+**进程的地址空间与文件之间有着密切的联系：程序的执行几乎完全是通过将文件映射到进程的地址空间中进行的。**这种方法非常有效且相当通用，也可以用于常规的系统调用，如 read() 和 write()。
+
+描述地址空间的结构是 `struct address_space`，与之相关的操作由结构 `struct address_space_operations` 描述。初始化 `struct address_space_operations` 需填充文件类型索引节点的 `inode->i_mapping->a_ops`。
+
+二者的定义如下：
+
+```c
+struct address_space {
+	struct inode		*host;
+	struct xarray		i_pages;
+	struct rw_semaphore	invalidate_lock;
+	gfp_t			gfp_mask;
+	atomic_t		i_mmap_writable;
+#ifdef CONFIG_READ_ONLY_THP_FOR_FS
+	/* number of thp, only for non-shmem files */
+	atomic_t		nr_thps;
+#endif
+	struct rb_root_cached	i_mmap;
+	struct rw_semaphore	i_mmap_rwsem;
+	unsigned long		nrpages;
+	pgoff_t			writeback_index;
+	const struct address_space_operations *a_ops;
+	unsigned long		flags;
+	errseq_t		wb_err;
+	spinlock_t		private_lock;
+	struct list_head	private_list;
+	void			*private_data;
+} __attribute__((aligned(sizeof(long)))) __randomize_layout;
+
+...
+
+struct address_space_operations {
+	int (*writepage)(struct page *page, struct writeback_control *wbc);
+	int (*readpage)(struct file *, struct page *);
+
+	/* Write back some dirty pages from this mapping. */
+	int (*writepages)(struct address_space *, struct writeback_control *);
+
+	/* Set a page dirty.  Return true if this dirtied it */
+	int (*set_page_dirty)(struct page *page);
+
+	/*
+	 * Reads in the requested pages. Unlike ->readpage(), this is
+	 * PURELY used for read-ahead!.
+	 */
+	int (*readpages)(struct file *filp, struct address_space *mapping,
+			struct list_head *pages, unsigned nr_pages);
+	void (*readahead)(struct readahead_control *);
+
+	int (*write_begin)(struct file *, struct address_space *mapping,
+				loff_t pos, unsigned len, unsigned flags,
+				struct page **pagep, void **fsdata);
+	int (*write_end)(struct file *, struct address_space *mapping,
+				loff_t pos, unsigned len, unsigned copied,
+				struct page *page, void *fsdata);
+
+	/* Unfortunately this kludge is needed for FIBMAP. Don't use it */
+	sector_t (*bmap)(struct address_space *, sector_t);
+	void (*invalidatepage) (struct page *, unsigned int, unsigned int);
+	int (*releasepage) (struct page *, gfp_t);
+	void (*freepage)(struct page *);
+	ssize_t (*direct_IO)(struct kiocb *, struct iov_iter *iter);
+	/*
+	 * migrate the contents of a page to the specified target. If
+	 * migrate_mode is MIGRATE_ASYNC, it must not block.
+	 */
+	int (*migratepage) (struct address_space *,
+			struct page *, struct page *, enum migrate_mode);
+	bool (*isolate_page)(struct page *, isolate_mode_t);
+	void (*putback_page)(struct page *);
+	int (*launder_page) (struct page *);
+	int (*is_partially_uptodate) (struct page *, unsigned long,
+					unsigned long);
+	void (*is_dirty_writeback) (struct page *, bool *, bool *);
+	int (*error_remove_page)(struct address_space *, struct page *);
+
+	/* swapfile support */
+	int (*swap_activate)(struct swap_info_struct *sis, struct file *file,
+				sector_t *span);
+	void (*swap_deactivate)(struct file *file);
+};
+```
+
+例如 minix 文件系统的 minix_aops 结构如下：
+
+```c
+static const struct address_space_operations minix_aops = {
+    .readpage = minix_readpage,
+    .writepage = minix_writepage,
+    .write_begin = minix_write_begin,
+    .write_end = generic_write_end,
+    .bmap = minix_bmap};
+
+
+{
+    ...
+
+    if (S_ISREG(inode->i_mode))
+    {
+        inode->i_mapping->a_ops = &minix_aops;
+    }
+
+    ...
+}
+```
+
+内核已实现 generic_write_end() 函数。并且上述的大多数函数的实现其实都非常简单：
+
+```c
+static int minix_writepage(struct page *page, struct writeback_control *wbc)
+{
+    return block_write_full_page(page, minix_get_block, wbc);
+}
+
+static int minix_readpage(struct file *file, struct page *page)
+{
+    return block_read_full_page(page, minix_get_block);
+}
+
+static void minix_write_failed(struct address_space *mapping, loff_t to)
+{
+    struct inode *inode = mapping->host;
+
+    if (to > inode->i_size)
+    {
+        truncate_pagecache(inode, inode->i_size);
+        minix_truncate(inode);
+    }
+}
+
+static int minix_write_begin(struct file *file, struct address_space *mapping,
+                             loff_t pos, unsigned len, unsigned flags,
+                             struct page **pagep, void **fsdata)
+{
+    int ret;
+
+    ret = block_write_begin(mapping, pos, len, flags, pagep,
+                            minix_get_block);
+    if (unlikely(ret))
+        minix_write_failed(mapping, pos + len);
+
+    return ret;
+}
+
+static sector_t minix_bmap(struct address_space *mapping, sector_t block)
+{
+    return generic_block_bmap(mapping, block, minix_get_block);
+}
+```
+
+上面函数中能经常见到 minix_get_block 这个东西。查看 block_write_full_page() 函数定义发现是一个函数指针。
+
+在 minix 文件系统中，minix_get_block() 函数将文件的一个数据块转换为设备上的一个数据块。如果接收到的 create 标志被设置，那么必须分配一个新的数据块。在创建新的数据块时，必须相应地更新位图。为通知内核不要从磁盘中读取该数据块，必须使用 set_buffer_new() 函数标记 bh。通过 map_bh() 函数，将缓冲区与数据块关联起来。
+
+```c
+int block_write_full_page(struct page *page, get_block_t *get_block, struct writeback_control *wbc);
+
+typedef int (get_block_t)(struct inode *inode, sector_t iblock, struct buffer_head *bh_result, int create);
+```
+
+# dentry 结构体
+
+## struct dentry
+
+dentry 将 inode 和 文件名关联起来。VFS 中的 dentry 实体用 `struct dentry` 表示，相关操作用 `struct dentry_operations` 表示。
+
+`struct dentry` 重要字段定义如下：
+
+```c
+struct dentry
+{
+    ...
+
+    struct inode *d_inode; // 关联的索引节点。
+
+    ...
+
+    struct dentry *d_parent; // 父目录的 dentry 对象。
+    struct qstr d_name;      // dentry 名称，struct qstr 类型，包含字段 name（名称）和 len（名称的长度）。
+
+    ...
+
+    struct dentry_operations *d_op; // 与 dentry 相关的操作。内核实现了默认操作，理论上无需重新实现它们。某些文件系统可以根据 dentry 的特定结构进行优化。
+    struct super_block *d_sb;       // 文件的超级块。
+    void *d_fsdata;                 // 文件系统特定的数据。
+
+    ...
+};
+```
+
+## dentry 操作
+
+dentry 最常见的操作包括：
+
+1. d_make_root()：分配根 dentry。通常在读取超级块的函数 fill_super() 中使用。此函数必须初始化根目录。一般从超级块获取根索引节点，并将其作为实参传递给此函数，以填充 struct super_block 结构的 s_root 字段。
+2. d_add()：将 dentry 与索引节点关联起来。作为参数传递的 dentry 表示需要创建的条目（名称、长度）。在创建或加载尚未与任何 dentry 关联并尚未添加到索引节点哈希表中的新索引节点时，将使用此函数（在 lookup() 函数中）。
+3. d_instantiate()：d_add() 的轻量级版本，其中 dentry 先前已添加到哈希表中。注意，d_instantiate() 必须用于实现创建调用 (mkdir, mknod, rename 以及 symlink)，而不是 d_add。
+
+# 目录索引节点
+
+## 目录索引节点操作
+
+目录索引节点的操作比常规文件索引节点的操作要复杂的多。在 minix 中，由对象实例 minix_dir_inode_operations 和 minix_dir_operations 定义。
+
+```c
+struct inode_operations minix_dir_inode_operations = {
+    .create = minix_create,
+    .lookup = minix_lookup,
+    .link = minix_link,
+    .unlink = minix_unlink,
+    .symlink = minix_symlink,
+    .mkdir = minix_mkdir,
+    .rmdir = minix_rmdir,
+    .mknod = minix_mknod,
+    //...
+};
+
+struct file_operations minix_dir_operations = {
+    .llseek = generic_file_llseek,
+    .read = generic_read_dir,
+    .iterate = minix_readdir,
+    //...
+};
+
+
+{
+    //...
+
+    if (S_ISDIR(inode->i_mode))
+    {
+        inode->i_op = &minix_dir_inode_operations;
+        inode->i_fop = &minix_dir_operations;
+        inode->i_mapping->a_ops = &minix_aops;
+    }
+
+    //...
+}
+```
+
+## 相关函数
+
+目录索引节点操作的相关函数如下所述。
+
+### 创建索引节点
+
+由 inode_operations 的 create 字段（回调函数）表示。此函数由 open() 和 creat() 系统调用调用，执行以下操作：
+
+1. 在磁盘上的物理结构中引入新条目。不要忘记更新磁盘上的位图。
+2. 使用传入函数的访问权限配置访问权限。
+3. 使用 mark_inode_dirty() 函数将索引节点标记为脏。
+4. 使用 d_instantiate() 函数实例化目录条目 (dentry)。
+
+### 创建目录
+
+由 mkdir 字段表示，由 mkdir() 系统调用调用，执行以下操作：
+
+1. 调用 create 字段对应的回调函数。
+2. 为目录分配一个数据块。
+3. 创建 `"."` 和 `".."` 条目。
+
+### 创建链接
+
+由 link 字段表示，由 link() 系统调用调用，执行以下操作：
+
+1. 将新的 dentry 绑定到索引节点。
+2. 递增索引节点的 i_nlink 字段。
+3. 使用 mark_inode_dirty() 函数将索引节点标记为脏。
+
+### 创建符号链接
+
+由 symlink 字段表示，由 symlink() 系统调用调用。执行操作与 link 的回调函数类似，区别在于此函数创建的是符号链接。
+
+### 删除链接
+
+由 unlink 字段表示，由 unlink() 系统调用调用，执行以下操作：
+
+1. 从物理磁盘结构中删除作为参数给出的 dentry。
+2. 将条目指向的索引节点的 i_nlink 计数器减一，否则该索引节点将永远不会被删除（引用计数无法减到 0）。
+
+### 删除目录
+
+由 rmdir 字段表示，由 rmdir() 系统调用调用，执行以下操作：
+
+1. 执行 unlink 字段对应回调函数完成的操作。
+2. 确保目录为空，否则返回 ENOTEMPTY。
+3. 同时删除数据块。
+
+### 在目录中搜索索引节点
+
+由 lookup 字段表示。当需要有关与目录中条目关联的索引节点的信息时，会间接调用此函数。此函数执行以下操作：
+
+1. 在由 dir 指示的目录中搜索具有名称 `dentry->d_name.name` 的条目。
+2. 如果找到条目，则返回 NULL 并使用 d_add() 函数将索引节点与名称关联。
+3. 否则，返回 ERR_PTR。
+
+### 遍历目录中的条目
+
+由 iterate 字段表示，由 readdir() 系统调用调用。
+
+此函数返回目录中的所有条目，或者当为其分配的缓冲区不可用时，仅返回部分条目。可能的返回如下：
+
+1. 如果对应的用户空间缓冲区有足够的空间，则返回与现有条目数相等的数字。
+2. 小于实际条目数的数字，对应的用户空间缓冲区中有多少空间，就返回多少。
+3. 0，表示没有更多条目可读取。
+
+此函数会连续调用，知道读取完所有可用的条目，并且至少会调用 2 次。
+
+1. 在以下情况下仅调用两次：
+   - 第一次调用读取所有条目并返回它们的数量。
+   - 第二次调用返回 0，表示没有其他条目可读取。
+2. 如果第一次调用未返回总条目数，则会多次调用该函数。
+
+此函数执行以下操作：
+
+1. 遍历当前目录中的条目（dentry）。
+2. 对于找到的每个 dentry，递增 `ctx->pos`。
+3. 对于每个有效的 dentry（例如，除了 0 之外的索引节点），调用 dir_emit() 函数。
+4. 如果 dir_emit() 函数返回非零值，表示用户空间的缓冲区已满，函数将返回。
+
+dir_emit() 定义如下：
+
+```c
+// ctx：目录遍历上下文，作为参数传递给 iterate 函数。
+// name：条目的名称。
+// namelen：条目名称的长度。
+// ino：与条目关联的 inode 索引节点号。
+// type：标志条目类型，DT_REG（文件）、DT_DIR（目录）、DT_UNKNOWN（未知）等。
+static inline bool dir_emit(struct dir_context *ctx, const char *name, int namelen, u64 ino, unsigned type)
+{
+	return ctx->actor(ctx, name, namelen, ctx->pos, ino, type) == 0;
+}
+```
+
+# 位图操作
+
+处理文件系统时，管理信息（哪个块是空闲的或忙碌的，哪个索引节点是空闲的或忙碌的）使用位图存储。因此需要使用位操作，包括：
+
+1. 搜索第一个为 0 的位：表示一个空闲的块或索引节点。
+2. 将位标记为 1：标记忙碌的块或索引节点。
+
+位图操作常见的函数如下。这些函数定义在内核源码 include/asm-generic/bitops/ 目录下，特别是 find.h 和 atomic.h 中。
+
+1. find_first_zero_bit()
+2. find_first_bit()
+3. set_bit()
+4. clear_bit()
+5. test_and_set_bit()
+6. test_and_clear_bit()
+
+这些函数通常接收位图的地址，可能还有其大小（以字节为单位）。如果需要，还要指定需要激活（设置）或停用（清除）的位的索引。
+
+一个使用实例如下：
+
+```c
+unsigned int map;
+unsigned char array_map[NUM_BYTES];
+size_t idx;
+int changed;
+
+/* 在 32 位整数中找到第一个为 0 的位。 */
+idx = find_first_zero_bit(&map, 32);
+printk(KERN_ALERT "第 %zu 位是第一个为 0 的位。\n", idx);
+
+/* 在 NUM_BYTES 字节的数组中找到第一个为 1 的位。 */
+idx = find_first_bit(array_map, NUM_BYTES * 8);
+printk(KERN_ALERT "第 %zu 位是第一个为 1 的位。\n", idx);
+
+/*
+ * 清除整数中的第 idx 位。
+ * 假设 idx 小于整数的位数。
+ */
+clear_bit(idx, &map);
+
+/*
+ * 测试并设置数组中的第 idx 位。
+ * 假设 idx 小于数组的位数。
+ */
+changed = __test_and_set_bit(idx, &sbi->imap);
+if (changed)
+    printk(KERN_ALERT "%zu 位已更改\n", idx);
+```
 
 # 参考文章
 
