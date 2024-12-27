@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-26 15:50:00
+updated: 2024-12-27 17:40:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -27,6 +27,24 @@ updated: 2024-12-26 15:50:00
 Linux 内核使用 VFS 处理目录和文件的层次结构（其实是一棵树）。通过挂载操作，新的文件系统被添加为 VFS 子树。文件系统通常是从其所对应的环境中挂载的（从块类型设备、网络等）。**然而 VFS 可以将普通文件作为虚拟块设备使用，可以将普通文件挂载为磁盘文件系统。**
 
 VFS 的基本思想是提供可以表示任何文件系统文件的单一文件模型。文件系统驱动程序需要遵守公共的基准。这样，内核可以创建包含整个系统的单一目录结构。其中一个文件系统将作为根文件系统，其他文件系统将挂载在其各个目录下。
+
+# 存储栈整体结构
+
+Linux 存储栈的整体结构图如下。从上到下分别是：**VFS、通用块层、SCSI 层、块设备层**。
+
+<img src="https://img-blog.csdnimg.cn/direct/e2fa79efbb584048a112f1965d9156d5.png" alt="image-20241227142615377" style="zoom:75%;" />
+
+各个层次的作用如下。
+
+1. VFS：VFS 层是 Linux 最为津津乐道的设计，也就是所谓的一切皆文件。它通过统一的接口，底层封装了各种各样的文件系统。
+
+2. 通用块层：文件系统将读/写请求转换成 bio 和 request，提交给通用块层，通用块层对 request 进行调度，发往下一层。
+
+<img src="https://img-blog.csdnimg.cn/direct/ae3f1960badf4746813099ae4ef7b206.png" alt="image-20241227143348812" style="zoom:80%;" />
+
+3. SCSI 层：SCSI（Small Computer Systems Interface）是一组标准集，定义了与大量设备（主要是与存储相关的设备）通信所需的接口和协议。Linux 提供了一种 SCSI 子系统，用于与这些设备通信。
+
+4. 块设备层：块设备层负责对某种具体的物理设备进行处理，完成相应的读写请求。
 
 # 常见的文件系统模型
 
@@ -91,6 +109,14 @@ dentry 在磁盘上有对应物，但对应关系不是直接的。每个文件�
 
 在 VFS 中，dentry 实体由 `struct dentry` 结构表示，与之相关的操作在 `struct dentry_operations` 结构中定义。
 
+## 其他数据结构
+
+除了上述，VFS 中还有一些数据结构。
+
+1. address_space/mapping：表示一个文件缓存，结构体的名字称为 address_space。但在其它结构体中被引用时，该指针的名字通常是 mapping。
+2. mount：表示一个文件系统被挂载的信息。
+3. file_system_type：表示一个文件系统类型，例如 ext4、proc、sys 等。
+
 # 注册和注销文件系统
 
 ## struct file_system_type
@@ -132,6 +158,12 @@ struct file_system_type
     ...
 };
 ```
+
+内核中的所有 file_system_type 都是通过一根单向链表组织起来的，register_filesystem() 函数负责将新的 file_system_type 加入到这个链表中。
+
+每个文件系统类型下都挂载了多个文件系统，比如 sda、sdb 都是 ext4 文件系统，这些 superblock 以链表的形式连接到 `file_system_type->fs_supers` 字段中。系统中所有的 superblock 也是通过一根双向链表进行连接。
+
+<img src="https://img-blog.csdnimg.cn/direct/2bdd2062e61a41b182de277573ab32f4.png" alt="image-20241227120407496" style="zoom:75%;" />
 
 在模块加载函数中，将文件系统注册到内核，需要做以下几步：
 
@@ -507,6 +539,10 @@ struct inode
 } __randomize_layout;
 ```
 
+每个文件系统都缓存了一定的 inode 数量到内存中。同一个文件系统的 inode 以双向链表连接起来，挂在 `superblock->s_inodes` 字段中。同时，内核中所有的 inode 被组织在了一个哈希表 inode_hashtable 上。
+
+<img src="https://img-blog.csdnimg.cn/direct/c2c096ac10cd49878899428229ebfe98.png" alt="image-20241227141716401" style="zoom:75%;" />
+
 一些可用于处理 inode 的函数如下：
 
 1. new_inode()：创建新的 inode，将 i_nlink 字段设置为 1，并初始化 i_blkbits, i_sb 和 i_dev。
@@ -587,6 +623,16 @@ inode 索引节点的相关操作由 `struct inode_operations` 结构描述。
 索引节点分为多种类型：文件、目录、特殊文件（管道、FIFO）、块设备、字符设备以及链接等。每种类型需要实现的操作都不同。
 
 访问 `struct inode` 中的 i_op 字段可以对索引节点的操作进行初始化和访问。
+
+# mount
+
+**mount 代表了一个文件系统被挂载到了某个地方。**只有被挂载的文件系统，才能通过 VFS 的目录树进行访问。
+
+一个文件系统可能被多次 mount 到不同的地方，这样一个 superblock 会对应多个不同的 mount 结构，这些 mount 以双向链表的形式组织起来，挂在 superblock->s_mounts 字段。
+
+被 mount 的目录称为一个 mount 点。目录也是一个 dentry，mount 通过 mnt_mountpoint 字段指向该 dentry。
+
+<img src="https://img-blog.csdnimg.cn/direct/7b045be8277948d1a013fbc7538c9764.png" alt="image-20241227145405084" style="zoom:75%;" />
 
 # file
 
