@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-27 17:40:00
+updated: 2024-12-30 16:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -48,13 +48,13 @@ Linux 存储栈的整体结构图如下。从上到下分别是：**VFS、通用
 
 # 常见的文件系统模型
 
-任何实现的文件系统都需要包含这几种明确定义的类型：superblock、inode、file 和 dentry。这些也是文件系统的元数据。
+任何实现的文件系统都需要包含这几种明确定义的类型：super_block、inode、file 和 dentry。这些也是文件系统的元数据。
 
 模型实体间通过某些 VFS 子系统或内核子系统进行交互：dentry cache（目录项缓存）、inode cache（索引节点缓存）和 buffer cache（缓冲区缓存）。每个实体都被视为对象，具有关联的数据结构和指向方法表的指针。通过替换关联的方法来为每个组件引入特定的行为（类似于 C++ 的多态）。
 
-## superblock
+## super_block
 
-**superblock 超级块存储挂载文件系统需要的信息。**具体如下：
+**super_block 超级块存储挂载文件系统需要的信息。**具体如下：
 
 1. inode 和块的位置。
 2. 文件系统块大小。
@@ -62,9 +62,9 @@ Linux 存储栈的整体结构图如下。从上到下分别是：**VFS、通用
 4. 最大文件大小。
 5. 根 inode 的位置。
 
-磁盘上的 superblock 通常存储在磁盘的第一个块中，即文件系统控制块。
+磁盘上的 super_block 通常存储在磁盘的第一个块中，即文件系统控制块。
 
-在 VFS 中，superblock 实体都保留在类型为 `struct super_block` 的结构列表中，方法则保留在类型为 `struct super_operations` 的结构中。
+在 VFS 中，super_block 实体都保留在类型为 `struct super_block` 的结构列表中，方法则保留在类型为 `struct super_operations` 的结构中。
 
 ## inode
 
@@ -161,7 +161,7 @@ struct file_system_type
 
 内核中的所有 file_system_type 都是通过一根单向链表组织起来的，register_filesystem() 函数负责将新的 file_system_type 加入到这个链表中。
 
-每个文件系统类型下都挂载了多个文件系统，比如 sda、sdb 都是 ext4 文件系统，这些 superblock 以链表的形式连接到 `file_system_type->fs_supers` 字段中。系统中所有的 superblock 也是通过一根双向链表进行连接。
+每个文件系统类型下都挂载了多个文件系统，比如 sda、sdb 都是 ext4 文件系统，这些 super_block 以链表的形式连接到 `file_system_type->fs_supers` 字段中。系统中所有的 super_block 也是通过一根双向链表进行连接。
 
 <img src="https://img-blog.csdnimg.cn/direct/2bdd2062e61a41b182de277573ab32f4.png" alt="image-20241227120407496" style="zoom:75%;" />
 
@@ -224,7 +224,7 @@ struct dentry *minix_mount(struct file_system_type *fs_type, int flags, const ch
 }
 ```
 
-# VFS 中的超级块
+# super_block
 
 ## struct super_block
 
@@ -269,7 +269,7 @@ struct super_block
 
 另外，`void *s_fs_info` 可用于存储文件系统的私有数据，具体实现时候可加入自己的数据。类似于 `struct file` 的 `void *private_data`。
 
-## 超级块操作
+## super_block 操作
 
 超级块操作由 super_block 描述，定义如下：
 
@@ -413,7 +413,7 @@ inode 用于引用磁盘上的文件。对于进程打开的文件，使用 `str
 
 inode 既存在于内存中的 VFS 结构，也存在于磁盘中（UNIX、HFS 以及 NTFS 等）。VFS 中的 inode 由 `struct inode` 结构表示。和 VFS 中的其他结构一样，`struct inode` 是通用结构，涵盖了所有支持的文件类型的选项，甚至包括那些没有关联磁盘实体的文件类型（例如 FAT 文件系统）。
 
-## inode 结构
+## struct inode
 
 `struct inode` 定义如下：
 
@@ -539,7 +539,7 @@ struct inode
 } __randomize_layout;
 ```
 
-每个文件系统都缓存了一定的 inode 数量到内存中。同一个文件系统的 inode 以双向链表连接起来，挂在 `superblock->s_inodes` 字段中。同时，内核中所有的 inode 被组织在了一个哈希表 inode_hashtable 上。
+每个文件系统都缓存了一定的 inode 数量到内存中。同一个文件系统的 inode 以双向链表连接起来，挂在 `super_block->s_inodes` 字段中。同时，内核中所有的 inode 被组织在了一个哈希表 inode_hashtable 上。
 
 <img src="https://img-blog.csdnimg.cn/direct/c2c096ac10cd49878899428229ebfe98.png" alt="image-20241227141716401" style="zoom:75%;" />
 
@@ -628,11 +628,79 @@ inode 索引节点的相关操作由 `struct inode_operations` 结构描述。
 
 **mount 代表了一个文件系统被挂载到了某个地方。**只有被挂载的文件系统，才能通过 VFS 的目录树进行访问。
 
-一个文件系统可能被多次 mount 到不同的地方，这样一个 superblock 会对应多个不同的 mount 结构，这些 mount 以双向链表的形式组织起来，挂在 superblock->s_mounts 字段。
+一个文件系统可能被多次 mount 到不同的地方，这样一个 super_block 会对应多个不同的 mount 结构，这些 mount 以双向链表的形式组织起来，挂在 super_block->s_mounts 字段。
 
 被 mount 的目录称为一个 mount 点。目录也是一个 dentry，mount 通过 mnt_mountpoint 字段指向该 dentry。
 
 <img src="https://img-blog.csdnimg.cn/direct/7b045be8277948d1a013fbc7538c9764.png" alt="image-20241227145405084" style="zoom:75%;" />
+
+挂载点用 mountpoint 结构体表示。所有的挂载点被放到一个哈希表 mountpoint_hashtable 中，以 dentry 为键（Key），mountpoint 为值（T）。
+
+<img src="https://img-blog.csdnimg.cn/direct/3ad9f59e871b42a8b5a7209a9dfe07e9.png" alt="image-20241230094606623" style="zoom:75%;" />
+
+> 注：这里的 mountpoint 是一个结构体。与上面的 mount->mnt_mountpoint 不一样，上面的是一个指针，指向 dentry。
+
+```c
+struct mount {
+	struct hlist_node mnt_hash;
+	struct mount *mnt_parent;
+	struct dentry *mnt_mountpoint;
+	struct vfsmount mnt;
+	union {
+		struct rcu_head mnt_rcu;
+		struct llist_node mnt_llist;
+	};
+#ifdef CONFIG_SMP
+	struct mnt_pcp __percpu *mnt_pcp;
+#else
+	int mnt_count;
+	int mnt_writers;
+#endif
+	struct list_head mnt_mounts;	/* list of children, anchored here */
+	struct list_head mnt_child;	/* and going through their mnt_child */
+	struct list_head mnt_instance;	/* mount instance on sb->s_mounts */
+	const char *mnt_devname;	/* Name of device e.g. /dev/dsk/hda1 */
+	struct list_head mnt_list;
+	struct list_head mnt_expire;	/* link in fs-specific expiry list */
+	struct list_head mnt_share;	/* circular list of shared mounts */
+	struct list_head mnt_slave_list;/* list of slave mounts */
+	struct list_head mnt_slave;	/* slave list entry */
+	struct mount *mnt_master;	/* slave is on master->mnt_slave_list */
+	struct mnt_namespace *mnt_ns;	/* containing namespace */
+	struct mountpoint *mnt_mp;	/* where is it mounted */
+	union {
+		struct hlist_node mnt_mp_list;	/* list mounts with the same mountpoint */
+		struct hlist_node mnt_umount;
+	};
+	struct list_head mnt_umounting; /* list entry for umount propagation */
+#ifdef CONFIG_FSNOTIFY
+	struct fsnotify_mark_connector __rcu *mnt_fsnotify_marks;
+	__u32 mnt_fsnotify_mask;
+#endif
+	int mnt_id;			/* mount identifier */
+	int mnt_group_id;		/* peer group identifier */
+	int mnt_expiry_mark;		/* true if marked for expiry */
+	struct hlist_head mnt_pins;
+	struct hlist_head mnt_stuck_children;
+} __randomize_layout;
+
+struct mountpoint {
+	struct hlist_node m_hash;
+	struct dentry *m_dentry;
+	struct hlist_head m_list;
+	int m_count;
+};
+```
+
+同一个目录可被多个文件系统 mount。这些文件系统会相互覆盖，通过 VFS 只能看到最近那个被 mount 的文件系统。
+
+为了处理这种情况，文件系统中所有的 mount 都被组织到同一个哈希表 mount_hashtable 中。哈希表以 `<mount, dentry>` 为键（Key），以新的 mount 作为值（Value），将其组织起来。
+
+<img src="https://img-blog.csdnimg.cn/direct/d1d769f8a5074874ba5ebe8dfb3724de.png" alt="image-20241230101507978" style="zoom:70%;" />
+
+将上述整理以后，能得到一个整体的架构图：
+
+<img src="https://img-blog.csdnimg.cn/direct/4f0432315c2b4ca8a40b4532ca8f1632.png" alt="image-20241230102023524" style="zoom:70%;" />
 
 # file
 
@@ -640,11 +708,13 @@ inode 索引节点的相关操作由 `struct inode_operations` 结构描述。
 
 文件操作由 `struct file_operations` 结构描述。文件系统的文件操作使用 `struct inode` 结构中的 i_fop 字段进行初始化。在打开文件时，VFS 使用 inode->i_fop 的地址初始化 `struct file` 结构的 f_op 字段。后续的系统调用使用存储在 file->f_op 中的值。
 
+file 与 inode 的区别在于，一个文件的 inode 在内核中是唯一的，但 file 可以有多个。
+
+<img src="https://img-blog.csdnimg.cn/direct/1329e49089bf44bdacd1fe4b41b1596a.png" alt="image-20241230104309655" style="zoom:70%;" />
+
 # 常规文件索引节点
 
 使用索引节点必须要填充 inode 结构的 i_op 和 i_fop 字段。索引节点的类型决定了他要实现的操作。
-
-## 常规文件索引节点操作
 
 一个例子是 minix 文件系统的对象实例 minix_file_operations 和 minix_file_inode_operations。
 
@@ -719,7 +789,7 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 3. 更新索引节点。
 4. 使用 block_truncate_page() 函数，将上一个块中未使用的空间填充为零。
 
-## 地址空间操作
+# address_space
 
 **进程的地址空间与文件之间有着密切的联系：程序的执行几乎完全是通过将文件映射到进程的地址空间中进行的。**这种方法非常有效且相当通用，也可以用于常规的系统调用，如 read() 和 write()。
 
@@ -804,6 +874,10 @@ struct address_space_operations {
 };
 ```
 
+address_space 是以基数树进行组织的文件 Cache。以页为单位，`page->index = 该页在文件中的逻辑偏移 / page_size`。
+
+<img src="https://img-blog.csdnimg.cn/direct/1121adafe2cf4ad8808244add141f736.png" alt="image-20241230103801350" style="zoom:30%;" />
+
 例如 minix 文件系统的 minix_aops 结构如下：
 
 ```c
@@ -881,7 +955,7 @@ int block_write_full_page(struct page *page, get_block_t *get_block, struct writ
 typedef int (get_block_t)(struct inode *inode, sector_t iblock, struct buffer_head *bh_result, int create);
 ```
 
-# dentry 结构体
+# dentry
 
 ## struct dentry
 
@@ -910,6 +984,10 @@ struct dentry
     ...
 };
 ```
+
+dentry 也有一个全局哈希表进行组织，与它对应的 inode 互指。
+
+<img src="https://img-blog.csdnimg.cn/direct/05f35b213dce4f42b76e03d96f836f08.png" alt="image-20241230102953331" style="zoom:75%;" />
 
 ## dentry 操作
 
@@ -1102,6 +1180,107 @@ changed = __test_and_set_bit(idx, &sbi->imap);
 if (changed)
     printk(KERN_ALERT "%zu 位已更改\n", idx);
 ```
+
+# 流程分析
+
+## 文件系统整体运行流程
+
+1. 加载文件系统的内核模块，在 init 中，注册需要的 file_system_type。格式化过程在内核代码没有任何体现。
+
+2. 调用 mount()，挂载文件系统，通过 file_system_type 的 mount() 回调加载对应的 super_block。
+
+3. 通过 super_block 的 `s_op->alloc_inode()` 分配一个 inode。
+
+4. 分配 root 的 dentry，调用 `dentry->d_op` 初始化 dentry。inode_operation 和 dentry_operation 都被记录在 super_block 中，inode 和 dentry 各自在初始化时拷贝了该指针。
+
+5. 设置对应的挂载点，mount 过程完成。
+
+6. 应用程序 open 文件，从指定路径一级一级向下读取对应的 dentry，直到找到需要的文件的 dentry。查找时优先从 dentry 的全局唯一哈希表上查。如果哈希表没有数据，则调用 `inode->i_op->lookup()` 查找。如果最后发现没有这样的文件，则可能调用 `inode->i_op->atomic_open()` 和 `inode->i_op->create()`。在确保有文件的情况下，调用 `file->f_op->open()` 来打开文件。file 的 address_space 和 f_op 由 inode 赋予。
+
+7. read 文件。如果文件加了范围锁，则需判断是否有冲突，然后调用 `file->f_op->read()` 或者 `file->f_op->read_iter()`。
+
+8. write 文件。如果文件加了范围锁，则需判断是否有冲突，然后调用 `file->f_op->write()` 或者 `file->f_op->write_iter()`。
+
+9. close 文件，先调用 `file->f_op->flush()` 刷数据，然后进行异步关闭操作。
+
+> 如果当前进程不在中断上下文且不是 kthread 线程，将该文件的 close() 操作注册到 current->task_works 中。否则，将该文件的 close() 操作注册到全局的 delayed_fput_work 中。最终，两个异步线程会调到相同的回收代码中来。如果文件设置了 FASYNC 标志，调用 `file->f_op->fasync()` 函数，否则调用 `file->f_op->release()` 函数。
+
+10. 调用 umount()，卸载文件系统，触发 `super_block->s_op->kill_sb()` 回调。
+
+## path lookup 过程
+
+path lookup 是通过用户传递的一个绝对或相对路径，来找到对应文件的 inode 的过程。典型的应用如 open() 和 mount() 的查找。
+
+**path lookup 总共可分为 ref-walk 和 rcu-walk 两种模式。**
+
+RCU 模式对锁的争用更少，并发更好，但不适合所有场景（因为 RCU 可能会导致进程睡眠）。ref 模式是传统的 path lookup 方式，不容易失败。
+
+RCU 模式为了检测 dentry 的修改（rename）带来的查询失败，每次查询都会记录 dentry->d_seq，在查询结束后会检测当前 dentry 和父目录 dentry 的 d_seq 是否改变。针对 ref 模式，每次都会锁住当前 dentry 的 d_lock，在成功查询到需要的 dentry 后，会将其引用计数加一。
+
+当从当前目录跳转到下一层目录时，RCU 模式会丢弃掉原来的父目录的 d_seq 记录（因为不用关心祖父目录的引用计数），而 ref 模式则会丢弃对当前目录的引用。
+
+## mount 过程
+
+mount 系统调用定义如下。更多细节参考博客 [https://blog.csdn.net/bingyu880101/article/details/50481507](https://blog.csdn.net/bingyu880101/article/details/50481507)。
+
+```c
+#include <sys/mount.h>
+
+// source：要挂上的文件系统的名字，通常是一个设备名。
+// target：文件系统要挂在的目标目录。
+// filesystemtype：挂载的文件系统类型，如 "ext4"、"btrfs"、"msdos"、"proc"、"nfs"、"iso9660"、"vfat" 等。
+// mountflags：指定文件系统的读写访问标志。
+// data：文件系统持有的参数。
+int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *_Nullable data);
+```
+
+mount 的过程具体如下：
+
+1. 根据 dir_name，进行 path lookup。
+
+2. 根据 type，查找对应的 file_system_type。
+
+3. 拿到 file_system_type，调 mount() 回调，将 dev_name 对应的块设备和 data 传递给它，mount() 回调将建立好对应的 root 的 dentry，super_block 和 root 的 inode。
+
+4. 新建 mount 结构体，将 dentry 与 mount 结构体绑定。
+
+5. 在 mount_hashtable 中不断查找。如果找到匹配的 mount 结构体，说明该挂载点已被使用，需要继续查找。直到找不到对应的 mount 结构体，说明当前挂载点尚未被占用，系统可以在此挂载新的文件系统。此时系统最后得到有效的 mount 结构体就作为当前 mount 结构体的父挂载点，得到的 dentry 作为当前 mount 结构体的 mountpoint。
+
+6. 建立父 mount 与当前 mount 的联系，建立 mountpoint 与当前 mount 的联系。
+
+## open 过程
+
+open 主要的流程如下：
+
+1. 分析 open 传进来的 flags。
+
+2. 分配 fd。
+
+3. 对文件执行 open、create 等操作（视具体情况而定）。
+
+4. 通知监控文件打开的回调。
+
+5. 将打开得到的 file 结构体放到 fdtable 的 fd 数组中。
+
+open 具体查找文件 inode 的过程，即是 path lookup 的过程。
+
+`file->f_op` 有一个 atomic_open() 回调，允许文件系统以与原子的方式查找某个文件。如果该文件不存在，则文件系统尝试创建该文件（当设置了 O_CREAT 标志时）。故在尝试查找和创建文件时，VFS 优先使用 atomic_open()，当文件系统不支持该操作时，才回归到先 lookup，查找失败再 create 的模式。
+
+## 通用 read 流程
+
+这里不考虑文件的异步读写，也就是 aio 系列的 read 和 write。
+
+所谓通用，是指某些文件系统不单独写 read() 或 read_iter() 回调，而是调 VFS 实现的默认 read 函数 generic_file_read_iter()。
+
+读分为两种，一种是 DIRECT_IO，另一种是走 address_space。
+
+### DIRECT_IO
+
+如果这个 read 操作不能陷入等待（NO_WAIT），且要读取的文件范围内有缓存，则返回 -EAGAIN。否则，先将缓存的数据刷下去，再调用 `mapping->a_ops->direct_io` 读取数据。
+
+### address_space
+
+TODO
 
 # 参考文章
 
