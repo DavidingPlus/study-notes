@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-30 16:05:00
+updated: 2024-12-30 17:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1272,18 +1272,75 @@ open 具体查找文件 inode 的过程，即是 path lookup 的过程。
 
 所谓通用，是指某些文件系统不单独写 read() 或 read_iter() 回调，而是调 VFS 实现的默认 read 函数 generic_file_read_iter()。
 
-读分为两种，一种是 DIRECT_IO，另一种是走 address_space。
+在读缓存的过程中，如果不允许进程阻塞，且需要的数据不在内存中，会立即返回失败。
 
-### DIRECT_IO
+读分为两种，一种是 direct_io，另一种是走 address_space。
 
-如果这个 read 操作不能陷入等待（NO_WAIT），且要读取的文件范围内有缓存，则返回 -EAGAIN。否则，先将缓存的数据刷下去，再调用 `mapping->a_ops->direct_io` 读取数据。
+如果走 direct_io：
 
-### address_space
+1. 如果这个 read 操作不能陷入等待（NO_WAIT），且要读取的文件范围内有缓存，则返回 -EAGAIN。
 
-TODO
+2. 否则，先通过 address_space 将缓存的数据刷下去。
+
+3. 再调用 `mapping->a_ops->direct_io()` 读取数据。
+
+如果走 address_space，用户需要的数据量可能很大，需要一页一页地处理。对于每一页：
+
+1. 从 address_space 中查找对应 page。如果找不到，则以同步方式进行预读，如果这样也拿不到 page，跳转到步骤 6。
+
+2. 如果拿到的 page 带有 readahead 标记，说明我们需要自己预读一些页面。
+
+3. 如果 page 带有 uptodate 标志，则跳到下一步，否则：
+   - 等待 page 的 lock 标志被清零（等待 page 被解锁）。
+   - 如果 page 带有 uptodate 标志，则跳转到步骤 4。
+   - 现在，文件可能被 truncate 了，需要进行检查。如果有 `mapping->a_ops->is_partially_uptodate()` 回调，且通过该回调发现我们需要读的范围内数据是 uptodate 的，则跳转到步骤 4，否则跳转到步骤 5。
+
+4. 现在，数据是确保在内存中的，且是 uptodate 的。将 page 里面的数据拷贝到用户的 buffer 里面，然后进行下个 page 的处理或者退出循环。
+5. 到这一步，说明有 page，但数据没有 uptodate。
+   - 如果 `page->mapping` 为空，则说明这整个页都被 truncate 了，即可以考虑下一块页面的处理（进入 continue）。
+   - 接下来需要调用 `mapping->a_ops->readpage()` 读取数据。
+   - 回到步骤 4，进行数据拷贝。
+
+6. 到这一步，说明没有对应的 page，需要先分配一个 page，加入到 address_space 和 lru 结构中，然后回到步骤 5。
+
+## 通用 write 流程
+
+write 操作会更新 inode 的 mtime 和 ctime，以及 version。同理分为 direct_io 和 address_space 两种。
+
+如果走 direct_io：
+
+1. 如果 address_space 中缓存有要写入范围的数据，且当前进程不能阻塞，则立即返回错误。
+
+2. 否则，先通过 address_space 将缓存的数据刷下去。
+
+3. 现在处理缓存数据的其他问题。对于处于 write 范围内的每一个被缓存的 page 而言：
+   - 首先，确保 page 的数据被刷到了磁盘上（上一步已经确保了这一步）。
+   - 如果这个 page 做了 mmap，取消这一页的 mmap。
+   - 接下来将这个 page 从 address_page 中取下，分为两步：
+     - 如果这个页是 dirty 的话，先调用 `mapping->a_ops->launder_page()` 将脏数据刷下去。这一回调与 writepage() 回调的不同在于，它不允许文件系统通过 redirty 的方式跳过对这一页的 flush 操作。
+     - 接下来将 page 从 address_page 中取下，然后调用 `mapping->a_ops->freepage()` 释放掉这一 page。
+
+4. 接下来，调用 `mapping->a_ops->direct_io()` 写数据。
+
+5. 然后，继续调用步骤 3 来刷一次 page。这是因为可能有其他进程预读了这一部分的数据，或者因为 mmap 了，然后在访问时出现 page fault 导致这一部分的数据被拉进来了。
+
+6. 如果 direct_io 调用失败了，则通过写 Cache、刷 Cache、再无效化 Cache 的方式写数据。
+   - 写 Cache。对于写入范围内的每一页：
+     - 调用 `mapping->a_ops->write_begin()`，通知文件系统准备往 page 上数据了。
+     - kmap page 后，将数据从用户空间拷贝到 page 上，然后 kunmap page，刷 tlb。
+     - 调用 `mapping->a_ops->write_end()`，通知文件系统往 page 上写数据的过程结束。
+     - 判断脏数据是否超过某一阈值，以决定是否需要后台刷数据下去。
+   - 刷 Cache 和无效化 Cache 的过程与步骤 2、3 类似。
+
+7. 至此，direct_io 的过程结束。
+
+如果是普通的写 Cache，而不是 direct_io，则与上述步骤 6 的写 Cache 步骤相同。
+
+如果写入数据成功，且用户指定了需要 fsync，则通过 `file->f_op->fsync()` 回调将更新的数据刷下去。
 
 # 参考文章
 
 1. [Linux Kernel Teaching — The Linux Kernel documentation](https://linux-kernel-labs.github.io/refs/heads/master/)
+
 2. [Linux 内核教学 — Linux 系统内核文档](https://linux-kernel-labs-zh.xyz/)
 
