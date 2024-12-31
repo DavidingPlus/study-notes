@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-31 11:30:00
+updated: 2024-12-31 16:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -791,11 +791,13 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 
 # page cache
 
-笔记摘抄自文章 [https://blog.csdn.net/CoolBoySilverBullet/article/details/121747994](https://blog.csdn.net/CoolBoySilverBullet/article/details/121747994)。
+笔记摘抄自文章 [https://blog.ywang-wnlo.xyz/posts/9ba60726/](https://blog.ywang-wnlo.xyz/posts/9ba60726/)。
 
 由于磁盘 HDD 以及现在广泛使用的固态硬盘 SSD 的读写速度都远小于内存 DRAM 的读写速度。为避免每次读取数据都要直接访问这些低速的底层存储设备，Linux 利用 DRAM 实现了一个缓存层，缓存的粒度是 page，也叫 page cache，也就是页（面）缓存。
 
 经过这层 page cache 的作用，I/O 的性能得到了显著的提升。不过由于 DRAM 具有易失性，在掉电后数据会丢失，因此内核中的 回写机制定时将 page cache 中的数据下刷到设备上，保证数据的持久化。此外内核还在 page cache 中实现了巧妙的预读机制，提升了顺序读性能。
+
+写入到 page cache 的数据不会立刻写入后端设备，而是标记为“脏”，并被加入到脏页链表，后续由内核中的回写进程周期性的将脏页写回到底层存储设备。
 
 在拥有 page cache 这一层后，写数据就有了三种不同的策略：
 
@@ -809,7 +811,7 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 
 第三种策略虽然能非常简单保证缓存和底层设备的一致性，不过基于时间局部性原理，page cache 中的数据可能只是中间态，会被频繁修改，每次写穿会产生大量的开销。
 
-关于 page cache 的写回机制（write back），参考 [https://blog.csdn.net/CoolBoySilverBullet/article/details/121439670](https://blog.csdn.net/CoolBoySilverBullet/article/details/121439670)。
+关于 page cache 的写回机制（write back），参考 [https://blog.ywang-wnlo.xyz/posts/646202b9/](https://blog.ywang-wnlo.xyz/posts/646202b9/)。
 
 # address_space
 
@@ -853,6 +855,7 @@ struct address_space_operations {
 	int (*readpage)(struct file *, struct page *);
 
 	/* Write back some dirty pages from this mapping. */
+    // writepage() 或 writepages() 负责对这些物理页的实际写入。
 	int (*writepages)(struct address_space *, struct writeback_control *);
 
 	/* Set a page dirty.  Return true if this dirtied it */
@@ -866,9 +869,11 @@ struct address_space_operations {
 			struct list_head *pages, unsigned nr_pages);
 	void (*readahead)(struct readahead_control *);
 
+    // 主要负责查找、或者分配新的物理页，并将其锁定，有时还需要先从底层读取最新的数据页。
 	int (*write_begin)(struct file *, struct address_space *mapping,
 				loff_t pos, unsigned len, unsigned flags,
 				struct page **pagep, void **fsdata);
+    // 主要负责解锁这些物理页，并且更新 inode 中的元数据信息，例如 i_size。
 	int (*write_end)(struct file *, struct address_space *mapping,
 				loff_t pos, unsigned len, unsigned copied,
 				struct page *page, void *fsdata);
