@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-31 10:50:00
+updated: 2024-12-31 11:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -789,13 +789,39 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 3. 更新索引节点。
 4. 使用 block_truncate_page() 函数，将上一个块中未使用的空间填充为零。
 
+# page cache
+
+笔记摘抄自文章 [https://blog.csdn.net/CoolBoySilverBullet/article/details/121747994](https://blog.csdn.net/CoolBoySilverBullet/article/details/121747994)。
+
+由于磁盘 HDD 以及现在广泛使用的固态硬盘 SSD 的读写速度都远小于内存 DRAM 的读写速度。为避免每次读取数据都要直接访问这些低速的底层存储设备，Linux 利用 DRAM 实现了一个缓存层，缓存的粒度是 page，也叫 page cache，也就是页（面）缓存。
+
+经过这层 page cache 的作用，I/O 的性能得到了显著的提升。不过由于 DRAM 具有易失性，在掉电后数据会丢失，因此内核中的 回写机制定时将 page cache 中的数据下刷到设备上，保证数据的持久化。此外内核还在 page cache 中实现了巧妙的预读机制，提升了顺序读性能。
+
+在拥有 page cache 这一层后，写数据就有了三种不同的策略：
+
+1. **不经过缓存，直接写底层存储设备，但同时要使缓存中数据失效，也叫不缓存（nowrite）。**
+
+2. **只写缓存，缓存中数据定期刷到底层存储设备上，也叫写回（write back）。**
+
+3. **同时写缓存和底层存储设备，也叫写穿（write through）。**
+
+前两种就是直接 I/O（direct_io）和缓存 I/O（buffer_io）。
+
+第三种策略虽然能非常简单保证缓存和底层设备的一致性，不过基于时间局部性原理，page cache 中的数据可能只是中间态，会被频繁修改，每次写穿会产生大量的开销。
+
+关于 page cache 的写回机制（write back），参考 [https://blog.csdn.net/CoolBoySilverBullet/article/details/121439670](https://blog.csdn.net/CoolBoySilverBullet/article/details/121439670)。
+
 # address_space
 
 **进程的地址空间与文件之间有着密切的联系：程序的执行几乎完全是通过将文件映射到进程的地址空间中进行的。**这种方法非常有效且相当通用，也可以用于常规的系统调用，如 read() 和 write()。
 
 描述地址空间的结构是 `struct address_space`，与之相关的操作由结构 `struct address_space_operations` 描述。初始化 `struct address_space_operations` 需填充文件类型索引节点的 `inode->i_mapping->a_ops`。
 
-二者的定义如下：
+> `struct address_space` 是 page cache 的核心结构体。每一个 address_space 与一个 inode 对应，同时 file 中的 f_mapping 字段通常由该文件的 inode 中 i_mapping 赋值。也就是说每个文件都会有独自的 file、inode 以及 address_space 结构体。
+>
+> `struct address_space` 中的 `struct xarray i_pages` 就是该文件的 page cache 中缓存的所有物理页。它是通过基数树结构进行管理的，而 xarray 只是在基数树上进行了一层封装。
+>
+> 通常 `struct address_space` 上会挂载一个 `struct address_space_operations`，自定义对 page cache 中的页面操作的函数。
 
 ```c
 struct address_space {
