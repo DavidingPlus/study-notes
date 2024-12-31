@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: f548d964
 date: 2024-12-24 16:05:00
-updated: 2024-12-30 17:50:00
+updated: 2024-12-31 10:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -1337,6 +1337,128 @@ write 操作会更新 inode 的 mtime 和 ctime，以及 version。同理分为 
 如果是普通的写 Cache，而不是 direct_io，则与上述步骤 6 的写 Cache 步骤相同。
 
 如果写入数据成功，且用户指定了需要 fsync，则通过 `file->f_op->fsync()` 回调将更新的数据刷下去。
+
+## address_space 刷数据流程
+
+1. 先调用 `mapping->a_ops->writepages` 刷数据。
+
+2. 如果 writepages 回调不存在，只能使用 write_page 回调。
+   - blk_start_plug()
+   - 对于范围内的每个 page：
+     - 如果要等待所有 page 完成（`wbc->sync_mode == WB_SYNC_ALL`）或者标记了 `wbc->tagged_writepages`，则将 address_space 中标记为 PAGECACHE_TAG_DIRTY 的页面再标记为 PAGECACHE_TAG_TOWRITE。原来的 DIRTY 标记不去掉。
+     - 如果上一步设置了 TOWRITE 标记，则再次在 address_space 中搜索标记为 TOWRITE 的那些 page，否则搜索在 address_space 中标记为 DIRTY 的回调（仅在给定的范围内搜索）。对于搜索到的 page：
+       - 如果 page 的（不是 address_space 的）DIRTY 标记被清掉了，说明其他进程先刷下去了，我们不需要对这个 page 做任何操作。
+       - 如果 page 有 WRITEBACK 标记，如果 `wbc->sync_mode != WB_SYNC_NONE`，我们需要等待这个 page 的 writeback 操作完成。
+       - 否则，由当前进程负责调用 `mapping->a_op->writepage()` 回调刷数据。
+   - blk_finish_plug()
+
+3. 如果回调函数返回了 -NOMEM，表示对应块设备繁忙。此时如果 `wbc->sync_mode == WB_SYNC_ALL`，代表可以在这里等待设备刷数据，因此调用 io_schedule() 稍微等待一段时间后回到第一步重试。
+
+4. 搜索 address_space，对于范围内的每个标记为 PAGECACHE_TAG_WRITEBACK 的 page，等待 page 的 writeback 标记被清空。
+
+> 我们并没有设置 address_space 的 PAGECACHE_TAG_WRITEBACK 标志，但是在等待数据被刷下去时，却是搜索的该标志。其实 PAGECACHE_TAG_WRITEBACK 标志是被 `a_op->readpage()` 或 `a_op->readpages()` 回调函数设置的。
+
+## 等待 page 标志流程
+
+等待 page 标志被清零，这是常见的操作。例如等待 page 的 writeback 标志被清零，表示 page 被写下去了。
+
+page 的等待机制是用哈希表完成的，名字是 page_wait_table，共 256 根链表，以 page 的地址作为键（Key）。
+
+1. 每次需要等待 page 的某个标志位被清零时，在栈上创建一个 wait_page_queue，作为 wait_queue 的一个 entry。
+
+2. 让该 entry 将入到对应的 wait_page_queue 的尾部，然后调用 io_schedule() 进行等待。
+
+3. 当有其他进程从哈希表的链表上唤醒某个 page 时，会判断当前 entry 等待的 page 是否与将要唤醒的 page 相同，等待标志是否相同。若相同，会先调用 wait_page_queue 的回调函数将该 entry 从链表上取下，然后再唤醒进程。
+
+4. 当从阻塞中被唤醒后，判断标志位是否被清零。如果是，则从等待中返回。如果是被信号打断的，也需要返回，否则回到步骤 2 重新等待。
+
+## plug 机制
+
+### plug
+
+**plug 机制用于缓存刷向通用块层的数据。**使用方法如下：
+
+1. 调用 blk_start_plug() 初始化一个 plug。
+
+2. 处理各种往通用块层读写数据的请求。
+
+3. 调用 blk_finish_plug() 刷数据。
+
+plug 仅有三根链表：
+
+1. list：用于普通 request 的链表，上面串着单队列的 request。
+
+2. mq_list：用于 multi-queue 的链表，上面串着多队列的 request。
+
+3. cb_list：在 unplug 时需调用的回调函数链表。
+
+```c
+struct blk_plug {
+	struct list_head mq_list; /* blk-mq requests */
+	struct list_head cb_list; /* md requires an unplug callback */
+	unsigned short rq_count;
+	bool multiple_queues;
+	bool nowait;
+};
+
+struct blk_plug_cb;
+typedef void (*blk_plug_cb_fn)(struct blk_plug_cb *, bool);
+struct blk_plug_cb {
+	struct list_head list;
+	blk_plug_cb_fn callback;
+	void *data;
+};
+```
+
+### blk_start_plug
+
+plug 总是与进程绑在一起的，一个进程只会有一个 plug，但 plug 机制可以递归进入。
+
+1. 判断 `current->plug` 是否存在，如果存在，直接返回。
+
+2. 初始化 plug 的三根链表。
+
+3. 将外界传递进来的 plug 作为 `task->plug`。
+
+### blk_finish_plug
+
+1. 如果外界传递进来的 plug 不是 `current->plug`，则处于递归调用 plug 中，直接返回。
+
+2. 调用 `plug->cb_list` 中的所有回调函数。
+
+3. 将 mq_list 的 request 刷下去。
+   - 对 mq_list 进行排序。这样属于同一个 blk_mq_ctx 的那些 request 就被放在一起了。
+   - 将属于同一个 blk_mq_ctx 的 request 搜集到一根链表上，统一提交到同一个 blk_mq_hw_ctx 中。
+
+4. 将 list 的 request 刷下去。
+   - 对 list 进行排序。这样属于同一个 request_queue 的那些 request 就被放在一起了。
+   - 将属于同一个 request_queue 的 request 搜集到一根链表上，统一提交到对应的 request_queue 中。
+
+5. 设置 `current->plug` 为 NULL。
+
+## inode、super_block 和 dentry 的并发查找机制
+
+以 inode 为例，经常会遇到 malloc() 一个 inode 的情况。一般来说，内核中对于一个文件只对应一个 inode，但如果两个进程同时想针对硬盘上的同一个文件创建 inode，就会造成冲突。
+
+内核为解决这个问题，将所有的 inode 放在了 inode_hashtable，被自旋锁保护。当需要一个文件对应的 inode 时：
+
+1. 加锁，从该哈希表查找对应的 inode，解锁。
+
+2. 若没有，分配一个 inode。
+
+3. 加锁。
+
+4. 从该哈希表中再次查找对应的 inode。
+
+5. 若不存在对应的 inode，将新的 inode 加入到哈希表中。
+
+6. 解锁。
+
+7. 若存在对应的 inode，将刚才分配的 inode 释放掉。
+
+dentry 和 super_block 也有类似机制，设计内核的一系列函数 iget_locked()、sget()、d_alloc_parallel() 等。
+
+dentry 比较特殊。它将要查找的 dentry 放到一个名为 in_lookup_hashtable 的哈希表中，而将所有的 dentry 放入到 dentry_hashtable 中。
 
 # 参考文章
 
