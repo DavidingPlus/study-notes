@@ -1,9 +1,9 @@
 ---
-title: Linux Virtual Filesystem
+title: Virtual Filesystem
 categories:
   - Linux 学习
   - 内核层
-abbrlink: f548d964
+abbrlink: 68b0f3fd
 date: 2024-12-24 16:05:00
 updated: 2024-12-31 16:00:00
 ---
