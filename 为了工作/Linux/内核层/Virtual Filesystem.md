@@ -32,7 +32,7 @@ VFS 的基本思想是提供可以表示任何文件系统文件的单一文件�
 
 Linux 存储栈的整体结构图如下。从上到下分别是：**VFS、通用块层、SCSI 层、块设备层**。
 
-<img src="https://img-blog.csdnimg.cn/direct/e2fa79efbb584048a112f1965d9156d5.png" alt="image-20241227142615377" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241227142615377.png" alt="image-20241227142615377" style="zoom:75%;" />
 
 各个层次的作用如下。
 
@@ -40,7 +40,7 @@ Linux 存储栈的整体结构图如下。从上到下分别是：**VFS、通用
 
 2. 通用块层：文件系统将读/写请求转换成 bio 和 request，提交给通用块层，通用块层对 request 进行调度，发往下一层。
 
-<img src="https://img-blog.csdnimg.cn/direct/ae3f1960badf4746813099ae4ef7b206.png" alt="image-20241227143348812" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241227143348812.png" alt="image-20241227143348812" style="zoom:80%;" />
 
 3. SCSI 层：SCSI（Small Computer Systems Interface）是一组标准集，定义了与大量设备（主要是与存储相关的设备）通信所需的接口和协议。Linux 提供了一种 SCSI 子系统，用于与这些设备通信。
 
@@ -163,7 +163,7 @@ struct file_system_type
 
 每个文件系统类型下都挂载了多个文件系统，比如 sda、sdb 都是 ext4 文件系统，这些 super_block 以链表的形式连接到 `file_system_type->fs_supers` 字段中。系统中所有的 super_block 也是通过一根双向链表进行连接。
 
-<img src="https://img-blog.csdnimg.cn/direct/2bdd2062e61a41b182de277573ab32f4.png" alt="image-20241227120407496" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241227120407496.png" alt="image-20241227120407496" style="zoom:75%;" />
 
 在模块加载函数中，将文件系统注册到内核，需要做以下几步：
 
@@ -541,7 +541,7 @@ struct inode
 
 每个文件系统都缓存了一定的 inode 数量到内存中。同一个文件系统的 inode 以双向链表连接起来，挂在 `super_block->s_inodes` 字段中。同时，内核中所有的 inode 被组织在了一个哈希表 inode_hashtable 上。
 
-<img src="https://img-blog.csdnimg.cn/direct/c2c096ac10cd49878899428229ebfe98.png" alt="image-20241227141716401" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241227141716401.png" alt="image-20241227141716401" style="zoom:75%;" />
 
 一些可用于处理 inode 的函数如下：
 
@@ -632,11 +632,11 @@ inode 索引节点的相关操作由 `struct inode_operations` 结构描述。
 
 被 mount 的目录称为一个 mount 点。目录也是一个 dentry，mount 通过 mnt_mountpoint 字段指向该 dentry。
 
-<img src="https://img-blog.csdnimg.cn/direct/7b045be8277948d1a013fbc7538c9764.png" alt="image-20241227145405084" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241227145405084.png" alt="image-20241227145405084" style="zoom:75%;" />
 
 挂载点用 mountpoint 结构体表示。所有的挂载点被放到一个哈希表 mountpoint_hashtable 中，以 dentry 为键（Key），mountpoint 为值（T）。
 
-<img src="https://img-blog.csdnimg.cn/direct/3ad9f59e871b42a8b5a7209a9dfe07e9.png" alt="image-20241230094606623" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241230094606623.png" alt="image-20241230094606623" style="zoom:75%;" />
 
 > 注：这里的 mountpoint 是一个结构体。与上面的 mount->mnt_mountpoint 不一样，上面的是一个指针，指向 dentry。
 
@@ -696,11 +696,11 @@ struct mountpoint {
 
 为了处理这种情况，文件系统中所有的 mount 都被组织到同一个哈希表 mount_hashtable 中。哈希表以 `<mount, dentry>` 为键（Key），以新的 mount 作为值（Value），将其组织起来。
 
-<img src="https://img-blog.csdnimg.cn/direct/d1d769f8a5074874ba5ebe8dfb3724de.png" alt="image-20241230101507978" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241230101507978.png" alt="image-20241230101507978" style="zoom:70%;" />
 
 将上述整理以后，能得到一个整体的架构图：
 
-<img src="https://img-blog.csdnimg.cn/direct/4f0432315c2b4ca8a40b4532ca8f1632.png" alt="image-20241230102023524" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241230102023524.png" alt="image-20241230102023524" style="zoom:70%;" />
 
 # file
 
@@ -710,7 +710,7 @@ struct mountpoint {
 
 file 与 inode 的区别在于，一个文件的 inode 在内核中是唯一的，但 file 可以有多个。
 
-<img src="https://img-blog.csdnimg.cn/direct/1329e49089bf44bdacd1fe4b41b1596a.png" alt="image-20241230104309655" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241230104309655.png" alt="image-20241230104309655" style="zoom:70%;" />
 
 # 常规文件索引节点
 
@@ -907,7 +907,7 @@ struct address_space_operations {
 
 address_space 是以基数树进行组织的文件 Cache。以页为单位，`page->index = 该页在文件中的逻辑偏移 / page_size`。
 
-<img src="https://img-blog.csdnimg.cn/direct/1121adafe2cf4ad8808244add141f736.png" alt="image-20241230103801350" style="zoom:30%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241230103801350.png" alt="image-20241230103801350" style="zoom:30%;" />
 
 例如 minix 文件系统的 minix_aops 结构如下：
 
@@ -1018,7 +1018,7 @@ struct dentry
 
 dentry 也有一个全局哈希表进行组织，与它对应的 inode 互指。
 
-<img src="https://img-blog.csdnimg.cn/direct/05f35b213dce4f42b76e03d96f836f08.png" alt="image-20241230102953331" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241230102953331.png" alt="image-20241230102953331" style="zoom:75%;" />
 
 ## dentry 操作
 

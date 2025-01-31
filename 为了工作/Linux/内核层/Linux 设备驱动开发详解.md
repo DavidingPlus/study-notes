@@ -72,7 +72,7 @@ Linux 内核源代码包含以下目录，可通过网站 [https://elixir.bootli
 
 Linux 内核主要由**进程调度（SCHED）、内存管理（MM）、虚拟文件系统（VFS）、网络接口（NET）和进程间通信（IPC）**5 个子系统组成，如图所示：
 
-<img src="https://img-blog.csdnimg.cn/direct/61cd8ad93fac4afc918d33ae0cf7486b.png" alt="image-20241024101324120" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241024101324120.png" alt="image-20241024101324120" style="zoom:70%;" />
 
 #### 进程调度
 
@@ -80,7 +80,7 @@ Linux 内核主要由**进程调度（SCHED）、内存管理（MM）、虚拟�
 
 Linux 的进程在几个状态间进行切换。在设备驱动编程中，当请求的资源不能得到满足时，驱动一般会调度其他进程执行，并使本进程进入睡眠状态，直到它请求的资源被释放，才会被唤醒而进入就绪状态。睡眠分成可中断的睡眠和不可中断的睡眠，两者的区别在于可中断的睡眠在收到信号的时候会醒。状态转化图如图：
 
-<img src="https://img-blog.csdnimg.cn/direct/7e179aedbdb44f71acfb88d548bba0ea.png" alt="image-20241024102027520" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241024102027520.png" alt="image-20241024102027520" style="zoom:70%;" />
 
 完全处于 TASK_UNINTERRUPTIBLE 状态的进程甚至都无法被“杀死” ，所以 Linux 2.6.26 之后的内核 也存在一种 TASK_KILLABLE 的状态，它等于 TASK_WAKEKILL|TASK_UNINTERRUPTIBLE，可以响应致命信号。
 
@@ -100,23 +100,23 @@ pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
 一般而言，32 位处理器的 Linux 的每个进程享有 4GB 的内存空间，0~3GB 属于用户空间，3~4GB 属于内核空间，内核空间对常规内存、I/O 设备内存以及高端内存有不同的处理方式。当然，内核空间和用户空间的具体界限是可以调整的，在内核配置选项 Kernel Features → Memory split 下，可以设 置界限为 2GB 或者 3GB。
 
-<img src="https://img-blog.csdnimg.cn/direct/6552a1294ea44f97853131dc9716abc5.png" alt="image-20241024104326004" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241024104326004.png" alt="image-20241024104326004" style="zoom:75%;" />
 
 Linux 内核的内存管理总体比较庞大，包含底层的 Buddy 算法，它用于管理每个页的占用情况，内核空间的 slab 以及用户空间的 C 库的二次管理。另外，内核也提供了页缓存的支持，用内存来缓存磁盘，per-BDI flusher 线程用于刷回脏的页缓存到磁盘。Kswapd（交换进程）则是 Linux 中用于页面回收（包括 file-backed 的页和匿名页）的内核线程，它采用最近最少使用（LRU）算法进行内存回收。
 
-<img src="https://img-blog.csdnimg.cn/direct/b231e7e91f6a408a8f7b39ca5e463a3e.png" alt="image-20241024104439338" style="zoom:65%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241024104439338.png" alt="image-20241024104439338" style="zoom:65%;" />
 
 #### 虚拟文件系统（VFS）
 
 Linux 虚拟文件系统隐藏了各种硬件的具体细节，为所有设备提供了统一的接口。而且，它独立于各个具体的文件系统，是对各种文件系统的一个抽象。它为上层的应用程序提供了统一的 vfs_read()、vfs_write() 等接口，并调用具体底层文件系统或者设备驱动中实现的 file_operations 结构体的成员函数。
 
-<img src="https://img-blog.csdnimg.cn/direct/797a517415e0444f9c12a6afebf71dfb.png" alt="image-20241024104730858" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241024104730858.png" alt="image-20241024104730858" style="zoom:70%;" />
 
 #### 网络接口
 
 网络接口提供了对各种网络标准的存取和各种网络硬件的支持。在 Linux 中网络接口可分为网络协议和网络驱动程序，网络协议部分负责实现每一种可能的网络传输协议，网络设备驱动程序负责与硬件设备通信，每一种可能的硬件设备都有相应的设备驱动程序。
 
-<img src="https://img-blog.csdnimg.cn/direct/f31053c9c9164926a1542b337276f3fe.png" alt="image-20241024110756075" style="zoom:63%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241024110756075.png" alt="image-20241024110756075" style="zoom:63%;" />
 
 Linux 内核支持的协议栈种类较多，如 Internet、UNIX、CAN、NFC、Bluetooth、WiMAX、IrDA 等，上层的应用程序统一使用套接字接口。
 
@@ -607,7 +607,7 @@ sudo insmod <param_name>=<param_value>
 
 例如这里，就记录了内核模块参数 helloInitParam 和 helloExitParam，使用 cat 命令能够得到他们分别记录的值，其中数组的表示方法和上面提到的一致。
 
-<img src="https://img-blog.csdnimg.cn/direct/5aa7af05728a4dcd804e5e8f16f2f25b.png" alt="image-20241105100931281" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241105100931281.png" alt="image-20241105100931281" style="zoom:75%;" />
 
 实例程序如下：
 
@@ -756,13 +756,13 @@ int open(const char *pathname, int flags, mode_t mode);
 
 flags 参数表示文件的打开标志，可以是如下的一个或者几个的组合：
 
-<img src="https://img-blog.csdnimg.cn/direct/0f8f0abc88214db386d1501b89c64b9d.png" alt="image-20241105144109024" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241105144109024.png" alt="image-20241105144109024" style="zoom:80%;" />
 
 其中，O_RDONLY、O_WRONLY、O_RDWR 三者是互斥的，只可选择其一。
 
 如果使用了 O_CREAT 标志，还需要提供第三个参数 mode 来表示新文件的权限，同前面的 creat() 函数。mode 权限如下图：
 
-<img src="https://img-blog.csdnimg.cn/direct/dbb4cddec38941e4adcd0e41f27a9795.png" alt="image-20241105144550547" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241105144550547.png" alt="image-20241105144550547" style="zoom:70%;" />
 
 关于权限 mode，举个例子就明白了。Linux 下的文件权限是一个八进制数，例如 0777。3 个 7 分别表示对不同的用户（所有者，组成员，其他用户的权限）的权限。每一个都是 3 位 ，第一位表示读 R，第二位表示写 W，第三位表示可执行 X，7 对应就是 111 全有。
 
@@ -898,7 +898,7 @@ int main()
 
 正确的输出预期应该如图：
 
-![image-20241105160211266](https://img-blog.csdnimg.cn/direct/70e36518faf34bd4b91e1471d68d207e.png)
+![image-20241105160211266](https://image.davidingplus.cn/images/2025/02/01/image-20241105160211266.png)
 
 ### 标准 C 库函数
 
@@ -912,7 +912,7 @@ FILE *fopen(const char *pathname, const char *mode);
 
 mode 表示打开模式，支持的模式如图所示：
 
-<img src="https://img-blog.csdnimg.cn/59ee39f0f9724e5aa9f7d579eae550e4.png" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230907152718910.png" alt="image-20230907152718910" style="zoom: 80%;" />
 
 其中，b 用于区分二进制文件和文本文件，这一点在 DOS、Windows 系统中是有区分的，但 Linux 不区分二进制文件和文本文件。
 
@@ -1084,11 +1084,11 @@ Linux 2.6 以后的内核所支持的 sysfs 文件系统被映射在此目录上
 
 如图所示是 Linux 下虚拟文件系统、磁盘/Flash 文件系统及一般的设备文件与设备驱动程序之间的关系。
 
-<img src="https://img-blog.csdnimg.cn/direct/82d58b796bbf4354857488563e36c251.png" alt="image-20241106093412285" style="zoom: 70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241106093412285.png" alt="image-20241106093412285" style="zoom: 70%;" />
 
 应用程序和 VFS 之间的接口是系统调用，而 VFS 与文件系统以及设备文件之间的接口是 file_operations 结构体成员函数，这个结构体包含对文件进行打开、关闭、读写、控制的一系列成员函数。
 
-<img src="https://img-blog.csdnimg.cn/direct/9027b6a03dba4d2c9935f01074419824.png" alt="image-20241106093650313" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241106093650313.png" alt="image-20241106093650313" style="zoom:75%;" />
 
 字符设备的上层没有类似于磁盘 ext2 等文件系统，所以字符设备的 file_operations 成员函数就直接由设备驱动提供了，并且是字符驱动的核心部分。
 
@@ -1381,11 +1381,11 @@ sysfs 把连接在系统上的设备和总线组织成为一个分级的文件�
 
 其目录结构类似如下。block 目录包含所有的块设备；devices 目录包含系统所有的设备，并根据设备挂载的总线类型组织成层次结构；bus 目录包含系统中所有的总线类型；class 目录包含系统中的设备类型，如网卡设备、声卡设备、输入设备等。
 
-<img src="https://img-blog.csdnimg.cn/direct/2814968d5df14815936dfd8e0a3f636d.png" alt="image-20241107100021716" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241107100021716.png" alt="image-20241107100021716" style="zoom:75%;" />
 
 在 /sys/bus/ 的 pci 等子目录下，又会再分出 drivers 和 devices 目录，而 devices 目录中的文件是对 /sys/devices/ 目录中文件的符号链接。同样地，/sys/class/ 目录下也包含许多对 /sys/devices/ 下文件的链接。Linux 设备模型与设备、驱动、总线和类的现实状况是直接对应的，如图所示：
 
-<img src="https://img-blog.csdnimg.cn/direct/bd429fa34bba4bccb6bea45b80e1e0a1.png" alt="image-20241107100653352" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241107100653352.png" alt="image-20241107100653352" style="zoom:70%;" />
 
 **在 Linux 内核中，使用 bus_type、device_driver、device 来描述总线、驱动和设备。**其定义如下：
 
@@ -1635,7 +1635,7 @@ SUBSYSTEM=="net", ACTION=="add", DRIVERS==" *", ATTR{address}=="08:00:27:35:be:f
 
 Linux 系统将设备分为3类：**字符设备、块设备、网络设备**。架构图如下：
 
-![](https://img-blog.csdn.net/20160309214506200)
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20250201002122884.png" alt="image-20250201002122884" style="zoom:70%;" />
 
 **字符设备是指只能一个字节一个字节读写的设备，不能随机读取设备内存中的某一数据，读取数据需要按照先后数据。**字符设备是面向流的设备。常见的字符设备有鼠标、键盘、串口、控制台和 LED 设备等。
 
@@ -1918,7 +1918,7 @@ struct file_operations xxx_fops = {
 
 下面是字符设备驱动的结构示意图：
 
-<img src="https://img-blog.csdnimg.cn/direct/f0c4207c95a14c3bb342970f131afd7e.png" alt="image-20241108100951215" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241108100951215.png" alt="image-20241108100951215" style="zoom:75%;" />
 
 ## globalmem 虚拟设备
 
@@ -1944,11 +1944,11 @@ Linux 设备驱动中必须要解决的问题是多个进程对共享资源的�
 
 SMP 是一种紧耦合、共享存储的系统模型，特点是多个 CPU 使用共同的系统总线，因此可访问共同的外设和储存器。体系结构如图：
 
-<img src="https://img-blog.csdnimg.cn/direct/c49b0702bc2d427693d8a5e7a8316158.png" alt="image-20241111152648934" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241111152648934.png" alt="image-20241111152648934" style="zoom:80%;" />
 
 在 SMP 的情形下，两个核(例如 CPU 0 和 CPU 1)的竞态可能发生在 CPU 0 和 CPU 1 的进程之间，CPU 0 的进程和 CPU 1 的中断之间，CPU 0 和 CPU 1 的中断之间等，如图所示：
 
-<img src="https://img-blog.csdnimg.cn/direct/ac044c85fc434566bb7c8580d3c62a35.png" alt="image-20241111152902140" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241111152902140.png" alt="image-20241111152902140" style="zoom:80%;" />
 
 2. 单 CPU 内进程与抢占它的进程
 
@@ -1962,7 +1962,7 @@ Linux 2.6 以后的内核支持内核抢占调度，一个进程在内核执行�
 
 上述三种并发的发生，除了 SMP 是真正的并行之外，其他的都是单核上的“宏观并行、微观串行”，但遇到的问题和 SMP 类似。CPU 核内和核间的并发示意图如下：
 
-<img src="https://img-blog.csdnimg.cn/direct/ebc060fd461a42078d4aaed276dd31ee.png" alt="image-20241111153624322" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241111153624322.png" alt="image-20241111153624322" style="zoom:75%;" />
 
 解决竞态问题的途径是保证对共享资源的互斥访问。互斥访问是指一个执行单元在访问共享资源的时候，其他的执行单元被禁止访问。
 
@@ -2140,7 +2140,7 @@ spin_unlock_bh() = spin_unlock() + local_bh_enable()
 
 在多核编程的时候，如果进程和中断可能访问同一片临界资源，**我们一般需要在进程上下文中调用 spin_lock_irqsave() 和 spin_unlock_irqrestore()，在中断上下文中调用 spin_lock() 和 spin_unlock()。**这样能避免一切核内和核间并发的可能性。
 
-<img src="https://img-blog.csdnimg.cn/direct/e6162c3d2ba9443eae5ed35908618d6a.png" alt="image-20241112094336501" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241112094336501.png" alt="image-20241112094336501" style="zoom:75%;" />
 
 这样考虑以后，自旋锁一般这样使用：
 
@@ -2342,7 +2342,7 @@ synchronize_rcu();
 
 该函数由 RCU 写执行单元调用，它将阻塞写执行单元，直到当前 CPU 上所有的已经存在的读执行单元完成读临界区，写执行单元才可以继续下一步操作。synchronize_rcu() 并不需要等待后续读临界区的完成。
 
-<img src="https://img-blog.csdnimg.cn/direct/c9cc45175ca946f3b0f154272a41e3be.png" alt="image-20241112104436256" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241112104436256.png" alt="image-20241112104436256" style="zoom:80%;" />
 
 4. 挂接回调
 
@@ -2451,7 +2451,7 @@ void up(struct semaphore *sem);
 
 用作互斥时，信号量一般这样被使用：
 
-<img src="https://img-blog.csdnimg.cn/direct/3a4f97828383458cb75636c948580bdc.png" alt="image-20241112141145150" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241112141145150.png" alt="image-20241112141145150" style="zoom:75%;" />
 
 关心具体数值的生产者/消费者问题，使用信号量较为合适。生产者/消费者问题也是一种同步问题。
 
@@ -2543,7 +2543,7 @@ void complete_all(struct completion *c); // 唤醒所有等待同一完成量的
 
 完成量用于同步的流程如下：
 
-<img src="https://img-blog.csdnimg.cn/direct/11c557be427a4c05b545d410d35d4f05.png" alt="image-20241112143006097" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241112143006097.png" alt="image-20241112143006097" style="zoom:75%;" />
 
 ## 支持并发控制的 globalmem 设备驱动
 
@@ -2569,7 +2569,7 @@ Linux 内核优化了自旋锁、信号量、互斥体、完成量等的管理�
 
 在阻塞访问时，不能获取资源的进程将进入休眠，它将 CPU 资源让给其他进程。由于阻塞的进程会进入休眠状态，所以必须确保有一个地方能够唤醒休眠的进程，否则，进程就真的醒不过来了。唤醒进程的地方最大可能发生在**中断**里面，因为在硬件资源获得的同时往往伴随着一个中断。而非阻塞的进程则不断尝试，直到可以进行 I/O。如图所示：
 
-<img src="https://img-blog.csdnimg.cn/direct/b6b77595a43d451da668c723f79744ef.png" alt="image-20241112155206531" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241112155206531.png" alt="image-20241112155206531" style="zoom:70%;" />
 
 ### 等待队列
 
@@ -2705,7 +2705,7 @@ out:
 
 DECLARE_WAITQUEUE()、add_wait_queue() 这两个动作加起来完成的效果如图所示。在 wait_queue_head_t 指向的链表上，新定义的 wait_queue 元素被插入，而这个新插入的元素绑定了一个 task_struct（当前做 xxx_write 的 current，这也是 DECLARE_WAITQUEUE 使用 current 作为参数的原因）。
 
-<img src="https://img-blog.csdnimg.cn/direct/bc17405d08ef467b958964720a4b2647.png" alt="image-20241114100236690" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241114100236690.png" alt="image-20241114100236690" style="zoom:70%;" />
 
 ### 支持阻塞操作的 globalfifo 设备驱动
 
@@ -2805,7 +2805,7 @@ TODO
 
 三种方式的示意图如下：
 
-<img src="https://img-blog.csdnimg.cn/direct/0cc9bc40aeb24be1890a60c49cc8af8c.png" alt="image-20241118152443949" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241118152443949.png" alt="image-20241118152443949" style="zoom:75%;" />
 
 ## 异步通知编程
 
@@ -2813,9 +2813,9 @@ TODO
 
 在 Linux 中，异步通信使用信号实现。同时，信号也是 Linux 进程间通信 IPC 的一种方式。Linux 常用信号如下表：
 
-<img src="https://img-blog.csdnimg.cn/direct/d55a67a98eb54d34b9244723076061fc.png" alt="image-20241118154442574" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241118154442574.png" alt="image-20241118154442574" style="zoom:75%;" />
 
-<img src="https://img-blog.csdnimg.cn/direct/de0b943bc5fa40e69c2085d1b1c21f61.png" alt="image-20241118154452629" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241118154452629.png" alt="image-20241118154452629" style="zoom:75%;" />
 
 除了 SIGSTOP 和 SIGKILL 两个信号外，进程能够忽略或捕获其他的全部信号。一个信号被捕获的意思是当一个信号到达时有相应的代码处理它。如果一个信号没有被这个进程所捕获，内核将采用默认行为处理。
 
@@ -2893,7 +2893,7 @@ int main()
 
 这些与用户层的 3 项工作是一一对应的，关系图如下：
 
-<img src="https://img-blog.csdnimg.cn/direct/4d3f6a37580e464dafbb4dbaa7bcaa87.png" alt="image-20241120095605894" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241120095605894.png" alt="image-20241120095605894" style="zoom:80%;" />
 
 设备驱动中的异步通知编程涉及到一个数据结构和两个函数，具体如下：
 
@@ -2936,7 +2936,7 @@ Linux 中最常用的输入/输出（I/O）模型是同步 I/O。当请求发出
 
 异步 I/O 的时序图如下。应用程序发起 I/O 动作以后，并不等待 I/O 结束，而是接着执行。它要么过一段时间来查询之前的 I/O 请求完成情况，要么 I/O 请求完成后自动被调用与 I/O 完成绑定的回调函数。
 
-<img src="https://img-blog.csdnimg.cn/direct/be82260de80e490d8e74b900db827822.png" alt="image-20241120111926095" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241120111926095.png" alt="image-20241120111926095" style="zoom:75%;" />
 
 Linux 的 AIO 有多种实现。其中一种是**在用户空间的 glibc 库中实现的**。**它本质上是借用了多线程模型，用开启新的线程以同步的方法来做 I/O，新的 AIO 辅助线程与发起 AIO 的线程以 pthread_cond_signal() 的形式进行线程间的同步。**
 
@@ -3305,7 +3305,7 @@ Linux 2.6 以后的内核包含对 AIO 的支持，它为用户空间提供了�
 
 为了在**中断执行时间尽量短和中断处理需完成的工作尽量大**之间找到一个平衡点，Linux 将中断处理程序分解为两个半部：顶半部（Top Half）和底半部（Bottom Half）。
 
-<img src="https://img-blog.csdnimg.cn/direct/b4e9122e67844610a38d7223c7225f86.png" alt="image-20241125093035072" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241125093035072.png" alt="image-20241125093035072" style="zoom:75%;" />
 
 **顶半部用于完成尽量少的比较紧急的功能。**它往往只是简单地读取寄存器中的中断状态，并在清除中断标志后就进行“登记中断”的工作。“登记中断”意味着将底半部处理程序挂到该设备的底半部执行队列中去。这样，顶半部执行的速度就会很快，从而可以服务更多的中断请求。
 
@@ -3315,7 +3315,7 @@ Linux 2.6 以后的内核包含对 AIO 的支持，它为用户空间提供了�
 
 在 Linux 中，查看 `/proc/interrupts` 文件可以获得系统中断的统计信息，知道每个中断号在 CPU 上发生的次数。
 
-<img src="https://img-blog.csdnimg.cn/direct/f80fa5a72c3a45c9b05830ae6e8436af.png" alt="image-20241125094233332" style="zoom:60%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241125094233332.png" alt="image-20241125094233332" style="zoom:60%;" />
 
 ## 中断编程
 
@@ -3644,7 +3644,7 @@ static irqreturn_t irq_default_primary_handler(int irq, void *dev_id)
 2. 尽管内核模块可访问的全局地址都可以作为 request_irq(..., void *dev) 的最后一个参数 dev，但是设备结构体指针显然是可传入的最佳参数。
 3. 在中断到来时，会遍历执行共享此中断的所有中断处理程序，直到某一个函数返回 IRQ_HANDLED。在中断处理程序顶半部中，应根据硬件寄存器中的信息比照传入的 dev 参数迅速地判断是否为本设备的中断，若不是，应迅速返回 IRQ_NONE。
 
-<img src="https://img-blog.csdnimg.cn/direct/d920837846b14ff4beeb1944edfa78de.png" alt="image-20241125184336914" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241125184336914.png" alt="image-20241125184336914" style="zoom:75%;" />
 
 以下是使用共享中断的设备驱动程序模板：
 
@@ -4068,7 +4068,7 @@ OUT {端口号 │ DX}, 累加器
 
 在 X86 处理器中，虽然提供了 I/O 空间，外设仍然可以只挂接在内存空间中。此时，CPU 可以像访问一个内存单元那样访问外设 I/O 端口，而不需要设立专门的 I/O 指令。**内存空间是必需的，而 I/O 空间是可选的。**如图是内存空间和 I/O 空间的对比。
 
-<img src="https://img-blog.csdnimg.cn/direct/6ec7abd06eb94764b1b73fac65e9fad3.png" alt="image-20241127111734557" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241127111734557.png" alt="image-20241127111734557" style="zoom:75%;" />
 
 在下面这段程序中，没有定义任何一个函数实体，但是程序却执行了函数调用 lpReset()。它实际上起到了“软重启”的作用，跳转到 CPU 启动后第一条要执行的指令的位置。因此，可以通过函数指针调用一个没有函数体的“函数”，本质上只是换一个地址开始执行。
 
@@ -4087,11 +4087,11 @@ lpReset();                                   // 调用函数
 1. **TLB（Translation Lookaside Buffer）：即转换旁路缓存。TLB 是 MMU 的核心部件，它缓存少量的虚拟地址与物理地址的转换关系，是转换表的 Cache，也经常被称为“快表”。**
 2. **TTW（Translation Table walk）：即转换表漫游。当 TLB 中没有缓冲对应的地址转换关系时，需要通过对内存中转换表（大多数为多级页表）的访问来获得虚拟地址和物理地址的对应关系。TTW 成功后，结果应写入 TLB 中。**
 
-<img src="https://img-blog.csdnimg.cn/direct/c9749a69b1c14bbd905a60ea98e33776.png" alt="image-20241127112853842" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241127112853842.png" alt="image-20241127112853842" style="zoom:75%;" />
 
 不同架构的 CPU 访问数据的流程有区别，但大致流程基本如下所示：
 
-<img src="https://img-blog.csdnimg.cn/direct/ea7db2116e7641399dd6fcb691cc2e10.png" alt="image-20241127142844768" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241127142844768.png" alt="image-20241127142844768" style="zoom:80%;" />
 
 MMU 具有虚拟地址和物理地址转换、内存访问权限保护等功能，使得 Linux 操作系统能单独为系统的每个用户进程分配独立的内存空间，并保证用户空间不能访问内核空间的地址，为操作系统的虚拟内存管理模块提供硬件基础。
 
@@ -4182,11 +4182,11 @@ MMU 并不是对所有的处理器都是必需的。Linux 2.6 以后也支持不
 
 通常 32 位 Linux 的内核地址空间划分为 0~3 G（3 G 的位置为 PAGE_OFFSET）的用户空间，3~4 G 的内核空间。
 
-![](https://i-blog.csdnimg.cn/direct/9ea9e41fd42d4329a5f555cc7a26214e.png)
+![image-20250201002213404](https://image.davidingplus.cn/images/2025/02/01/image-20250201002213404.png)
 
 通常 64 位 Linux 系统的内核地址空间分为三个部分，256 TB 的用户空间、非规范区域和 256 TB 的内核空间。
 
-![](https://i-blog.csdnimg.cn/direct/e40b698bbe064254a22ae2f36f689a9d.png)
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20250201002304708.png" alt="image-20250201002304708" style="zoom:65%;" />
 
 关于映射空间解析的部分，书中讲的甚是繁杂，没怎么看懂。参考上面文章以及其他资料吧。
 
@@ -4635,11 +4635,11 @@ struct resource *__devm_request_region(struct device *dev, struct resource *pare
 
 关于 I/O 端口的访问，在设备打开或驱动模块加载时申请 I/O 端口，之后使用 inb()、outb() 等进行端口访问，最后在设备关闭或驱动被卸载时释放 I/O 端口。
 
-<img src="https://img-blog.csdnimg.cn/direct/c87a0e7fce384b1187be59a9252c089d.png" alt="image-20241209112015738" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241209112015738.png" alt="image-20241209112015738" style="zoom:75%;" />
 
 关于 I/O 内存的访问，首先调用 request_mem_region() 申请资源，接着将寄存器地址通过 ioremap() 映射到内核空间虚拟地址，之后通过 Linux 设备访问编程接口访问这些设备的寄存器。访问完成后，对 ioremap() 申请的虚拟地址进行释放，并释放 release_mem_region() 申请的 I/O 内存资源。
 
-<img src="https://img-blog.csdnimg.cn/direct/6eac24bf296c45da8c4e5494ab26bf1c.png" alt="image-20241209112025950" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241209112025950.png" alt="image-20241209112025950" style="zoom:75%;" />
 
 ### 映射设备地址到内存空间
 
@@ -4975,7 +4975,7 @@ Cache 和 DMA 本身似乎是两个毫不相关的事物。Cache 被用作 CPU �
 
 若 DMA 针对内存的目的地址与 Cache 缓存的对象没有重叠区域，DMA 和 Cache 将相安无事。**若 DMA 的目的地址与 Cache 所缓存的内存地址有重叠，经过 DMA 操作，目的地址的内存已被修改，而 CPU 并不知道，它仍然认为 Cache 中的老数据就是内存中的数据，那在以后访问 Cache 映射的内存时，它仍然使用陈旧的 Cache 数据。这样就会发生 Cache 与内存之间数据“不一致性”的错误。**所谓 Cache 数据与内存数据的不一致性，是指在采用 Cache 的系统中，同样一个数据可能既存在于 Cache 中，也存在于主存中，Cache 与主存中的数据一样则具有一致性，数据若不一样则具有不一致性。
 
-<img src="https://img-blog.csdnimg.cn/direct/a91e589c759542dabf3c2d2ffd889839.png" alt="image-20241209172643859" style="zoom:65%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241209172643859.png" alt="image-20241209172643859" style="zoom:65%;" />
 
 > Cache 与内存的一致性问题经常被遗忘。在发生 Cache 与内存不一致性错误后，驱动将无法正常运行。Cache 的不一致性问题并不是只发生在 DMA 的情况下，实际上，还存在于 Cache 使能和关闭的时刻。
 
