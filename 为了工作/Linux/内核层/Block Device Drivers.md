@@ -24,11 +24,11 @@ updated: 2025-01-14 10:30:00
 
 虽然块设备可随机访问，但对于磁盘这类机械设备而言，顺序地组织块设备的访问可以提高性能。
 
-<img src="https://img-blog.csdnimg.cn/direct/edfc4b53d32746b8b0cd0e861d0a57a9.png" alt="image-20241211095908580" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241211095908580.png" alt="image-20241211095908580" style="zoom:70%;" />
 
 在 Linux 中通常通过磁盘文件系统 EXT4、UBIFS 等访问磁盘，但磁盘也有一种原始设备的访问方式，如直接访问 /dev/sdb1 等。所有的 EXT4、UBIFS、原始块设备都工作于 VFS 之下，而 EXT4、UBIFS、原始块设备之下又包含块 I/O 调度层以进行排序和合并。**I/O 调度层的基本目的是将请求按照它们对应在块设备上的扇区号进行排列，以减少磁头的移动，提高效率。**
 
-<img src="https://img-blog.csdnimg.cn/direct/a9bebb3b046a4db594b929bd3522d2af.png" alt="image-20241211100707232" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241211100707232.png" alt="image-20241211100707232" style="zoom:75%;" />
 
 # 块设备驱动结构
 
@@ -221,7 +221,7 @@ gendisk 结构体是个动态分配的结构体，需要特别的内核操作来
 
 在 __alloc_disk_node() 函数中将 minors 参数赋值给 disk->minors。
 
-<img src="https://img-blog.csdnimg.cn/direct/b3d2b4270af94eed9bbbffae010f8932.png" alt="image-20241211113728841" style="zoom:85%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241211113728841.png" alt="image-20241211113728841" style="zoom:85%;" />
 
 Linux 5.15 以后已移除 alloc_disk() 接口，转而使用宏函数 blk_alloc_disk()。
 
@@ -408,7 +408,7 @@ struct bio_vec {
 
 每个块设备或者块设备的分区都有自身的 request_queue，从 I/O 调度器合并和排序出来的请求会被分发（Dispatch）到设备级别的 request_queue。
 
-<img src="https://img-blog.csdnimg.cn/direct/c7f4444f5c9b400d8c136e73cba8e50a.png" alt="image-20241211121458861" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20241211121458861.png" alt="image-20241211121458861" style="zoom:70%;" />
 
 **随着高速 SSD 的出现并展现出越来越高的性能，传统的块设备层已无法满足这么高的 IOPS（IOs per second），逐渐成为系统 I/O 性能的瓶颈。故在 Linux 5 后废弃了原有的 blk-sq（block single queue）架构，而采用新的 blk-mq（block multi queue）架构。**API 发生了非常大的变化。关于更多 blk-mq 的细节，可参考 [https://blog.csdn.net/Wang20122013/article/details/120544642](https://blog.csdn.net/Wang20122013/article/details/120544642)。
 
