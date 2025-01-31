@@ -55,7 +55,7 @@ updated: 2024-07-19 15:10:00
 
 1. 添加图元：除了最基本的`addItem()`，还有更多针对特殊类型图元的`add*()`函数
 
-   ![image-20240719141156412](https://img-blog.csdnimg.cn/direct/264b9f96baca489092997c096d29ddcd.png)
+   ![image-20240719141156412](https://image.davidingplus.cn/images/2025/01/31/image-20240719141156412.png)
 
 2. 查找图元：在大规模数据的情况下保证在极短的时间内查询到对应的图元，`Qt`使用的是索引算法，使用的是`BSP`（二进制空间分区）树。能够在极短的时间内在极大的数据规模中确定某个图元的位置，这也是`QGraphicsScene`的最大优势之一。
 
@@ -71,7 +71,7 @@ updated: 2024-07-19 15:10:00
 
 5. 接受事件：用户通过`QGraphicsView`触发事件，并通过`QGraphicsScene`将事件转发到对应的图元：例如鼠标按下、移动、释放和双击事件，鼠标悬停（`LarkSDK`目前好像没有）、滚轮事件，键盘输入焦点和按键事件，拖拽事件等
 
-   ![image-20240719141220363](https://img-blog.csdnimg.cn/direct/0e995aa6681b407586d96a4469b73fdf.png)
+   ![image-20240719141220363](https://image.davidingplus.cn/images/2025/01/31/image-20240719141220363.png)
 
    `QGraphicsScene`另一个重要的功能就是转发`QGraphicsView`的事件，通过一系列操作，例如通过鼠标点击的坐标计算出到底是选中了哪个图元，键盘事件对应的哪些图元具有焦点等，能够将这些事件转发给对应的图元，最后进入真正的事件循环进行处理。
 
@@ -83,11 +83,11 @@ updated: 2024-07-19 15:10:00
 
 1. 设置可视化操作的属性：`QGraphicsView`中提供了大量可设置的属性用以指示在实现可视化操作时的各种具体事项，如`RenderHints`提供参数初始化用于绘制的`QPainter`，`Alignment`提供当前视图中所绘制的场景的对齐方式。
 
-   ![image-20240719141236742](https://img-blog.csdnimg.cn/direct/51c31d08460f4036a69542dce5ea8a31.png)
+   ![image-20240719141236742](https://image.davidingplus.cn/images/2025/01/31/image-20240719141236742.png)
 
 2. 对场景（`Scene`）进行可视化与视觉效果调整：`QGraphicsView`对象的成员方法render对场景进行可视化的绘制呈现在`viewport`中，并提供了一系列方法对`viewport`整体的视觉效果进行调整，如`centerOn`方法将滚动`viewport`中的内容以确保场景坐标`pos`在视图居中，`fitInView`方法将缩放并滚动`viewport`中的内容使得场景内的矩形区域`rect`铺满当前`viewport`。
 
-   ![image-20240719141250017](https://img-blog.csdnimg.cn/direct/f8ecde7795e64156a313492167cc20f9.png)
+   ![image-20240719141250017](https://image.davidingplus.cn/images/2025/01/31/image-20240719141250017.png)
 
 3. 管理“场景（`Scene`）坐标”与“视图（`View`）坐标”之间的数学关系，并提供方法对视图内容施行各种坐标变换。`QGraphicsScene`对象当中的各个图元有其在`QGraphicsScene`中的坐标即“场景坐标”，它们代表了各个图元在`QGraphicsScene`中的位置信息；而`QGraphicsView`对各个图元进行绘制以及调整变换时则是通过由自身管理的“视图坐标”，它们代表了各个要绘制的图形在`viewport`中的位置信息。`QGraphicsView`可以由用户设置“场景坐标”向“视图坐标”变换的方式，对`viewport`实现旋转、伸缩等坐标变换，同时由于`QGraphicsView`的绘图使用“视图坐标”，因此这个过程不会干扰图元自身的“场景坐标”。此外还提供`mapToScene`/`mapFromScene`方法供用户调用实现这两种坐标之间的数学换算。
 
@@ -101,7 +101,7 @@ updated: 2024-07-19 15:10:00
 
 1. 接受`QGraphicsScene`传递的事件：进行事件处理，例如鼠标按下、移动、释放和双击事件，鼠标悬停、滚轮事件，键盘输入焦点和按键事件，拖拽事件等。
 
-   ![image-20240719141308564](https://img-blog.csdnimg.cn/direct/250915a7ad6d4b96b6cfcc3879323d1f.png)
+   ![image-20240719141308564](https://image.davidingplus.cn/images/2025/01/31/image-20240719141308564.png)
 
 2. 坐标系统
 
@@ -109,7 +109,7 @@ updated: 2024-07-19 15:10:00
 
    为了统一方便的管理，引入`parent-child`的关系。每个对象的变换都依赖于其父对象的坐标。子对象的`pos()`接口返回的是其在父对象坐标系统中的坐标。子对象的坐标处理是首先通过父对象不断向上传递，最终得到一个真实的坐标。同理，父对象的坐标变换也会同理影响到子对象的真实位置（批量处理），但是注意子对象存储的坐标没有变化，这样就非常好维护了。
 
-   ![image-20240719141330634](https://img-blog.csdnimg.cn/direct/a90c76dd86114480a02b8b24a737a570.png)
+   ![image-20240719141330634](https://image.davidingplus.cn/images/2025/01/31/image-20240719141330634.png)
 
 3. 坐标变换
 
@@ -164,7 +164,7 @@ updated: 2024-07-19 15:10:00
 
 4. 在`A`和`B`上继续划分其所对应的二维区域，并将上述算法递归地应用于`A`和`B`的多边形列表。
 
-   ![image-20240719113430085](https://img-blog.csdnimg.cn/direct/ea0ea86b45634374ae95427485db4eff.png)
+   ![image-20240719113430085](https://image.davidingplus.cn/images/2025/01/31/image-20240719113430085.png)
 
 更多细节和代码实现请参考博客：[一些关于空间数据结构的简单研究与实现 | GilbertNewtonLewis](https://gilbertnewtonlewis.github.io/2024/06/21/SpaticalData/)
 

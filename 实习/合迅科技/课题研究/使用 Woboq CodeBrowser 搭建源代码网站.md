@@ -62,7 +62,7 @@ sudo make install # 必要加上 sudo
 
 安装完毕以后`data`目录，两个可执行文件`codebrowser_generator`和`codebrowser_indexgenerator`就成功安装到本地了。
 
-![image-20240718105543595](https://img-blog.csdnimg.cn/direct/810e36ca0e9f485abab1777d230d1a23.png)
+![image-20240718105543595](https://image.davidingplus.cn/images/2025/01/31/image-20240718105543595.png)
 
 # 如何使用
 
@@ -138,7 +138,7 @@ codebrowser_generator -b ./compile_commands.json -a -p googletest-1.12.1:"${PWD}
 
 执行完的结果是这样的：
 
-![image-20240730153744964](https://img-blog.csdnimg.cn/direct/47b9a1a10d0b4aaf87e1e2b835087c2d.png)
+![image-20240730153744964](https://image.davidingplus.cn/images/2025/01/31/image-20240730153744964.png)
 
 需要注意的是，上面的操作都是在根目录的`build`构建目录执行的，这也是`CMake`用户的构建习惯。
 
@@ -159,7 +159,7 @@ codebrowser_indexgenerator ./docs -d ../data
 
 类似执行结果如下，可以看到每个目录对应都有了`index.html`。
 
-![image-20240730154020528](https://img-blog.csdnimg.cn/direct/751c1044f6634e07bdb528665bb44ac4.png)
+![image-20240730154020528](https://image.davidingplus.cn/images/2025/01/31/image-20240730154020528.png)
 
 ## 关于-d参数以及资源文件
 
@@ -167,7 +167,7 @@ codebrowser_indexgenerator ./docs -d ../data
 
 `data`目录存放着前端代码需要的资源文件，例如`CSS`、`JS`和图片资源等。因此需要指明这个目录的路径，绝对路径或者相对路径。由于我的[code-browser](https://github.com/DavidingPlus/code-browser/)项目需要存放很多库的源代码，因此我将`data`目录统一在根目录中，每个库的源代码对应一个自己的子目录，因此最终的结果是这样的：
 
-![image-20240730154929638](https://img-blog.csdnimg.cn/direct/b9a94d7a734a4e69afbddae5588900a4.png)
+![image-20240730154929638](https://image.davidingplus.cn/images/2025/01/31/image-20240730154929638.png)
 
 这样就能正确定位到资源文件的路径了，`codebrowser_generator`生成的`html`文件同理。用户使用自己的习惯和方式即可。
 
