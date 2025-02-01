@@ -222,7 +222,7 @@ set (CMAKE_CXX_COMPILER "g++")
 
 文章中给出了两个方案，一个是**伪装成编译器**，一个是**编写包装脚本**，如图所示：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240819160359910.png" alt="image-20240819160359910" style="zoom: 60%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240819160359910.png" alt="image-20240819160359910" style="zoom: 60%;" />
 
 一般我们的`C/C++`项目都是使用`CMake`进行管理的，因此伪装成编译器的可行性更大一些，也和前面的劫持`gcc/g++`命令似乎有着异曲同工之妙。
 
@@ -232,7 +232,7 @@ set (CMAKE_CXX_COMPILER "g++")
 
 文章中给出了在`VS`和`CMake`的两种配置方法，当然这里采用`CMake`的方式，官网也给出了代码：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240819160710904.png" alt="image-20240819160710904" style="zoom:60%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240819160710904.png" alt="image-20240819160710904" style="zoom:60%;" />
 
 这个配置的含义和方案一是一样的，将`CCache`可执行文件拷贝到`CMake`的构建目录，即`build`，然后将`ccache.exe`重命名为`cl.exe`。`cl.exe`即为`MSVC`编译器的可执行文件的名称，即做到了伪装编译器的功能。
 

@@ -53,7 +53,7 @@ updated: 2024-06-05 23:30:00
 
    例如，对路径`/path/to/../to/local`，就是这样的结构：
 
-   <img src="https://image.davidingplus.cn/images/2025/01/31/image-20240411163331656.png" alt="image-20240411163331656" style="zoom: 80%;" />
+   <img src="https://image.davidingplus.cn/images/2025/02/01/image-20240411163331656.png" alt="image-20240411163331656" style="zoom: 80%;" />
 
    第二，如何判断末尾是文件还是目录。
 
@@ -63,7 +63,7 @@ updated: 2024-06-05 23:30:00
 
    对于路径`/path/to/../to/local/`，就是这样的结构：
 
-   <img src="https://image.davidingplus.cn/images/2025/01/31/image-20240411164213369.png" alt="image-20240411164213369" style="zoom:80%;" />
+   <img src="https://image.davidingplus.cn/images/2025/02/01/image-20240411164213369.png" alt="image-20240411164213369" style="zoom:80%;" />
 
    至此，我们就在`LFileSystemPath`的层面对绝对路径和相对路径，文件和目录进行了严格的规定。
 
@@ -81,7 +81,7 @@ updated: 2024-06-05 23:30:00
 
    当然。上面只是考虑了一种情况，实际的情况可能是有无盘符和绝对相对路径的综合情况，故作下图进行总结：
 
-   <img src="https://image.davidingplus.cn/images/2025/01/31/综合总结.png" alt="综合总结" style="zoom:80%;" />
+   <img src="https://image.davidingplus.cn/images/2025/02/01/综合总结.png" alt="综合总结" style="zoom:80%;" />
 
    因此，经过如上考虑，最新的算法流程是一个`path`进来以后，先考虑盘符，如果是`windows`尝试提取盘符，如果是`linux`不管；后面再进行反斜杠`\`转化为正斜杠`/`，然后`split`，再存储的过程，当然其中会有更多需要注意的小细节。
 

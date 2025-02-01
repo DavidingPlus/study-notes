@@ -15,7 +15,7 @@ updated: 2024-07-16 16:30:00
 
 这是效果图：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/59cb53826fcba1602fd3769171f5f127.png" alt="59cb53826fcba1602fd3769171f5f127" style="zoom:67%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/59cb53826fcba1602fd3769171f5f127.png" alt="59cb53826fcba1602fd3769171f5f127" style="zoom:67%;" />
 
 <!-- more -->
 
@@ -126,7 +126,7 @@ conan search cairo/1.18.0@ -r conancenter
 
 得到的结果大致是这样：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240715163723130.png" alt="image-20240715163723130" style="zoom:55%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240715163723130.png" alt="image-20240715163723130" style="zoom:55%;" />
 
 我们发现`settings`中的内容和我们的`profiles/default`中的内容对应，这就是前面提到的匹配。例如图中是一个`Mac`下的`apple-clang`的`13.0`版本的`静态库`的`Debug`包。每个包的`options`，`settings`和`requires`都会对最前面的`Package_ID`产生影响，这是一个哈希计算值，具体如何影响和生成请参考[https://docs.conan.io/2/reference/binary_model/package_id.html](https://docs.conan.io/2/reference/binary_model/package_id.html)。当然这其中也有令人费解的地方，请见下文。
 
@@ -134,7 +134,7 @@ conan search cairo/1.18.0@ -r conancenter
 
 前面提到，`conan`官方的包有问题，会导致在安装的时候出现错误。例如，我在安装的出现的错误如下：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240715165238889.png" alt="image-20240715165238889" style="zoom:55%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240715165238889.png" alt="image-20240715165238889" style="zoom:55%;" />
 
 错误信息告诉我`fontconfig`的`2.15.0`的版本需要`conan 1.60.4`以上才能安装。由于公司使用的是`conan 1.60.1`，首先我想到的是`conan`版本不正确。深入研究后，我发现的问题出乎我的意料。
 
@@ -280,7 +280,7 @@ conan download cairo/1.18.0@:8098347825649d9fd3e21c49992446a2a2193ad4 -r conance
 
 成功下载下来以后，再次执行`conan install ..`，又出问题了。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240715172400074.png" alt="image-20240715172400074" style="zoom:58%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240715172400074.png" alt="image-20240715172400074" style="zoom:58%;" />
 
 不对啊，这个包依赖的`fontconfig`的版本是`2.14.2`啊，为什么这里还是下载的`2.15.0`啊？为了解决这个问题，我打开了对应的`conanfile.py`，阅读到`requirements()`函数的时候，豁然开朗。
 
@@ -316,7 +316,7 @@ def requirements(self):
 
 不是哥们，`expat`需要的是`2.5.0`，但是你规定依赖的包是`>=2.6.2 and <3`。哈？这不前后矛盾吗？对于`freetype`和`fontconfig`也是相同的问题。同时，我们再浏览一下`cairo`包拉下来以后的整体结构。奥，原来同一个版本的所有包的`conanfile.py`都是同一个文件。好，这没有任何问题，这是`conan`的设计。但是你自己不更新依赖版本的限制是什么意思，如果硬要不改的话，发布不同的版本也是`ok`的啊。这样一套流程下来，导致`conan`拉包就出现了问题。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240715172916780.png" alt="image-20240715172916780" style="zoom:67%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240715172916780.png" alt="image-20240715172916780" style="zoom:67%;" />
 
 那么如何解决呢？公司这边的解决方式是将该版本的`cairo`包上传到公司的`conan`服务器上，并手动修改`conanfile.py`使其版本匹配，并将所有的依赖以及穿透依赖全部拷贝到公司服务器上。至此，`cairo`终于成功通过`conan`安装。
 
@@ -402,7 +402,7 @@ tools.system.package_manager:sudo=True
 
 至此，我们成功通过`conan`安装下来了`cairo`，看到成功的结果，我的内心无比兴奋。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240715175839407.png" alt="image-20240715175839407" style="zoom:60%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240715175839407.png" alt="image-20240715175839407" style="zoom:60%;" />
 
 # 使用Cairo库绘制图形
 
@@ -501,7 +501,7 @@ int main()
 
 程序的运行结果如下，可以发现窗口创建和改变窗口大小的时候在不断打印`Expose`的信息。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240716111623175.png" alt="image-20240716111623175" style="zoom:67%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240716111623175.png" alt="image-20240716111623175" style="zoom:67%;" />
 
 对于事件循环这个概念，不管是`Qt`，还是`LarkSDK`，还是对于一个跨平台的`GUI`框架，事件循环显然是必不可少的。问题在于跨平台需要统一不同平台下的窗体系统和事件处理等逻辑，最终抽象出跨平台的接口，这就是这些框架正在做最重要的一件事情。以`LarkSDK`为例，虽然最简单的跨平台的程序是四行就能搞定，但是其中涉及到的知识和背景是非常庞大的。
 
@@ -522,7 +522,7 @@ int main()
 
 `cairo`将输出和绘制的概念做了严格区分。`cairo surface`是一个抽象出来的概念，与其对接的是多种输出方式，例如`PDF`、`PNG`、`SVG`、`Win32`、`XLib`、`XCB`等，如图所示。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240716141915019.png" alt="image-20240716141915019" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240716141915019.png" alt="image-20240716141915019" style="zoom:75%;" />
 
 接着我们查看`cairo`官方提供的[samples](https://cairographics.org/samples/)，可以发现，官方提供的样例好像完全和`surface`没有关系，换句话说没有反映输出的方式。例如这段代码：
 
@@ -553,7 +553,7 @@ cairo_stroke (cr);
 
 它的绘制结果是这样的：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240716142350311.png" alt="image-20240716142350311" style="zoom:85%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240716142350311.png" alt="image-20240716142350311" style="zoom:85%;" />
 
 这个图样可以被输出到前面提到的任意一种`surface`中。同时这也是我想说的，`cairo`将输出和绘制的概念做了完整区分，同样这也是我们容易想到和愿意看到的。所以，如果想要创建一个输出到`PNG`中的实例，代码应该类似如下：
 
@@ -688,7 +688,7 @@ cairo_image_surface_get_data (cairo_surface_t *surface);
 
 然后让我们思考一下绘制效率。不同引擎的效率的区别根本上就是在于如何快速的把这些数据计算出来，或者换句话讲，如何快速地让缓冲区的内存填充为指定的数据。比如对于最基本的暴力软渲染和`cairo`引擎，他们的效率差距显然是非常大的。这里有一个例子可以参考，是`LarkSDK`原生软渲染和`cairo`引擎同样绘制`10000`条斜线的效率差距，以下是结果，保守估计至少差了几百到一千倍。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240716155335456.png" alt="image-20240716155335456" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240716155335456.png" alt="image-20240716155335456" style="zoom:80%;" />
 
 回到正题，再结合`X11`的`API`，我们可以给出使用`Image Surface`的代码：
 

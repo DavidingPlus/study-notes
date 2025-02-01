@@ -32,7 +32,7 @@ updated: 2024-02-29 10:15:00
 - 栈区当中存放容量`capacity`，大小`size`和一根指向堆区数据区域的指针，三个分别占据`8`字节，总共`24`字节
 - 堆区当中`data`是实际存放数据的地方，通过分配器分配出来的（默认使用`std::allocator`，实际就是`new`出来的），`std::string`中的`c_str()`方法获取的就是堆区这个数据区首地址
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240228155812377.png" alt="image-20240228155812377" style="zoom:80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240228155812377.png" alt="image-20240228155812377" style="zoom:80%;" />
 
 ## COW优化（现在不用）
 
@@ -44,7 +44,7 @@ updated: 2024-02-29 10:15:00
 
 - 在读取的时候共享`data`数据内存区域，当需要修改（写）的时候，`str2`就做自己的拷贝
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240228161141491.png" alt="image-20240228161141491" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240228161141491.png" alt="image-20240228161141491" style="zoom:75%;" />
 
 ### 存在的问题
 
@@ -58,13 +58,13 @@ updated: 2024-02-29 10:15:00
 
 那么为什么需要短字符串优化呢？看基本的内存模型
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240228161643461.png" alt="image-20240228161643461" style="zoom: 80%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240228161643461.png" alt="image-20240228161643461" style="zoom: 80%;" />
 
 想象一下，如果我的字符串比较短，举个例子，小到`8`个字节就能存下，那么是不是就不用存一个指针了，直接在栈区存储即可，还不用去堆区开辟空间，还不用考虑堆区内存释放的问题，岂不美哉？
 
 我们再考虑一下，`8`个字节的`capacity`和`8`个字节的`size`最大能表示多少的数？`2^63 - 1`，这也太大了吧，完全没必要，因此`capacity`和`size`也可以做进一步优化，注意不同编译器的实现不同，但是思路都是这样，能砍的就砍。当然不管如何，里面存放的`pointer`是不会变的，因为`std::string`中还有`c_str()`接口，不能让功能变了。大概的优化模型如下，可以看到数据在栈区，这个时候指针指向自身内部的`data`，合理，非常合理。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240228163129862.png" alt="image-20240228163129862" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240228163129862.png" alt="image-20240228163129862" style="zoom:75%;" />
 
 当字符串的长度变长，达到长字符串的标准（不同编译器的规定不一样），就会恢复一般的内存模型
 
@@ -94,7 +94,7 @@ int main()
 - `a`到`b`经过了一次深拷贝，他们两个的数据区地址不同
 - `a、b`的本类地址和数据区地址非常相近，而`c`离的很远
 
-![image-20240228163645469](https://image.davidingplus.cn/images/2025/01/31/image-20240228163645469.png)
+![image-20240228163645469](https://image.davidingplus.cn/images/2025/02/01/image-20240228163645469.png)
 
 当然`SSO`优化也存在一定问题，这就不是这个课题的重点了，请自行查阅资料。
 
@@ -104,7 +104,7 @@ int main()
 
 测试`LVector`的时候，发现`prepend std::string`的时候程序崩溃，返回的值也不符合预期
 
-![image-20240228164611062](https://image.davidingplus.cn/images/2025/01/31/image-20240228164611062.png)
+![image-20240228164611062](https://image.davidingplus.cn/images/2025/02/01/image-20240228164611062.png)
 
 ## 具体分析
 
@@ -124,7 +124,7 @@ inline void LPaddedVector<T>::moveMemory(T *pTargetAddress, T *pSourceAddress, s
 
 - 从左边移动到右边，`capacity`、`size`、`data`都没有问题，关键在于这个指针，前面说过，里面的数据仅仅是换了一个位置，那指针指向的还是原先的地址啊，而原先的地址现在如何？不知道，可能被覆盖，可能被释放了，因此就会出现上面的问题
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240228165833325.png" alt="image-20240228165833325" style="zoom: 67%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240228165833325.png" alt="image-20240228165833325" style="zoom: 67%;" />
 
 ## 问题解决
 
@@ -175,7 +175,7 @@ struct DataT
 };
 ~~~
 
-![image-20240228170626962](https://image.davidingplus.cn/images/2025/01/31/image-20240228170626962.png)
+![image-20240228170626962](https://image.davidingplus.cn/images/2025/02/01/image-20240228170626962.png)
 
 我第一反应想到的就是能不能用`c++`通过某种手段判断一个类当中是否含有指定类型例如`std::string`的成员变量，但由于水平不够，或者因为本来就不太好使，这条路走不通
 
@@ -183,13 +183,13 @@ struct DataT
 
 参考了`Qt`的部分实现，`Qt`中封装了一个叫`QTypeInfoQuery`的类，里面有一个变量`isRelocatable`，这个东西可以用来判断类能否**平凡可复制**，顾名思义，像`std::string`显然不能平凡可复制，因为`SSO`的优化，平凡复制的话指针指向的地方是原来的，显然不行，说白了就是类似浅拷贝，因此这里做了判断，如果不行就拷贝，可以就移动
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/8a91e41e1e61a64d333c6494ae960975.png" alt="8a91e41e1e61a64d333c6494ae960975" style="zoom:75%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/8a91e41e1e61a64d333c6494ae960975.png" alt="8a91e41e1e61a64d333c6494ae960975" style="zoom:75%;" />
 
 关于`std::string`堆内存那个模型，是满足平凡可复制条件的，画个图如下理解
 
 - `std::memmove`不会触发类的析构函数，因此堆内存还在，不会被释放，因此就做到了完美迁移，同时避免了不必要的栈内存和堆内存的拷贝，提升了效率
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20240228171845622.png" alt="image-20240228171845622" style="zoom:70%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240228171845622.png" alt="image-20240228171845622" style="zoom:70%;" />
 
 在查看了`QTypeInfoQuery`的`isRelocatable`的来源之后，我发现调用的是标准库的一个`type_traits`，叫`is_trivially_copyable`，可以判断是否可以平凡可复制，平凡可复制的含义见上
 
@@ -257,7 +257,7 @@ int main()
 - 第三个类，全是一些`int`，显然可以
 - 第四个类，堆内存，这个设计和一般的`std::string`是一样的，返回的是`0`
 
-![image-20240228172702844](https://image.davidingplus.cn/images/2025/01/31/image-20240228172702844.png)
+![image-20240228172702844](https://image.davidingplus.cn/images/2025/02/01/image-20240228172702844.png)
 
 好，现在问题来了，我们刚才说借助`type_traits`来进行判断，好决定是通过移动还是通过拷贝，代码甚至我都写好了
 
