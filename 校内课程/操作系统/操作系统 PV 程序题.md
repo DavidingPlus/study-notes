@@ -131,7 +131,7 @@ Pi(){
 
 如图1所示的进程流程图中，有8个进程合作完成某一任务，试说明这八个进程之间的同步关系，用PV操作实现之，并要求写出程序描述。
 
-<img src="https://img-blog.csdnimg.cn/ed2b53ab4e174e688e4fb0804a887fc5.png" alt="在这里插入图片描述" style="zoom:67%;" />
+<img src="https://image.davidingplus.cn/images/2025/02/01/e96de0527e103c0fe045c6317cca4990.png" alt="e96de0527e103c0fe045c6317cca4990" style="zoom:67%;" />
 
 ```cpp
 int s2=s3=s4=s35=s36=s37=s45=s46=s47=s28=s58=s68=0;
@@ -208,7 +208,7 @@ P8(){
 
 如图2所示，get/copy/put三进程共用两个缓冲区s、t（其大小为每次存放一个记录）。get进程负责不断把输入记录送入缓冲区s中，copy进程负责从缓冲区s中取出记录复制到缓冲区t中，而put进程负责把记录从缓冲区t中取出打印。试用PV操作实现这3个进程之间的同步。
 
-![图2](https://img-blog.csdnimg.cn/8599bd927dc745f896283746fbe3b1f6.png)
+![ef4647bd2c5eb8c55fe42945237c0a3c](https://image.davidingplus.cn/images/2025/02/01/ef4647bd2c5eb8c55fe42945237c0a3c.png)
 
 ```c++
 int fullS=0;
@@ -376,7 +376,7 @@ Coend
 
 # 8、
 
-![image-20230418190835692](https://img-blog.csdnimg.cn/ad7b6c3821b24938bf43835a7fe00586.png)
+![image-20230418190835692](https://image.davidingplus.cn/images/2025/02/01/image-20230418190835692.png)
 
 ```c++
 int capacity=500;//能容纳的最大人数
@@ -401,7 +401,7 @@ Visit(){
 
 # 9、
 
-![image-20230418191212388](https://img-blog.csdnimg.cn/209809986fc8491b9d1dae23c6ed092e.png)
+![image-20230418191212388](https://image.davidingplus.cn/images/2025/02/01/image-20230418191212388.png)
 
 ```c++
 int A1=x;//A信箱装的邮件数量
