@@ -15,7 +15,7 @@
 
 <p align="center">
 <a href="https://programmercarl.com/xunlian/xunlianying.html" target="_blank">
-	<img src="./pics/训练营.png" width="800"/>
+	<img src="https://gitee.com/programmercarl/leetcode-master/raw/master/pics/训练营.png" width="800"/>
 </a>
 </p>
 

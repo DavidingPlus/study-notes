@@ -9,14 +9,14 @@
 
 # <p align="center">
 # <a href="https://www.programmercarl.com/xunlian/xunlianying.html" target="_blank">
-#   <img src="../pics/训练营.png" width="1000"/>
+#   <img src="https://gitee.com/programmercarl/leetcode-master/raw/master/pics/训练营.png" width="1000"/>
 # </a>
 # <p align="center"><strong><a href="./qita/join.md">参与本项目</a>，贡献其他语言版本的代码，拥抱开源，让更多学习算法的小伙伴们收益！</strong></p>
 
-#   <img src="../pics/网站星球宣传海报.jpg" width="1000"/>
+#   <img src="https://gitee.com/programmercarl/leetcode-master/raw/master/pics/网站星球宣传海报.jpg" width="1000"/>
 # <p align="center">
 # <a href="https://programmercarl.com/other/kstar.html" target="_blank">
-#   <img src="../pics/网站星球宣传海报.jpg" width="1000"/>
+#   <img src="https://gitee.com/programmercarl/leetcode-master/raw/master/pics/网站星球宣传海报.jpg" width="1000"/>
 # </a>
 
 for i in *.md
@@ -33,7 +33,7 @@ do
     # 记得从后向前添加
     ex -sc '1i|<p align="center"><strong><a href="./qita/join.md">参与本项目</a>，贡献其他语言版本的代码，拥抱开源，让更多学习算法的小伙伴们受益！</strong></p>' -cx $i
     ex -sc '1i|</a>' -cx $i
-    ex -sc '1i|  <img src="../pics/训练营.png" width="1000"/>' -cx $i
+    ex -sc '1i|  <img src="https://gitee.com/programmercarl/leetcode-master/raw/master/pics/训练营.png" width="1000"/>' -cx $i
     ex -sc '1i|<a href="https://www.programmercarl.com/xunlian/xunlianying.html" target="_blank">' -cx $i
     ex -sc '1i|<p align="center">' -cx $i
     # echo '## 其他语言版本' >> $i
@@ -50,7 +50,7 @@ do
 
     echo '<p align="center">' >> $i
     echo '<a href="https://programmercarl.com/other/kstar.html" target="_blank">' >> $i
-    echo '  <img src="../pics/网站星球宣传海报.jpg" width="1000"/>' >> $i
+    echo '  <img src="https://gitee.com/programmercarl/leetcode-master/raw/master/pics/网站星球宣传海报.jpg" width="1000"/>' >> $i
     echo '</a>' >> $i 
 
     # echo '-----------------------' >> $i
