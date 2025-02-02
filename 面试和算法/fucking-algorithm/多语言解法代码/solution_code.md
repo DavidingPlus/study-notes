@@ -2755,7 +2755,7 @@ class Solution {
         // 记录最小覆盖子串的起始索引及长度
         int start = 0, len = INT_MAX;
         /**<extend down -200>
-        ![](../pictures/slidingwindow/1.png)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
         */
         while (right < s.size()) {
             // c 是将移入窗口的字符
@@ -2772,7 +2772,7 @@ class Solution {
             // 判断左侧窗口是否要收缩
             while (valid == need.size()) {
                 /**<extend down -200>
-                ![](../pictures/slidingwindow/2.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
                 */
                 // 在这里更新最小覆盖子串
                 if (right - left < len) {
@@ -2791,7 +2791,7 @@ class Solution {
                 }
             }
             /**<extend up -50>
-            ![](../pictures/slidingwindow/4.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
             */
         }
         // 返回最小覆盖子串
@@ -2814,7 +2814,7 @@ func minWindow(s string, t string) string {
     // 记录最小覆盖子串的起始索引及长度
     start, len := 0, math.MaxInt32
     /**<extend down -200>
-    ![](../pictures/slidingwindow/1.png)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
     */
     for right < len(s) {
         // c 是将移入窗口的字符
@@ -2832,7 +2832,7 @@ func minWindow(s string, t string) string {
         // 判断左侧窗口是否要收缩
         for valid == len(need) {
         	/**<extend down -200>
-            ![](../pictures/slidingwindow/2.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
             */
             // 在这里更新最小覆盖子串
             if right-left < len {
@@ -2853,7 +2853,7 @@ func minWindow(s string, t string) string {
             }
         }
         /**<extend up -50>
-        ![](../pictures/slidingwindow/4.png)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
         */
     }
     // 返回最小覆盖子串
@@ -2878,7 +2878,7 @@ class Solution {
         // 记录最小覆盖子串的起始索引及长度
         int start = 0, len = Integer.MAX_VALUE;
         /**<extend down -200>
-        ![](../pictures/slidingwindow/1.png)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
         */
         while (right < s.length()) {
             // c 是将移入窗口的字符
@@ -2896,7 +2896,7 @@ class Solution {
             // 判断左侧窗口是否要收缩
             while (valid == need.size()) {
                 /**<extend down -200>
-                ![](../pictures/slidingwindow/2.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
                 */
                 // 在这里更新最小覆盖子串
                 if (right - left < len) {
@@ -2916,7 +2916,7 @@ class Solution {
                 }
             }
             /**<extend up -50>
-            ![](../pictures/slidingwindow/4.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
             */
         }
         // 返回最小覆盖子串
@@ -2940,7 +2940,7 @@ var minWindow = function(s, t) {
     // 记录最小覆盖子串的起始索引及长度
     var start = 0, len = Number.MAX_SAFE_INTEGER;
     /**<extend down -200>
-    ![](../pictures/slidingwindow/1.png)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
     */
     while (right < s.length) {
         // c 是将移入窗口的字符
@@ -2957,7 +2957,7 @@ var minWindow = function(s, t) {
         // 判断左侧窗口是否要收缩
         while (valid === need.size) {
             /**<extend down -200>
-            ![](../pictures/slidingwindow/2.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
             */
             // 在这里更新最小覆盖子串
             if (right - left < len) {
@@ -2976,7 +2976,7 @@ var minWindow = function(s, t) {
             }
         }
         /**<extend up -50>
-        ![](../pictures/slidingwindow/4.png)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
         */
     }
     // 返回最小覆盖子串
@@ -2998,7 +2998,7 @@ class Solution:
         valid = 0
         # 记录最小覆盖子串的起始索引及长度
         start, length = 0, float('inf')
-        # ![](../pictures/slidingwindow/1.png)
+        # ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
         while right < len(s):
             # c 是将移入窗口的字符
             c = s[right]
@@ -3012,7 +3012,7 @@ class Solution:
             
             # 判断左侧窗口是否要收缩
             while valid == len(need):
-                # ![](../pictures/slidingwindow/2.png)
+                # ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
                 # 在这里更新最小覆盖子串
                 if right - left < length:
                     start = left
@@ -3026,7 +3026,7 @@ class Solution:
                     if window[d] == need[d]:
                         valid -= 1
                     window[d] -= 1
-            # ![](../pictures/slidingwindow/4.png)
+            # ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
         # 返回最小覆盖子串
         return '' if length == float('inf') else s[start:start+length]
 ```
@@ -4258,7 +4258,7 @@ class Solution {
             if (indegree[i] == 0) {
                 q.offer(i);
                 /**<extend up -200>
-                ![](../pictures/拓扑排序/6.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/6.jpeg)
                 */
             }
         }
@@ -4275,7 +4275,7 @@ class Solution {
             count++;
             for (int next : graph[cur]) {
                 /**<extend up -200>
-                ![](../pictures/拓扑排序/7.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/7.jpeg)
                 */
                 indegree[next]--;
                 if (indegree[next] == 0) {
@@ -4327,7 +4327,7 @@ var findOrder = function(numCourses, prerequisites) {
         if (indegree[i] === 0) {
             q.push(i);
             /**<extend up -200>
-            ![](../pictures/拓扑排序/6.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/6.jpeg)
             */
         }
     }
@@ -4344,7 +4344,7 @@ var findOrder = function(numCourses, prerequisites) {
         count++;
         for (const next of graph[cur]) {
             /**<extend up -200>
-            ![](../pictures/拓扑排序/7.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/7.jpeg)
             */
             indegree[next]--;
             if (indegree[next] === 0) {
@@ -4860,15 +4860,15 @@ public:
         }
         ListNode* last = reverseList(head->next);
         /**<extend up -200>
-        ![](../pictures/反转链表/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
         */
         head->next->next = head;
         /**<extend up -200>
-        ![](../pictures/反转链表/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
         */
         head->next = nullptr;
         /**<extend up -200>
-        ![](../pictures/反转链表/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
         */
         return last;
     }
@@ -4911,15 +4911,15 @@ class Solution {
         }
         ListNode last = reverseList(head.next);
         /**<extend up -200>
-        ![](../pictures/反转链表/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
         */
         head.next.next = head;
         /**<extend up -200>
-        ![](../pictures/反转链表/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
         */
         head.next = null;
         /**<extend up -200>
-        ![](../pictures/反转链表/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
         */
         return last;
     }
@@ -5238,7 +5238,7 @@ public:
             // 排除不合法的选择
             if (used[i]) {
                 /**<extend up -200>
-                ![](../pictures/backtracking/6.jpg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/backtracking/6.jpg)
                 */
                 // nums[i] 已经在 track 中，跳过
                 continue;
@@ -5324,7 +5324,7 @@ class Solution {
             // 排除不合法的选择
             if (used[i]) {
                 /**<extend up -200>
-                ![](../pictures/backtracking/6.jpg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/backtracking/6.jpg)
                 */
                 // nums[i] 已经在 track 中，跳过
                 continue;
@@ -11541,7 +11541,7 @@ public:
             slow = slow->next;
             if (fast == slow) break;
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
         // 上面的代码类似 hasCycle 函数
@@ -11553,7 +11553,7 @@ public:
         // 重新指向头结点
         slow = head;
         /**<extend up -100>
-        ![](../pictures/双指针/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
         */
         // 快慢指针同步前进，相交点就是环起点
         while (slow != fast) {
@@ -11575,7 +11575,7 @@ func detectCycle(head *ListNode) *ListNode {
         if fast == slow {
             break
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
     }
@@ -11588,7 +11588,7 @@ func detectCycle(head *ListNode) *ListNode {
     // 重新指向头结点
     slow = head
     /**<extend up -100>
-    ![](../pictures/双指针/2.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
     */
     // 快慢指针同步前进，相交点就是环起点
     for slow != fast {
@@ -11610,7 +11610,7 @@ public class Solution {
             slow = slow.next;
             if (fast == slow) break;
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
         // 上面的代码类似 hasCycle 函数
@@ -11622,7 +11622,7 @@ public class Solution {
         // 重新指向头结点
         slow = head;
         /**<extend up -100>
-        ![](../pictures/双指针/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
         */
         // 快慢指针同步前进，相交点就是环起点
         while (slow != fast) {
@@ -11644,7 +11644,7 @@ var detectCycle = function(head) {
         slow = slow.next;
         if (fast === slow) break;
         /**<extend down -200>
-        ![](../pictures/双指针/3.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
         */
     }
     // 上面的代码类似 hasCycle 函数
@@ -11656,7 +11656,7 @@ var detectCycle = function(head) {
     // 重新指向头结点
     slow = head;
     /**<extend up -100>
-    ![](../pictures/双指针/2.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
     */
     // 快慢指针同步前进，相交点就是环起点
     while (slow !== fast) {
@@ -11679,7 +11679,7 @@ class Solution:
                 break
             """
             <extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             """
         # 上面的代码类似 hasCycle 函数
         if not fast or not fast.next:
@@ -11690,7 +11690,7 @@ class Solution:
         slow = head
         """
         <extend up -100>
-        ![](../pictures/双指针/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
         """
         # 快慢指针同步前进，相交点就是环起点
         while slow != fast:
@@ -12303,7 +12303,7 @@ public:
                 // 从 src 到达相邻的入度节点所需的最短路径权重
                 int subProblem = dp(from, k - 1);
                 /**<extend up -300>
-                ![](../pictures/旅行最短路径/4.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/旅行最短路径/4.jpeg)
                 */
                 // 跳过无解的情况
                 if (subProblem != -1) {
@@ -12443,7 +12443,7 @@ class Solution {
                 // 从 src 到达相邻的入度节点所需的最短路径权重
                 int subProblem = dp(from, k - 1);
                 /**<extend up -300>
-                ![](../pictures/旅行最短路径/4.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/旅行最短路径/4.jpeg)
                 */
                 // 跳过无解的情况
                 if (subProblem != -1) {
@@ -12495,7 +12495,7 @@ var findCheapestPrice = function(n, flights, src, dst, K) {
                 // 从 src 到达相邻的入度节点所需的最短路径权重
                 const subProblem = dp(from, k - 1);
                 /**<extend up -300>
-                ![](../pictures/旅行最短路径/4.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/旅行最短路径/4.jpeg)
                 */
                 // 跳过无解的情况
                 if (subProblem !== -1) {
@@ -12921,7 +12921,7 @@ class Solution {
             // 计算子问题的结果
             int subProblem = dp(coins, amount - coin);
             /**<extend up -200> 
-            ![](../pictures/动态规划详解进阶/5.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/动态规划详解进阶/5.jpg)
             */
             // 子问题无解则跳过
             if (subProblem == -1) continue;
@@ -13009,7 +13009,7 @@ class Solution {
             // 计算子问题的结果
             int subProblem = dp(coins, amount - coin);
             /**<extend up -200> 
-            ![](../pictures/动态规划详解进阶/5.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/动态规划详解进阶/5.jpg)
             */
             // 子问题无解则跳过
             if (subProblem == -1) continue;
@@ -14809,7 +14809,7 @@ public:
         int leftSize = index - inStart;
         TreeNode* root = new TreeNode(rootVal);
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/6.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/6.jpeg)
         */
         // 递归构造左右子树
         root->left = build(inorder, inStart, index - 1,
@@ -14896,7 +14896,7 @@ class Solution {
         int leftSize = index - inStart;
         TreeNode root = new TreeNode(rootVal);
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/6.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/6.jpeg)
         */
         // 递归构造左右子树
         root.left = build(inorder, inStart, index - 1,
@@ -14943,7 +14943,7 @@ function build(inorder, inStart, inEnd, postorder, postStart, postEnd, valToInde
     const leftSize = index - inStart;
     const root = new TreeNode(rootVal);
     /**<extend up -200>
-    ![](../pictures/二叉树系列2/6.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/6.jpeg)
     */
     // 递归构造左右子树
     root.left = build(inorder, inStart, index - 1, postorder, postStart, postStart + leftSize - 1, valToIndex);
@@ -14985,7 +14985,7 @@ class Solution:
         root = TreeNode(rootVal)
         '''
         <extend up -200>
-        ![](../pictures/二叉树系列2/6.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/6.jpeg)
         '''
         # 递归构造左右子树
         root.left = self.build(inorder, inStart, index - 1,
@@ -15125,7 +15125,7 @@ class Solution {
         // 先构造出当前根节点
         TreeNode root = new TreeNode(rootVal);
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/4.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/4.jpeg)
         */
         // 递归构造左右子树
         root.left = build(preorder, preStart + 1, preStart + leftSize,
@@ -15355,7 +15355,7 @@ class Solution {
         // 先构造出当前根节点
         TreeNode root = new TreeNode(rootVal);
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/8.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/8.jpeg)
         */
         // 递归构造左右子树
         // 根据左子树的根节点索引和元素个数推导左右子树的索引边界
@@ -17528,7 +17528,7 @@ public:
             // 出现环
             hasCycle = true;
             /**<extend up -150>
-            ![](../pictures/拓扑排序/4.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/4.jpeg)
             */
         }
 
@@ -17586,7 +17586,7 @@ func traverse(graph []LinkedList, s int, hasCycle *bool, visited, onPath []bool)
         // 出现环
         *hasCycle = true
         /**<extend up -150>
-        ![](../pictures/拓扑排序/4.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/4.jpeg)
         */
     }
 
@@ -17654,7 +17654,7 @@ class Solution {
             // 出现环
             hasCycle = true;
             /**<extend up -150>
-            ![](../pictures/拓扑排序/4.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/4.jpeg)
             */
         }
 
@@ -17715,7 +17715,7 @@ var canFinish = function(numCourses, prerequisites) {
             // 出现环
             hasCycle = true;
             /**<extend up -150>
-            ![](../pictures/拓扑排序/4.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/4.jpeg)
             */
             return;
         }
@@ -17768,7 +17768,7 @@ class Solution:
                 hasCycle[0] = True
                 """
                 <extend up -150>
-                ![](../pictures/拓扑排序/4.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/4.jpeg)
                 """
             if visited[s] or hasCycle[0]:
                 # 如果已经找到了环，也不用再遍历了
@@ -17953,7 +17953,7 @@ class Solution {
             if (indegree[i] == 0) {
                 q.offer(i);
                 /**<extend up -200>
-                ![](../pictures/拓扑排序/6.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/6.jpeg)
                 */
             }
         }
@@ -17970,7 +17970,7 @@ class Solution {
             count++;
             for (int next : graph[cur]) {
                 /**<extend up -200>
-                ![](../pictures/拓扑排序/7.jpeg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/7.jpeg)
                 */
                 indegree[next]--;
                 if (indegree[next] == 0) {
@@ -18022,7 +18022,7 @@ var findOrder = function(numCourses, prerequisites) {
         if (indegree[i] === 0) {
             q.push(i);
             /**<extend up -200>
-            ![](../pictures/拓扑排序/6.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/6.jpeg)
             */
         }
     }
@@ -18039,7 +18039,7 @@ var findOrder = function(numCourses, prerequisites) {
         count++;
         for (const next of graph[cur]) {
             /**<extend up -200>
-            ![](../pictures/拓扑排序/7.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/拓扑排序/7.jpeg)
             */
             indegree[next]--;
             if (indegree[next] === 0) {
@@ -20287,15 +20287,15 @@ public:
                     dp[i][j] = min(
                         dp[i - 1][j] + 1,
                         /**<extend up -300>
-                        ![](../pictures/editDistance/delete.gif)
+                        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/delete.gif)
                         */
                         dp[i][j - 1] + 1,
                         /**<extend up -300>
-                        ![](../pictures/editDistance/insert.gif)
+                        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/insert.gif)
                         */
                         dp[i - 1][j - 1] + 1
                         /**<extend up -300>
-                        ![](../pictures/editDistance/replace.gif)
+                        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/replace.gif)
                         */
                     );
             }
@@ -20334,15 +20334,15 @@ func minDistance(s1 string, s2 string) int {
                 dp[i][j] = min(
                     dp[i-1][j]+1,
                     /**<extend up -300>
-                    ![](../pictures/editDistance/delete.gif)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/delete.gif)
                     */
                     dp[i][j-1]+1,
                     /**<extend up -300>
-                    ![](../pictures/editDistance/insert.gif)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/insert.gif)
                     */
                     dp[i-1][j-1]+1,
                     /**<extend up -300>
-                    ![](../pictures/editDistance/replace.gif)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/replace.gif)
                     */
                 )
             }
@@ -20385,15 +20385,15 @@ class Solution {
                     dp[i][j] = min(
                         dp[i - 1][j] + 1,
                         /**<extend up -300>
-                        ![](../pictures/editDistance/delete.gif)
+                        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/delete.gif)
                         */
                         dp[i][j - 1] + 1,
                         /**<extend up -300>
-                        ![](../pictures/editDistance/insert.gif)
+                        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/insert.gif)
                         */
                         dp[i - 1][j - 1] + 1
                         /**<extend up -300>
-                        ![](../pictures/editDistance/replace.gif)
+                        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/replace.gif)
                         */
                     );
         // 储存着整个 s1 和 s2 的最小编辑距离
@@ -20425,15 +20425,15 @@ var minDistance = function(s1, s2) {
                 dp[i][j] = Math.min(
                     dp[i - 1][j] + 1,
                     /**<extend up -300>
-                    ![](../pictures/editDistance/delete.gif)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/delete.gif)
                     */
                     dp[i][j - 1] + 1,
                     /**<extend up -300>
-                    ![](../pictures/editDistance/insert.gif)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/insert.gif)
                     */
                     dp[i - 1][j - 1] + 1
                     /**<extend up -300>
-                    ![](../pictures/editDistance/replace.gif)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/editDistance/replace.gif)
                     */
                 );
     // 储存着整个 s1 和 s2 的最小编辑距离
@@ -21286,7 +21286,7 @@ func check(postorder []int, i int, j int) bool {
     // 根节点的值是后序遍历结果的最后一个元素
     root := postorder[j]
     /**<extend up -200>
-    ![](../pictures/二叉树系列2/5.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/5.jpeg)
     */
 
     // postorder[i..left) 是左子树，应该都小于 root
@@ -21323,7 +21323,7 @@ class Solution {
         // 根节点的值是后序遍历结果的最后一个元素
         int root = postorder[j];
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/5.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/5.jpeg)
         */
 
         // postorder[i..left) 是左子树，应该都小于 root
@@ -22701,15 +22701,15 @@ class Solution {
         }
         ListNode last = reverseList(head.next);
         /**<extend up -200>
-        ![](../pictures/反转链表/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
         */
         head.next.next = head;
         /**<extend up -200>
-        ![](../pictures/反转链表/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
         */
         head.next = null;
         /**<extend up -200>
-        ![](../pictures/反转链表/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
         */
         return last;
     }
@@ -22728,15 +22728,15 @@ var reverseList = function(head) {
   }
   var last = reverseList(head.next);
   /**<extend up -200>
-  ![](../pictures/反转链表/3.jpg)
+  ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
   */
   head.next.next = head;
   /**<extend up -200>
-  ![](../pictures/反转链表/4.jpg)
+  ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
   */
   head.next = null;
   /**<extend up -200>
-  ![](../pictures/反转链表/5.jpg)
+  ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
   */
   return last;
 };
@@ -24145,7 +24145,7 @@ public:
         // 检查出界情况
         if (left >= nums.size() || nums[left] != target) {
             /* <extend up -300>
-            ![](../pictures/二分查找/2.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
             */
             return -1;
         }
@@ -24168,7 +24168,7 @@ public:
         // 这里改为检查 right 越界的情况，见下图
         if (right < 0 || nums[right] != target) {
             /* <extend up -300>
-            ![](../pictures/二分查找/4.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
             */
             return -1;
         }
@@ -24202,7 +24202,7 @@ func leftBound(nums []int, target int) int {
     // 检查出界情况
     if left >= len(nums) || nums[left] != target {
         /**<extend up -300>
-        ![](../pictures/二分查找/2.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
         */
         return -1
     }
@@ -24225,7 +24225,7 @@ func rightBound(nums []int, target int) int {
     // 这里改为检查 right 越界的情况，见下图
     if right < 0 || nums[right] != target {
         /**<extend up -300>
-        ![](../pictures/二分查找/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
         */
         return -1
     }
@@ -24259,7 +24259,7 @@ class Solution {
         // 检查出界情况
         if (left >= nums.length || nums[left] != target) {
             /**<extend up -300>
-            ![](../pictures/二分查找/2.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
             */
             return -1;
         }
@@ -24282,7 +24282,7 @@ class Solution {
         // 这里改为检查 right 越界的情况，见下图
         if (right < 0 || nums[right] != target) {
             /**<extend up -300>
-            ![](../pictures/二分查找/4.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
             */
             return -1;
         }
@@ -24317,7 +24317,7 @@ var left_bound = function(nums, target) {
   // 检查出界情况
   if (left >= nums.length || nums[left] !== target) {
     /**<extend up -300>
-    ![](../pictures/二分查找/2.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
     */
     return -1;
   }
@@ -24340,7 +24340,7 @@ var right_bound = function(nums, target) {
   // 这里改为检查 right 越界的情况，见下图
   if (right < 0 || nums[right] !== target) {
     /**<extend up -300>
-    ![](../pictures/二分查找/4.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
     */
     return -1;
   }
@@ -24372,7 +24372,7 @@ class Solution:
         if left >= len(nums) or nums[left] != target:
             """
             <extend up -300>
-            ![](../pictures/二分查找/2.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
             """f
             return -1
         return left
@@ -24392,7 +24392,7 @@ class Solution:
         if right < 0 or nums[right] != target:
             '''
             <extend up -300>
-            ![](../pictures/二分查找/4.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
             '''
             return -1
         return right
@@ -24924,7 +24924,7 @@ public:
     
     double findMedian() {
         /**<extend up -100>
-        ![](../pictures/中位数/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/2.jpeg)
         */
         // 如果元素不一样多，多的那个堆的堆顶元素就是中位数
         if (large.size() < small.size()) {
@@ -24935,7 +24935,7 @@ public:
         // 如果元素一样多，两个堆堆顶元素的平均数是中位数
         return (large.top() + small.top()) / 2.0;
         /**<extend up -100>
-        ![](../pictures/中位数/1.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/1.jpeg)
         */
     }
 };
@@ -25065,7 +25065,7 @@ class MedianFinder {
 
     public double findMedian() {
         /**<extend up -100>
-        ![](../pictures/中位数/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/2.jpeg)
         */
         // 如果元素不一样多，多的那个堆的堆顶元素就是中位数
         if (large.size() < small.size()) {
@@ -25076,7 +25076,7 @@ class MedianFinder {
         // 如果元素一样多，两个堆堆顶元素的平均数是中位数
         return (large.peek() + small.peek()) / 2.0;
         /**<extend up -100>
-        ![](../pictures/中位数/1.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/1.jpeg)
         */
     }
 
@@ -25582,7 +25582,7 @@ public:
         }
         p->right = right;
         /**<extend up -50>
-        ![](../pictures/二叉树系列/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列/2.jpeg)
         */
     }
 };
@@ -25647,7 +25647,7 @@ class Solution {
         }
         p.right = right;
         /**<extend up -50>
-        ![](../pictures/二叉树系列/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列/2.jpeg)
         */
     }
 }
@@ -27201,7 +27201,7 @@ public:
             // 计算子问题的结果
             int subProblem = dp(coins, amount - coin);
             /**<extend up -200> 
-            ![](../pictures/动态规划详解进阶/5.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/动态规划详解进阶/5.jpg)
             */
             // 子问题无解则跳过
             if (subProblem == -1) continue;
@@ -27243,7 +27243,7 @@ func dp(coins []int, amount int, memo []int) int {
         // 计算子问题的结果
         subProblem := dp(coins, amount-coin, memo)
         /**<extend up -200>
-        ![](../pictures/动态规划详解进阶/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/动态规划详解进阶/5.jpg)
         */
         // 子问题无解则跳过
         if subProblem == -1 {
@@ -27293,7 +27293,7 @@ class Solution {
             // 计算子问题的结果
             int subProblem = dp(coins, amount - coin);
             /**<extend up -200> 
-            ![](../pictures/动态规划详解进阶/5.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/动态规划详解进阶/5.jpg)
             */
             // 子问题无解则跳过
             if (subProblem == -1) continue;
@@ -27325,7 +27325,7 @@ var coinChange = function(coins, amount) {
             // 计算子问题的结果
             let subProblem = dp(coins, amount - coin);
             /**<extend up -200> 
-            ![](../pictures/动态规划详解进阶/5.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/动态规划详解进阶/5.jpg)
             */
             // 子问题无解则跳过
             if (subProblem == -1) continue;
@@ -27884,14 +27884,14 @@ public:
             // 若两个节点已经在同一连通分量中，会产生环
             if (uf.connected(u, v)) {
                 /**<extend down -200>
-                ![](../pictures/kruskal/4.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/4.png)
                 */
                 return false;
             }
             // 这条边不会产生环，可以是树的一部分
             uf.union(u, v);
             /**<extend down -150>
-            ![](../pictures/kruskal/5.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/5.png)
             */
         }
         // 要保证最后只形成了一棵树，即只有一个连通分量
@@ -28031,14 +28031,14 @@ func validTree(n int, edges [][]int) bool {
         // 若两个节点已经在同一连通分量中，会产生环
         if uf.Connected(u, v) {
             /*
-                ![](../pictures/kruskal/4.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/4.png)
             */
             return false
         }
         // 这条边不会产生环，可以是树的一部分
         uf.Union(u, v)
         /*
-            ![](../pictures/kruskal/5.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/5.png)
         */
     }
     // 要保证最后只形成了一棵树，即只有一个连通分量
@@ -28059,14 +28059,14 @@ class Solution {
             // 若两个节点已经在同一连通分量中，会产生环
             if (uf.connected(u, v)) {
                 /**<extend down -200>
-                ![](../pictures/kruskal/4.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/4.png)
                 */
                 return false;
             }
             // 这条边不会产生环，可以是树的一部分
             uf.union(u, v);
             /**<extend down -150>
-            ![](../pictures/kruskal/5.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/5.png)
             */
         }
         // 要保证最后只形成了一棵树，即只有一个连通分量
@@ -28228,13 +28228,13 @@ class Solution:
             # 若两个节点已经在同一连通分量中，会产生环
             if uf.connected(u, v):
                 '''
-                ![](../pictures/kruskal/4.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/4.png)
                 '''
                 return False
             # 这条边不会产生环，可以是树的一部分
             uf.union(u, v)
             '''
-            ![](../pictures/kruskal/5.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kruskal/5.png)
             '''
         # 要保证最后只形成了一棵树，即只有一个连通分量
         return uf.count() == 1
@@ -28893,7 +28893,7 @@ public:
 
         while (p1 != nullptr && p2 != nullptr) {
             /**<extend down -200>
-            ![](../pictures/链表技巧/1.gif)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
             */
             // 比较 p1 和 p2 两个指针
             // 将值较小的的节点接到 p 指针
@@ -28931,7 +28931,7 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 
     for p1 != nil && p2 != nil {
         /**<extend down -200>
-        ![](../pictures/链表技巧/1.gif)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
         */
         // 比较 p1 和 p2 两个指针
         // 将值较小的的节点接到 p 指针
@@ -28968,7 +28968,7 @@ class Solution {
 
         while (p1 != null && p2 != null) {
             /**<extend down -200>
-            ![](../pictures/链表技巧/1.gif)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
             */
             // 比较 p1 和 p2 两个指针
             // 将值较小的的节点接到 p 指针
@@ -29005,7 +29005,7 @@ var mergeTwoLists = function(l1, l2) {
 
     while (p1 != null && p2 != null) {
         /**<extend down -200>
-        ![](../pictures/链表技巧/1.gif)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
         */
         // 比较 p1 和 p2 两个指针
         // 将值较小的的节点接到 p 指针
@@ -29712,7 +29712,7 @@ class Solution {
             // 将小于 n 的元素全部删除
             while (!q.empty() && q.back() < n) {
                  /**<extend down -300>
-                ![](../pictures/单调队列/3.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 */
                 q.pop_back();
             }
@@ -29743,7 +29743,7 @@ public:
                 window.push(nums[i]);
             } else {
                 /**<extend up -150>
-                ![](../pictures/单调队列/1.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/1.png)
                 */
                 // 窗口向前滑动，加入新数字
                 window.push(nums[i]);
@@ -29814,7 +29814,7 @@ class Solution {
             // 将小于 n 的元素全部删除
             while (!q.isEmpty() && q.getLast() < n) {
                  /**<extend down -300>
-                ![](../pictures/单调队列/3.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 */
                 q.pollLast();
             }
@@ -29844,7 +29844,7 @@ class Solution {
                 window.push(nums[i]);
             } else {
                 /**<extend up -150>
-                ![](../pictures/单调队列/1.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/1.png)
                 */
                 // 窗口向前滑动，加入新数字
                 window.push(nums[i]);
@@ -29876,7 +29876,7 @@ var Solution = function() {
             // 将小于 n 的元素全部删除
             while (this.q.length > 0 && this.q[this.q.length - 1] < n) {
                  /**<extend down -300>
-                ![](../pictures/单调队列/3.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 */
                 this.q.pop();
             }
@@ -29904,7 +29904,7 @@ var Solution = function() {
                 window.push(nums[i]);
             } else {
                 /**<extend up -150>
-                ![](../pictures/单调队列/1.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/1.png)
                 */
                 // 窗口向前滑动，加入新数字
                 window.push(nums[i]);
@@ -29932,7 +29932,7 @@ class Solution:
             while self.q and self.q[-1] < n:
                 '''
                 <extend down -300>
-                ![](../pictures/单调队列/3.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 '''
                 self.q.pop()
             # 然后将 n 加入尾部
@@ -29957,7 +29957,7 @@ class Solution:
             else:
                 '''
                 <extend up -150>
-                ![](../pictures/单调队列/1.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/1.png)
                 '''
                 # 窗口向前滑动，加入新数字
                 window.push(nums[i])
@@ -35234,7 +35234,7 @@ public:
             slow = slow->next;
             if (fast == slow) break;
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
         // 上面的代码类似 hasCycle 函数
@@ -35246,7 +35246,7 @@ public:
         // 重新指向头结点
         slow = head;
         /**<extend up -100>
-        ![](../pictures/双指针/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
         */
         // 快慢指针同步前进，相交点就是环起点
         while (slow != fast) {
@@ -35268,7 +35268,7 @@ func detectCycle(head *ListNode) *ListNode {
         if fast == slow {
             break
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
     }
@@ -35277,7 +35277,7 @@ func detectCycle(head *ListNode) *ListNode {
     }
     slow = head
     /**<extend up -100>
-    ![](../pictures/双指针/2.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
     */
     for slow != fast {
         slow = slow.Next
@@ -35298,7 +35298,7 @@ public class Solution {
             slow = slow.next;
             if (fast == slow) break;
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
         // 上面的代码类似 hasCycle 函数
@@ -35310,7 +35310,7 @@ public class Solution {
         // 重新指向头结点
         slow = head;
         /**<extend up -100>
-        ![](../pictures/双指针/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
         */
         // 快慢指针同步前进，相交点就是环起点
         while (slow != fast) {
@@ -35336,7 +35336,7 @@ var detectCycle = function(head) {
         if (fast === slow) {
             break;
             /**<extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             */
         }
     }
@@ -35349,7 +35349,7 @@ var detectCycle = function(head) {
     // 重新指向头结点
     slow = head;
     /**<extend up -100>
-    ![](../pictures/双指针/2.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
     */
     // 快慢指针同步前进，相交点就是环起点
     while (slow !== fast) {
@@ -35372,7 +35372,7 @@ class Solution:
                 break
             """
             <extend down -200>
-            ![](../pictures/双指针/3.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/3.jpeg)
             """
         if not fast or not fast.next:
             return None
@@ -35380,7 +35380,7 @@ class Solution:
         slow = head
         """
         <extend up -100>
-        ![](../pictures/双指针/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/双指针/2.jpeg)
         """
         while slow != fast:
             slow = slow.next
@@ -35978,7 +35978,7 @@ public:
         // dp[i] 表示以 nums[i] 这个数结尾的最长递增子序列的长度
         vector<int> dp(nums.size(), 1);
         /**<extend down -200>
-        ![](../pictures/最长递增子序列/5.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/最长递增子序列/5.jpeg)
         */
         // base case：dp 数组全都初始化为 1
 
@@ -36038,7 +36038,7 @@ class Solution {
         // dp[i] 表示以 nums[i] 这个数结尾的最长递增子序列的长度
         int[] dp = new int[nums.length];
         /**<extend down -200>
-        ![](../pictures/最长递增子序列/5.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/最长递增子序列/5.jpeg)
         */
         // base case：dp 数组全都初始化为 1
         Arrays.fill(dp, 1);
@@ -36065,7 +36065,7 @@ var lengthOfLIS = function(nums) {
     // dp[i] 表示以 nums[i] 这个数结尾的最长递增子序列的长度
     let dp = new Array(nums.length).fill(1);
     /**<extend down -200>
-    ![](../pictures/最长递增子序列/5.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/最长递增子序列/5.jpeg)
     */
     // base case：dp 数组全都初始化为 1
 
@@ -39595,7 +39595,7 @@ public:
 
         while (p1 != nullptr && p2 != nullptr) {
             /**<extend down -200>
-            ![](../pictures/链表技巧/1.gif)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
             */
             // 比较 p1 和 p2 两个指针
             // 将值较小的的节点接到 p 指针
@@ -39641,7 +39641,7 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 
     for p1 != nil && p2 != nil {
         /**<extend down -200>
-        ![](../pictures/链表技巧/1.gif)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
         */
         // 比较 p1 和 p2 两个指针
         // 将值较小的的节点接到 p 指针
@@ -39678,7 +39678,7 @@ class Solution {
 
         while (p1 != null && p2 != null) {
             /**<extend down -200>
-            ![](../pictures/链表技巧/1.gif)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
             */
             // 比较 p1 和 p2 两个指针
             // 将值较小的的节点接到 p 指针
@@ -39720,7 +39720,7 @@ var mergeTwoLists = function(l1, l2) {
 
     while (p1 !== null && p2 !== null) {
         /**<extend down -200>
-        ![](../pictures/链表技巧/1.gif)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
         */
         // 比较 p1 和 p2 两个指针
         // 将值较小的的节点接到 p 指针
@@ -39760,7 +39760,7 @@ class Solution:
         while p1 and p2:
             """
             <extend down -200>
-            ![](../pictures/链表技巧/1.gif)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/链表技巧/1.gif)
             """
             # 比较 p1 和 p2 两个指针
             # 将值较小的的节点接到 p 指针
@@ -41288,7 +41288,7 @@ func minDepth(root *TreeNode) int {
 
     for len(q) != 0 {
         /**<extend down -200>
-        ![](../pictures/dijkstra/1.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/dijkstra/1.jpeg)
         */
         sz := len(q)
         /* 遍历当前层的节点 */
@@ -41389,7 +41389,7 @@ class Solution3 {
 
         while (!q.isEmpty()) {
             /**<extend down -200>
-            ![](../pictures/dijkstra/1.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/dijkstra/1.jpeg)
             */
             int sz = q.size();
             /* 遍历当前层的节点 */
@@ -41427,7 +41427,7 @@ var minDepth = function(root) {
 
     while (q.length !== 0) {
         /** <extend down -200>
-         ![](../pictures/dijkstra/1.jpeg)
+         ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/dijkstra/1.jpeg)
          */
         var sz = q.length;
         /* 遍历当前层的节点 */
@@ -41466,7 +41466,7 @@ class Solution:
         depth = 1
         while q:
             # extend down -200>
-            # ![](../pictures/dijkstra/1.jpeg)
+            # ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/dijkstra/1.jpeg)
             sz = len(q)
             ## 遍历当前层的节点
             for i in range(sz):
@@ -41779,7 +41779,7 @@ class Solution {
         return memo[i][j];
     }
     /**<extend up -100>
-    ![](../pictures/备忘录基础/1.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/备忘录基础/1.jpeg)
     */
     int min(int a, int b, int c) {
         return Math.min(a, Math.min(b, c));
@@ -42589,7 +42589,7 @@ class Solution {
         // 记录最小覆盖子串的起始索引及长度
         int start = 0, len = INT_MAX;
         /**<extend down -200>
-        ![](../pictures/slidingwindow/1.png)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
         */
         while (right < s.size()) {
             // c 是将移入窗口的字符
@@ -42606,7 +42606,7 @@ class Solution {
             // 判断左侧窗口是否要收缩
             while (valid == need.size()) {
                 /**<extend down -200>
-                ![](../pictures/slidingwindow/2.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
                 */
                 // 在这里更新最小覆盖子串
                 if (right - left < len) {
@@ -42625,7 +42625,7 @@ class Solution {
                 }
             }
             /**<extend up -50>
-            ![](../pictures/slidingwindow/4.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
             */
         }
         // 返回最小覆盖子串
@@ -42648,7 +42648,7 @@ func minWindow(s string, t string) string {
     // 记录最小覆盖子串的起始索引及长度
     start, length := 0, math.MaxInt
     /**<extend down -200>
-      ![](../pictures/slidingwindow/1.png)
+      ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
     */
     for right < len(s) {
         // c 是将移入窗口的字符
@@ -42665,7 +42665,7 @@ func minWindow(s string, t string) string {
         // 判断左侧窗口是否要收缩
         for valid == len(need) {
             /**<extend down -200>
-              ![](../pictures/slidingwindow/2.png)
+              ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
             */
             // 在这里更新最小覆盖子串
             if right-left < length {
@@ -42685,7 +42685,7 @@ func minWindow(s string, t string) string {
             }
         }
         /**<extend up -50>
-          ![](../pictures/slidingwindow/4.png)
+          ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
         */
     }
     // 返回最小覆盖子串
@@ -42813,7 +42813,7 @@ class Solution:
         start, length = 0, float('inf')
         """
         <extend down -200>
-        ![](../pictures/slidingwindow/1.png)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/1.png)
         """
         while right < len(s):
             # c 是将移入窗口的字符
@@ -42829,7 +42829,7 @@ class Solution:
             while valid == len(need):
                 """
                 <extend down -200>
-                ![](../pictures/slidingwindow/2.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/2.png)
                 """
                 # 在这里更新最小覆盖子串
                 if right - left < length:
@@ -42846,7 +42846,7 @@ class Solution:
 
             """
             <extend up -50>
-            ![](../pictures/slidingwindow/4.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/slidingwindow/4.png)
             """
         # 返回最小覆盖子串
         return '' if length == float('inf') else s[start:start+length]
@@ -44067,7 +44067,7 @@ class Solution {
             // 排除不合法选择
             if (!isValid(board, row, col)) {
                 /**<extend up -200>
-                ![](../pictures/backtracking/7.jpg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/backtracking/7.jpg)
                 */
                 continue;
             }
@@ -44205,7 +44205,7 @@ class Solution {
             // 排除不合法选择
             if (!isValid(board, row, col)) {
                 /**<extend up -200>
-                ![](../pictures/backtracking/7.jpg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/backtracking/7.jpg)
                 */
                 continue;
             }
@@ -45543,7 +45543,7 @@ class Solution {
             // 保证不要重复使用相同的元素
             if (used.contains(nums[i])) {
                 /**<extend up -200>
-                 ![](../pictures/排列组合/9.jpeg)
+                 ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/排列组合/9.jpeg)
                  */
                 continue;
             }
@@ -45587,7 +45587,7 @@ var findSubsequences = function(nums) {
             // 保证不要重复使用相同的元素
             if (used.has(nums[i])) {
                 /**<extend up -200>
-                 ![](../pictures/排列组合/9.jpeg)
+                 ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/排列组合/9.jpeg)
                  */
                 continue;
             }
@@ -45638,7 +45638,7 @@ class Solution:
             # Avoid using the same element multiple times
             if nums[i] in used:
                 # Extend up -200
-                # ![](../pictures/排列组合/9.jpeg)
+                # ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/排列组合/9.jpeg)
                 continue
             used.add(nums[i])
             self.track.append(nums[i])
@@ -46288,7 +46288,7 @@ public:
                     dfs(grid, i, j, s, 's'); // 用字符代替数字，方便后续拼接
                     islands.insert(s);
                     /**<extend up -200>
-                    ![](../pictures/岛屿/6.png)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/岛屿/6.png)
                     */
                 }
             }
@@ -46344,7 +46344,7 @@ func numDistinctIslands(grid [][]int) int {
 				dfs(grid, i, j, &sb, 666)
 				islands[sb.String()] = true
 				/**<向上扩展-200>
-				![](../pictures/岛屿/6.png)
+				![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/岛屿/6.png)
 				*/
 			}
 		}
@@ -46393,7 +46393,7 @@ class Solution {
                     dfs(grid, i, j, sb, 666);
                     islands.add(sb.toString());
                     /**<extend up -200>
-                    ![](../pictures/岛屿/6.png)
+                    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/岛屿/6.png)
                     */
                 }
             }
@@ -46438,7 +46438,7 @@ var numDistinctIslands = function(grid) {
                 dfs(grid, i, j, sb, 666);
                 islands.add(sb.toString());
                 /**<extend up -200>
-                ![](../pictures/岛屿/6.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/岛屿/6.png)
                 */
             }
         }
@@ -46479,7 +46479,7 @@ class Solution:
                     # 初始的方向可以随便写，不影响正确性
                     self.dfs(grid, i, j, sb, 666)
                     islands.add("".join(sb))
-                    #![](../pictures/岛屿/6.png)
+                    #![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/岛屿/6.png)
 
         return len(islands) # 返回不同的岛屿数量
 
@@ -48039,12 +48039,12 @@ class Solution {
         reverse(cakes, 0, n - 1);
         res.add(n);
         /**<extend up -150>
-        ![](../pictures/pancakeSort/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/pancakeSort/3.jpg)
         */
         // 递归调用
         sort(cakes, n - 1);
         /**<extend up -150>
-        ![](../pictures/pancakeSort/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/pancakeSort/4.jpg)
         */
     }
 
@@ -48511,7 +48511,7 @@ class Solution {
             used |= 1 << i; // 将第 i 位置为 1
             bucket += nums[i];
             /**<extend down -200>
-            ![](../pictures/集合划分/5.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/集合划分/5.jpeg)
             */
             // 递归穷举下一个数字是否装入当前桶
             if (backtrack(k, bucket, nums, i + 1, used, target)) {
@@ -48565,7 +48565,7 @@ var canPartitionKSubsets = function(nums, k) {
             let newUsed = used | (1 << i); // 将第 i 位置为 1
             let newBucket = bucket + nums[i];
             /**<extend down -200>
-            ![](../pictures/集合划分/5.jpeg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/集合划分/5.jpeg)
             */
             // 递归穷举下一个数字是否装入当前桶
             if (backtrack(k, newBucket, nums, i + 1, newUsed, target)) {
@@ -50691,7 +50691,7 @@ public:
             // 排除不合法的选择
             if (used[i]) {
                 /**<extend up -200>
-                ![](../pictures/backtracking/6.jpg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/backtracking/6.jpg)
                 */
                 // nums[i] 已经在 track 中，跳过
                 continue;
@@ -50774,7 +50774,7 @@ class Solution {
             // 排除不合法的选择
             if (used[i]) {
                 /**<extend up -200>
-                ![](../pictures/backtracking/6.jpg)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/backtracking/6.jpg)
                 */
                 // nums[i] 已经在 track 中，跳过
                 continue;
@@ -55240,15 +55240,15 @@ public:
         }
         ListNode* last = reverseList(head->next);
         /**<extend up -200>
-        ![](../pictures/反转链表/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
         */
         head->next->next = head;
         /**<extend up -200>
-        ![](../pictures/反转链表/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
         */
         head->next = NULL;
         /**<extend up -200>
-        ![](../pictures/反转链表/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
         */
         return last;
     }
@@ -55263,15 +55263,15 @@ func reverseList(head *ListNode) *ListNode {
     }
     last := reverseList(head.Next)
     /* <extend up - 200>
-    ![](../pictures/反转链表/3.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
     */
     head.Next.Next = head
     /* <extend up - 200>
-    ![](../pictures/反转链表/4.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
     */
     head.Next = nil
     /* <extend up - 200>
-    ![](../pictures/反转链表/5.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
     */
     return last
 }
@@ -55286,15 +55286,15 @@ class Solution {
         }
         ListNode last = reverseList(head.next);
         /**<extend up -200>
-        ![](../pictures/反转链表/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
         */
         head.next.next = head;
         /**<extend up -200>
-        ![](../pictures/反转链表/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
         */
         head.next = null;
         /**<extend up -200>
-        ![](../pictures/反转链表/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
         */
         return last;
     }
@@ -55320,15 +55320,15 @@ var reverseList = function(head) {
     }
     var last = reverseList(head.next);
     /**<extend up -200>
-    ![](../pictures/反转链表/3.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
     */
     head.next.next = head;
     /**<extend up -200>
-    ![](../pictures/反转链表/4.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
     */
     head.next = null;
     /**<extend up -200>
-    ![](../pictures/反转链表/5.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
     */
     return last;
 };
@@ -55343,17 +55343,17 @@ class Solution:
         last = self.reverseList(head.next)
         """
         <extend up -200>
-        ![](../pictures/反转链表/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/3.jpg)
         """
         head.next.next = head
         """
         <extend up -200>
-        ![](../pictures/反转链表/4.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/4.jpg)
         """
         head.next = None
         """
         <extend up -200>
-        ![](../pictures/反转链表/5.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/5.jpg)
         """
         return last
 ```
@@ -55393,7 +55393,7 @@ private:
         head->next = successor;
         return last;
         /**<extend up -90>
-        ![](../pictures/反转链表/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/7.jpg)
         */
     }
 };
@@ -55468,7 +55468,7 @@ class Solution {
         head.next = successor;
         return last;
         /**<extend up -90>
-        ![](../pictures/反转链表/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/7.jpg)
         */
     }
 }
@@ -55491,7 +55491,7 @@ var reverseBetween = function(head, m, n) {
         head.next = successor;
         return last;
         /**<extend up -90>
-        ![](../pictures/反转链表/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/7.jpg)
         */
     };
     // base case
@@ -55531,7 +55531,7 @@ class Solution:
         return last
         """
         <extend up -90>
-        ![](../pictures/反转链表/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/反转链表/7.jpg)
         """
 ```
 
@@ -55595,7 +55595,7 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
     // 递归将后续链表的区间也翻转，然后再将它链接到新的区间内
     a.Next = reverseKGroup(b, k)
     /** <extend up -90>
-    ![](../pictures/kgroup/6.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/6.jpg)
     */
 
     return newHead
@@ -55636,7 +55636,7 @@ class Solution {
         // 递归反转后续链表并连接起来
         a.next = reverseKGroup(b, k);
         /**<extend up -90>
-        ![](../pictures/kgroup/6.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/6.jpg)
         */
         return newHead;
     }
@@ -55644,7 +55644,7 @@ class Solution {
     /* 反转区间 [a, b) 的元素，注意是左闭右开 */
     ListNode reverse(ListNode a, ListNode b) {
         /**<extend up -300>
-        ![](../pictures/kgroup/8.gif)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/8.gif)
         */
         ListNode pre, cur, nxt;
         pre = null;
@@ -55684,7 +55684,7 @@ var reverseKGroup = function(head, k) {
     // 递归反转后续链表并连接起来
     a.next = reverseKGroup(b, k);
     /** <extend up -90>
-    ![](../pictures/kgroup/6.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/6.jpg)
     */
     return newHead;
 };
@@ -55692,7 +55692,7 @@ var reverseKGroup = function(head, k) {
 /* 反转区间 [a, b) 的元素，注意是左闭右开 */
 var reverse = function(a, b) {
     /** <extend up -300>
-    ![](../pictures/kgroup/8.gif)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/8.gif)
     */
     let pre = null, cur = a, nxt = a;
     // while 终止的条件改一下就行了
@@ -55726,7 +55726,7 @@ class Solution:
         a.next = self.reverseKGroup(b, k)
         """
         <extend up -90>
-        ![](../pictures/kgroup/6.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/6.jpg)
         """
         return newHead
 
@@ -55734,7 +55734,7 @@ class Solution:
     def reverse(self, a: ListNode, b: ListNode) -> ListNode:
         """
         <extend up -300>
-        ![](../pictures/kgroup/8.gif)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/8.gif)
         """
         pre, cur, nxt = None, a, a
         # while 终止的条件改一下就行了
@@ -58503,7 +58503,7 @@ public:
     MedianFinder() {}
     
     /**<extend up -100>
-    ![](../pictures/中位数/2.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/2.jpeg)
     */
     double findMedian() {
         if(large.size() < small.size()) {
@@ -58513,7 +58513,7 @@ public:
         }
         return (large.top() + small.top()) / 2.0; //如果元素一样多，中位数就是两个堆顶元素平均数
         /**<extend up -100>
-        ![](../pictures/中位数/1.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/1.jpeg)
         */
     }
     
@@ -58579,7 +58579,7 @@ class MedianFinder {
 
     public double findMedian() {
         /**<extend up -100>
-        ![](../pictures/中位数/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/2.jpeg)
         */
         // 如果元素不一样多，多的那个堆的堆顶元素就是中位数
         if (large.size() < small.size()) {
@@ -58590,7 +58590,7 @@ class MedianFinder {
         // 如果元素一样多，两个堆堆顶元素的平均数是中位数
         return (large.peek() + small.peek()) / 2.0;
         /**<extend up -100>
-        ![](../pictures/中位数/1.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/1.jpeg)
         */
     }
 
@@ -58665,7 +58665,7 @@ class MedianFinder:
     def findMedian(self) -> float:
         """
         <extend up -100>
-        ![](../pictures/中位数/2.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/2.jpeg)
         """
         # 如果元素不一样多，多的那个堆的堆顶元素就是中位数
         if self.large.qsize() < self.small.qsize():
@@ -58676,7 +58676,7 @@ class MedianFinder:
         return (self.large.queue[0] + self.small.queue[0]) / 2.0
         """
         <extend up -100>
-        ![](../pictures/中位数/1.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/中位数/1.jpeg)
         """
 
     def addNum(self, num: int) -> None:
@@ -60646,7 +60646,7 @@ class Solution {
             // 将小于 n 的元素全部删除
             while (!q.isEmpty() && q.getLast() < n) {
                  /**<extend down -300>
-                ![](../pictures/单调队列/3.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 */
                 q.pollLast();
             }
@@ -60676,7 +60676,7 @@ class Solution {
                 window.push(nums[i]);
             } else {
                 /**<extend up -150>
-                ![](../pictures/单调队列/1.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/1.png)
                 */
                 // 窗口向前滑动，加入新数字
                 window.push(nums[i]);
@@ -60711,7 +60711,7 @@ var maxSlidingWindow = function(nums, k) {
             // 将小于 n 的元素全部删除
             while (this.q.length !== 0 && this.q[this.q.length - 1] < n) {
                 /**<extend down -300>
-                ![](../pictures/单调队列/3.png)
+                ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 */
                 this.q.pop()
             }
@@ -60742,7 +60742,7 @@ var maxSlidingWindow = function(nums, k) {
             window.push(nums[i])
         } else {
             /**<extend up -150>
-            ![](../pictures/单调队列/1.png)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/1.png)
             */
             // 窗口向前滑动，加入新数字
             window.push(nums[i])
@@ -60769,7 +60769,7 @@ class Solution:
             # remove all elements smaller than n from the tail of the queue
             while self.q and self.q[-1] < n:
                 # extend down -300
-                # ![](../pictures/单调队列/3.png)
+                # ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/单调队列/3.png)
                 self.q.pop()
             # then insert n at the tail
             self.q.append(n)
@@ -62746,7 +62746,7 @@ public:
         // 将首行和末行的 O 与 dummy 连通
         for (int j = 0; j < n; j++) {
             /**<extend up -150>
-            ![](../pictures/unionfind应用/3.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/unionfind应用/3.jpg)
             */
             if (board[0][j] == 'O')
                 uf.union(j, dummy);
@@ -62964,7 +62964,7 @@ class Solution {
         // 将首行和末行的 O 与 dummy 连通
         for (int j = 0; j < n; j++) {
             /**<extend up -150>
-            ![](../pictures/unionfind应用/3.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/unionfind应用/3.jpg)
             */
             if (board[0][j] == 'O')
                 uf.union(j, dummy);
@@ -63077,7 +63077,7 @@ var solve = function(board) {
     const d = [[1, 0], [0, 1], [0, -1], [-1, 0]];
     for (let j = 0; j < n; j++) {
         /**<extend up -150>
-        ![](../pictures/unionfind应用/3.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/unionfind应用/3.jpg)
         */
         if (board[0][j] == 'O')
             uf.union(j, dummy);
@@ -63275,7 +63275,7 @@ public:
         // 现在整个链表都成功翻转了，返回新的头结点
         return second;
         /**<extend up -200>
-        ![](../pictures/kgroup/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/7.jpg)
         */
     }
 };
@@ -63320,7 +63320,7 @@ class Solution {
         // 现在整个链表都成功翻转了，返回新的头结点
         return second;
         /**<extend up -200>
-        ![](../pictures/kgroup/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/7.jpg)
         */
     }
 }
@@ -63346,7 +63346,7 @@ var swapPairs = function(head) {
     // 现在整个链表都成功翻转了，返回新的头结点
     return second;
     /**<extend up -200>
-    ![](../pictures/kgroup/7.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/7.jpg)
     */
 };
 ```
@@ -63381,7 +63381,7 @@ class Solution:
         """
         原链表为：head → 1 → 2 → 3 → 4 → null，
         要求链表为：head → 2 → 1 → 4 → 3 → null。
-        ![](../pictures/kgroup/7.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/kgroup/7.jpg)
         """
 ```
 
@@ -64743,7 +64743,7 @@ public:
             res += min(l_max[i], r_max[i]) - height[i];
         }
         /**<extend up -300>
-        ![](../pictures/接雨水/1.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/接雨水/1.jpg)
         */
         return res;
     }
@@ -64776,7 +64776,7 @@ func trap(height []int) int {
     for i := 1; i < n - 1; i++ {
         res += min(l_max[i], r_max[i]) - height[i]
         /**<extend up -300>
-        ![](../pictures/接雨水/1.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/接雨水/1.jpg)
         */
     } 
     return res;
@@ -64822,7 +64822,7 @@ class Solution {
         for (int i = 1; i < n - 1; i++)
             res += Math.min(l_max[i], r_max[i]) - height[i];
             /**<extend up -300>
-            ![](../pictures/接雨水/1.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/接雨水/1.jpg)
             */
         return res;
     }
@@ -64856,7 +64856,7 @@ var trap = function(height) {
     res += Math.min(l_max[i], r_max[i]) - height[i];
   }
   /**<extend up -300>
-  ![](../pictures/接雨水/1.jpg)
+  ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/接雨水/1.jpg)
   */
   return res;
 };
@@ -64887,7 +64887,7 @@ class Solution:
             res += min(l_max[i], r_max[i]) - height[i]
             """
             extend up -300
-            ![](../pictures/接雨水/1.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/接雨水/1.jpg)
             """
         return res
 ```
@@ -65609,7 +65609,7 @@ public:
         // 集合论定理：A + B + C - A ∩ B - A ∩ C - B ∩ C + A ∩ B ∩ C
         return setA + setB + setC - setAB - setAC - setBC + setABC;
         /*
-        ![](../pictures/丑数/1.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/丑数/1.jpg)
         */
     }
 
@@ -65749,7 +65749,7 @@ class Solution {
         // 集合论定理：A + B + C - A ∩ B - A ∩ C - B ∩ C + A ∩ B ∩ C
         return setA + setB + setC - setAB - setAC - setBC + setABC;
         /**<extend up -400>
-        ![](../pictures/丑数/1.jpg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/丑数/1.jpg)
         */
     }
 
@@ -65839,7 +65839,7 @@ var nthUglyNumber = function(n, a, b, c) {
     // 集合论定理：A + B + C - A ∩ B - A ∩ C - B ∩ C + A ∩ B ∩ C
     return setA + setB + setC - setAB - setAC - setBC + setABC;
     /**<extend up -400>
-    ![](../pictures/丑数/1.jpg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/丑数/1.jpg)
     */
   }
 
@@ -69961,7 +69961,7 @@ public:
         // 检查出界情况
         if (left >= nums.size() || nums[left] != target) {
             /**<extend up -300>
-             ![](../pictures/二分查找/2.jpg)
+             ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
              */
             return -1;
         }
@@ -69984,7 +69984,7 @@ public:
         // 这里改为检查 right 越界的情况，见下图
         if (right < 0 || nums[right] != target) {
             /**<extend up -300>
-             ![](../pictures/二分查找/4.jpg)
+             ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
              */
             return -1;
         }
@@ -70092,7 +70092,7 @@ class Solution {
         // 检查出界情况
         if (left >= nums.length || nums[left] != target) {
             /**<extend up -300>
-             ![](../pictures/二分查找/2.jpg)
+             ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
              */
             return -1;
         }
@@ -70115,7 +70115,7 @@ class Solution {
         // 这里改为检查 right 越界的情况，见下图
         if (right < 0 || nums[right] != target) {
             /**<extend up -300>
-             ![](../pictures/二分查找/4.jpg)
+             ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
              */
             return -1;
         }
@@ -70152,7 +70152,7 @@ var search = function(nums, target) {
     // 检查出界情况
     if (left >= nums.length || nums[left] !== target) {
       /**<extend up -300>
-       ![](../pictures/二分查找/2.jpg)
+       ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
        */
       return -1;
     }
@@ -70176,7 +70176,7 @@ var search = function(nums, target) {
     // 这里改为检查 right 越界的情况，见下图
     if (right < 0 || nums[right] !== target) {
       /**<extend up -300>
-       ![](../pictures/二分查找/4.jpg)
+       ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
        */
       return -1;
     }
@@ -70222,7 +70222,7 @@ class Solution:
         if left >= len(nums) or nums[left] != target:
             """
             <extend up -300>
-            ![](../pictures/二分查找/2.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/2.jpg)
             """
             return -1
         return left
@@ -70242,7 +70242,7 @@ class Solution:
         if right < 0 or nums[right] != target:
             """
             <extend up -300>
-            ![](../pictures/二分查找/4.jpg)
+            ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二分查找/4.jpg)
             """
             return -1
         return right
@@ -70557,7 +70557,7 @@ public:
         // 先构造出当前根节点
         TreeNode* root = new TreeNode(rootVal);
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/4.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/4.jpeg)
         */
         // 递归构造左右子树
         root->left = build(preorder, preStart + 1, preStart + leftSize,
@@ -70636,7 +70636,7 @@ class Solution {
         // 先构造出当前根节点
         TreeNode root = new TreeNode(rootVal);
         /**<extend up -200>
-        ![](../pictures/二叉树系列2/4.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/4.jpeg)
         */
         // 递归构造左右子树
         root.left = build(preorder, preStart + 1, preStart + leftSize,
@@ -70682,7 +70682,7 @@ function build(preorder, preStart, preEnd,
     // 先构造出当前根节点
     const root = new TreeNode(rootVal);
     /**<extend up -200>
-    ![](../pictures/二叉树系列2/4.jpeg)
+    ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/4.jpeg)
     */
     // 递归构造左右子树
     root.left = build(preorder, preStart + 1, preStart + leftSize,
@@ -70729,7 +70729,7 @@ class Solution:
         root = TreeNode(rootVal)
         """
         <extend up -200>
-        ![](../pictures/二叉树系列2/4.jpeg)
+        ![](https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/二叉树系列2/4.jpeg)
         """
 
         # 递归构造左右子树

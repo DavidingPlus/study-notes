@@ -430,4 +430,5 @@ English version is on [labuladong.online](https://labuladong.online/algo/en/) to
 
 如果本仓库对你有帮助，可以请作者喝杯速溶咖啡
 
-<img src="pictures/pay.jpg" width = "200" align=center />
+<img src="https://gitee.com/TheAlgorithms/fucking-algorithm/raw/master/pictures/pay.jpg" width = "200" align=center />
+
