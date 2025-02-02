@@ -4,11 +4,11 @@
 
 推荐使用开源、轻量的 VS Code 作为本地集成开发环境（IDE）。访问 [VS Code 官网](https://code.visualstudio.com/)，根据操作系统选择相应版本的 VS Code 进行下载和安装。
 
-![从官网下载 VS Code](installation.assets/vscode_installation.png)
+![从官网下载 VS Code](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_appendix/installation.assets//vscode_installation.png)
 
 VS Code 拥有强大的扩展包生态系统，支持大多数编程语言的运行和调试。以 Python 为例，安装“Python Extension Pack”扩展包之后，即可进行 Python 代码调试。安装步骤如下图所示。
 
-![安装 VS Code 扩展包](installation.assets/vscode_extension_installation.png)
+![安装 VS Code 扩展包](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_appendix/installation.assets//vscode_extension_installation.png)
 
 ## 安装语言环境
 

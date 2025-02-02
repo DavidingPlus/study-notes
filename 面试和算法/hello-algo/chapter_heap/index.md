@@ -1,6 +1,6 @@
 # 堆
 
-![堆](../assets/covers/chapter_heap.jpg)
+![堆](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_heap.jpg)
 
 !!! abstract
 

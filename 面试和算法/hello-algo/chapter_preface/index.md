@@ -1,6 +1,6 @@
 # 前言
 
-![前言](../assets/covers/chapter_preface.jpg)
+![前言](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_preface.jpg)
 
 !!! abstract
 

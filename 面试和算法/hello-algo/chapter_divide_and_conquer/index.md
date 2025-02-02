@@ -1,6 +1,6 @@
 # 分治
 
-![分治](../assets/covers/chapter_divide_and_conquer.jpg)
+![分治](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_divide_and_conquer.jpg)
 
 !!! abstract
 

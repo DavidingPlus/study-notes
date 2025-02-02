@@ -1,6 +1,6 @@
 # 排序
 
-![排序](../assets/covers/chapter_sorting.jpg)
+![排序](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_sorting.jpg)
 
 !!! abstract
 

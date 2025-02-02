@@ -1,6 +1,6 @@
 # 哈希表
 
-![哈希表](../assets/covers/chapter_hashing.jpg)
+![哈希表](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_hashing.jpg)
 
 !!! abstract
 

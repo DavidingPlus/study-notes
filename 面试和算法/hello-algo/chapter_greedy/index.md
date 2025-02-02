@@ -1,6 +1,6 @@
 # 贪心
 
-![贪心](../assets/covers/chapter_greedy.jpg)
+![贪心](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_greedy.jpg)
 
 !!! abstract
 

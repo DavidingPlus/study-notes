@@ -1,6 +1,6 @@
 # 数组与链表
 
-![数组与链表](../assets/covers/chapter_array_and_linkedlist.jpg)
+![数组与链表](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_array_and_linkedlist.jpg)
 
 !!! abstract
 

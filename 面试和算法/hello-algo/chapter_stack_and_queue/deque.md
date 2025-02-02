@@ -2,7 +2,7 @@
 
 在队列中，我们仅能删除头部元素或在尾部添加元素。如下图所示，<u>双向队列（double-ended queue）</u>提供了更高的灵活性，允许在头部和尾部执行元素的添加或删除操作。
 
-![双向队列的操作](deque.assets/deque_operations.png)
+![双向队列的操作](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/deque_operations.png)
 
 ## 双向队列常用操作
 
@@ -406,19 +406,19 @@
 如下图所示，我们将双向链表的头节点和尾节点视为双向队列的队首和队尾，同时实现在两端添加和删除节点的功能。
 
 === "LinkedListDeque"
-    ![基于链表实现双向队列的入队出队操作](deque.assets/linkedlist_deque_step1.png)
+    ![基于链表实现双向队列的入队出队操作](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/linkedlist_deque_step1.png)
 
 === "push_last()"
-    ![linkedlist_deque_push_last](deque.assets/linkedlist_deque_step2_push_last.png)
+    ![linkedlist_deque_push_last](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/linkedlist_deque_step2_push_last.png)
 
 === "push_first()"
-    ![linkedlist_deque_push_first](deque.assets/linkedlist_deque_step3_push_first.png)
+    ![linkedlist_deque_push_first](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/linkedlist_deque_step3_push_first.png)
 
 === "pop_last()"
-    ![linkedlist_deque_pop_last](deque.assets/linkedlist_deque_step4_pop_last.png)
+    ![linkedlist_deque_pop_last](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/linkedlist_deque_step4_pop_last.png)
 
 === "pop_first()"
-    ![linkedlist_deque_pop_first](deque.assets/linkedlist_deque_step5_pop_first.png)
+    ![linkedlist_deque_pop_first](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/linkedlist_deque_step5_pop_first.png)
 
 实现代码如下所示：
 
@@ -431,19 +431,19 @@
 如下图所示，与基于数组实现队列类似，我们也可以使用环形数组来实现双向队列。
 
 === "ArrayDeque"
-    ![基于数组实现双向队列的入队出队操作](deque.assets/array_deque_step1.png)
+    ![基于数组实现双向队列的入队出队操作](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/array_deque_step1.png)
 
 === "push_last()"
-    ![array_deque_push_last](deque.assets/array_deque_step2_push_last.png)
+    ![array_deque_push_last](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/array_deque_step2_push_last.png)
 
 === "push_first()"
-    ![array_deque_push_first](deque.assets/array_deque_step3_push_first.png)
+    ![array_deque_push_first](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/array_deque_step3_push_first.png)
 
 === "pop_last()"
-    ![array_deque_pop_last](deque.assets/array_deque_step4_pop_last.png)
+    ![array_deque_pop_last](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/array_deque_step4_pop_last.png)
 
 === "pop_first()"
-    ![array_deque_pop_first](deque.assets/array_deque_step5_pop_first.png)
+    ![array_deque_pop_first](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_stack_and_queue/deque.assets/array_deque_step5_pop_first.png)
 
 在队列的实现基础上，仅需增加“队首入队”和“队尾出队”的方法：
 

@@ -1,6 +1,6 @@
 # 树
 
-![树](../assets/covers/chapter_tree.jpg)
+![树](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_tree.jpg)
 
 !!! abstract
 

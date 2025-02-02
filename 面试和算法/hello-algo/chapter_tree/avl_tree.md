@@ -4,11 +4,11 @@
 
 如下图所示，经过两次删除节点操作，这棵二叉搜索树便会退化为链表。
 
-![AVL 树在删除节点后发生退化](avl_tree.assets/avltree_degradation_from_removing_node.png)
+![AVL 树在删除节点后发生退化](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_degradation_from_removing_node.png)
 
 再例如，在下图所示的完美二叉树中插入两个节点后，树将严重向左倾斜，查找操作的时间复杂度也随之劣化。
 
-![AVL 树在插入节点后发生退化](avl_tree.assets/avltree_degradation_from_inserting_node.png)
+![AVL 树在插入节点后发生退化](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_degradation_from_inserting_node.png)
 
 1962 年 G. M. Adelson-Velsky 和 E. M. Landis 在论文“An algorithm for the organization of information”中提出了 <u>AVL 树</u>。论文中详细描述了一系列操作，确保在持续添加和删除节点后，AVL 树不会退化，从而使得各种操作的时间复杂度保持在 $O(\log n)$ 级别。换句话说，在需要频繁进行增删查改操作的场景中，AVL 树能始终保持高效的数据操作性能，具有很好的应用价值。
 
@@ -263,20 +263,20 @@ AVL 树的特点在于“旋转”操作，它能够在不影响二叉树的中�
 如下图所示，节点下方为平衡因子。从底至顶看，二叉树中首个失衡节点是“节点 3”。我们关注以该失衡节点为根节点的子树，将该节点记为 `node` ，其左子节点记为 `child` ，执行“右旋”操作。完成右旋后，子树恢复平衡，并且仍然保持二叉搜索树的性质。
 
 === "<1>"
-    ![右旋操作步骤](avl_tree.assets/avltree_right_rotate_step1.png)
+    ![右旋操作步骤](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_right_rotate_step1.png)
 
 === "<2>"
-    ![avltree_right_rotate_step2](avl_tree.assets/avltree_right_rotate_step2.png)
+    ![avltree_right_rotate_step2](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_right_rotate_step2.png)
 
 === "<3>"
-    ![avltree_right_rotate_step3](avl_tree.assets/avltree_right_rotate_step3.png)
+    ![avltree_right_rotate_step3](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_right_rotate_step3.png)
 
 === "<4>"
-    ![avltree_right_rotate_step4](avl_tree.assets/avltree_right_rotate_step4.png)
+    ![avltree_right_rotate_step4](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_right_rotate_step4.png)
 
 如下图所示，当节点 `child` 有右子节点（记为 `grand_child` ）时，需要在右旋中添加一步：将 `grand_child` 作为 `node` 的左子节点。
 
-![有 grand_child 的右旋操作](avl_tree.assets/avltree_right_rotate_with_grandchild.png)
+![有 grand_child 的右旋操作](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_right_rotate_with_grandchild.png)
 
 “向右旋转”是一种形象化的说法，实际上需要通过修改节点指针来实现，代码如下所示：
 
@@ -288,11 +288,11 @@ AVL 树的特点在于“旋转”操作，它能够在不影响二叉树的中�
 
 相应地，如果考虑上述失衡二叉树的“镜像”，则需要执行下图所示的“左旋”操作。
 
-![左旋操作](avl_tree.assets/avltree_left_rotate.png)
+![左旋操作](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_left_rotate.png)
 
 同理，如下图所示，当节点 `child` 有左子节点（记为 `grand_child` ）时，需要在左旋中添加一步：将 `grand_child` 作为 `node` 的右子节点。
 
-![有 grand_child 的左旋操作](avl_tree.assets/avltree_left_rotate_with_grandchild.png)
+![有 grand_child 的左旋操作](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_left_rotate_with_grandchild.png)
 
 可以观察到，**右旋和左旋操作在逻辑上是镜像对称的，它们分别解决的两种失衡情况也是对称的**。基于对称性，我们只需将右旋的实现代码中的所有的 `left` 替换为 `right` ，将所有的 `right` 替换为 `left` ，即可得到左旋的实现代码：
 
@@ -304,19 +304,19 @@ AVL 树的特点在于“旋转”操作，它能够在不影响二叉树的中�
 
 对于下图中的失衡节点 3 ，仅使用左旋或右旋都无法使子树恢复平衡。此时需要先对 `child` 执行“左旋”，再对 `node` 执行“右旋”。
 
-![先左旋后右旋](avl_tree.assets/avltree_left_right_rotate.png)
+![先左旋后右旋](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_left_right_rotate.png)
 
 ### 先右旋后左旋
 
 如下图所示，对于上述失衡二叉树的镜像情况，需要先对 `child` 执行“右旋”，再对 `node` 执行“左旋”。
 
-![先右旋后左旋](avl_tree.assets/avltree_right_left_rotate.png)
+![先右旋后左旋](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_right_left_rotate.png)
 
 ### 旋转的选择
 
 下图展示的四种失衡情况与上述案例逐个对应，分别需要采用右旋、先左旋后右旋、先右旋后左旋、左旋的操作。
 
-![AVL 树的四种旋转情况](avl_tree.assets/avltree_rotation_cases.png)
+![AVL 树的四种旋转情况](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_tree/avl_tree.assets/avltree_rotation_cases.png)
 
 如下表所示，我们通过判断失衡节点的平衡因子以及较高一侧子节点的平衡因子的正负号，来确定失衡节点属于上图中的哪种情况。
 

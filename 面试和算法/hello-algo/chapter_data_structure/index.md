@@ -1,6 +1,6 @@
 # 数据结构
 
-![数据结构](../assets/covers/chapter_data_structure.jpg)
+![数据结构](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_data_structure.jpg)
 
 !!! abstract
 

@@ -1,6 +1,6 @@
 # 动态规划
 
-![动态规划](../assets/covers/chapter_dynamic_programming.jpg)
+![动态规划](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_dynamic_programming.jpg)
 
 !!! abstract
 

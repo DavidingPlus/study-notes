@@ -10,7 +10,7 @@ status: new
 
 <p align="center">追风赶月莫停留，平芜尽处是春山。</p>
 
-![](index.assets/paper_book_overview.jpg){ class="animation-figure" }
+![](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_paperbook/index.assets/paper_book_overview.jpg){ class="animation-figure" }
 
 以下视频展示了纸质书，并且包含我的一些思考：
 
@@ -26,9 +26,9 @@ status: new
 
 附纸质书快照：
 
-![](index.assets/paper_book_chapter_heap.jpg){ class="animation-figure" }
+![](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_paperbook/index.assets/paper_book_chapter_heap.jpg){ class="animation-figure" }
 
-![](index.assets/paper_book_avl_tree.jpg){ class="animation-figure" }
+![](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_paperbook/index.assets/paper_book_avl_tree.jpg){ class="animation-figure" }
 
 ## 优势与不足
 
@@ -57,7 +57,7 @@ status: new
 
 如果你对纸质书感兴趣，可以考虑入手一本。我们为大家争取到了新书 5 折优惠，请见[此链接](https://3.cn/1X-qmTD3)或扫描以下二维码：
 
-![](index.assets/book_jd_link.jpg){ class="animation-figure" }
+![](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_paperbook/index.assets/book_jd_link.jpg){ class="animation-figure" }
 
 ## 尾记
 

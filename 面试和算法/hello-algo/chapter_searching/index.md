@@ -1,6 +1,6 @@
 # 搜索
 
-![搜索](../assets/covers/chapter_searching.jpg)
+![搜索](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_searching.jpg)
 
 !!! abstract
 

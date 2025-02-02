@@ -1,6 +1,6 @@
 # 回溯
 
-![回溯](../assets/covers/chapter_backtracking.jpg)
+![回溯](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_backtracking.jpg)
 
 !!! abstract
 

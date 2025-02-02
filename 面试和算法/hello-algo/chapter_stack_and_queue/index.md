@@ -1,6 +1,6 @@
 # 栈与队列
 
-![栈与队列](../assets/covers/chapter_stack_and_queue.jpg)
+![栈与队列](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_stack_and_queue.jpg)
 
 !!! abstract
 

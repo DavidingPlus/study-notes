@@ -1,6 +1,6 @@
 # 图
 
-![图](../assets/covers/chapter_graph.jpg)
+![图](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_graph.jpg)
 
 !!! abstract
 

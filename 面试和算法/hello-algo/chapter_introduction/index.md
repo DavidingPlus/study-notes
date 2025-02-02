@@ -1,6 +1,6 @@
 # 初识算法
 
-![初识算法](../assets/covers/chapter_introduction.jpg)
+![初识算法](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_introduction.jpg)
 
 !!! abstract
 

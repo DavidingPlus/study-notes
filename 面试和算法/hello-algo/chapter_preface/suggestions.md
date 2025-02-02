@@ -197,7 +197,7 @@
 
 如果你在阅读本书时，发现某段内容提供了如下图所示的动画图解，**请以图为主、以文字为辅**，综合两者来理解内容。
 
-![动画图解示例](../index.assets/animation.gif)
+![动画图解示例](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/index.assets/animation.gif)
 
 ## 在代码实践中加深理解
 
@@ -207,7 +207,7 @@
 
 与阅读代码相比，编写代码的过程往往能带来更多收获。**动手学，才是真的学**。
 
-![运行代码示例](../index.assets/running_code.gif)
+![运行代码示例](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/index.assets/running_code.gif)
 
 运行代码的前置工作主要分为三步。
 
@@ -221,15 +221,15 @@ git clone https://github.com/krahets/hello-algo.git
 
 当然，你也可以在下图所示的位置，点击“Download ZIP”按钮直接下载代码压缩包，然后在本地解压即可。
 
-![克隆仓库与下载代码](suggestions.assets/download_code.png)
+![克隆仓库与下载代码](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_preface/suggestions.assets/download_code.png)
 
 **第三步：运行源代码**。如下图所示，对于顶部标有文件名称的代码块，我们可以在仓库的 `codes` 文件夹内找到对应的源代码文件。源代码文件可一键运行，将帮助你节省不必要的调试时间，让你能够专注于学习内容。
 
-![代码块与对应的源代码文件](suggestions.assets/code_md_to_repo.png)
+![代码块与对应的源代码文件](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_preface/suggestions.assets/code_md_to_repo.png)
 
 除了本地运行代码，**网页版还支持 Python 代码的可视化运行**（基于 [pythontutor](https://pythontutor.com/) 实现）。如下图所示，你可以点击代码块下方的“可视化运行”来展开视图，观察算法代码的执行过程；也可以点击“全屏观看”，以获得更好的阅览体验。
 
-![Python 代码的可视化运行](suggestions.assets/pythontutor_example.png)
+![Python 代码的可视化运行](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_preface/suggestions.assets/pythontutor_example.png)
 
 ## 在提问讨论中共同成长
 
@@ -237,7 +237,7 @@ git clone https://github.com/krahets/hello-algo.git
 
 如下图所示，网页版每个章节的底部都配有评论区。希望你能多关注评论区的内容。一方面，你可以了解大家遇到的问题，从而查漏补缺，激发更深入的思考。另一方面，期待你能慷慨地回答其他小伙伴的问题，分享你的见解，帮助他人进步。
 
-![评论区示例](../index.assets/comment.gif)
+![评论区示例](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/index.assets/comment.gif)
 
 ## 算法学习路线
 
@@ -249,4 +249,4 @@ git clone https://github.com/krahets/hello-algo.git
 
 如下图所示，本书内容主要涵盖“阶段一”，旨在帮助你更高效地展开阶段二和阶段三的学习。
 
-![算法学习路线](suggestions.assets/learning_route.png)
+![算法学习路线](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/chapter_preface/suggestions.assets/learning_route.png)

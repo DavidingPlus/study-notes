@@ -1,6 +1,6 @@
 # 复杂度分析
 
-![复杂度分析](../assets/covers/chapter_complexity_analysis.jpg)
+![复杂度分析](https://gitee.com/taoweitao/hello-algo/raw/dev/docs/assets/covers/chapter_complexity_analysis.jpg)
 
 !!! abstract
 
