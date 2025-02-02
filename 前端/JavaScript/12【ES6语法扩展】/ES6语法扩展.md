@@ -186,7 +186,7 @@ console.log([...document.querySelectorAll('p')].push);
 </body>
 ```
 
-<img src="https://img-blog.csdnimg.cn/direct/25eb4e904346498e8b7d2956bdde1309.png" alt="image-20230126230622456" style="width:30%;" />
+<img src="https://gitee.com/JERRY-Z-J-R/I-love-you-3-thousand/raw/master/我爱你，不止三千遍/JavaScript/12【ES6语法扩展】/mark-img/image-20230126230622456.png" alt="image-20230126230622456" style="width:30%;" />
 
 # 三、对象展开运算符
 
@@ -779,7 +779,7 @@ console.log(m2, m2 === m);
 </html>
 ```
 
-<img src="https://img-blog.csdnimg.cn/direct/eeb51668da314106aba6aded1a602b01.png" alt="image-20220327154158420" style="width:50%;" />
+<img src="https://gitee.com/JERRY-Z-J-R/I-love-you-3-thousand/raw/master/我爱你，不止三千遍/JavaScript/12【ES6语法扩展】/mark-img/image-20220327154158420.png" alt="image-20220327154158420" style="width:50%;" />
 
 # 五、Iterator 遍历器与 for...of 循环
 
