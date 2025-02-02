@@ -26,17 +26,17 @@
 
 
 
-![1547105026929](https://img-blog.csdnimg.cn/direct/8131b390315b461ba3ab5bea153de51c.png)
+![1547105026929](https://image.davidingplus.cn/images/2025/01/29/1547105026929.png)
 
 
 
 PPT模板：
 
-![1547103297864](https://img-blog.csdnimg.cn/direct/5b01242779f14b08a9f35d998a45e4f2.png)
+![1547103297864](https://image.davidingplus.cn/images/2025/01/29/1547103297864.png)
 
 
 
-![1547103359158](https://img-blog.csdnimg.cn/direct/b6a9edf7988f4bb6aebb3df361c50459.png)
+![1547103359158](https://image.davidingplus.cn/images/2025/01/29/1547103359158.png)
 
 
 
@@ -2433,12 +2433,6 @@ int main() {
 
 * 并不是在原空间之后续接新空间，而是找更大的内存空间，然后将原数据拷贝新空间，释放原空间
 
-
-
-![说明: 2015-11-10_151152](https://img-blog.csdnimg.cn/direct/a51ae6d4b593424f9b4346878ff974a2.png)
-
-
-
 * vector容器的迭代器是支持随机访问的迭代器
 
 
@@ -3043,17 +3037,11 @@ int main() {
 * deque相对而言，对头部的插入删除速度回比vector快
 * vector访问元素时的速度会比deque快,这和两者内部实现有关
 
-![说明: 2015-11-19_204101](https://img-blog.csdnimg.cn/direct/898d92585f2343c7aad2279f8d7dbd3b.png)
-
-
-
 deque内部工作原理:
 
 deque内部有个**中控器**，维护每段缓冲区中的内容，缓冲区中存放真实数据
 
 中控器维护的是每个缓冲区的地址，使得使用deque时像一片连续的内存空间
-
-![clip_image002-1547547896341](https://img-blog.csdnimg.cn/direct/8cf16d83f01b4bd49400a8f3d0646e0f.png)
 
 * deque容器的迭代器也是支持随机访问的
 
@@ -3752,31 +3740,13 @@ int main() {
 
 **概念：**stack是一种**先进后出**(First In Last Out,FILO)的数据结构，它只有一个出口
 
-
-
-
-
-![说明: 2015-11-15_195707](https://img-blog.csdnimg.cn/direct/1cabe4aec7ec49e0ab4a933883d414f6.png)
-
 栈中只有顶端的元素才可以被外界使用，因此栈不允许有遍历行为
 
 栈中进入数据称为  --- **入栈**  `push`
 
 栈中弹出数据称为  --- **出栈**  `pop`
 
-
-
 生活中的栈：
-
-![](https://img-blog.csdnimg.cn/direct/217666d3c0bc416d87f7dfa448dbab98.png)
-
-
-
-
-
-![img](https://img-blog.csdnimg.cn/direct/2efd78dc49314b0db40a817b544fcc03.png)
-
-
 
 #### 3.5.2 stack 常用接口
 
@@ -3870,14 +3840,6 @@ int main() {
 
 **概念：**Queue是一种**先进先出**(First In First Out,FIFO)的数据结构，它有两个出口
 
-
-
-
-
-
-
-![说明: 2015-11-15_214429](https://img-blog.csdnimg.cn/direct/76f341d21587421494502c5cba5a255b.png)
-
 队列容器允许从一端新增元素，从另一端移除元素
 
 队列中只有队头和队尾才可以被外界使用，因此队列不允许有遍历行为
@@ -3886,17 +3848,7 @@ int main() {
 
 队列中出数据称为 --- **出队**    `pop`
 
-
-
 生活中的队列：
-
-![1547606785041](https://img-blog.csdnimg.cn/direct/2df363a41cad4c44a10fafd4b609d4f6.png)
-
-
-
-
-
-
 
 #### 3.6.2 queue 常用接口
 
@@ -4035,10 +3987,6 @@ int main() {
 
 
 STL中的链表是一个双向循环链表
-
-
-
-![说明: 2015-11-15_225145](https://img-blog.csdnimg.cn/direct/e8cd22eed4d047d0b46a934d4db62490.png)
 
 由于链表的存储方式并不是连续的内存空间，因此链表list中的迭代器只支持前移和后移，属于**双向迭代器**
 

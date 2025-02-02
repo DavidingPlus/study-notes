@@ -15,21 +15,21 @@
 
 ​	Visual Studio是我们用来编写C++程序的主要工具，我们先将它打开
 
-![1541383178746](https://img-blog.csdnimg.cn/direct/cf28ba05bff947dea87e0c2b26984752.png)
+![1541383178746](https://image.davidingplus.cn/images/2025/01/29/1541383178746.png)
 
 
 
-![1541384366413](https://img-blog.csdnimg.cn/direct/c4caa9d751e0456896ff38f1a8962c14.png)
+![1541384366413](https://image.davidingplus.cn/images/2025/01/29/1541384366413.png)
 
 #### 1.1.2 创建文件
 
 右键源文件，选择添加->新建项
 
-![1541383817248](https://img-blog.csdnimg.cn/direct/0667eaa482f44908bc02d0ae2499258c.png)
+![1541383817248](https://image.davidingplus.cn/images/2025/01/29/1541383817248.png)
 
 给C++文件起个名称，然后点击添加即可。
 
-![1541384140042](https://img-blog.csdnimg.cn/direct/1335558ed743409381f75c2e526e3e3c.png)
+![1541384140042](https://image.davidingplus.cn/images/2025/01/29/1541384140042.png)
 
 
 
@@ -51,7 +51,7 @@ int main() {
 
 #### 1.1.4 运行程序
 
-![1541384818688](https://img-blog.csdnimg.cn/direct/46aea4b8361f4344b2b1c2c3539ece9b.png)
+![1541384818688](https://image.davidingplus.cn/images/2025/01/29/1541384818688.png)
 
 
 
@@ -1101,8 +1101,6 @@ if语句的三种形式
 
 1. 单行格式if语句：`if(条件){ 条件满足执行的语句 }`
 
-   ![img](https://img-blog.csdnimg.cn/direct/6965d9ebcca448a6a72c0dc77da1d007.png)
-
    示例：
 
    ```C++
@@ -1143,10 +1141,6 @@ if语句的三种形式
 
 2. 多行格式if语句：`if(条件){ 条件满足执行的语句 }else{ 条件不满足执行的语句 };`
 
-![img](https://img-blog.csdnimg.cn/direct/611ad02ea7014d1aa389c8c55016cb1c.png)
-
-
-
 示例：
 
 ```C++
@@ -1184,14 +1178,6 @@ int main() {
 
 
 3. 多条件的if语句：`if(条件1){ 条件1满足执行的语句 }else if(条件2){条件2满足执行的语句}... else{ 都不满足执行的语句}`
-
-![img](https://img-blog.csdnimg.cn/direct/d1a077fe07f1407fbad2c167f3f9725c.png)
-
-
-
-
-
-
 
 示例：
 
@@ -1302,15 +1288,7 @@ int main() {
 
 **练习案例：** 三只小猪称体重
 
-有三只小猪ABC，请分别输入三只小猪的体重，并且判断哪只小猪最重？![三只小猪](https://img-blog.csdnimg.cn/direct/f1270534cd1c4b2db9bf1192aa20f954.png)
-
-
-
-
-
-
-
-
+有三只小猪ABC，请分别输入三只小猪的体重，并且判断哪只小猪最重？
 
 #### 4.1.2 三目运算符
 
@@ -1460,14 +1438,6 @@ int main() {
 
 **解释：**==只要循环条件的结果为真，就执行循环语句==
 
-![img](https://img-blog.csdnimg.cn/direct/9f57a11c61e04e15b0ff8813b10cb17c.png)
-
-
-
-
-
-
-
 **示例：**
 
 ```C++
@@ -1502,26 +1472,6 @@ int main() {
 
 **案例描述：**系统随机生成一个1到100之间的数字，玩家进行猜测，如果猜错，提示玩家数字过大或过小，如果猜对恭喜玩家胜利，并且退出游戏。
 
-
-
-![猜数字](https://img-blog.csdnimg.cn/direct/f56b63d20a814edcb670129060226e5a.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #### 4.2.2 do...while循环语句
 
 **作用：** 满足循环条件，执行循环语句
@@ -1529,10 +1479,6 @@ int main() {
 **语法：** `do{ 循环语句 } while(循环条件);`
 
 **注意：**与while的区别在于==do...while会先执行一次循环语句==，再判断循环条件
-
-![img](https://img-blog.csdnimg.cn/direct/9fc54d6e1c984e4eab207310d89c1d9f.png)
-
-
 
 **示例：**
 
@@ -1631,7 +1577,7 @@ int main() {
 
 **详解：**
 
-![1541673704101](https://img-blog.csdnimg.cn/direct/87e1ad0e85e44d52b3027d8c80151ad4.png)
+![1541673704101](https://image.davidingplus.cn/images/2025/01/29/1541673704101.png)
 
 
 
@@ -1653,27 +1599,13 @@ int main() {
 
 案例描述：从1开始数到数字100， 如果数字个位含有7，或者数字十位含有7，或者该数字是7的倍数，我们打印敲桌子，其余数字直接打印输出。
 
-![timg](https://img-blog.csdnimg.cn/direct/1b96ebd6a4284165afa496b7b481101b.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
 #### 4.2.4 嵌套循环
 
 **作用：** 在循环体中再嵌套一层循环，解决一些实际问题
 
 例如我们想在屏幕中打印如下图片，就需要利用嵌套循环
 
-![1541676003486](https://img-blog.csdnimg.cn/direct/d25544f7bd72495ca153b4a925847d76.png)
+![1541676003486](https://image.davidingplus.cn/images/2025/01/29/1541676003486.png)
 
 
 
@@ -1721,12 +1653,6 @@ int main() {
 **练习案例：**乘法口诀表
 
 案例描述：利用嵌套循环，实现九九乘法表
-
-![0006018857256120_b](https://img-blog.csdnimg.cn/direct/bd2fb7b5b3f44730b17f03c14e5f1e3f.png)
-
-
-
-
 
 ### 4.3 跳转语句
 
@@ -1950,7 +1876,7 @@ int main() {
 
 
 
-![1541748375356](https://img-blog.csdnimg.cn/direct/e173a3e5a4fe4244bba75fe001c770d5.png)
+![1541748375356](https://image.davidingplus.cn/images/2025/01/29/1541748375356.png)
 
 
 
@@ -2142,7 +2068,7 @@ int main() {
 2. 对每一对相邻元素做同样的工作，执行完毕后，找到第一个最大值。
 3. 重复以上的步骤，每次比较次数-1，直到不需要比较
 
-![1541905327273](https://img-blog.csdnimg.cn/direct/5254b8dabc624df19cf1fb7df546d543.png)
+![1541905327273](https://image.davidingplus.cn/images/2025/01/29/1541905327273.png)
 
 **示例：** 将数组 { 4,2,8,0,5,7,1,3,9 } 进行升序排序
 
@@ -2187,7 +2113,7 @@ int main() {
 
 二维数组就是在一维数组上，多加一个维度。
 
-![1541905559138](https://img-blog.csdnimg.cn/direct/435270d153b74bbf920a3f766dab2f10.png)
+![1541905559138](https://image.davidingplus.cn/images/2025/01/29/1541905559138.png)
 
 #### 5.3.1 二维数组定义方式
 
