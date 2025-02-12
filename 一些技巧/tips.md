@@ -433,3 +433,5 @@ updated: 2024-12-11 12:15:00
 
 - Linux 安装 Anaconda：[https://blog.csdn.net/feng8403000/article/details/127814067](https://blog.csdn.net/feng8403000/article/details/127814067)
 
+- 使用 Deno 部署静态网页，可使用 Deno Deploy 作为静态网页的托管平台，无缝衔接：[https://deno.org.cn/blog/hugo-blog-with-deno-deploy](https://deno.org.cn/blog/hugo-blog-with-deno-deploy)
+
