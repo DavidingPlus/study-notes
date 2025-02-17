@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2024-12-11 12:15:00
+updated: 2025-02-17 10:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -434,4 +434,12 @@ updated: 2024-12-11 12:15:00
 - Linux 安装 Anaconda：[https://blog.csdn.net/feng8403000/article/details/127814067](https://blog.csdn.net/feng8403000/article/details/127814067)
 
 - 使用 Deno 部署静态网页，可使用 Deno Deploy 作为静态网页的托管平台，无缝衔接：[https://deno.org.cn/blog/hugo-blog-with-deno-deploy](https://deno.org.cn/blog/hugo-blog-with-deno-deploy)
+
+- 使用 GitHub Proxy 加快 scoop bucket 的访问：[https://ghproxy.link/](https://ghproxy.link/)
+
+  - 使用方法：如代理地址是 https://proxy.top，bucket 仓库地址是 https://github.com/abc/bucket，则最后的地址是 https://proxy.top/github.com/abc/bucket。
+
+  - 如果实在无法访问，使用 ssh 地址即可，例如上面则是 git@github.com:abc/bucket
+
+- 自带 Cloudflare R2 对象存储上传的 picgo 升级版工具 piclist：[https://github.com/Kuingsmile/PicList](https://github.com/Kuingsmile/PicList)
 
