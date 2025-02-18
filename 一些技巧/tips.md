@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2025-02-17 10:00:00
+updated: 2025-02-18 11:35:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -441,5 +441,7 @@ updated: 2025-02-17 10:00:00
 
   - 如果实在无法访问，使用 ssh 地址即可，例如上面则是 git@github.com:abc/bucket
 
-- 自带 Cloudflare R2 对象存储上传的 picgo 升级版工具 piclist：[https://github.com/Kuingsmile/PicList](https://github.com/Kuingsmile/PicList)
+- 自带 Cloudflare R2 对象存储上传的 picgo 升级版工具 PicList：[https://github.com/Kuingsmile/PicList](https://github.com/Kuingsmile/PicList)
+
+- 使用 Cloudflare R2 和 PicList 搭建图床：[https://blog.xingchencloud.top/p/e613c591.html](https://blog.xingchencloud.top/p/e613c591.html)
 
