@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2025-02-18 11:35:00
+updated: 2025-02-19 10:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -233,16 +233,18 @@ updated: 2025-02-18 11:35:00
 
 - ccache清除缓存文件夹：使用命令`ccache -s -v`查看缓存的位置，删除即可
 
-- windows下安装npm和cnpm：[https://blog.csdn.net/qq_40323256/article/details/100825982](https://blog.csdn.net/qq_40323256/article/details/100825982)
+- windows 下安装 npm 和 cnpm：[https://blog.csdn.net/qq_40323256/article/details/100825982](https://blog.csdn.net/qq_40323256/article/details/100825982)
 
-- npm配置环境变量：[https://blog.csdn.net/InOneStep/article/details/110235287](https://blog.csdn.net/InOneStep/article/details/110235287)
+- npm 配置环境变量：[https://blog.csdn.net/InOneStep/article/details/110235287](https://blog.csdn.net/InOneStep/article/details/110235287)
 
-- 在npm官方发布自己的包
+  - 注意：Scoop 安装的 nodejs 最好也按照文章配置环境变量。不过有一点需要注意，node_global 和 node_cache 目录最好放在 Scoop 的 persist 目录下的对应位置。否则更新 nodejs 以后，对应的目录会被清除，导致使用出现问题。
+
+- 在 npm 官方发布自己的包
 
   - [https://blog.csdn.net/Angsts/article/details/116307509](https://blog.csdn.net/Angsts/article/details/116307509)
   - [https://blog.csdn.net/to_the_Future/article/details/122949610](https://blog.csdn.net/to_the_Future/article/details/122949610)
 
-- npm换源
+- npm 换源
 
   - 官方源
 
