@@ -1,6 +1,7 @@
 name: Sync Posts To Repo Blog
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -47,10 +48,12 @@ jobs:
       # 上传构建产物
       - name: Upload artifacts
         # 链接 https://github.com/actions/upload-artifact/
-        uses: actions/upload-artifact@v4.3.0
+        uses: actions/upload-artifact@v4
         with:
           name: _posts
           path: public
+          include-hidden-files: true
+          if-no-files-found: error
 
   # 设置为两个串行作业，个人认为这两个作业没必要完全绑成一个作业，为了不相互干扰和影响
   sync:
@@ -62,10 +65,10 @@ jobs:
       # 下载构建产物
       - name: Download artifact
         # 链接 https://github.com/actions/download-artifact
-        uses: actions/download-artifact@v4.0.0
+        uses: actions/download-artifact@v4
         with:
           name: _posts
-          path: dist
+          path: public
 
       # 创建 repo blog 的目录
       - name: Create directory for repo blog
@@ -86,7 +89,7 @@ jobs:
         run: |
 
           rm -rf blog/source/_posts/*
-          cp -r dist/* blog/source/_posts/
+          cp -r public/* blog/source/_posts/
           cd blog/
 
           git config user.name "github-actions[bot]"
@@ -95,16 +98,3 @@ jobs:
           git add source/_posts/
           git commit -m "Sync posts from repo https://github.com/DavidingPlus/study-notes"
           git push -u origin master
-
-      # 触发 blog 的 CI
-      # 本来是通过 blog 的 _posts 分支进行中转的，但是 github 不允许连续两次触发 push 的 action，为了防止死循环，因此需要走手动 Trigger 的流程。现在直接一步到位，因此这一步骤注释。
-      # - name: Trigger action in branch master
-      # # 链接 https://github.com/convictional/trigger-workflow-and-wait
-      #   uses: convictional/trigger-workflow-and-wait@v1.6.1
-      #   with:
-      #     owner: DavidingPlus
-      #     repo: blog
-      #     github_user: DavidingPlus
-      #     workflow_file_name: build.yml
-      #     ref: master
-      #     github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
