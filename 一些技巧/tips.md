@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2025-02-19 10:50:00
+updated: 2025-04-15 17:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -427,6 +427,8 @@ updated: 2025-02-19 10:50:00
 
 - 使用 1Panel 自动申请和续签证书：[https://hin.cool/posts/sslfor1panel.html](https://hin.cool/posts/sslfor1panel.html)
 
+  - 截止 2025.04.15，由于我将域名迁移到了 Cloudflare，使用腾讯云的 DNS 账户续签一直卡住，最终失败，可能和 DNS 域名解析服务器有关。解决办法是使用 Cloudflare 的 DNS 账户。
+
 - 腾讯云服务器 root 远程登陆被 ssh 服务器拒绝密码（即使密码正确）：[https://blog.csdn.net/COCO56/article/details/123770645](https://blog.csdn.net/COCO56/article/details/123770645)
 
 - Github Action ssh-deploy 的配置注意事项（如何让 Github 工作流把文件自动推送到我们自己的云服务器）：[https://github.com/easingthemes/ssh-deploy/issues/143#issuecomment-2490116974](https://github.com/easingthemes/ssh-deploy/issues/143#issuecomment-2490116974)
@@ -446,4 +448,8 @@ updated: 2025-02-19 10:50:00
 - 自带 Cloudflare R2 对象存储上传的 picgo 升级版工具 PicList：[https://github.com/Kuingsmile/PicList](https://github.com/Kuingsmile/PicList)
 
 - 使用 Cloudflare R2 和 PicList 搭建图床：[https://blog.xingchencloud.top/p/e613c591.html](https://blog.xingchencloud.top/p/e613c591.html)
+
+- 1Panel 搭建 frp 服务端并使用 Openresty 反向代理：[https://www.cnblogs.com/drcode/p/18455476/panel-frps-reverse-proxy-https](https://www.cnblogs.com/drcode/p/18455476/panel-frps-reverse-proxy-https)
+
+- Frp 安全连接远程桌面，简单、安全、可视化（安全穿透）：[https://www.bilibili.com/video/BV1hZtme2Esu/](https://www.bilibili.com/video/BV1hZtme2Esu/)
 
