@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2025-04-15 17:05:00
+updated: 2025-05-16 16:25:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -421,9 +421,10 @@ updated: 2025-04-15 17:05:00
 
   - 通过 Scoop 安装：`scoop install qimgv-video`
 
-- Windows PDF 阅读器：[https://github.com/sumatrapdfreader/sumatrapdf](https://github.com/sumatrapdfreader/sumatrapdf)
+- Windows PDF 阅读器：
 
-  - 通过 Scoop 安装：`scoop install sumatrapdf`
+  - [PDF24 Creator](https://tools.pdf24.org/en/creator)（推荐），通过 Scoop 安装：`scoop install pdf24-creator-np`
+  - [sumatrapdf](https://github.com/sumatrapdfreader/sumatrapdf)，通过 Scoop 安装：`scoop install sumatrapdf`
 
 - 使用 1Panel 自动申请和续签证书：[https://hin.cool/posts/sslfor1panel.html](https://hin.cool/posts/sslfor1panel.html)
 
