@@ -1,6 +1,22 @@
+---
+title: Rtems Source Code
+categories:
+  - Linux 学习
+  - 内核层
+abbrlink: 4936fe45
+date: 2025-05-19 12:50:00
+updated: 2025-05-19 12:50:00
+---
+
+<meta name="referrer" content="no-referrer"/>
+
 # Rtems 源码阅读
 
+RTEMS（Real‑Time Executive for Multiprocessor Systems）是一款始于 1988 年、1993 年正式发布的开源实时操作系统，专为多处理器嵌入式环境设计，支持 POSIX 和 BSD 套接字等开放标准 API，并可运行于 ARM、PowerPC、SPARC、MIPS、RISC‑V 等 18 种处理器架构及近 200 个 BSP（Board Support Package）上。它以库形式发布，应用程序与内核静态链接为单一映像，采用单地址空间、无用户/内核隔离设计，从而简化资源管理并确保确定性响应。2025 年 1 月 22 日发布的 6.1 版本全面将构建系统由 GNU Autotools 切换到基于 Python 的 Waf，大幅提升了构建速度并优化了依赖管理，同时引入了改进的调度算法和增强的 SMP 支持。
+
 本文章用于记录阅读 Rtems 内核源码的笔记，尝试理解其中的逻辑。Rtems 内核的版本是 6.1，在线代码网站见 [https://rtems.davidingplus.cn/lxr/source/](https://rtems.davidingplus.cn/lxr/source/)。
+
+<!-- more -->
 
 # 文件系统流程
 
