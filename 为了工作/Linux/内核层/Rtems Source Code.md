@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-05-19 12:50:00
+updated: 2025-05-21 23:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -391,7 +391,7 @@ static int do_open(
     // 设置 iop 的文件控制标志，转换 POSIX oflag 为 LibIO 内部标志。
     rtems_libio_iop_flags_set(iop, rtems_libio_fcntl_flags(oflag));
 
-    // 调用底层文件系统驱动的 open 函数打开文件。
+    // 调用底层文件系统的 open 函数打开文件。
     rv = (*iop->pathinfo.handlers->open_h)(iop, path, oflag, mode);
 
     // 如果打开成功。
@@ -543,18 +543,18 @@ rtems_filesystem_eval_path_extract_currentloc(&ctx, &iop->pathinfo);
 rtems_filesystem_eval_path_cleanup(&ctx);
 ```
 
-#### 底层文件系统驱动的 open 函数
+#### 底层文件系统的 open 函数
 
 拿到所有信息以后，do_open() 函数中调用底层文件系统的 open() 函数真正打开文件：
 
 ```c
-// 调用底层文件系统驱动的 open 函数打开文件。
+// 调用底层文件系统的 open 函数打开文件。
 rv = (*iop->pathinfo.handlers->open_h)(iop, path, oflag, mode);
 ```
 
 ## close 函数
 
-close() 函数的源码如下。在前面更改完状态标志位后，还是会进入到底层文件系统驱动的 close_h 函数。
+close() 函数的源码如下。在前面更改完状态标志位后，还是会进入到底层文件系统的 close_h 函数。
 
 ```c
 int close(int fd)
@@ -631,3 +631,79 @@ int close(int fd)
     return rc; // 返回关闭操作的结果，通常为 0 表示成功，-1 表示失败（并设置 errno）。
 }
 ```
+
+## read 函数
+
+read() 函数的源码如下。可以看出除了做了一些检查以外，直接调用了底层文件系统的 read_h() 函数。
+
+```c
+ssize_t read(
+    int fd,       // 文件描述符，标识要读取的文件或设备。
+    void *buffer, // 指向用户提供的内存缓冲区。
+    size_t count  // 期望读取的字节数。
+)
+{
+    rtems_libio_t *iop; // 指向文件描述符对应的 I/O 对象结构体。
+    ssize_t n;          // 实际读取的字节数或错误代码。
+
+    // 检查 buffer 是否为 NULL，防止非法内存访问。
+    rtems_libio_check_buffer(buffer);
+
+    // 检查读取字节数是否为 0 或超出合理范围。
+    rtems_libio_check_count(count);
+
+    // 获取对应的 I/O 对象，并检查是否具有可读权限。
+    // 若无效或不可读，则自动设置 errno = EBADF 并返回 -1。
+    LIBIO_GET_IOP_WITH_ACCESS(fd, iop, LIBIO_FLAGS_READ, EBADF);
+
+    /*
+     * 正式执行读取操作：
+     * 调用底层文件系统或设备驱动提供的 read 函数。
+     * 由 handlers->read_h 函数指针调用完成具体的读取逻辑。
+     */
+    n = (*iop->pathinfo.handlers->read_h)(iop, buffer, count);
+
+    // 读取完成后释放 I/O 对象（减少引用计数等）。
+    rtems_libio_iop_drop(iop);
+
+    return n; // 返回实际读取的字节数，若出错则为负值并设置 errno。
+}
+```
+
+## write 函数
+
+write() 函数的源码如下。大致逻辑同样同 read 函数。
+
+```c
+ssize_t write(
+    int fd,             // 文件描述符，表示要写入的目标文件或设备。
+    const void *buffer, // 用户数据缓冲区的地址。
+    size_t count        // 要写入的字节数。
+)
+{
+    rtems_libio_t *iop; // 指向文件描述符关联的 I/O 对象。
+    ssize_t n;          // 实际写入的字节数或错误码。
+
+    // 检查 buffer 是否为 NULL，防止非法内存访问。
+    rtems_libio_check_buffer(buffer);
+
+    // 检查写入的字节数是否合理（非零、未超限）。
+    rtems_libio_check_count(count);
+
+    // 获取 I/O 对象，并检查是否具有写权限。
+    // 若非法或不可写，则设置 errno = EBADF，并返回 -1。
+    LIBIO_GET_IOP_WITH_ACCESS(fd, iop, LIBIO_FLAGS_WRITE, EBADF);
+
+    /*
+     * 调用底层设备或文件系统提供的写入实现。
+     * 实际写入的逻辑由 write_h 函数指针指定。
+     */
+    n = (*iop->pathinfo.handlers->write_h)(iop, buffer, count);
+
+    // 操作完成后释放 I/O 对象（例如减少引用计数）。
+    rtems_libio_iop_drop(iop);
+
+    return n; // 返回写入的字节数，失败时为负值并设置 errno。
+}
+```
+
