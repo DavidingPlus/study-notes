@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-05-21 23:00:00
+updated: 2025-05-22 16:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -18,9 +18,11 @@ RTEMS（Real‑Time Executive for Multiprocessor Systems）是一款始于 1988 
 
 <!-- more -->
 
-# 文件系统流程
+# 文件系统
 
-## open 函数
+## 系统调用
+
+### open 函数
 
 open() 函数的源码如下：
 
@@ -56,7 +58,7 @@ int open(const char *path, int oflag, ...)
 }
 ```
 
-### struct rtems_libio_t
+#### struct rtems_libio_t
 
 rtems_libio_t 结构体定义如下。该结构体用于表示一个文件描述符的内部状态，Rtems 中每打开一个文件都会关联一个该结构体的实例，通常简称为 iop（I/O pointer）。
 
@@ -86,7 +88,7 @@ struct rtems_libio_tt
 };
 ```
 
-#### struct rtems_filesystem_location_info_t
+##### struct rtems_filesystem_location_info_t
 
 rtems_filesystem_location_info_t 结构体定义如下。它表示一个路径位置，用于描述文件系统中某个具体节点（如文件或目录）的位置及其访问方式。
 
@@ -189,7 +191,7 @@ struct rtems_filesystem_mount_table_entry_tt
 };
 ```
 
-### rtems_libio_allocate()
+#### rtems_libio_allocate()
 
 open 函数中分配文件描述符结构使用的函数是 rtems_libio_allocate()，定义如下：
 
@@ -229,7 +231,7 @@ rtems_libio_t *rtems_libio_allocate(void)
 }
 ```
 
-#### rtems_libio_iop_free_head
+##### rtems_libio_iop_free_head
 
 rtems_libio_iop_free_head 是一个全局变量，用于维护 Rtems 文件描述符（rtems_libio_t）的空闲链表头指针。
 
@@ -271,7 +273,7 @@ rtems_libio_iops 是 Rtems 预先分配的 I/O 控制块数组，配置了 CONFI
 	rtems_libio_t rtems_libio_iops[ CONFIGURE_MAXIMUM_FILE_DESCRIPTORS ];
 ```
 
-### do_open()
+#### do_open()
 
 open() 函数中分配好文件描述符结构以后，最终会到达 do_open() 函数的位置进行处理。
 
@@ -449,7 +451,7 @@ static int do_open(
 }
 ```
 
-#### 路径解析过程
+##### 路径解析过程
 
 do_open() 涉及到的路径解析代码片段如下：
 
@@ -543,7 +545,7 @@ rtems_filesystem_eval_path_extract_currentloc(&ctx, &iop->pathinfo);
 rtems_filesystem_eval_path_cleanup(&ctx);
 ```
 
-#### 底层文件系统的 open 函数
+##### 底层文件系统的 open 函数
 
 拿到所有信息以后，do_open() 函数中调用底层文件系统的 open() 函数真正打开文件：
 
@@ -552,7 +554,7 @@ rtems_filesystem_eval_path_cleanup(&ctx);
 rv = (*iop->pathinfo.handlers->open_h)(iop, path, oflag, mode);
 ```
 
-## close 函数
+### close 函数
 
 close() 函数的源码如下。在前面更改完状态标志位后，还是会进入到底层文件系统的 close_h 函数。
 
@@ -632,7 +634,7 @@ int close(int fd)
 }
 ```
 
-## read 函数
+### read 函数
 
 read() 函数的源码如下。可以看出除了做了一些检查以外，直接调用了底层文件系统的 read_h() 函数。
 
@@ -670,7 +672,7 @@ ssize_t read(
 }
 ```
 
-## write 函数
+### write 函数
 
 write() 函数的源码如下。大致逻辑同样同 read 函数。
 
@@ -706,4 +708,168 @@ ssize_t write(
     return n; // 返回写入的字节数，失败时为负值并设置 errno。
 }
 ```
+
+## 文件系统启动流程
+
+### rtems_filesystem_initialize()
+
+该函数用于初始化 Rtems 的根文件系统，通常是 IMFS。[官方文档](https://docs.rtems.org/docs/6.1/filesystem/system_init.html) 提到，其他文件系统可以被挂载，但它们只能挂载到基础文件系统中的某个目录挂载点。对于我们想注册的自定义文件系统，有两种手段，一种是在根文件系统挂载好以后，找到某个目录手动挂载新文件系统，另一种是直接修改 rtems_filesystem_root_configuration 根文件系统的配置，使用我们自己的文件系统，这样 Rtems 在启动的时候就会默认跑我们自己的文件系统。
+
+```c
+void rtems_filesystem_initialize(void)
+{
+    int rv = 0;
+
+    // 获取根文件系统的挂载配置信息（通常是 IMFS）。
+    const rtems_filesystem_mount_configuration *root_config =
+        &rtems_filesystem_root_configuration;
+
+    // 挂载根文件系统（通常是内存文件系统 IMFS）。
+    rv = mount(
+        root_config->source,         // 挂载源（IMFS 为 NULL）。
+        root_config->target,         // 挂载点（根目录 "/"）。
+        root_config->filesystemtype, // 文件系统类型（如 "imfs"）。
+        root_config->options,        // 挂载选项（一般为 0）。
+        root_config->data            // 传递给文件系统的私有数据（通常为 NULL）。
+    );
+
+    // 如果挂载失败，触发致命错误并停止系统。
+    if (rv != 0)
+        rtems_fatal_error_occurred(0xABCD0002);
+
+    /*
+     * 传统 UNIX 系统将设备节点放在 "/dev" 目录，
+     * 所以我们手动在根文件系统中创建 "/dev" 目录。
+     * 权限为 0755：所有者可读写执行，组用户和其他用户可读执行。
+     */
+    rv = mkdir("/dev", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+
+    // 如果 "/dev" 目录创建失败，也触发致命错误。
+    if (rv != 0)
+        rtems_fatal_error_occurred(0xABCD0003);
+
+    /*
+     * 到此为止，根文件系统（IMFS）和 /dev 目录已经建立。
+     *
+     * 下面这段注释说明：
+     * - 如果你想挂载其他文件系统（如 FAT、NFS 等），你必须先创建挂载点目录。
+     * - 如果该文件系统依赖设备（如块设备 /dev/sd0），则必须等设备驱动初始化完成。
+     * - 所以此函数只做了最基本的文件系统初始化，并没有自动挂载其他文件系统。
+     * - 后续可以手动使用 mount() 挂载其他子文件系统。
+     */
+}
+```
+
+#### struct rtems_filesystem_mount_configuration
+
+挂载根文件系统的挂载配置信息的结构体是 struct rtems_filesystem_mount_configuration。该结构体是 Rtems 中用于挂载文件系统时传递参数的配置结构。它的作用是将挂载一个文件系统所需的各种信息（如设备源、挂载点、文件系统类型等）集中在一起，作为参数传给 mount() 函数。
+
+```c
+typedef struct
+{
+    // 描述挂载源，通常是设备路径，如 "/dev/sd0"；对 IMFS 等内存文件系统可为 NULL。
+    const char *source;
+
+    // 挂载目标目录，必须是系统中已存在的路径，如 "/" 或 "/mnt/usb"。
+    const char *target;
+
+    // 文件系统类型的名称字符串，如 "imfs"、"dosfs"、"devfs" 等。
+    const char *filesystemtype;
+
+    // 挂载选项，定义为 rtems_filesystem_options_t 类型，控制如只读、读写等行为。
+    rtems_filesystem_options_t options;
+
+    // 指向文件系统特定的附加数据，一般为 NULL，某些文件系统可能使用此字段传递配置。
+    const void *data;
+} rtems_filesystem_mount_configuration;
+```
+
+在 rtems_filesystem_initialize() 中，根文件系统的配置是预定义好的全局变量 rtems_filesystem_root_configuration。
+
+```c
+const rtems_filesystem_mount_configuration rtems_filesystem_root_configuration = {
+    NULL,
+    NULL,
+    "/",
+    RTEMS_FILESYSTEM_READ_WRITE,
+    &IMFS_root_mount_data,
+};
+```
+
+### rtems_filesystem_register()
+
+rtems_filesystem_register() 用于在 Rtems 操作系统中注册一个新的文件系统类型。它接收文件系统的类型名称和对应的挂载函数指针，动态分配内存创建一个文件系统节点，将类型名称和挂载函数保存到该节点中，并检查该类型是否已被注册。如果未注册，则将该节点添加到全局文件系统链表完成注册；如果已注册，则释放内存并返回错误。通过这个注册机制，系统能够识别和管理多种文件系统类型，并在需要时调用对应的挂载函数进行挂载操作。
+
+```c
+// 文件系统类型字符串，例如 "imfs"、"dosfs" 等。
+int rtems_filesystem_register(
+    const char *type,
+    // 挂载处理函数指针，用于挂载该类型的文件系统。
+    rtems_filesystem_fsmount_me_t mount_h)
+{
+    // 获取全局文件系统链表控制结构的指针。
+    rtems_chain_control *chain = &filesystem_chain;
+
+    // 计算文件系统类型字符串长度（包含字符串结束符）。
+    size_t type_size = strlen(type) + 1;
+
+    // 计算要分配的内存大小：filesystem_node结构体大小 + 文件系统类型字符串大小。
+    size_t fsn_size = sizeof(filesystem_node) + type_size;
+
+    // 动态分配内存用于存储新文件系统节点和类型字符串。
+    filesystem_node *fsn = malloc(fsn_size);
+
+    // 指向分配内存中，存储类型字符串的位置（紧接在filesystem_node结构体之后）。
+    char *type_storage = (char *)fsn + sizeof(*fsn);
+
+    // 如果内存分配失败。
+    if (fsn == NULL)
+        // 设置错误码为“内存不足”，返回-1。
+        rtems_set_errno_and_return_minus_one(ENOMEM);
+
+    // 将传入的文件系统类型字符串拷贝到刚分配的内存中。
+    memcpy(type_storage, type, type_size);
+
+    // 设置节点中的type指针指向存储的类型字符串。
+    fsn->entry.type = type_storage;
+
+    // 设置节点中的挂载处理函数指针。
+    fsn->entry.mount_h = mount_h;
+
+    // 加锁，防止多线程环境下链表操作冲突。
+    rtems_libio_lock();
+
+    // 检查链表中是否已注册过该类型的文件系统。
+    if (rtems_filesystem_get_mount_handler(type) == NULL)
+    {
+        // 初始化新节点的链表节点结构。
+        rtems_chain_initialize_node(&fsn->node);
+
+        // 将新节点追加到文件系统链表中（无锁版本，锁由外部保证）。
+        rtems_chain_append_unprotected(chain, &fsn->node);
+    }
+    else
+    {
+        // 如果已注册，解锁。
+        rtems_libio_unlock();
+
+        // 释放刚分配的内存。
+        free(fsn);
+
+        // 设置错误码为“无效参数”（文件系统类型重复），返回-1。
+        rtems_set_errno_and_return_minus_one(EINVAL);
+    }
+
+    // 解锁。
+    rtems_libio_unlock();
+
+    // 成功返回0。
+    return 0;
+}
+```
+
+# 参考文档
+
+1. [RTEMS Filesystem Design Guide (6.1). — RTEMS Filesystem Design Guide 6.1 (22nd January 2025) documentation](https://docs.rtems.org/docs/6.1/filesystem/index.html)
+2. [rtems文件系统部分 - 《ext4文件系统移植》 - 极客文档](https://geekdaxue.co/read/linggs@qnf7q6/pnhxbw)
 
