@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-05-22 16:30:00
+updated: 2025-05-25 15:50:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -138,7 +138,7 @@ struct _rtems_filesystem_file_handlers_r
 };
 ```
 
-另一个成员是 struct rtems_filesystem_mount_table_entry_tt。这个结构体代表一个完整的挂载项（mount entry），Rtems 会为每个挂载的文件系统维护一份这样的结构体实例，挂载后保存在全局挂载表中。它贯穿于路径解析、节点定位、读写操作、卸载管理等核心逻辑中。简而言之，它是挂载文件系统的核心描述对象。
+另一个成员是 struct rtems_filesystem_mount_table_entry_tt。这个结构体的作用是为每一个已挂载的文件系统提供一个集中式的描述，包含了文件系统的根节点信息、挂载点、类型、设备、访问控制状态等关键信息。Rtems 会维护一个这样的挂载表链表，每个表项都是这个结构体的一个实例。在挂载和卸载文件系统时，Rtems 会对这个结构体进行相应的初始化、操作或释放。文件系统的挂载、查找路径、访问权限、卸载等都依赖于这个结构体中记录的信息。
 
 ```c
 // 表示一个挂载的文件系统实例，是 Rtems 文件系统挂载表中的一项。
@@ -188,6 +188,70 @@ struct rtems_filesystem_mount_table_entry_tt
 
     // 发起卸载操作的任务 ID，卸载完成后通过事件通知该任务。
     rtems_id unmount_task;
+};
+```
+
+在 RTEMS 中，文件系统的操作由 rtems_filesystem_operations_table 结构体统一管理，它定义了路径解析、节点创建、删除、克隆等核心操作函数，作用上相当于 Linux 中的 inode_operations。每个挂载的文件系统通过 rtems_filesystem_mount_table_entry_t 表示，类似于 Linux 的 super_block，其中包含了指向操作表 ops 的指针。当用户发起如 open、read、write 等文件访问请求时，系统首先通过 eval_path_h 函数解析路径并定位到目标节点，然后使用该节点中挂载的 rtems_filesystem_file_handlers_r（类似 Linux 的 file_operations）来完成具体操作。整个设计将挂载管理、路径解析和文件操作职责分离，形成清晰的模块边界，同时借鉴了 Linux 文件系统架构的思想。
+
+```c
+struct _rtems_filesystem_operations_table
+{
+    // 挂载点加锁函数，防止并发访问挂载点结构。
+    rtems_filesystem_mt_entry_lock_t lock_h;
+
+    // 挂载点解锁函数，与 lock_h 成对使用。
+    rtems_filesystem_mt_entry_unlock_t unlock_h;
+
+    // 路径解析函数，将路径转换为文件系统节点。
+    rtems_filesystem_eval_path_t eval_path_h;
+
+    // 创建硬链接的函数。
+    rtems_filesystem_link_t link_h;
+
+    // 判断两个节点是否表示同一对象的函数。
+    rtems_filesystem_are_nodes_equal_t are_nodes_equal_h;
+
+    // 创建文件系统节点（如文件、目录、设备节点）的函数。
+    rtems_filesystem_mknod_t mknod_h;
+
+    // 删除文件系统节点的函数。
+    rtems_filesystem_rmnod_t rmnod_h;
+
+    // 更改节点权限的函数，相当于 chmod。
+    rtems_filesystem_fchmod_t fchmod_h;
+
+    // 更改节点所有者信息的函数，相当于 chown。
+    rtems_filesystem_chown_t chown_h;
+
+    // 克隆节点的函数，通常用于目录项引用增加时复制节点。
+    rtems_filesystem_clonenode_t clonenod_h;
+
+    // 释放节点资源的函数，通常在节点引用减少到 0 时调用。
+    rtems_filesystem_freenode_t freenod_h;
+
+    // 文件系统挂载处理函数，处理实际挂载逻辑。
+    rtems_filesystem_mount_t mount_h;
+
+    // 文件系统卸载处理函数，释放挂载相关资源。
+    rtems_filesystem_unmount_t unmount_h;
+
+    // 文件系统自定义卸载钩子，用于挂载入口被清理时的回调。
+    rtems_filesystem_fsunmount_me_t fsunmount_me_h;
+
+    // 修改节点时间戳信息的函数，相当于 utimensat。
+    rtems_filesystem_utimens_t utimens_h;
+
+    // 创建符号链接的函数。
+    rtems_filesystem_symlink_t symlink_h;
+
+    // 读取符号链接目标路径的函数。
+    rtems_filesystem_readlink_t readlink_h;
+
+    // 重命名文件或目录的函数。
+    rtems_filesystem_rename_t rename_h;
+
+    // 获取文件系统统计信息的函数，如空间大小、inode 数等。
+    rtems_filesystem_statvfs_t statvfs_h;
 };
 ```
 
@@ -865,6 +929,143 @@ int rtems_filesystem_register(
 
     // 成功返回0。
     return 0;
+}
+```
+
+#### rtems_filesystem_fsmount_me_t
+
+rtems_filesystem_fsmount_me_t 是一个函数指针，定义如下：
+
+```c
+/**
+ * @brief Initializes a file system instance.
+ *
+ * This function must initialize the file system root node in the mount table
+ * entry.
+ *
+ * @param[in] mt_entry The mount table entry.
+ * @param[in] data The data provided by the user.
+ *
+ * @retval 0 Successful operation.
+ * @retval -1 An error occurred. The errno is set to indicate the error.
+ */
+
+// 定义一个函数指针类型 rtems_filesystem_fsmount_me_t，返回值为 int。
+// 返回值为 0 表示挂载成功，-1 表示失败并设置 errno。
+typedef int (*rtems_filesystem_fsmount_me_t)(
+    // 第一个参数是挂载表项指针，表示要挂载的文件系统实例。
+    rtems_filesystem_mount_table_entry_t *mt_entry,
+    // 第二个参数是用户提供的初始化数据（例如设备路径或选项）。
+    const void *data);
+```
+
+struct rtems_filesystem_mount_table_entry_t 结构体的作用是为每一个已挂载的文件系统提供一个集中式的描述，包含了文件系统的根节点信息、挂载点、类型、设备、访问控制状态等关键信息。Rtems 会维护一个这样的挂载表链表，每个表项都是这个结构体的一个实例。在挂载和卸载文件系统时，Rtems 会对这个结构体进行相应的初始化、操作或释放。文件系统的挂载、查找路径、访问权限、卸载等都依赖于这个结构体中记录的信息。
+
+关于 struct rtems_filesystem_mount_table_entry_tt 和 struct _rtems_filesystem_operations_table，前面在 struct rtems_libio_t 的时候提到过，不再赘述。
+
+### rtems_fsmount
+
+```c
+// 批量挂载文件系统的函数。
+// 根据传入的 fstab 表顺序创建挂载点并执行 mount 操作。
+// 挂载成功或失败根据用户提供的 report/abort 标志控制终止行为。
+// 返回 0 表示全部挂载成功，返回 -1 表示失败并设置 errno。
+int rtems_fsmount(
+    const rtems_fstab_entry *fstab_ptr, // 指向文件系统挂载表的首项。
+    size_t fstab_count,                 // 表项数量。
+    size_t *fail_idx                    // 如果挂载失败，记录失败的索引。
+)
+{
+    int rc = 0;             // 函数最终返回值，0 表示成功。
+    int tmp_rc;             // 临时返回值，用于每一项操作的状态。
+    size_t fstab_idx = 0;   // 当前处理的表项索引。
+    bool terminate = false; // 是否中止挂载过程。
+
+    // 遍历挂载表中的所有条目，逐项处理。
+    while (!terminate && (fstab_idx < fstab_count))
+    {
+        tmp_rc = 0;
+
+        // 步骤 1：尝试创建挂载点路径（如 /mnt/sdcard）。
+        if (tmp_rc == 0)
+        {
+            tmp_rc = rtems_mkdir(fstab_ptr->target, S_IRWXU | S_IRWXG | S_IRWXO);
+            if (tmp_rc != 0)
+            {
+                // 若启用错误报告标志，打印错误信息。
+                if (0 != (fstab_ptr->report_reasons & FSMOUNT_MNTPNT_CRTERR))
+                {
+                    fprintf(stdout, "fsmount: creation of mount point \"%s\" failed: %s\n",
+                            fstab_ptr->target,
+                            strerror(errno));
+                }
+                // 若启用失败终止标志，设置中止挂载流程。
+                if (0 != (fstab_ptr->abort_reasons & FSMOUNT_MNTPNT_CRTERR))
+                {
+                    terminate = true;
+                    rc = tmp_rc;
+                }
+            }
+        }
+
+        // 步骤 2：尝试执行挂载操作。
+        if (tmp_rc == 0)
+        {
+            tmp_rc = mount(fstab_ptr->source,
+                           fstab_ptr->target,
+                           fstab_ptr->type,
+                           fstab_ptr->options,
+                           NULL);
+            if (tmp_rc != 0)
+            {
+                // 挂载失败，打印错误信息（若配置了报告标志）。
+                if (0 != (fstab_ptr->report_reasons & FSMOUNT_MNT_FAILED))
+                {
+                    fprintf(stdout, "fsmount: mounting of \"%s\" to \"%s\" failed: %s\n",
+                            fstab_ptr->source,
+                            fstab_ptr->target,
+                            strerror(errno));
+                }
+                // 挂载失败，根据配置判断是否终止流程。
+                if (0 != (fstab_ptr->abort_reasons & FSMOUNT_MNT_FAILED))
+                {
+                    terminate = true;
+                    rc = tmp_rc;
+                }
+            }
+            else
+            {
+                // 挂载成功，根据配置打印信息。
+                if (0 != (fstab_ptr->report_reasons & FSMOUNT_MNT_OK))
+                {
+                    fprintf(stdout, "fsmount: mounting of \"%s\" to \"%s\" succeeded\n",
+                            fstab_ptr->source,
+                            fstab_ptr->target);
+                }
+                // 挂载成功，根据配置判断是否终止流程。
+                if (0 != (fstab_ptr->abort_reasons & FSMOUNT_MNT_OK))
+                {
+                    terminate = true;
+                }
+            }
+        }
+
+        // 步骤 3：准备处理下一条挂载表项。
+        if (!terminate)
+        {
+            fstab_ptr++;
+            fstab_idx++;
+        }
+    }
+
+    // 如果用户提供了失败索引记录指针，则写入最后处理的索引。
+    if (fail_idx != NULL)
+    {
+        *fail_idx = fstab_idx;
+    }
+
+    // 返回整体挂载操作的状态。
+    return rc;
 }
 ```
 
