@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-05-25 15:50:00
+updated: 2025-05-26 11:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -22,7 +22,7 @@ RTEMS（Real‑Time Executive for Multiprocessor Systems）是一款始于 1988 
 
 ## 系统调用
 
-### open 函数
+### open()
 
 open() 函数的源码如下：
 
@@ -114,6 +114,8 @@ typedef struct rtems_filesystem_location_info_tt
 } rtems_filesystem_location_info_t;
 ```
 
+##### struct rtems_filesystem_file_handlers_r
+
 比较重要的成员是 `const rtems_filesystem_file_handlers_r *handlers`，该结构类似于 Linux 内核中的 file_operations，定义如下：
 
 ```c
@@ -138,9 +140,14 @@ struct _rtems_filesystem_file_handlers_r
 };
 ```
 
-另一个成员是 struct rtems_filesystem_mount_table_entry_tt。这个结构体的作用是为每一个已挂载的文件系统提供一个集中式的描述，包含了文件系统的根节点信息、挂载点、类型、设备、访问控制状态等关键信息。Rtems 会维护一个这样的挂载表链表，每个表项都是这个结构体的一个实例。在挂载和卸载文件系统时，Rtems 会对这个结构体进行相应的初始化、操作或释放。文件系统的挂载、查找路径、访问权限、卸载等都依赖于这个结构体中记录的信息。
+##### struct rtems_filesystem_mount_table_entry_tt
+
+另一个成员是 struct rtems_filesystem_mount_table_entry_tt。这个结构体的作用是为每一个已挂载的文件系统提供一个集中式的描述，包含了文件系统的根节点信息、挂载点、类型、设备、访问控制状态等关键信息。对每个文件系统，Rtems 会维护一个这样的挂载表链表。在挂载和卸载文件系统时，Rtems 会对这个结构体进行相应的初始化、操作或释放。文件系统的挂载、查找路径、访问权限、卸载等都依赖于这个结构体中记录的信息。
 
 ```c
+typedef struct rtems_filesystem_mount_table_entry_tt
+    rtems_filesystem_mount_table_entry_t;
+
 // 表示一个挂载的文件系统实例，是 Rtems 文件系统挂载表中的一项。
 struct rtems_filesystem_mount_table_entry_tt
 {
@@ -300,6 +307,8 @@ rtems_libio_t *rtems_libio_allocate(void)
 rtems_libio_iop_free_head 是一个全局变量，用于维护 Rtems 文件描述符（rtems_libio_t）的空闲链表头指针。
 
 在初始化阶段，Rtems 会预分配一定数量的 rtems_libio_t 结构，并通过 data1 字段将它们串成一个单向链表。rtems_libio_iop_free_head 指向第一个可用节点。每次 rtems_libio_allocate() 被调用时，从头部取出一个节点，并更新链表。如果分配后链表为空，rtems_libio_iop_free_tail 会被指向 &rtems_libio_iop_free_head，表示空了。释放节点时会调用一个对应的 rtems_libio_free(iop)，将节点重新挂回链表尾部。
+
+那其实对于 rtems_libio_t 链表而言，在预分配的时候就需要将 rtems_filesystem_location_info_tt 中关于文件系统全局的 rtems_filesystem_file_handlers_r 和 rtems_filesystem_mount_table_entry_tt 信息写入，这样才能保证系统调用的时候能够成功调用底层函数。
 
 初始化阶段的函数逻辑如下：
 
@@ -618,7 +627,7 @@ rtems_filesystem_eval_path_cleanup(&ctx);
 rv = (*iop->pathinfo.handlers->open_h)(iop, path, oflag, mode);
 ```
 
-### close 函数
+### close()
 
 close() 函数的源码如下。在前面更改完状态标志位后，还是会进入到底层文件系统的 close_h 函数。
 
@@ -698,7 +707,7 @@ int close(int fd)
 }
 ```
 
-### read 函数
+### read()
 
 read() 函数的源码如下。可以看出除了做了一些检查以外，直接调用了底层文件系统的 read_h() 函数。
 
@@ -736,7 +745,7 @@ ssize_t read(
 }
 ```
 
-### write 函数
+### write()
 
 write() 函数的源码如下。大致逻辑同样同 read 函数。
 
@@ -865,8 +874,8 @@ const rtems_filesystem_mount_configuration rtems_filesystem_root_configuration =
 rtems_filesystem_register() 用于在 Rtems 操作系统中注册一个新的文件系统类型。它接收文件系统的类型名称和对应的挂载函数指针，动态分配内存创建一个文件系统节点，将类型名称和挂载函数保存到该节点中，并检查该类型是否已被注册。如果未注册，则将该节点添加到全局文件系统链表完成注册；如果已注册，则释放内存并返回错误。通过这个注册机制，系统能够识别和管理多种文件系统类型，并在需要时调用对应的挂载函数进行挂载操作。
 
 ```c
-// 文件系统类型字符串，例如 "imfs"、"dosfs" 等。
 int rtems_filesystem_register(
+	// 文件系统类型字符串，例如 "imfs"、"dosfs" 等。
     const char *type,
     // 挂载处理函数指针，用于挂载该类型的文件系统。
     rtems_filesystem_fsmount_me_t mount_h)
@@ -932,38 +941,73 @@ int rtems_filesystem_register(
 }
 ```
 
+#### struct filesystem_node
+
+struct filesystem_node 结构体的作用是将一个文件系统的描述信息封装为链表中的一个节点，使得多个文件系统表项可以通过链表的形式组织和管理。它结合了 Rtems 的链表节点结构 rtems_chain_node 与文件系统表项 rtems_filesystem_table_t，方便在系统中动态维护、查找和操作支持的文件系统。该结构体通常用于构建一个文件系统注册表，实现对多个文件系统的统一管理和遍历。
+
+```c
+// 定义一个结构体类型 filesystem_node，用于表示文件系统链表中的一个节点。
+typedef struct
+{
+    // RTEMS 提供的双向链表节点结构，用于将多个文件系统节点连接成链表。
+    rtems_chain_node node;
+
+    // 文件系统表项，包含该文件系统的初始化函数、挂载函数等描述信息。
+    rtems_filesystem_table_t entry;
+} filesystem_node;
+```
+
+#### struct rtems_filesystem_table_t
+
+struct rtems_filesystem_table_t 结构体的作用是描述一个可挂载的文件系统类型，包括文件系统的类型名称和对应的挂载函数。它为 RTEMS 提供了一种统一的方式来表示和管理不同类型的文件系统，使系统能够在运行时根据类型名称选择合适的挂载函数进行文件系统初始化和挂载操作。这种设计有助于扩展文件系统支持，并实现灵活的文件系统管理机制。
+
+在 rtems_filesystem_register() 函数中，成员 type 和 mount_h 通过函数参数传入，并在函数内赋值。
+
+```c
+// 定义一个结构体类型 rtems_filesystem_table_t，用于描述一个可挂载的文件系统类型。
+typedef struct rtems_filesystem_table_t
+{
+    // 文件系统的类型名称，通常为字符串形式，例如 "imfs" 或 "dosfs"。
+    const char *type;
+
+    // 文件系统的挂载函数指针，用于挂载该类型的文件系统。
+    rtems_filesystem_fsmount_me_t mount_h;
+} rtems_filesystem_table_t;
+```
+
 #### rtems_filesystem_fsmount_me_t
 
 rtems_filesystem_fsmount_me_t 是一个函数指针，定义如下：
 
 ```c
 /**
- * @brief Initializes a file system instance.
+ * @brief 初始化一个文件系统实例。
  *
- * This function must initialize the file system root node in the mount table
- * entry.
+ * 该函数负责初始化挂载表项中的文件系统根节点。
  *
- * @param[in] mt_entry The mount table entry.
- * @param[in] data The data provided by the user.
+ * @param[in] mt_entry 指向挂载表项的指针，表示要挂载的文件系统实例。
+ * @param[in] data 用户提供的初始化数据，如设备路径或挂载选项。
  *
- * @retval 0 Successful operation.
- * @retval -1 An error occurred. The errno is set to indicate the error.
+ * @retval 0 操作成功，文件系统实例初始化完成。
+ * @retval -1 操作失败，设置 errno 以指示具体错误。
  */
 
-// 定义一个函数指针类型 rtems_filesystem_fsmount_me_t，返回值为 int。
-// 返回值为 0 表示挂载成功，-1 表示失败并设置 errno。
+// 定义函数指针类型 rtems_filesystem_fsmount_me_t，表示挂载文件系统的函数。
+// 该函数接受挂载表项指针和用户数据作为参数，返回挂载结果。
+// 返回 0 表示挂载成功，返回 -1 表示挂载失败且设置 errno。
 typedef int (*rtems_filesystem_fsmount_me_t)(
-    // 第一个参数是挂载表项指针，表示要挂载的文件系统实例。
-    rtems_filesystem_mount_table_entry_t *mt_entry,
-    // 第二个参数是用户提供的初始化数据（例如设备路径或选项）。
-    const void *data);
+    rtems_filesystem_mount_table_entry_t *mt_entry, // 指向挂载表项，表示要挂载的文件系统。
+    const void *data                                // 用户传入的初始化数据。
+);
 ```
 
 struct rtems_filesystem_mount_table_entry_t 结构体的作用是为每一个已挂载的文件系统提供一个集中式的描述，包含了文件系统的根节点信息、挂载点、类型、设备、访问控制状态等关键信息。Rtems 会维护一个这样的挂载表链表，每个表项都是这个结构体的一个实例。在挂载和卸载文件系统时，Rtems 会对这个结构体进行相应的初始化、操作或释放。文件系统的挂载、查找路径、访问权限、卸载等都依赖于这个结构体中记录的信息。
 
 关于 struct rtems_filesystem_mount_table_entry_tt 和 struct _rtems_filesystem_operations_table，前面在 struct rtems_libio_t 的时候提到过，不再赘述。
 
-### rtems_fsmount
+### rtems_fsmount()
+
+rtems_fsmount() 函数的作用是批量挂载多个文件系统，它按照用户提供的挂载表（fstab）顺序，依次创建每个挂载点目录并调用 mount() 执行挂载操作。该函数支持错误报告和失败控制机制，允许用户根据挂载结果决定是否继续处理后续项。通过这种方式，rtems_fsmount 提供了一种统一、高效的接口，适用于系统启动时自动挂载多个文件系统，简化了挂载流程并增强了可配置性。
 
 ```c
 // 批量挂载文件系统的函数。
@@ -1053,6 +1097,7 @@ int rtems_fsmount(
         // 步骤 3：准备处理下一条挂载表项。
         if (!terminate)
         {
+            // 逆天，还支持批量挂载？？？rtems_fstab_entry 里面没有 next 指针，意思是我要手动预先构造一个 rtems_fstab_entry 数组代表多个挂载项。。。
             fstab_ptr++;
             fstab_idx++;
         }
@@ -1066,6 +1111,154 @@ int rtems_fsmount(
 
     // 返回整体挂载操作的状态。
     return rc;
+}
+```
+
+#### struct rtems_fstab_entry
+
+struct rtems_fstab_entry 用于描述单个文件系统的挂载配置信息，包括挂载源设备或路径、挂载点目录、文件系统类型以及挂载时的选项和行为控制标志。它为系统批量挂载文件系统时提供了统一的数据格式，使挂载操作可以根据该结构体中的信息依次执行，支持对挂载过程中的错误报告和中止条件进行灵活管理。
+
+```c
+// 文件系统挂载表条目结构体。
+// 用于描述一个文件系统的挂载信息，包括挂载源、挂载点、文件系统类型及挂载选项。
+typedef struct
+{
+    // 挂载源，表示要挂载的设备、分区或路径。
+    const char *source;
+
+    // 挂载目标，即挂载点路径，文件系统将挂载到该目录下。
+    const char *target;
+
+    // 文件系统类型名称，如 "imfs"、"dosfs" 等。
+    const char *type;
+
+    // 文件系统挂载选项，包含挂载时的参数配置。
+    // // 文件系统挂载选项枚举类型，定义了文件系统挂载时支持的不同访问权限模式。
+    // typedef enum
+    // {
+    //     // 只读模式，文件系统以只读方式挂载。
+    //     RTEMS_FILESYSTEM_READ_ONLY,
+
+    //     // 读写模式，文件系统以读写方式挂载。
+    //     RTEMS_FILESYSTEM_READ_WRITE,
+
+    //     // 无效或错误的挂载选项。
+    //     RTEMS_FILESYSTEM_BAD_OPTIONS
+    // } rtems_filesystem_options_t;
+    rtems_filesystem_options_t options;
+
+    // 报告条件标志，用于指定哪些情况需要报告错误或信息。
+    uint16_t report_reasons;
+
+    // 终止条件标志，用于指定哪些情况会导致挂载流程终止。
+    uint16_t abort_reasons;
+} rtems_fstab_entry;
+```
+
+#### mount()
+
+mount() 函数用于根据指定的源路径、目标挂载点、文件系统类型和挂载选项，完成文件系统的挂载操作。它首先根据文件系统类型获取对应的挂载处理函数，然后创建一个挂载表项来保存挂载信息，调用具体文件系统的挂载函数进行挂载，并将挂载点注册到系统的文件系统层次中。如果挂载或注册失败，会进行相应的资源释放和错误处理。函数最终返回挂载结果，成功返回 0，失败返回 -1 并设置相应的错误码。
+
+```c
+/**
+ * @brief 挂载文件系统的函数。
+ *
+ * 根据指定的源设备/路径、目标挂载点、文件系统类型和挂载选项，
+ * 尝试完成文件系统的挂载操作。
+ *
+ * @param source         挂载源，通常是设备路径或远程文件系统地址。
+ * @param target         挂载目标路径，挂载点目录。若为 NULL，则挂载为根文件系统。
+ * @param filesystemtype 文件系统类型字符串，用于获取对应的挂载处理函数。
+ * @param options        挂载选项，支持只读或读写模式。
+ * @param data           传递给文件系统挂载函数的额外数据指针，可为 NULL。
+ *
+ * @return 挂载结果，0 表示成功，非0表示失败，失败时设置 errno。
+ */
+int mount(
+    const char *source,
+    const char *target,
+    const char *filesystemtype,
+    rtems_filesystem_options_t options,
+    const void *data)
+{
+    int rv = 0; // 返回值，默认成功。
+
+    // 检查挂载选项是否有效，只支持只读和读写两种。
+    if (
+        options == RTEMS_FILESYSTEM_READ_ONLY || options == RTEMS_FILESYSTEM_READ_WRITE)
+    {
+        // 根据文件系统类型获取对应的挂载处理函数指针。
+        rtems_filesystem_fsmount_me_t fsmount_me_h =
+            rtems_filesystem_get_mount_handler(filesystemtype);
+
+        // 如果找到了对应的挂载函数。
+        if (fsmount_me_h != NULL)
+        {
+            size_t target_length = 0;
+            // 分配并初始化一个挂载表项结构，包含源、目标和类型信息。
+            rtems_filesystem_mount_table_entry_t *mt_entry = alloc_mount_table_entry(
+                source,
+                target,
+                filesystemtype,
+                &target_length);
+
+            // 如果挂载表项分配成功。
+            if (mt_entry != NULL)
+            {
+                // 设置挂载表项的可写权限标志。
+                mt_entry->writeable = options == RTEMS_FILESYSTEM_READ_WRITE;
+
+                // 调用具体文件系统的挂载函数完成挂载。
+                // 666，整个挂载流程从 rtems_fsmount() -> mount() -> fsmount_me_h。fsmount_me_h 就是 rtems_filesystem_register() 的第二个函数参数。。。。
+                rv = (*fsmount_me_h)(mt_entry, data);
+                if (rv == 0)
+                {
+                    // 挂载成功，注册挂载点到文件系统层次。
+                    if (target != NULL)
+                    {
+                        rv = register_subordinate_file_system(mt_entry, target);
+                    }
+                    else
+                    {
+                        rv = register_root_file_system(mt_entry);
+                    }
+
+                    // 如果注册失败，则卸载已经挂载的文件系统。
+                    if (rv != 0)
+                    {
+                        (*mt_entry->ops->fsunmount_me_h)(mt_entry);
+                    }
+                }
+
+                // 如果挂载或注册失败，释放挂载表项内存。
+                if (rv != 0)
+                {
+                    free(mt_entry);
+                }
+            }
+            else
+            {
+                // 挂载表项分配失败，设置内存不足错误。
+                errno = ENOMEM;
+                rv = -1;
+            }
+        }
+        else
+        {
+            // 未找到对应的挂载处理函数，设置参数无效错误。
+            errno = EINVAL;
+            rv = -1;
+        }
+    }
+    else
+    {
+        // 挂载选项无效，设置参数无效错误。
+        errno = EINVAL;
+        rv = -1;
+    }
+
+    // 返回挂载结果。
+    return rv;
 }
 ```
 
