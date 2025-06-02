@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-05-26 11:05:00
+updated: 2025-06-02 17:15:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -15,6 +15,8 @@ updated: 2025-05-26 11:05:00
 RTEMS（Real‑Time Executive for Multiprocessor Systems）是一款始于 1988 年、1993 年正式发布的开源实时操作系统，专为多处理器嵌入式环境设计，支持 POSIX 和 BSD 套接字等开放标准 API，并可运行于 ARM、PowerPC、SPARC、MIPS、RISC‑V 等 18 种处理器架构及近 200 个 BSP（Board Support Package）上。它以库形式发布，应用程序与内核静态链接为单一映像，采用单地址空间、无用户/内核隔离设计，从而简化资源管理并确保确定性响应。2025 年 1 月 22 日发布的 6.1 版本全面将构建系统由 GNU Autotools 切换到基于 Python 的 Waf，大幅提升了构建速度并优化了依赖管理，同时引入了改进的调度算法和增强的 SMP 支持。
 
 本文章用于记录阅读 Rtems 内核源码的笔记，尝试理解其中的逻辑。Rtems 内核的版本是 6.1，在线代码网站见 [https://rtems.davidingplus.cn/lxr/source/](https://rtems.davidingplus.cn/lxr/source/)。
+
+本文章中涉及到的源码摘抄见项目 [DavidingPlus/rtems-source-code: Rtems 源码阅读。](https://github.com/DavidingPlus/rtems-source-code)。
 
 <!-- more -->
 
@@ -343,7 +345,10 @@ rtems_libio_iops 是 Rtems 预先分配的 I/O 控制块数组，配置了 CONFI
 
 ```c
 #if CONFIGURE_MAXIMUM_FILE_DESCRIPTORS > 0
-	rtems_libio_t rtems_libio_iops[ CONFIGURE_MAXIMUM_FILE_DESCRIPTORS ];
+rtems_libio_t rtems_libio_iops[CONFIGURE_MAXIMUM_FILE_DESCRIPTORS];
+
+const uint32_t rtems_libio_number_iops = RTEMS_ARRAY_SIZE(rtems_libio_iops);
+#endif
 ```
 
 #### do_open()
@@ -634,19 +639,25 @@ close() 函数的源码如下。在前面更改完状态标志位后，还是会
 ```c
 int close(int fd)
 {
-    rtems_libio_t *iop; // 指向文件描述符对应的 I/O 对象。
-    unsigned int flags; // 当前 I/O 对象的状态标志位。
-    int rc;             // 用于保存最终返回值。
+    // 指向文件描述符对应的 I/O 对象。
+    rtems_libio_t *iop;
+
+    // 当前 I/O 对象的状态标志位。
+    unsigned int flags;
+
+    // 用于保存最终返回值。
+    int rc;
 
     // 检查文件描述符是否越界。
     if ((uint32_t)fd >= rtems_libio_number_iops)
     {
-        rtems_set_errno_and_return_minus_one(EBADF); // 错误：Bad file descriptor。
+        // 错误：Bad file descriptor。
+        rtems_set_errno_and_return_minus_one(EBADF);
     }
 
-    // 根据 fd 获取对应的 I/O 对象。
-    /**
-     * 这个实现如我所料。
+    /*
+     * 根据 fd 获取对应的 I/O 对象。
+     * 实现类似于：
      * static inline rtems_libio_t *rtems_libio_iop(int fd)
      * {
      *     return &rtems_libio_iops[fd];
@@ -657,11 +668,18 @@ int close(int fd)
     // 读取该对象当前的标志。
     flags = rtems_libio_iop_flags(iop);
 
-    // 这段循环代码的作用是：在线程安全的前提下，把 I/O 对象的 “打开” 标志（LIBIO_FLAGS_OPEN）给清除掉，并且检测有没有正在并发操作导致的冲突。
+    /*
+     * 这段循环代码的作用是：在线程安全的前提下，
+     * 把 I/O 对象的 “打开” 标志（LIBIO_FLAGS_OPEN）清除掉，
+     * 并且检测有没有正在并发操作导致的冲突。
+     */
     while (true)
     {
-        unsigned int desired; // 期望写入的新标志。
-        bool success;         // CAS 成功与否。
+        // 期望写入的新标志。
+        unsigned int desired;
+
+        // CAS 成功与否。
+        bool success;
 
         // 如果文件未被标记为已打开，返回 EBADF。
         if ((flags & LIBIO_FLAGS_OPEN) == 0)
@@ -678,16 +696,16 @@ int close(int fd)
 
         // 使用原子操作尝试替换标志，确保线程安全。
         success = _Atomic_Compare_exchange_uint(
-            &iop->flags,          // 要更新的目标变量。
-            &flags,               // 当前预期值，会被更新为实际值（若失败）。
-            desired,              // 想要写入的新值。
-            ATOMIC_ORDER_ACQ_REL, // 成功时的内存顺序。
-            ATOMIC_ORDER_RELAXED  // 失败时的内存顺序。
+            &iop->flags,           // 要更新的目标变量。
+            &flags,                // 当前预期值，会被更新为实际值（若失败）。
+            desired,               // 想要写入的新值。
+            ATOMIC_ORDER_ACQ_REL,  // 成功时的内存顺序。
+            ATOMIC_ORDER_RELAXED   // 失败时的内存顺序。
         );
 
+        // 成功清除 OPEN 标志，跳出循环。
         if (success)
         {
-            // 成功清除 OPEN 标志，跳出循环。
             break;
         }
 
@@ -699,11 +717,14 @@ int close(int fd)
     }
 
     // 调用具体文件系统提供的 close 方法。
-    rc = (*iop->pathinfo.handlers->close_h)(iop); // 关闭文件，通常会执行文件系统特定的清理工作。
+    // 关闭文件，通常会执行文件系统特定的清理工作。
+    rc = (*iop->pathinfo.handlers->close_h)(iop);
 
-    rtems_libio_free(iop); // 释放 I/O 对象资源，回收到 I/O 对象池中以供复用。
+    // 释放 I/O 对象资源，回收到 I/O 对象池中以供复用。
+    rtems_libio_free(iop);
 
-    return rc; // 返回关闭操作的结果，通常为 0 表示成功，-1 表示失败（并设置 errno）。
+    // 返回关闭操作的结果，通常为 0 表示成功，-1 表示失败（并设置 errno）。
+    return rc;
 }
 ```
 
@@ -718,8 +739,11 @@ ssize_t read(
     size_t count  // 期望读取的字节数。
 )
 {
-    rtems_libio_t *iop; // 指向文件描述符对应的 I/O 对象结构体。
-    ssize_t n;          // 实际读取的字节数或错误代码。
+    // 指向文件描述符对应的 I/O 对象结构体。
+    rtems_libio_t *iop;
+
+    // 实际读取的字节数或错误代码。
+    ssize_t n;
 
     // 检查 buffer 是否为 NULL，防止非法内存访问。
     rtems_libio_check_buffer(buffer);
@@ -727,8 +751,10 @@ ssize_t read(
     // 检查读取字节数是否为 0 或超出合理范围。
     rtems_libio_check_count(count);
 
-    // 获取对应的 I/O 对象，并检查是否具有可读权限。
-    // 若无效或不可读，则自动设置 errno = EBADF 并返回 -1。
+    /*
+     * 获取对应的 I/O 对象，并检查是否具有可读权限。
+     * 若无效或不可读，则自动设置 errno = EBADF 并返回 -1。
+     */
     LIBIO_GET_IOP_WITH_ACCESS(fd, iop, LIBIO_FLAGS_READ, EBADF);
 
     /*
@@ -741,7 +767,8 @@ ssize_t read(
     // 读取完成后释放 I/O 对象（减少引用计数等）。
     rtems_libio_iop_drop(iop);
 
-    return n; // 返回实际读取的字节数，若出错则为负值并设置 errno。
+    // 返回实际读取的字节数，若出错则为负值并设置 errno。
+    return n;
 }
 ```
 
@@ -756,8 +783,11 @@ ssize_t write(
     size_t count        // 要写入的字节数。
 )
 {
-    rtems_libio_t *iop; // 指向文件描述符关联的 I/O 对象。
-    ssize_t n;          // 实际写入的字节数或错误码。
+    // 指向文件描述符关联的 I/O 对象。
+    rtems_libio_t *iop;
+
+    // 实际写入的字节数或错误码。
+    ssize_t n;
 
     // 检查 buffer 是否为 NULL，防止非法内存访问。
     rtems_libio_check_buffer(buffer);
@@ -765,8 +795,10 @@ ssize_t write(
     // 检查写入的字节数是否合理（非零、未超限）。
     rtems_libio_check_count(count);
 
-    // 获取 I/O 对象，并检查是否具有写权限。
-    // 若非法或不可写，则设置 errno = EBADF，并返回 -1。
+    /*
+     * 获取 I/O 对象，并检查是否具有写权限。
+     * 若非法或不可写，则设置 errno = EBADF，并返回 -1。
+     */
     LIBIO_GET_IOP_WITH_ACCESS(fd, iop, LIBIO_FLAGS_WRITE, EBADF);
 
     /*
@@ -778,7 +810,8 @@ ssize_t write(
     // 操作完成后释放 I/O 对象（例如减少引用计数）。
     rtems_libio_iop_drop(iop);
 
-    return n; // 返回写入的字节数，失败时为负值并设置 errno。
+    // 返回写入的字节数，失败时为负值并设置 errno。
+    return n;
 }
 ```
 
@@ -875,7 +908,7 @@ rtems_filesystem_register() 用于在 Rtems 操作系统中注册一个新的文
 
 ```c
 int rtems_filesystem_register(
-	// 文件系统类型字符串，例如 "imfs"、"dosfs" 等。
+    // 文件系统类型字符串，例如 "imfs"、"dosfs" 等。
     const char *type,
     // 挂载处理函数指针，用于挂载该类型的文件系统。
     rtems_filesystem_fsmount_me_t mount_h)
@@ -886,24 +919,24 @@ int rtems_filesystem_register(
     // 计算文件系统类型字符串长度（包含字符串结束符）。
     size_t type_size = strlen(type) + 1;
 
-    // 计算要分配的内存大小：filesystem_node结构体大小 + 文件系统类型字符串大小。
+    // 计算要分配的内存大小：filesystem_node 结构体大小 + 文件系统类型字符串大小。
     size_t fsn_size = sizeof(filesystem_node) + type_size;
 
     // 动态分配内存用于存储新文件系统节点和类型字符串。
     filesystem_node *fsn = malloc(fsn_size);
 
-    // 指向分配内存中，存储类型字符串的位置（紧接在filesystem_node结构体之后）。
+    // 指向分配内存中，存储类型字符串的位置（紧接在 filesystem_node 结构体之后）。
     char *type_storage = (char *)fsn + sizeof(*fsn);
 
     // 如果内存分配失败。
     if (fsn == NULL)
-        // 设置错误码为“内存不足”，返回-1。
+        // 设置错误码为“内存不足”，返回 -1。
         rtems_set_errno_and_return_minus_one(ENOMEM);
 
     // 将传入的文件系统类型字符串拷贝到刚分配的内存中。
     memcpy(type_storage, type, type_size);
 
-    // 设置节点中的type指针指向存储的类型字符串。
+    // 设置节点中的 type 指针指向存储的类型字符串。
     fsn->entry.type = type_storage;
 
     // 设置节点中的挂载处理函数指针。
@@ -929,14 +962,14 @@ int rtems_filesystem_register(
         // 释放刚分配的内存。
         free(fsn);
 
-        // 设置错误码为“无效参数”（文件系统类型重复），返回-1。
+        // 设置错误码为“无效参数”（文件系统类型重复），返回 -1。
         rtems_set_errno_and_return_minus_one(EINVAL);
     }
 
     // 解锁。
     rtems_libio_unlock();
 
-    // 成功返回0。
+    // 成功返回 0。
     return 0;
 }
 ```
