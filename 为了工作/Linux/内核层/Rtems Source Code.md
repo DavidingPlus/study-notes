@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-06-03 12:20:00
+updated: 2025-06-03 18:10:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -350,170 +350,37 @@ open() 函数中分配好文件描述符结构以后，最终会到达 do_open()
 
 最后，若操作全部成功，设置文件打开标志并返回文件描述符；失败时释放资源并返回错误。整个过程确保了路径解析、权限检查和文件打开的正确性和安全性。
 
-```c
-// 执行打开文件操作的核心函数。
-static int do_open(
-    rtems_libio_t *iop, // I/O 控制块，表示打开的文件或设备。
-    const char *path,   // 要打开的文件路径。
-    int oflag,          // 打开标志（如只读、只写、创建等）。
-    mode_t mode         // 创建文件时的权限模式。
-)
-{
-    // 返回值，初始化为 0，后续存储函数调用结果。
-    int rv = 0;
+do_open() 函数的执行流程图如下：
 
-    // 将 iop 转换成文件描述符。
-    // #define rtems_libio_iop_to_descriptor(_iop) ((_iop) - &rtems_libio_iops[0])
-    // 直接数组地址相减就拿到了文件描述符，666。
-    int fd = rtems_libio_iop_to_descriptor(iop);
+```mermaid
+flowchart TD
+    A[开始 do_open] --> B[解析参数和标志]
+    B --> C[路径解析启动: rtems_filesystem_eval_path_start]
+    C --> D[获取 currentloc 和是否支持创建文件]
+    D --> E{是否需要创建普通文件?}
+    E -- 是 --> F[create_regular_file]
+    E -- 否 --> G[跳过创建]
+    F --> H[是否为目录打开或需要写权限?]
+    G --> H
+    H --> I{路径类型检查}
+    I -- 错误: 写目录 --> J[设置 EISDIR 错误]
+    I -- 错误: 非目录 --> K[设置 ENOTDIR 错误]
+    I --> L[提取 pathinfo 并清理上下文]
 
-    // 计算读写标志的辅助变量。
-    int rwflag = oflag + 1;
-
-    // 是否有读权限。
-    bool read_access = (rwflag & _FREAD) == _FREAD;
-
-    // 是否有写权限。
-    bool write_access = (rwflag & _FWRITE) == _FWRITE;
-
-    // 是否需要创建新文件。
-    bool make = (oflag & O_CREAT) == O_CREAT;
-
-    // 是否独占创建。
-    bool exclusive = (oflag & (O_CREAT | O_EXCL)) == (O_CREAT | O_EXCL);
-
-    // 是否需要截断文件。
-    bool truncate = (oflag & O_TRUNC) == O_TRUNC;
-
-    // 是否以目录方式打开文件。
-    bool open_dir;
-
-#ifdef O_NOFOLLOW
-    // 是否允许跟随符号链接，O_NOFOLLOW 表示不跟随。
-    int follow = (oflag & O_NOFOLLOW) == O_NOFOLLOW ? 0 : RTEMS_FS_FOLLOW_LINK;
-#else
-    // 默认允许跟随符号链接。
-    int follow = RTEMS_FS_FOLLOW_LINK;
-#endif
-
-    // 组合权限和标志，用于路径解析。
-    int eval_flags = follow | (read_access ? RTEMS_FS_PERMS_READ : 0) | (write_access ? RTEMS_FS_PERMS_WRITE : 0) | (make ? RTEMS_FS_MAKE : 0) | (exclusive ? RTEMS_FS_EXCLUSIVE : 0);
-
-    // 路径解析上下文。
-    rtems_filesystem_eval_path_context_t ctx;
-
-    // 当前路径位置结构体指针。
-    const rtems_filesystem_location_info_t *currentloc;
-
-    // 是否创建普通文件。
-    bool create_reg_file;
-
-    // 启动路径解析，准备解析文件路径。
-    rtems_filesystem_eval_path_start(&ctx, path, eval_flags);
-
-    // 获取解析后的当前路径位置信息。
-    currentloc = rtems_filesystem_eval_path_get_currentloc(&ctx);
-
-    // 判断当前路径所在文件系统是否允许创建普通文件。
-    create_reg_file = !currentloc->mt_entry->no_regular_file_mknod;
-
-    // 如果允许创建普通文件且路径中还有后续路径分段，则创建普通文件。
-    if (create_reg_file && rtems_filesystem_eval_path_has_token(&ctx))
-    {
-        create_regular_file(&ctx, mode);
-    }
-
-#ifdef O_DIRECTORY
-    // 判断是否以目录方式打开。
-    open_dir = (oflag & O_DIRECTORY) == O_DIRECTORY;
-#else
-    open_dir = false;
-#endif
-
-    // 如果有写权限或以目录方式打开，需要额外检查路径类型和权限。
-    if (write_access || open_dir)
-    {
-        // 获取当前路径类型。
-        mode_t type = rtems_filesystem_location_type(currentloc);
-
-        // 如果创建普通文件时路径是目录，禁止写操作，返回 EISDIR 错误。
-        if (create_reg_file && write_access && S_ISDIR(type))
-        {
-            rtems_filesystem_eval_path_error(&ctx, EISDIR);
-        }
-
-        // 如果以目录方式打开，但路径不是目录，返回 ENOTDIR 错误。
-        if (open_dir && !S_ISDIR(type))
-        {
-            rtems_filesystem_eval_path_error(&ctx, ENOTDIR);
-        }
-    }
-
-    // 将路径解析得到的当前路径信息保存到 iop 的 pathinfo 中。
-    rtems_filesystem_eval_path_extract_currentloc(&ctx, &iop->pathinfo);
-
-    // 清理路径解析上下文，释放资源。
-    rtems_filesystem_eval_path_cleanup(&ctx);
-
-    // 设置 iop 的文件控制标志，转换 POSIX oflag 为 LibIO 内部标志。
-    rtems_libio_iop_flags_set(iop, rtems_libio_fcntl_flags(oflag));
-
-    // 调用底层文件系统的 open 函数打开文件。
-    rv = (*iop->pathinfo.handlers->open_h)(iop, path, oflag, mode);
-
-    // 如果打开成功。
-    if (rv == 0)
-    {
-        /*
-         * 延迟设置 LIBIO_FLAGS_OPEN 标志，直到文件截断完成。
-         * 这样可避免在截断过程中被其他线程使用或关闭文件描述符。
-         */
-        if (truncate)
-        {
-            // 如果有写权限，调用底层 ftruncate 截断文件。
-            if (write_access)
-            {
-                rv = (*iop->pathinfo.handlers->ftruncate_h)(iop, 0);
-            }
-            else
-            {
-                // 如果无写权限，截断操作非法，返回错误。
-                rv = -1;
-                errno = EINVAL;
-            }
-
-            // 如果截断失败，则关闭文件。
-            if (rv != 0)
-            {
-                (*iop->pathinfo.handlers->close_h)(iop);
-            }
-        }
-
-        // 如果截断成功或不需要截断。
-        if (rv == 0)
-        {
-            // 设置文件已打开的标志。
-            rtems_libio_iop_flags_set(iop, LIBIO_FLAGS_OPEN);
-
-            // 返回文件描述符。
-            rv = fd;
-        }
-        else
-        {
-            // 失败返回 -1。
-            rv = -1;
-        }
-    }
-
-    // 如果打开失败，释放 iop 资源。
-    if (rv < 0)
-    {
-        rtems_libio_free(iop);
-    }
-
-    // 返回文件描述符或错误码。
-    return rv;
-}
+    L --> M[设置 LibIO 打开标志]
+    M --> N[调用底层 open 函数]
+    N --> O{open 是否成功?}
+    O -- 否 --> P[释放 iop 并返回 -1]
+    O -- 是 --> Q{是否需要截断?}
+    Q -- 是 --> R{是否有写权限?}
+    R -- 否 --> S[errno = EINVAL, 返回错误]
+    R -- 是 --> T[调用 ftruncate]
+    T --> U{ftruncate 成功?}
+    U -- 否 --> V[调用 close, 返回 -1]
+    U -- 是 --> W[设置 LIBIO_FLAGS_OPEN, 返回 fd]
+    Q -- 否 --> W
+    S --> P
+    V --> P
 ```
 
 ##### 路径解析过程
@@ -528,65 +395,19 @@ rtems_filesystem_eval_path_start(&ctx, path, eval_flags);
 currentloc = rtems_filesystem_eval_path_get_currentloc(&ctx);
 ```
 
-rtems_filesystem_eval_path_start() 代码如下：
+rtems_filesystem_eval_path_start() 的执行流程图如下：
 
-```c
-// 初始化路径解析上下文，并从根目录或当前目录开始解析路径。
-rtems_filesystem_location_info_t *
-rtems_filesystem_eval_path_start(
-    rtems_filesystem_eval_path_context_t *ctx,
-    const char *path,
-    int eval_flags)
-{
-    // 实际调用带 root 和 current 参数的版本，使用全局根目录和当前目录。
-    return rtems_filesystem_eval_path_start_with_root_and_current(
-        ctx,
-        path,
-        strlen(path), // 计算路径长度。
-        eval_flags,
-        &rtems_filesystem_root,    // 指向全局根目录。
-        &rtems_filesystem_current  // 指向全局当前目录。
-    );
-}
-
-// 初始化路径解析上下文，并以给定的 root 和 current 为起点解析路径。
-rtems_filesystem_location_info_t *
-rtems_filesystem_eval_path_start_with_root_and_current(
-    rtems_filesystem_eval_path_context_t *ctx,
-    const char *path,
-    size_t pathlen,
-    int eval_flags,
-    rtems_filesystem_global_location_t *const *global_root_ptr,
-    rtems_filesystem_global_location_t *const *global_current_ptr)
-{
-    // 将整个上下文结构清零，确保起始状态干净。
-    memset(ctx, 0, sizeof(*ctx));
-
-    // 设置路径字符串及其长度。
-    ctx->path = path;
-    ctx->pathlen = pathlen;
-
-    // 设置路径解析标志（如是否跟随符号链接、是否创建等）。
-    ctx->flags = eval_flags;
-
-    // 根据传入的根目录和当前目录，初始化起始路径位置。
-    set_startloc(ctx, global_root_ptr, global_current_ptr);
-
-    // 为路径解析的起点加锁，避免多线程同时访问。
-    rtems_filesystem_instance_lock(&ctx->startloc->location);
-
-    // 拷贝起始位置为当前解析位置，作为路径遍历起点。
-    rtems_filesystem_location_clone(
-        &ctx->currentloc,
-        &ctx->startloc->location
-    );
-
-    // 开始路径的逐层解析过程。
-    rtems_filesystem_eval_path_continue(ctx);
-
-    // 返回当前解析到的位置（可表示最终文件、目录或中间节点）。
-    return &ctx->currentloc;
-}
+```mermaid
+flowchart TD
+    A[调用 rtems_filesystem_eval_path_start] --> B[调用 rtems_filesystem_eval_path_start_with_root_and_current]
+    B --> C[清空上下文 memset]
+    C --> D[设置 ctx 路径和长度]
+    D --> E[设置 ctx 标志位]
+    E --> F[初始化起始位置 set_startloc]
+    F --> G[锁定起始位置 rtems_filesystem_instance_lock]
+    G --> H[复制 startloc 到 currentloc]
+    H --> I[继续解析路径 rtems_filesystem_eval_path_continue]
+    I --> J[返回 ctx currentloc]
 ```
 
 可以看出最后进入了 rtems_filesystem_eval_path_continue() 函数，嵌套太深了。目前看不懂整个路径的解析过程。
@@ -621,185 +442,58 @@ rv = (*iop->pathinfo.handlers->open_h)(iop, path, oflag, mode);
 
 ### close()
 
-close() 函数的源码如下。在前面更改完状态标志位后，还是会进入到底层文件系统的 close_h 函数。
+close() 函数的执行流程图如下。在前面更改完状态标志位后，还是会进入到底层文件系统的 close_h 函数。
 
-```c
-int close(int fd)
-{
-    // 指向文件描述符对应的 I/O 对象。
-    rtems_libio_t *iop;
+```mermaid
+flowchart TD
+  A[开始关闭 fd] --> B{文件描述符是否越界}
+  B -- 是 --> C[设置错误码坏文件描述符并返回失败]
+  B -- 否 --> D[获取对应的 I/O 对象]
+  D --> E[读取 I/O 对象标志]
+  E --> F{标志中是否包含打开状态}
+  F -- 否 --> G[设置错误码坏文件描述符并返回失败]
+  F -- 是 --> H[清除引用计数部分]
+  H --> I[构造去掉打开标志的新标志]
+  I --> J[执行原子比较交换操作]
+  J --> K{比较交换是否成功}
+  K -- 是 --> L[继续关闭处理]
+  K -- 否 --> M{标志中是否有非法状态}
+  M -- 是 --> N[设置错误码设备忙并返回失败]
+  M -- 否 --> F
 
-    // 当前 I/O 对象的状态标志位。
-    unsigned int flags;
-
-    // 用于保存最终返回值。
-    int rc;
-
-    // 检查文件描述符是否越界。
-    if ((uint32_t)fd >= rtems_libio_number_iops)
-    {
-        // 错误：Bad file descriptor。
-        rtems_set_errno_and_return_minus_one(EBADF);
-    }
-
-    /*
-     * 根据 fd 获取对应的 I/O 对象。
-     * 实现类似于：
-     * static inline rtems_libio_t *rtems_libio_iop(int fd)
-     * {
-     *     return &rtems_libio_iops[fd];
-     * }
-     */
-    iop = rtems_libio_iop(fd);
-
-    // 读取该对象当前的标志。
-    flags = rtems_libio_iop_flags(iop);
-
-    /*
-     * 这段循环代码的作用是：在线程安全的前提下，
-     * 把 I/O 对象的 “打开” 标志（LIBIO_FLAGS_OPEN）清除掉，
-     * 并且检测有没有正在并发操作导致的冲突。
-     */
-    while (true)
-    {
-        // 期望写入的新标志。
-        unsigned int desired;
-
-        // CAS 成功与否。
-        bool success;
-
-        // 如果文件未被标记为已打开，返回 EBADF。
-        if ((flags & LIBIO_FLAGS_OPEN) == 0)
-        {
-            // #define EBADF 9 /* Bad file number */
-            rtems_set_errno_and_return_minus_one(EBADF);
-        }
-
-        // 清除引用计数部分，仅保留控制标志。
-        flags &= LIBIO_FLAGS_REFERENCE_INC - 1U;
-
-        // 构造期望的新状态：去掉 OPEN 标志（标记为关闭）。
-        desired = flags & ~LIBIO_FLAGS_OPEN;
-
-        // 使用原子操作尝试替换标志，确保线程安全。
-        success = _Atomic_Compare_exchange_uint(
-            &iop->flags,           // 要更新的目标变量。
-            &flags,                // 当前预期值，会被更新为实际值（若失败）。
-            desired,               // 想要写入的新值。
-            ATOMIC_ORDER_ACQ_REL,  // 成功时的内存顺序。
-            ATOMIC_ORDER_RELAXED   // 失败时的内存顺序。
-        );
-
-        // 成功清除 OPEN 标志，跳出循环。
-        if (success)
-        {
-            break;
-        }
-
-        // 如果标志中有非法或冲突的状态，返回 EBUSY。
-        if ((flags & ~(LIBIO_FLAGS_REFERENCE_INC - 1U)) != 0)
-        {
-            rtems_set_errno_and_return_minus_one(EBUSY);
-        }
-    }
-
-    // 调用具体文件系统提供的 close 方法。
-    // 关闭文件，通常会执行文件系统特定的清理工作。
-    rc = (*iop->pathinfo.handlers->close_h)(iop);
-
-    // 释放 I/O 对象资源，回收到 I/O 对象池中以供复用。
-    rtems_libio_free(iop);
-
-    // 返回关闭操作的结果，通常为 0 表示成功，-1 表示失败（并设置 errno）。
-    return rc;
-}
+  L --> O[调用文件系统的关闭函数]
+  O --> P[释放 I/O 对象]
+  P --> Q[返回关闭结果]
 ```
 
 ### read()
 
-read() 函数的源码如下。可以看出除了做了一些检查以外，直接调用了底层文件系统的 read_h() 函数。
+read() 函数的执行流程图如下。可以看出除了做了一些检查以外，直接调用了底层文件系统的 read_h() 函数。
 
-```c
-ssize_t read(
-    int fd,       // 文件描述符，标识要读取的文件或设备。
-    void *buffer, // 指向用户提供的内存缓冲区。
-    size_t count  // 期望读取的字节数。
-)
-{
-    // 指向文件描述符对应的 I/O 对象结构体。
-    rtems_libio_t *iop;
-
-    // 实际读取的字节数或错误代码。
-    ssize_t n;
-
-    // 检查 buffer 是否为 NULL，防止非法内存访问。
-    rtems_libio_check_buffer(buffer);
-
-    // 检查读取字节数是否为 0 或超出合理范围。
-    rtems_libio_check_count(count);
-
-    /*
-     * 获取对应的 I/O 对象，并检查是否具有可读权限。
-     * 若无效或不可读，则自动设置 errno = EBADF 并返回 -1。
-     */
-    LIBIO_GET_IOP_WITH_ACCESS(fd, iop, LIBIO_FLAGS_READ, EBADF);
-
-    /*
-     * 正式执行读取操作：
-     * 调用底层文件系统或设备驱动提供的 read 函数。
-     * 由 handlers->read_h 函数指针调用完成具体的读取逻辑。
-     */
-    n = (*iop->pathinfo.handlers->read_h)(iop, buffer, count);
-
-    // 读取完成后释放 I/O 对象（减少引用计数等）。
-    rtems_libio_iop_drop(iop);
-
-    // 返回实际读取的字节数，若出错则为负值并设置 errno。
-    return n;
-}
+```mermaid
+flowchart TD
+  A[开始调用 read 函数] --> B[确认缓冲区指针有效]
+  B --> C[确认读取长度合理]
+  C --> D{尝试获取对应的 I/O 对象并检查是否可读}
+  D -- 失败 --> E[设置错误码为坏文件描述符并返回失败]
+  D -- 成功 --> F[调用底层读操作完成读取]
+  F --> G[释放 I/O 资源]
+  G --> H[返回读取到的字节数或者错误码]
 ```
 
 ### write()
 
-write() 函数的源码如下。大致逻辑同样同 read 函数。
+write() 函数的执行流程图如下。大致逻辑同样同 read 函数。
 
-```c
-ssize_t write(
-    int fd,             // 文件描述符，表示要写入的目标文件或设备。
-    const void *buffer, // 用户数据缓冲区的地址。
-    size_t count        // 要写入的字节数。
-)
-{
-    // 指向文件描述符关联的 I/O 对象。
-    rtems_libio_t *iop;
-
-    // 实际写入的字节数或错误码。
-    ssize_t n;
-
-    // 检查 buffer 是否为 NULL，防止非法内存访问。
-    rtems_libio_check_buffer(buffer);
-
-    // 检查写入的字节数是否合理（非零、未超限）。
-    rtems_libio_check_count(count);
-
-    /*
-     * 获取 I/O 对象，并检查是否具有写权限。
-     * 若非法或不可写，则设置 errno = EBADF，并返回 -1。
-     */
-    LIBIO_GET_IOP_WITH_ACCESS(fd, iop, LIBIO_FLAGS_WRITE, EBADF);
-
-    /*
-     * 调用底层设备或文件系统提供的写入实现。
-     * 实际写入的逻辑由 write_h 函数指针指定。
-     */
-    n = (*iop->pathinfo.handlers->write_h)(iop, buffer, count);
-
-    // 操作完成后释放 I/O 对象（例如减少引用计数）。
-    rtems_libio_iop_drop(iop);
-
-    // 返回写入的字节数，失败时为负值并设置 errno。
-    return n;
-}
+```mermaid
+flowchart TD
+  A[开始调用 write 函数] --> B[确认缓冲区指针有效]
+  B --> C[确认写入字节数合理]
+  C --> D{尝试获取对应的 I/O 对象并检查是否可写}
+  D -- 失败 --> E[设置错误码坏文件描述符并返回失败]
+  D -- 成功 --> F[调用底层写操作完成写入]
+  F --> G[释放 I/O 资源]
+  G --> H[返回写入的字节数或错误码]
 ```
 
 ## 文件系统启动流程
@@ -808,49 +502,20 @@ ssize_t write(
 
 该函数用于初始化 Rtems 的根文件系统，通常是 IMFS。[官方文档](https://docs.rtems.org/docs/6.1/filesystem/system_init.html) 提到，其他文件系统可以被挂载，但它们只能挂载到基础文件系统中的某个目录挂载点。对于我们想注册的自定义文件系统，有两种手段，一种是在根文件系统挂载好以后，找到某个目录手动挂载新文件系统，另一种是直接修改 rtems_filesystem_root_configuration 根文件系统的配置，使用我们自己的文件系统，这样 Rtems 在启动的时候就会默认跑我们自己的文件系统。
 
-```c
-void rtems_filesystem_initialize(void)
-{
-    int rv = 0;
+rtems_filesystem_initialize() 函数的执行流程图如下：
 
-    // 获取根文件系统的挂载配置信息（通常是 IMFS）。
-    const rtems_filesystem_mount_configuration *root_config =
-        &rtems_filesystem_root_configuration;
-
-    // 挂载根文件系统（通常是内存文件系统 IMFS）。
-    rv = mount(
-        root_config->source,         // 挂载源（IMFS 为 NULL）。
-        root_config->target,         // 挂载点（根目录 "/"）。
-        root_config->filesystemtype, // 文件系统类型（如 "imfs"）。
-        root_config->options,        // 挂载选项（一般为 0）。
-        root_config->data            // 传递给文件系统的私有数据（通常为 NULL）。
-    );
-
-    // 如果挂载失败，触发致命错误并停止系统。
-    if (rv != 0)
-        rtems_fatal_error_occurred(0xABCD0002);
-
-    /*
-     * 传统 UNIX 系统将设备节点放在 "/dev" 目录，
-     * 所以我们手动在根文件系统中创建 "/dev" 目录。
-     * 权限为 0755：所有者可读写执行，组用户和其他用户可读执行。
-     */
-    rv = mkdir("/dev", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-
-    // 如果 "/dev" 目录创建失败，也触发致命错误。
-    if (rv != 0)
-        rtems_fatal_error_occurred(0xABCD0003);
-
-    /*
-     * 到此为止，根文件系统（IMFS）和 /dev 目录已经建立。
-     *
-     * 下面这段注释说明：
-     * - 如果你想挂载其他文件系统（如 FAT、NFS 等），你必须先创建挂载点目录。
-     * - 如果该文件系统依赖设备（如块设备 /dev/sd0），则必须等设备驱动初始化完成。
-     * - 所以此函数只做了最基本的文件系统初始化，并没有自动挂载其他文件系统。
-     * - 后续可以手动使用 mount() 挂载其他子文件系统。
-     */
-}
+```mermaid
+flowchart TD
+  A[开始初始化文件系统] --> B[获取根文件系统挂载配置信息]
+  B --> C[挂载根文件系统]
+  C --> D{挂载是否成功}
+  D -- 否 --> E[触发致命错误停止系统]
+  D -- 是 --> F[创建 /dev 目录]
+  F --> G{目录创建是否成功}
+  G -- 否 --> H[触发致命错误停止系统]
+  G -- 是 --> I[根文件系统和 /dev 目录创建完成]
+  I --> J[说明其他文件系统需手动挂载]
+  J --> K[初始化完成]
 ```
 
 #### struct rtems_filesystem_mount_configuration
@@ -893,72 +558,19 @@ const rtems_filesystem_mount_configuration rtems_filesystem_root_configuration =
 
 rtems_filesystem_register() 用于在 Rtems 操作系统中注册一个新的文件系统类型。它接收文件系统的类型名称和对应的挂载函数指针，动态分配内存创建一个文件系统节点，将类型名称和挂载函数保存到该节点中，并检查该类型是否已被注册。如果未注册，则将该节点添加到全局文件系统链表完成注册；如果已注册，则释放内存并返回错误。通过这个注册机制，系统能够识别和管理多种文件系统类型，并在需要时调用对应的挂载函数进行挂载操作。
 
-```c
-int rtems_filesystem_register(
-    // 文件系统类型字符串，例如 "imfs"、"dosfs" 等。
-    const char *type,
-    // 挂载处理函数指针，用于挂载该类型的文件系统。
-    rtems_filesystem_fsmount_me_t mount_h)
-{
-    // 获取全局文件系统链表控制结构的指针。
-    rtems_chain_control *chain = &filesystem_chain;
+rtems_filesystem_register() 的执行流程图如下：
 
-    // 计算文件系统类型字符串长度（包含字符串结束符）。
-    size_t type_size = strlen(type) + 1;
-
-    // 计算要分配的内存大小：filesystem_node 结构体大小 + 文件系统类型字符串大小。
-    size_t fsn_size = sizeof(filesystem_node) + type_size;
-
-    // 动态分配内存用于存储新文件系统节点和类型字符串。
-    filesystem_node *fsn = malloc(fsn_size);
-
-    // 指向分配内存中，存储类型字符串的位置（紧接在 filesystem_node 结构体之后）。
-    char *type_storage = (char *)fsn + sizeof(*fsn);
-
-    // 如果内存分配失败。
-    if (fsn == NULL)
-        // 设置错误码为“内存不足”，返回 -1。
-        rtems_set_errno_and_return_minus_one(ENOMEM);
-
-    // 将传入的文件系统类型字符串拷贝到刚分配的内存中。
-    memcpy(type_storage, type, type_size);
-
-    // 设置节点中的 type 指针指向存储的类型字符串。
-    fsn->entry.type = type_storage;
-
-    // 设置节点中的挂载处理函数指针。
-    fsn->entry.mount_h = mount_h;
-
-    // 加锁，防止多线程环境下链表操作冲突。
-    rtems_libio_lock();
-
-    // 检查链表中是否已注册过该类型的文件系统。
-    if (rtems_filesystem_get_mount_handler(type) == NULL)
-    {
-        // 初始化新节点的链表节点结构。
-        rtems_chain_initialize_node(&fsn->node);
-
-        // 将新节点追加到文件系统链表中（无锁版本，锁由外部保证）。
-        rtems_chain_append_unprotected(chain, &fsn->node);
-    }
-    else
-    {
-        // 如果已注册，解锁。
-        rtems_libio_unlock();
-
-        // 释放刚分配的内存。
-        free(fsn);
-
-        // 设置错误码为“无效参数”（文件系统类型重复），返回 -1。
-        rtems_set_errno_and_return_minus_one(EINVAL);
-    }
-
-    // 解锁。
-    rtems_libio_unlock();
-
-    // 成功返回 0。
-    return 0;
-}
+```mermaid
+flowchart TD
+    A[开始, 调用 rtems_filesystem_register, 传入 type 和挂载函数] --> B[计算 type 长度, 分配节点内存]
+    B --> C{内存分配成功吗}
+    C -- 否 --> D[设置 errno ENOMEM, 返回失败]
+    C -- 是 --> E[复制 type 字符串, 绑定挂载函数]
+    E --> F[加锁, 进入临界区]
+    F --> G{type 已经注册吗}
+    G -- 否 --> H[初始化节点, 加入链表]
+    H --> I[解锁, 退出临界区, 返回成功]
+    G -- 是 --> J[解锁, 退出临界区, 释放内存, 设置 errno EINVAL, 返回失败]
 ```
 
 #### struct filesystem_node
@@ -1029,109 +641,27 @@ struct rtems_filesystem_mount_table_entry_t 结构体的作用是为每一个已
 
 rtems_fsmount() 函数的作用是批量挂载多个文件系统，它按照用户提供的挂载表（fstab）顺序，依次创建每个挂载点目录并调用 mount() 执行挂载操作。该函数支持错误报告和失败控制机制，允许用户根据挂载结果决定是否继续处理后续项。通过这种方式，rtems_fsmount 提供了一种统一、高效的接口，适用于系统启动时自动挂载多个文件系统，简化了挂载流程并增强了可配置性。
 
-```c
-// 批量挂载文件系统的函数。
-// 根据传入的 fstab 表顺序创建挂载点并执行 mount 操作。
-// 挂载成功或失败根据用户提供的 report/abort 标志控制终止行为。
-// 返回 0 表示全部挂载成功，返回 -1 表示失败并设置 errno。
-int rtems_fsmount(
-    const rtems_fstab_entry *fstab_ptr, // 指向文件系统挂载表的首项。
-    size_t fstab_count,                 // 表项数量。
-    size_t *fail_idx                    // 如果挂载失败，记录失败的索引。
-)
-{
-    int rc = 0;             // 函数最终返回值，0 表示成功。
-    int tmp_rc;             // 临时返回值，用于每一项操作的状态。
-    size_t fstab_idx = 0;   // 当前处理的表项索引。
-    bool terminate = false; // 是否中止挂载过程。
+rtems_fsmount() 的执行流程图如下：
 
-    // 遍历挂载表中的所有条目，逐项处理。
-    while (!terminate && (fstab_idx < fstab_count))
-    {
-        tmp_rc = 0;
-
-        // 步骤 1：尝试创建挂载点路径（如 /mnt/sdcard）。
-        if (tmp_rc == 0)
-        {
-            tmp_rc = rtems_mkdir(fstab_ptr->target, S_IRWXU | S_IRWXG | S_IRWXO);
-            if (tmp_rc != 0)
-            {
-                // 若启用错误报告标志，打印错误信息。
-                if (0 != (fstab_ptr->report_reasons & FSMOUNT_MNTPNT_CRTERR))
-                {
-                    fprintf(stdout, "fsmount: creation of mount point \"%s\" failed: %s\n",
-                            fstab_ptr->target,
-                            strerror(errno));
-                }
-                // 若启用失败终止标志，设置中止挂载流程。
-                if (0 != (fstab_ptr->abort_reasons & FSMOUNT_MNTPNT_CRTERR))
-                {
-                    terminate = true;
-                    rc = tmp_rc;
-                }
-            }
-        }
-
-        // 步骤 2：尝试执行挂载操作。
-        if (tmp_rc == 0)
-        {
-            tmp_rc = mount(fstab_ptr->source,
-                           fstab_ptr->target,
-                           fstab_ptr->type,
-                           fstab_ptr->options,
-                           NULL);
-            if (tmp_rc != 0)
-            {
-                // 挂载失败，打印错误信息（若配置了报告标志）。
-                if (0 != (fstab_ptr->report_reasons & FSMOUNT_MNT_FAILED))
-                {
-                    fprintf(stdout, "fsmount: mounting of \"%s\" to \"%s\" failed: %s\n",
-                            fstab_ptr->source,
-                            fstab_ptr->target,
-                            strerror(errno));
-                }
-                // 挂载失败，根据配置判断是否终止流程。
-                if (0 != (fstab_ptr->abort_reasons & FSMOUNT_MNT_FAILED))
-                {
-                    terminate = true;
-                    rc = tmp_rc;
-                }
-            }
-            else
-            {
-                // 挂载成功，根据配置打印信息。
-                if (0 != (fstab_ptr->report_reasons & FSMOUNT_MNT_OK))
-                {
-                    fprintf(stdout, "fsmount: mounting of \"%s\" to \"%s\" succeeded\n",
-                            fstab_ptr->source,
-                            fstab_ptr->target);
-                }
-                // 挂载成功，根据配置判断是否终止流程。
-                if (0 != (fstab_ptr->abort_reasons & FSMOUNT_MNT_OK))
-                {
-                    terminate = true;
-                }
-            }
-        }
-
-        // 步骤 3：准备处理下一条挂载表项。
-        if (!terminate)
-        {
-            // 逆天，还支持批量挂载？？？rtems_fstab_entry 里面没有 next 指针，意思是我要手动预先构造一个 rtems_fstab_entry 数组代表多个挂载项。。。
-            fstab_ptr++;
-            fstab_idx++;
-        }
-    }
-
-    // 如果用户提供了失败索引记录指针，则写入最后处理的索引。
-    if (fail_idx != NULL)
-    {
-        *fail_idx = fstab_idx;
-    }
-
-    // 返回整体挂载操作的状态。
-    return rc;
-}
+```mermaid
+flowchart TD
+    A[开始, 初始化 rc, fstab_idx, terminate] --> B[检查循环条件 fstab_idx 小于 fstab_count, 且 terminate 为 false]
+    B -->|是| C[创建挂载点, 调用 rtems_mkdir]
+    C --> D{创建成功}
+    D -- 否 --> E[根据配置报告错误, 更新 terminate 和 rc]
+    D -- 是 --> F[执行挂载, 调用 mount]
+    F --> G{挂载成功}
+    G -- 否 --> H[根据配置报告挂载失败, 更新 terminate 和 rc]
+    G -- 是 --> I[根据配置报告挂载成功, 更新 terminate]
+    E & H & I --> J{terminate}
+    J -- 否 --> K[fstab_ptr 前移, fstab_idx 加一, 然后返回 B]
+    J -- 是 --> L[退出循环]
+    B -->|否| L
+    L --> M{fail_idx 是否存在}
+    M -- 是 --> N[写入失败索引]
+    M -- 否 --> O
+    N --> P[返回 rc]
+    O --> P
 ```
 
 #### struct rtems_fstab_entry
@@ -1179,107 +709,22 @@ typedef struct
 
 mount() 函数用于根据指定的源路径、目标挂载点、文件系统类型和挂载选项，完成文件系统的挂载操作。它首先根据文件系统类型获取对应的挂载处理函数，然后创建一个挂载表项来保存挂载信息，调用具体文件系统的挂载函数进行挂载，并将挂载点注册到系统的文件系统层次中。如果挂载或注册失败，会进行相应的资源释放和错误处理。函数最终返回挂载结果，成功返回 0，失败返回 -1 并设置相应的错误码。
 
-```c
-/**
- * @brief 挂载文件系统的函数。
- *
- * 根据指定的源设备/路径、目标挂载点、文件系统类型和挂载选项，
- * 尝试完成文件系统的挂载操作。
- *
- * @param source         挂载源，通常是设备路径或远程文件系统地址。
- * @param target         挂载目标路径，挂载点目录。若为 NULL，则挂载为根文件系统。
- * @param filesystemtype 文件系统类型字符串，用于获取对应的挂载处理函数。
- * @param options        挂载选项，支持只读或读写模式。
- * @param data           传递给文件系统挂载函数的额外数据指针，可为 NULL。
- *
- * @return 挂载结果，0 表示成功，非0表示失败，失败时设置 errno。
- */
-int mount(
-    const char *source,
-    const char *target,
-    const char *filesystemtype,
-    rtems_filesystem_options_t options,
-    const void *data)
-{
-    int rv = 0; // 返回值，默认成功。
+mount() 函数的执行流程图如下：
 
-    // 检查挂载选项是否有效，只支持只读和读写两种。
-    if (
-        options == RTEMS_FILESYSTEM_READ_ONLY || options == RTEMS_FILESYSTEM_READ_WRITE)
-    {
-        // 根据文件系统类型获取对应的挂载处理函数指针。
-        rtems_filesystem_fsmount_me_t fsmount_me_h =
-            rtems_filesystem_get_mount_handler(filesystemtype);
-
-        // 如果找到了对应的挂载函数。
-        if (fsmount_me_h != NULL)
-        {
-            size_t target_length = 0;
-            // 分配并初始化一个挂载表项结构，包含源、目标和类型信息。
-            rtems_filesystem_mount_table_entry_t *mt_entry = alloc_mount_table_entry(
-                source,
-                target,
-                filesystemtype,
-                &target_length);
-
-            // 如果挂载表项分配成功。
-            if (mt_entry != NULL)
-            {
-                // 设置挂载表项的可写权限标志。
-                mt_entry->writeable = options == RTEMS_FILESYSTEM_READ_WRITE;
-
-                // 调用具体文件系统的挂载函数完成挂载。
-                // 666，整个挂载流程从 rtems_fsmount() -> mount() -> fsmount_me_h。fsmount_me_h 就是 rtems_filesystem_register() 的第二个函数参数。。。。
-                rv = (*fsmount_me_h)(mt_entry, data);
-                if (rv == 0)
-                {
-                    // 挂载成功，注册挂载点到文件系统层次。
-                    if (target != NULL)
-                    {
-                        rv = register_subordinate_file_system(mt_entry, target);
-                    }
-                    else
-                    {
-                        rv = register_root_file_system(mt_entry);
-                    }
-
-                    // 如果注册失败，则卸载已经挂载的文件系统。
-                    if (rv != 0)
-                    {
-                        (*mt_entry->ops->fsunmount_me_h)(mt_entry);
-                    }
-                }
-
-                // 如果挂载或注册失败，释放挂载表项内存。
-                if (rv != 0)
-                {
-                    free(mt_entry);
-                }
-            }
-            else
-            {
-                // 挂载表项分配失败，设置内存不足错误。
-                errno = ENOMEM;
-                rv = -1;
-            }
-        }
-        else
-        {
-            // 未找到对应的挂载处理函数，设置参数无效错误。
-            errno = EINVAL;
-            rv = -1;
-        }
-    }
-    else
-    {
-        // 挂载选项无效，设置参数无效错误。
-        errno = EINVAL;
-        rv = -1;
-    }
-
-    // 返回挂载结果。
-    return rv;
-}
+```mermaid
+flowchart TD
+    A[开始, 调用 mount] --> B[验证 options 是否为只读 或 读写]
+    B -->|无效| C[设置 errno 为 EINVAL, 返回 -1]
+    B -->|有效| D[调用 rtems_filesystem_get_mount_handler, 获取挂载函数]
+    D -->|无 函数| E[设置 errno 为 EINVAL, 返回 -1]
+    D -->|有 函数| F[调用 alloc_mount_table_entry, 分配挂载表项]
+    F -->|分配 失败| G[设置 errno 为 ENOMEM, 返回 -1]
+    F -->|分配 成功| H[根据 options 设置 writeable 标志]
+    H --> I[调用挂载函数, 执行挂载]
+    I -->|挂载 失败| J[释放挂载表项, 返回 -1]
+    I -->|挂载 成功| K[注册 文件系统]
+    K -->|注册 成功| L[返回 0]
+    K -->|注册 失败| M[调用 fsunmount, 卸载, 释放挂载表项, 返回 -1]
 ```
 
 # 参考文档
