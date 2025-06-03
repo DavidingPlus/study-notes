@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-06-02 17:15:00
+updated: 2025-06-03 12:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -26,38 +26,21 @@ RTEMS（Real‑Time Executive for Multiprocessor Systems）是一款始于 1988 
 
 ### open()
 
-open() 函数的源码如下：
+open() 函数的调用流程图如下：
 
-```c
-int open(const char *path, int oflag, ...)
-{
-    int rv = 0;
-    va_list ap;
-    mode_t mode = 0;
-    rtems_libio_t *iop = NULL;
-
-    // 处理可变参数，获取文件创建模式（mode）。
-    va_start(ap, oflag);
-    mode = va_arg(ap, mode_t);
-
-    // 分配一个文件描述符结构。
-    iop = rtems_libio_allocate();
-    if (iop != NULL)
-    {
-        // 调用底层实现打开文件。
-        rv = do_open(iop, path, oflag, mode);
-    }
-    else
-    {
-        // 文件描述符耗尽，设置错误码。
-        errno = ENFILE;
-        rv = -1;
-    }
-
-    va_end(ap);
-
-    return rv;
-}
+```mermaid
+flowchart TD
+    A[开始 open 函数] --> B[初始化变量 rv=0, mode=0, iop=NULL]
+    B --> C[va_start 开始处理可变参数]
+    C --> D[获取 mode 参数]
+    D --> E{是否成功分配 iop}
+    E -- 是 --> F[调用 do_open 打开文件]
+    F --> G[设置 rv 为 do_open 返回值]
+    E -- 否 --> H[设置 errno = ENFILE]
+    H --> I[rv = -1]
+    G --> J[va_end 结束可变参数处理]
+    I --> J
+    J --> K[返回 rv]
 ```
 
 #### struct rtems_libio_t
@@ -121,23 +104,57 @@ typedef struct rtems_filesystem_location_info_tt
 比较重要的成员是 `const rtems_filesystem_file_handlers_r *handlers`，该结构类似于 Linux 内核中的 file_operations，定义如下：
 
 ```c
+/**
+ * @brief File system node operations table.
+ */
 struct _rtems_filesystem_file_handlers_r
 {
+    // 打开文件的处理函数指针。
     rtems_filesystem_open_t open_h;
+
+    // 关闭文件的处理函数指针。
     rtems_filesystem_close_t close_h;
+
+    // 读取文件的处理函数指针。
     rtems_filesystem_read_t read_h;
+
+    // 写入文件的处理函数指针。
     rtems_filesystem_write_t write_h;
+
+    // 控制操作（如设备控制）的处理函数指针。
     rtems_filesystem_ioctl_t ioctl_h;
+
+    // 文件位置指针移动（如 lseek）的处理函数指针。
     rtems_filesystem_lseek_t lseek_h;
+
+    // 获取文件状态信息的处理函数指针。
     rtems_filesystem_fstat_t fstat_h;
+
+    // 截断文件大小的处理函数指针。
     rtems_filesystem_ftruncate_t ftruncate_h;
+
+    // 将文件缓冲区数据同步到存储设备的处理函数指针。
     rtems_filesystem_fsync_t fsync_h;
+
+    // 同步文件数据（但不一定包括元数据）的处理函数指针。
     rtems_filesystem_fdatasync_t fdatasync_h;
+
+    // 文件控制（如修改文件描述符属性）的处理函数指针。
     rtems_filesystem_fcntl_t fcntl_h;
+
+    // 轮询文件状态（如是否可读写）的处理函数指针。
     rtems_filesystem_poll_t poll_h;
+
+    // 用于事件过滤（BSD kqueue）的处理函数指针。
     rtems_filesystem_kqfilter_t kqfilter_h;
+
+    // 读取多个缓冲区（向量读）的处理函数指针。
     rtems_filesystem_readv_t readv_h;
+
+    // 写入多个缓冲区（向量写）的处理函数指针。
     rtems_filesystem_writev_t writev_h;
+
+    // 内存映射文件的处理函数指针。
     rtems_filesystem_mmap_t mmap_h;
 };
 ```
@@ -266,42 +283,22 @@ struct _rtems_filesystem_operations_table
 
 #### rtems_libio_allocate()
 
-open 函数中分配文件描述符结构使用的函数是 rtems_libio_allocate()，定义如下：
+open 函数中分配文件描述符结构使用的函数是 rtems_libio_allocate()，执行流程图如下：
 
-```c
-rtems_libio_t *rtems_libio_allocate(void)
-{
-    rtems_libio_t *iop;
-
-    // 加锁，保护全局空闲链表。
-    rtems_libio_lock();
-
-    // 从空闲链表头获取一个可用的文件描述符结构。
-    iop = rtems_libio_iop_free_head;
-
-    if (iop != NULL)
-    {
-        void *next;
-
-        // 获取下一个空闲节点。
-        next = iop->data1;
-
-        // 更新空闲链表头指针。
-        rtems_libio_iop_free_head = next;
-
-        // 如果空闲链表已空，更新尾指针。
-        if (next == NULL)
-        {
-            rtems_libio_iop_free_tail = &rtems_libio_iop_free_head;
-        }
-    }
-
-    // 解锁，释放对空闲链表的访问。
-    rtems_libio_unlock();
-
-    // 返回分配到的文件描述符结构（可能为 NULL）。
-    return iop;
-}
+```mermaid
+flowchart TD
+    A[开始 rtems_libio_allocate 函数] --> B[加锁保护空闲链表]
+    B --> C[从空闲链表头获取 iop]
+    C --> D{iop 是否为 NULL?}
+    D -- 否 --> E[获取 iop->data1 到 next]
+    E --> F[更新空闲链表头指针为 next]
+    F --> G{next 是否为 NULL}
+    G -- 是 --> H[更新尾指针为 &rtems_libio_iop_free_head]
+    G -- 否 --> I[不操作]
+    D -- 是 --> I
+    H --> J[解锁释放访问]
+    I --> J
+    J --> K[返回 iop]
 ```
 
 ##### rtems_libio_iop_free_head
@@ -314,29 +311,19 @@ rtems_libio_iop_free_head 是一个全局变量，用于维护 Rtems 文件描�
 
 初始化阶段的函数逻辑如下：
 
-```c
-static void rtems_libio_init(void)
-{
-    uint32_t i;
-    rtems_libio_t *iop;
-
-    // 如果 I/O 对象数量大于 0，才进行初始化。
-    if (rtems_libio_number_iops > 0)
-    {
-        // 把空闲链表的头指针指向数组中第一个 I/O 对象。
-        iop = rtems_libio_iop_free_head = &rtems_libio_iops[0];
-
-        // 把当前 I/O 对象的 data1 成员指向数组中的下一个 I/O 对象，实现链表链接。
-        for (i = 0; (i + 1) < rtems_libio_number_iops; i++, iop++)
-            iop->data1 = iop + 1;
-
-        // 最后一个 I/O 对象的 data1 设置为 NULL，表示链表末尾。
-        iop->data1 = NULL;
-
-        // 记录链表尾部指针，指向最后一个 I/O 对象的 data1 成员地址。
-        rtems_libio_iop_free_tail = &iop->data1;
-    }
-}
+```mermaid
+flowchart TD
+    A[开始 rtems_libio_init 函数] --> B{rtems_libio_number_iops > 0?}
+    B -- 否 --> Z[结束函数]
+    B -- 是 --> C[设置空闲链表头指针]
+    C --> D[初始化循环变量 i = 0]
+    D --> E{i + 1 < rtems_libio_number_iops?}
+    E -- 是 --> F[设置 iop->data1 = iop + 1]
+    F --> G[i++, iop++]
+    G --> E
+    E -- 否 --> H[设置最后一个 iop->data1 = NULL]
+    H --> I[设置链表尾指针 rtems_libio_iop_free_tail = &iop->data1]
+    I --> Z
 ```
 
 rtems_libio_iops 是 Rtems 预先分配的 I/O 控制块数组，配置了 CONFIGURE_MAXIMUM_FILE_DESCRIPTORS 以后，会预先创建出这个数组。
