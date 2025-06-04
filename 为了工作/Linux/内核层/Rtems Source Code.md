@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-06-04 12:05:00
+updated: 2025-06-04 17:25:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -764,7 +764,11 @@ rtems_chain_control *chain = &filesystem_chain;
 const rtems_filesystem_table_t *table_entry = &rtems_filesystem_table[0];
 ```
 
-关于 rtems_filesystem_table，它用于表示挂载的文件系统的信息，并且猜测大概率是预挂载的文件系统的信息。定义如下：
+#### variable rtems_filesystem_table
+
+关于 rtems_filesystem_table，它用于表示挂载的文件系统的信息，并且猜测大概率是预挂载的文件系统的信息。结构体 rtems_filesystem_table_t 前面提到过，两个成员分别代表文件系统的类型名称 type 和文件系统的挂载函数指针 mount_h。
+
+rtems_filesystem_table 的定义如下。其中关于 IMFS 有两个地方提到，一个是文件系统名字叫 "/" 的文件系统，一个是下面的 IMFS 文件系统。他们对应的挂载函数分别叫 IMFS_initialize_support() 和 IMFS_initialize()。
 
 ```c
 const rtems_filesystem_table_t rtems_filesystem_table[] = {
@@ -793,7 +797,216 @@ const rtems_filesystem_table_t rtems_filesystem_table[] = {
     {NULL, NULL}};
 ```
 
-TODO
+### IMFS_initialize() 和 IMFS_initialize_support()
+
+IMFS_initialize() 的执行流程图如下：
+
+```mermaid
+flowchart TD
+    A[开始 IMFS_initialize] --> B[调用 calloc 分配并清零 fs_info 内存]
+    B --> C{fs_info 是否为 NULL}
+    C -- 是 --> D[设置 errno 为 ENOMEM] --> E[返回 -1, 初始化失败]
+    C -- 否 --> F[构造 IMFS_mount_data 结构体]
+    F --> G[填入 fs_info 指针<br>填入文件系统操作集 &IMFS_ops<br>填入默认节点创建控制表 &IMFS_default_mknod_controls]
+    G --> H[调用 IMFS_initialize_support 进行实际初始化和挂载]
+    H --> I[返回初始化结果]
+```
+
+其中填充 IMFS_mount_data 结构体的代码截取如下，可以看出 rtems_filesystem_operations_table 结构体的回调函数是在这里被注册进去的。
+
+```c
+typedef struct
+{
+    IMFS_fs_info_t *fs_info;
+    const rtems_filesystem_operations_table *ops;
+    const IMFS_mknod_controls *mknod_controls;
+} IMFS_mount_data;
+
+// 构造挂载所需的初始化数据结构，包括操作集和创建节点控制表。
+IMFS_mount_data mount_data = {
+    .fs_info = fs_info,                            // 文件系统内部信息。
+    .ops = &IMFS_ops,                              // 文件系统操作函数集合。
+    .mknod_controls = &IMFS_default_mknod_controls // 创建节点控制信息。
+};
+```
+
+IMFS_initialize() 最后会调用 IMFS_initialize_support()，IMFS_initialize_support() 的执行流程图如下：
+
+```mermaid
+flowchart TD
+    A[开始 IMFS_initialize_support 函数] --> B[将 data 转为 IMFS_mount_data 指针]
+    B --> C[提取 fs_info 和 mknod_controls]
+    C --> D[获取 node_control 和 root_node 指针]
+    D --> E[设置挂载点 mt_entry 的各项字段, 包括 fs_info, ops, pathconf, root 节点信息]
+    E --> F[调用 IMFS_initialize_node 初始化根目录节点]
+    F --> G[断言 root_node 不为 NULL]
+    G --> H[返回 0, 表示初始化成功]
+```
+
+这其中也做了很多赋值操作，代码片段截取如下。其中 _rtems_filesystem_file_handlers_r 结构体的回调函数是在这里注册进去的。
+
+```c
+// 转换传入的 data 参数为具体类型。
+mount_data = data;
+
+// 提取文件系统信息和 mknod 控制器。
+fs_info = mount_data->fs_info;
+fs_info->mknod_controls = mount_data->mknod_controls;
+
+// 获取根目录所用的节点控制器。
+node_control = &mount_data->mknod_controls->directory->node_control;
+
+// 获取根节点结构体的地址。
+root_node = &fs_info->Root_directory.Node;
+
+// 设置挂载点结构 mt_entry 的基本信息。
+mt_entry->fs_info = fs_info;                                      // 文件系统私有数据。
+mt_entry->ops = mount_data->ops;                                  // 文件系统操作集。
+mt_entry->pathconf_limits_and_options = &IMFS_LIMITS_AND_OPTIONS; // 路径相关限制。
+
+// 设置挂载根目录的节点访问和操作处理函数。
+mt_entry->mt_fs_root->location.node_access = root_node;
+mt_entry->mt_fs_root->location.handlers = node_control->handlers;
+```
+
+#### IMFS_initialize_node()
+
+IMFS_initialize_support() 最后会调用 IMFS_initialize_node() 函数。该函数用于初始化一个 IMFS 节点（内存文件系统中的目录或文件节点）。根据传入的信息填充节点结构体的基本字段，并调用节点类型控制器提供的初始化回调。成功返回已初始化的节点指针，失败返回 NULL 并设置 errno。
+
+IMFS_initialize_node() 的执行流程图如下：
+
+```mermaid
+flowchart TD
+    A[开始 IMFS_initialize_node 函数] --> B{namelen 是否超过 IMFS_NAME_MAX}
+    B -- 是 --> C[设置 errno 为 ENAMETOOLONG<br>返回 NULL]
+    B -- 否 --> D[填充节点基本字段 name, namelen, reference_count, st_nlink, control]
+    D --> E[设置权限和属主信息 mode, uid, gid]
+    E --> F[获取当前时间 now]
+    F --> G[设置时间戳 atime, mtime, ctime]
+    G --> H[调用 node_control 的 node_initialize 回调]
+    H --> I[返回初始化后的节点指针]
+```
+
+该函数在设置了节点 node 的信息以后，会调用 node_control 结构体的 node_initialize 回调函数进行 node 初始化。代码片段如下：
+
+```c
+// 调用节点控制器中定义的初始化函数以执行具体类型的初始化。
+return (*node_control->node_initialize)(node, arg);
+```
+
+### struct IMFS_jnode_tt
+
+IMFS_jnode_tt 是 IMFS 自己设计的 inode 结构，作用和 Linux 中文件系统自己的 inode 结构效果相同，定义如下：
+
+```c
+// IMFS_jnode_tt 是 IMFS 文件系统中用于表示一个文件或目录的节点结构体。这是内存文件系统（IMFS）中最核心的数据结构之一，包含名称、权限、所有者、时间戳等元数据，以及指向父节点和控制操作的指针。
+struct IMFS_jnode_tt
+{
+    // 用于将该节点链接入链表中。
+    rtems_chain_node Node;
+
+    // 指向父节点的指针。
+    IMFS_jnode_t *Parent;
+
+    // 节点名称，不以 \0 结尾（即不是 C 字符串）。
+    const char *name;
+
+    // 节点名称的长度（对应上面的 name）。
+    uint16_t namelen;
+
+    // 文件类型和权限信息（如目录、常规文件、权限位）。
+    mode_t st_mode;
+
+    // 节点的引用计数，用于资源管理。
+    unsigned short reference_count;
+
+    // 硬链接数量（链接计数）。
+    nlink_t st_nlink;
+
+    // 拥有者的用户 ID。
+    uid_t st_uid;
+
+    // 拥有者的组 ID。
+    gid_t st_gid;
+
+    // 最后一次访问时间。
+    time_t stat_atime;
+
+    // 最后一次修改内容的时间。
+    time_t stat_mtime;
+
+    // 最后一次属性更改（如权限、所有者等）的时间。
+    time_t stat_ctime;
+
+    // 节点控制器，定义节点的行为和操作函数。
+    const IMFS_node_control *control;
+};
+```
+
+#### struct IMFS_node_control
+
+struct IMFS_jnode_tt 中除了 inode 的基本信息以外，需要关注的一点就是 struct IMFS_node_control。该结构体定义了 IMFS inode 节点的操作函数，并作统一控制管理。
+
+```c
+/**
+ * @brief IMFS node control.
+ */
+// IMFS_node_control：定义 IMFS 节点类型的操作控制器。
+// 每种节点类型（如普通文件、目录、符号链接等）可以拥有自己的 handlers 和初始化、销毁等函数指针。
+// 该结构体允许 IMFS 在操作不同类型节点时通过回调机制实现多态行为。
+typedef struct
+{
+    // 文件操作处理器集合，包含 open、read、write、ioctl 等函数指针。
+    // 每种节点类型可以定义不同的 handlers。
+    const rtems_filesystem_file_handlers_r *handlers;
+
+    // 节点初始化函数，在创建该类型节点时调用。
+    // 通常在 IMFS_initialize_node 中调用，用于执行类型特定的初始化逻辑。
+    IMFS_node_control_initialize node_initialize;
+
+    // 节点删除函数，在执行 unlink/remove 操作时调用。
+    // 用于处理节点类型特定的清理逻辑，如从父结构中移除等。
+    IMFS_node_control_remove node_remove;
+
+    // 节点销毁函数，在释放节点内存或引用计数归零时调用。
+    // 通常用于释放节点中私有数据或执行资源回收。
+    IMFS_node_control_destroy node_destroy;
+} IMFS_node_control;
+```
+
+前面提到，_rtems_filesystem_file_handlers_r 结构体的回调函数是在 IMFS_initialize_support() 中注册的，最终就来源于 IMFS_node_control 中的 rtems_filesystem_file_handlers_r *handlers。
+
+```c
+mt_entry->mt_fs_root->location.handlers = node_control->handlers;
+```
+
+下一步就是找到这些函数最开始是在哪里被注册的。最终在 cpukit/libfs/src/imfs/imfs_linfile.c 中找到了答案：
+
+```c
+static const rtems_filesystem_file_handlers_r IMFS_linfile_handlers = {
+    .open_h = IMFS_linfile_open,
+    .close_h = rtems_filesystem_default_close,
+    .read_h = IMFS_linfile_read,
+    .write_h = rtems_filesystem_default_write,
+    .ioctl_h = rtems_filesystem_default_ioctl,
+    .lseek_h = rtems_filesystem_default_lseek_file,
+    .fstat_h = IMFS_stat_file,
+    .ftruncate_h = rtems_filesystem_default_ftruncate,
+    .fsync_h = rtems_filesystem_default_fsync_or_fdatasync_success,
+    .fdatasync_h = rtems_filesystem_default_fsync_or_fdatasync_success,
+    .fcntl_h = rtems_filesystem_default_fcntl,
+    .kqfilter_h = rtems_filesystem_default_kqfilter,
+    .mmap_h = rtems_filesystem_default_mmap,
+    .poll_h = rtems_filesystem_default_poll,
+    .readv_h = rtems_filesystem_default_readv,
+    .writev_h = rtems_filesystem_default_writev};
+
+const IMFS_node_control IMFS_node_control_linfile = {
+    .handlers = &IMFS_linfile_handlers,
+    .node_initialize = IMFS_node_initialize_linfile,
+    .node_remove = IMFS_node_remove_default,
+    .node_destroy = IMFS_node_destroy_default};
+```
 
 # 参考文档
 
