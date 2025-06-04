@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-06-03 18:10:00
+updated: 2025-06-04 12:05:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -562,15 +562,21 @@ rtems_filesystem_register() 的执行流程图如下：
 
 ```mermaid
 flowchart TD
-    A[开始, 调用 rtems_filesystem_register, 传入 type 和挂载函数] --> B[计算 type 长度, 分配节点内存]
-    B --> C{内存分配成功吗}
-    C -- 否 --> D[设置 errno ENOMEM, 返回失败]
-    C -- 是 --> E[复制 type 字符串, 绑定挂载函数]
-    E --> F[加锁, 进入临界区]
-    F --> G{type 已经注册吗}
-    G -- 否 --> H[初始化节点, 加入链表]
-    H --> I[解锁, 退出临界区, 返回成功]
-    G -- 是 --> J[解锁, 退出临界区, 释放内存, 设置 errno EINVAL, 返回失败]
+    A[开始 rtems_filesystem_register] --> B[计算 type_size 与 fsn_size 并 malloc 分配 fsn]
+    B --> C{fsn 是否为 NULL?}
+    C -- 是 --> D[设置 errno 等于 ENOMEM 并返回 -1]
+    C -- 否 --> E[计算 type_storage 并 memcpy 复制类型字符串]
+    E --> F[设置 fsn->entry.type 等于 type_storage]
+    F --> G[设置 fsn->entry.mount_h 等于 mount_h]
+    G --> H[rtems_libio_lock 进入临界区]
+    H --> I{rtems_filesystem_get_mount_handler 判断 type 是否已注册}
+    I -- 未注册 --> J[rtems_chain_initialize_node 初始化链表节点]
+    J --> K[rtems_chain_append_unprotected 将 fsn 添加到全局链表]
+    K --> L[rtems_libio_unlock 解锁]
+    L --> M[返回 0 注册成功]
+    I -- 已注册 --> N[rtems_libio_unlock 解锁]
+    N --> O[free fsn 释放内存]
+    O --> P[设置 errno 等于 EINVAL 并返回 -1]
 ```
 
 #### struct filesystem_node
@@ -726,6 +732,68 @@ flowchart TD
     K -->|注册 成功| L[返回 0]
     K -->|注册 失败| M[调用 fsunmount, 卸载, 释放挂载表项, 返回 -1]
 ```
+
+## IMFS 文件系统
+
+IMFS（In‐Memory File System）是 Rtems 提供的一个内存文件系统。它将文件和目录全部存储在 RAM 中，为嵌入式应用提供快速、轻量级的 POSIX 风格文件操作接口；其核心模块负责管理目录树结构、路径解析和文件读写逻辑，而底层的节点分配与销毁、元数据初始化等则通过回调函数（如 node_initialize、node_remove、node_destroy）由系统默认实现或用户自定义实现来完成，使得 IMFS 在不修改主体框架的情况下能够灵活适配不同内存布局或特殊需求，启动时通过 IMFS_initialize 自动注册并挂载为根文件系统，用户即可直接使用标准的 open/read/write/close 等接口访问内存中存储的文件。
+
+### rtems_filesystem_get_mount_handler()
+
+在 rtems_filesystem_register() 中，有一步是调用 rtems_filesystem_get_mount_handler 函数判断节点类型是否注册。这不仅让我们联想到，可能 Rtems 内部维护了一张全局表，专门用于记录目前已挂载的文件系统的信息。
+
+rtems_filesystem_get_mount_handler() 的执行流程如下。
+
+```mermaid
+flowchart TD
+    A[开始 rtems_filesystem_get_mount_handler] --> B{type 为空?}
+    B -- 是 --> C[返回 NULL]
+    B -- 否 --> D[遍历表 rtems_filesystem_table]
+    D --> E{表项匹配?}
+    E -- 是 --> F[返回对应 mount_h]
+    E -- 否 --> G[遍历表 filesystem_chain]
+    G --> H{表项匹配?}
+    H -- 是 --> I[返回对应 mount_h]
+    H -- 否 --> J[返回 NULL]
+```
+
+在 rtems_filesystem_iterate 函数中，可以发现 Rtems 定义了全局的两个表 filesystem_chain 和 rtems_filesystem_table。源码中无法直接跳转 filesystem_chain，目前无法得知他的具体状况。
+
+```c
+rtems_chain_control *chain = &filesystem_chain;
+
+const rtems_filesystem_table_t *table_entry = &rtems_filesystem_table[0];
+```
+
+关于 rtems_filesystem_table，它用于表示挂载的文件系统的信息，并且猜测大概率是预挂载的文件系统的信息。定义如下：
+
+```c
+const rtems_filesystem_table_t rtems_filesystem_table[] = {
+    {"/", IMFS_initialize_support},
+#ifdef CONFIGURE_FILESYSTEM_DOSFS
+    {RTEMS_FILESYSTEM_TYPE_DOSFS, rtems_dosfs_initialize},
+#endif
+#ifdef CONFIGURE_FILESYSTEM_FTPFS
+    {RTEMS_FILESYSTEM_TYPE_FTPFS, rtems_ftpfs_initialize},
+#endif
+#ifdef CONFIGURE_FILESYSTEM_IMFS
+    {RTEMS_FILESYSTEM_TYPE_IMFS, IMFS_initialize},
+#endif
+#ifdef CONFIGURE_FILESYSTEM_JFFS2
+    {RTEMS_FILESYSTEM_TYPE_JFFS2, rtems_jffs2_initialize},
+#endif
+#ifdef CONFIGURE_FILESYSTEM_NFS
+    {RTEMS_FILESYSTEM_TYPE_NFS, rtems_nfs_initialize},
+#endif
+#ifdef CONFIGURE_FILESYSTEM_RFS
+    {RTEMS_FILESYSTEM_TYPE_RFS, rtems_rfs_rtems_initialise},
+#endif
+#ifdef CONFIGURE_FILESYSTEM_TFTPFS
+    {RTEMS_FILESYSTEM_TYPE_TFTPFS, rtems_tftpfs_initialize},
+#endif
+    {NULL, NULL}};
+```
+
+TODO
 
 # 参考文档
 
