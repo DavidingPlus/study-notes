@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 4936fe45
 date: 2025-05-19 12:50:00
-updated: 2025-06-04 17:25:00
+updated: 2025-06-18 17:20:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -577,6 +577,26 @@ flowchart TD
     I -- 已注册 --> N[rtems_libio_unlock 解锁]
     N --> O[free fsn 释放内存]
     O --> P[设置 errno 等于 EINVAL 并返回 -1]
+```
+
+在 rtems_filesystem_register() 的源码中，有几行比较细节的地方。在 Rtems 中，文件系统的注册全局表有两个，一个是静态表 rtems_filesystem_table，一个是动态表 filesystem_chain。静态表是 Rtems 预先定义好的常量，提供了 Rtems 内置的文件系统。动态表用于用户动态注册文件系统，在下面的函数实现中，如果发现全局表没有注册该文件系统，Rtems 会将该文件系统挂到 filesystem_chain 上。
+
+好，问题来了，表里面除了 type 成员，更重要的是挂载函数 rtems_filesystem_fsmount_me_t。这个函数是需要我们自己写的，也就是说 Rtems 在注册文件系统的时候，除了记录到注册全局表以后，就没有其他架构上的操作了。后面的操作都需要我们自己做，Rtems 的文件系统虚拟层目前看起来几乎没有。
+
+```c
+rtems_chain_control *chain = &filesystem_chain;
+
+...
+
+if (rtems_filesystem_get_mount_handler(type) == NULL)
+{
+    rtems_chain_initialize_node(&fsn->node);
+    rtems_chain_append_unprotected(chain, &fsn->node);
+}
+else
+{
+    ...
+}
 ```
 
 #### struct filesystem_node
