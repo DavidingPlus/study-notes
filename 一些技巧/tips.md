@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2025-05-16 16:25:00
+updated: 2025-07-03 15:00:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -453,4 +453,6 @@ updated: 2025-05-16 16:25:00
 - 1Panel 搭建 frp 服务端并使用 Openresty 反向代理：[https://www.cnblogs.com/drcode/p/18455476/panel-frps-reverse-proxy-https](https://www.cnblogs.com/drcode/p/18455476/panel-frps-reverse-proxy-https)
 
 - Frp 安全连接远程桌面，简单、安全、可视化（安全穿透）：[https://www.bilibili.com/video/BV1hZtme2Esu/](https://www.bilibili.com/video/BV1hZtme2Esu/)
+
+- Windows 将虚拟内存文件 pagefile.sys 移动到其他盘符：[https://www.xitongzhijia.net/xtjc/20230807/293331.html](https://www.xitongzhijia.net/xtjc/20230807/293331.html)
 
