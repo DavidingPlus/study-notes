@@ -8,17 +8,17 @@
 
 **取数组当中的一个值，一般取第一个值，先做处理再进行递归**
 
-![image-20230711194047843](https://image.davidingplus.cn/images/2025/02/02/image-20230711194047843.png)
+![image-20230711194047843](https://cdn.davidingplus.cn/images/2025/02/02/image-20230711194047843.png)
 
 **分治的思想**：取一个分界点，进行一个轮次的查找使得分界点左边的数均小于x，右边的数均大于x；然后对左边和右边的区间分别进行递归即可
 
 具体而言：
 
-![image-20230711204623490](https://image.davidingplus.cn/images/2025/02/02/image-20230711204623490.png)
+![image-20230711204623490](https://cdn.davidingplus.cn/images/2025/02/02/image-20230711204623490.png)
 
-![image-20230711204636198](https://image.davidingplus.cn/images/2025/02/02/image-20230711204636198.png)
+![image-20230711204636198](https://cdn.davidingplus.cn/images/2025/02/02/image-20230711204636198.png)
 
-![image-20230711204656505](https://image.davidingplus.cn/images/2025/02/02/image-20230711204656505.png)
+![image-20230711204656505](https://cdn.davidingplus.cn/images/2025/02/02/image-20230711204656505.png)
 
 **注意：取左侧作为标兵那么一定是右侧先移动，然后最后将右侧的位置和标兵进行交换!!!!**
 
@@ -67,7 +67,7 @@ void quick_sort(int arr[], int left, int right) {
 
 采用双指针算法进行合并
 
-![image-20230713160124405](https://image.davidingplus.cn/images/2025/02/02/image-20230713160124405.png)
+![image-20230713160124405](https://cdn.davidingplus.cn/images/2025/02/02/image-20230713160124405.png)
 
 **两根指针分别指向两个数组起始和结束的位置，然后依次比较两个指针，如果升序，哪个小就把哪个放入后面的数组然后后移，然后再次进行比较，直到一方到达末尾，这个时候把另一个的数组填入即可**
 
@@ -117,7 +117,7 @@ void merge_sort(int array[], int left, int right) {
 
 第k个数
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230715161200778.png" alt="image-20230715161200778" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230715161200778.png" alt="image-20230715161200778" style="zoom:67%;" />
 
 ~~~cpp
 
@@ -131,11 +131,11 @@ void merge_sort(int array[], int left, int right) {
 
 #### 两个模板：
 
-![image-20230713165547136](https://image.davidingplus.cn/images/2025/02/02/image-20230713165547136.png)
+![image-20230713165547136](https://cdn.davidingplus.cn/images/2025/02/02/image-20230713165547136.png)
 
 #### 例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230713175850386.png" alt="image-20230713175850386" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230713175850386.png" alt="image-20230713175850386" style="zoom:80%;" />
 
 ```c++
 #include <iostream>
@@ -205,7 +205,7 @@ int main() {
 }
 ```
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230713183605769.png" alt="image-20230713183605769" style="zoom: 67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230713183605769.png" alt="image-20230713183605769" style="zoom: 67%;" />
 
 ```c++
 #include <iostream>
@@ -252,11 +252,11 @@ int main() {
 
 **A的位数是10的6次方(可以看出超级大了)**
 
-![image-20230714155419310](https://image.davidingplus.cn/images/2025/02/02/image-20230714155419310.png)
+![image-20230714155419310](https://cdn.davidingplus.cn/images/2025/02/02/image-20230714155419310.png)
 
 ##### 存储方法
 
-![image-20230714155943611](https://image.davidingplus.cn/images/2025/02/02/image-20230714155943611.png)
+![image-20230714155943611](https://cdn.davidingplus.cn/images/2025/02/02/image-20230714155943611.png)
 
 比如有一个数123456789，我们把每一位放到数组当中，从低位开始往后放
 
@@ -495,7 +495,7 @@ int main() {
 
 **与一般的思路不同，这个是把位数小的数放在前面!!!(因为我们也只能让小的数和大的数的每一位相乘!!!)**
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/6bd3078974047cfc651144c0787f894.jpg" alt="6bd3078974047cfc651144c0787f894" style="zoom: 50%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/6bd3078974047cfc651144c0787f894.jpg" alt="6bd3078974047cfc651144c0787f894" style="zoom: 50%;" />
 
 模板
 
@@ -533,7 +533,7 @@ vector<int> mul(const vector<int>& A, const int& b) {
 
 思路：就按照一般的除法走就完了
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230714203250061.png" alt="image-20230714203250061" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230714203250061.png" alt="image-20230714203250061" style="zoom:67%;" />
 
 模板
 
@@ -624,11 +624,11 @@ int main() {
 
 **计算 1 到 n 的和，公式就是 Sn-S0，这样就做到了统一!!!(处理边界)**
 
-![image-20230714211457962](https://image.davidingplus.cn/images/2025/02/02/image-20230714211457962.png)
+![image-20230714211457962](https://cdn.davidingplus.cn/images/2025/02/02/image-20230714211457962.png)
 
 前缀和例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230714213457166.png" alt="image-20230714213457166" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230714213457166.png" alt="image-20230714213457166" style="zoom:67%;" />
 
 代码：
 
@@ -692,11 +692,11 @@ ios::sync_with_stdio(false);
 
 例题2
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230714214355261.png" alt="image-20230714214355261" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230714214355261.png" alt="image-20230714214355261" style="zoom:67%;" />
 
 动态递归的思路：(自己画个图就明白了)
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230714214717118.png" alt="image-20230714214717118" style="zoom: 50%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230714214717118.png" alt="image-20230714214717118" style="zoom: 50%;" />
 
 ~~~cpp
 #include <iostream>
@@ -732,7 +732,7 @@ int main() {
 
 b数组称为a数组的差分，a数组称为b数组的前缀和
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230714221348016.png" alt="image-20230714221348016" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230714221348016.png" alt="image-20230714221348016" style="zoom:67%;" />
 
 **差分的作用：可以用O(1)的时间复杂度将数组当中某个区间的所有数加上某个值**
 
@@ -744,11 +744,11 @@ b数组称为a数组的差分，a数组称为b数组的前缀和
 
 **因此，l到r区间当中的前缀和全部加了c**
 
-![image-20230714221736276](https://image.davidingplus.cn/images/2025/02/02/image-20230714221736276.png)
+![image-20230714221736276](https://cdn.davidingplus.cn/images/2025/02/02/image-20230714221736276.png)
 
 例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230714222044152.png" alt="image-20230714222044152" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230714222044152.png" alt="image-20230714222044152" style="zoom:67%;" />
 
 代码
 
@@ -793,7 +793,7 @@ int main() {
 
 二维差分
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230715153441758.png" alt="image-20230715153441758" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230715153441758.png" alt="image-20230715153441758" style="zoom:67%;" />
 
 代码
 
@@ -856,7 +856,7 @@ int main() {
 
 绝大部分的模板都是长这样的
 
-![image-20230715171200318](https://image.davidingplus.cn/images/2025/02/02/image-20230715171200318.png)
+![image-20230715171200318](https://cdn.davidingplus.cn/images/2025/02/02/image-20230715171200318.png)
 
 一个简单的例子
 
@@ -902,7 +902,7 @@ int main() {
 
 #### 例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230715194453180.png" alt="image-20230715194453180" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230715194453180.png" alt="image-20230715194453180" />
 
 双指针的题一般都可以从暴力入手，然后再去着手优化
 
@@ -1030,7 +1030,7 @@ n >> k && 1
 
 #### 例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230715205834408.png" alt="image-20230715205834408" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230715205834408.png" alt="image-20230715205834408" style="zoom:67%;" />
 
 这个题就是典型的lowbit操作的用法
 
@@ -1070,7 +1070,7 @@ int main() {
 
 值域非常大，我们把这些数映射到从0开始的有序自然数，这个过程就叫离散化
 
-![image-20230715211118777](https://image.davidingplus.cn/images/2025/02/02/image-20230715211118777.png)
+![image-20230715211118777](https://cdn.davidingplus.cn/images/2025/02/02/image-20230715211118777.png)
 
 两个前提：**第一是整数；第二是保序，也就是数组是有序的**
 
@@ -1086,7 +1086,7 @@ alls.erase(unique(alls.begin(),alls.end()),alls.end());
 
 #### 例题(!!!)
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230715212020778.png" alt="image-20230715212020778" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230715212020778.png" alt="image-20230715212020778" style="zoom:67%;" />
 
 如果数的范围很小，那么可以用前缀和算法就可以很好的解决了
 
@@ -1203,15 +1203,15 @@ int main() {
 
 先把所有区间按照左端点的大小排序，然后从第一个区间开始，由于排了序，那么后面的区间的左端点只可能大于等于本区间，然后就可能出现三种情况如下：
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719163223755.png" alt="image-20230719163223755" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719163223755.png" alt="image-20230719163223755" style="zoom:67%;" />
 
 前面两个区间可以合并，然后更新为新的区间；第三种情况合并不了，由于经过了排序，那么第一个区间必然是最后合并区间的一个，那么将其记录下来，然后更新区间为后面的区间，直到所有的区间都判断完毕
 
-![image-20230719163115693](https://image.davidingplus.cn/images/2025/02/02/image-20230719163115693.png)
+![image-20230719163115693](https://cdn.davidingplus.cn/images/2025/02/02/image-20230719163115693.png)
 
 例题：
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719165718848.png" alt="image-20230719165718848" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719165718848.png" alt="image-20230719165718848" style="zoom:67%;" />
 
 代码：
 
@@ -1283,11 +1283,11 @@ int main() {
 
 用e[N]和ne[N]来表示结点的值和结点的后继结点的下标，空结点下标定义为-1
 
-![image-20230719170957832](https://image.davidingplus.cn/images/2025/02/02/image-20230719170957832.png)
+![image-20230719170957832](https://cdn.davidingplus.cn/images/2025/02/02/image-20230719170957832.png)
 
 ##### 例题(!!!)
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719171157485.png" alt="image-20230719171157485" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719171157485.png" alt="image-20230719171157485" style="zoom:67%;" />
 
 直接看代码吧，都在代码里了(真的很巧妙)
 
@@ -1377,7 +1377,7 @@ int main() {
 
 ##### 例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719211659529.png" alt="image-20230719211659529"  />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719211659529.png" alt="image-20230719211659529"  />
 
 **思路差不多，但是这里借用数组的0和1序号来代表head和tail，idx从2开始!!!**
 
@@ -1478,7 +1478,7 @@ int main() {
 
 stack
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719212205557.png" alt="image-20230719212205557" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719212205557.png" alt="image-20230719212205557" style="zoom: 80%;" />
 
 ~~~cpp
 #include <iostream>
@@ -1552,7 +1552,7 @@ int main() {
 
 queue
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719213226149.png" alt="image-20230719213226149" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719213226149.png" alt="image-20230719213226149" style="zoom:80%;" />
 
 ~~~cpp
 #include <iostream>
@@ -1632,7 +1632,7 @@ int main() {
 
 #### 例题
 
-<img src="https://image.davidingplus.cn/images/2025/02/02/image-20230719220816068.png" alt="image-20230719220816068" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/02/image-20230719220816068.png" alt="image-20230719220816068" style="zoom:80%;" />
 
 代码：
 
@@ -1726,7 +1726,7 @@ int main() {
 
 #### 例题
 
-![image-20230719221813851](https://image.davidingplus.cn/images/2025/02/02/image-20230719221813851.png)
+![image-20230719221813851](https://cdn.davidingplus.cn/images/2025/02/02/image-20230719221813851.png)
 
 代码还有一些问题，后续修改
 

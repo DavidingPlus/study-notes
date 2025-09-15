@@ -116,7 +116,7 @@ ts 服务器是需要几个 tcp 协议的端口和一个 udp 协议的端口的�
 
 获得 token 以后，就可以通过客户端连接进入 ts 服务器了。连接地址输入自己的服务器公网 IP 即可，如图所示：
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240816192530057.png" alt="image-20240816192530057" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20240816192530057.png" alt="image-20240816192530057" style="zoom:67%;" />
 
 连接成功以后，会弹出提示，输入 token 激活获得管理员权限即可。
 
@@ -180,7 +180,7 @@ telnet 服务器的 IP 地址 10011
 
 出现这样的输出信息，代表连接成功：
 
-![image-20240820100020844](https://image.davidingplus.cn/images/2025/02/01/image-20240820100020844.png)
+![image-20240820100020844](https://cdn.davidingplus.cn/images/2025/02/01/image-20240820100020844.png)
 
 输入 `help` 命令可以看到所有的命令列表，肉眼可见，可以干非常多的事情：
 
@@ -371,7 +371,7 @@ tokenadd tokentype=0 tokenid1=6 tokenid2=0
 
 如果不输入 `use 1`，可能会出现如下的错误：
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240820101616202.png" alt="image-20240820101616202" style="zoom:70%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20240820101616202.png" alt="image-20240820101616202" style="zoom:70%;" />
 
 ### 重置服务器的权限
 
@@ -409,7 +409,7 @@ permreset
 
 让我们查看 docker 中 ts 服务器对应的存储卷的内容，经过验证，除了 logs/ 日志目录的文件不是必要的，其他都需要拷贝到新机器对应的位置。注意这里数据库的文件似乎与官网提到的有冲突。我个人尝试过只拷贝第一个，但是备份失败，因此全部拷过去覆盖即可。
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20240820103802807.png" alt="image-20240820103802807" style="zoom:55%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20240820103802807.png" alt="image-20240820103802807" style="zoom:55%;" />
 
 > 最后，再次回到前面设置密码环境变量的伏笔。这里我们的日志是没有同步的，当然如果你也可以选择直接覆盖日志进行同步。但是问题是，如果不手动设置密码，将服务器做了迁移以后，日志中的密码就不一定正确了，这一点我也不知道为什么，试验出来的结果是这样的。因此将密码牢牢掌握在自己手中，才是最终的解决方案。
 

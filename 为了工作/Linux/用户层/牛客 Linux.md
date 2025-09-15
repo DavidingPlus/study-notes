@@ -12,7 +12,7 @@ updated: 2023-09-21 01:00:00
 
 # 学习路线
 
-![image-20230712153227763](https://image.davidingplus.cn/images/2025/01/31/image-20230712153227763.png)
+![image-20230712153227763](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712153227763.png)
 
 <!-- more -->
 
@@ -22,33 +22,33 @@ updated: 2023-09-21 01:00:00
 
 ### 什么是GCC
 
-![image-20230712154631108](https://image.davidingplus.cn/images/2025/01/31/image-20230712154631108.png)
+![image-20230712154631108](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712154631108.png)
 
 ### GCC工作流程
 
-![image-20230712162031153](https://image.davidingplus.cn/images/2025/01/31/image-20230712162031153.png)
+![image-20230712162031153](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712162031153.png)
 
 预处理命令 **-E**
 
-![image-20230712162645602](https://image.davidingplus.cn/images/2025/01/31/image-20230712162645602.png)
+![image-20230712162645602](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712162645602.png)
 
 得到的结果：
 
-![image-20230712162728058](https://image.davidingplus.cn/images/2025/01/31/image-20230712162728058.png)
+![image-20230712162728058](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712162728058.png)
 
 得到汇编代码命令 **-S**
 
-![image-20230712163010950](https://image.davidingplus.cn/images/2025/01/31/image-20230712163010950.png)
+![image-20230712163010950](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712163010950.png)
 
 得到的结果：
 
-![image-20230712163038321](https://image.davidingplus.cn/images/2025/01/31/image-20230712163038321.png)
+![image-20230712163038321](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712163038321.png)
 
 ### 常用参数选项
 
-![image-20230712163407827](https://image.davidingplus.cn/images/2025/01/31/image-20230712163407827.png)
+![image-20230712163407827](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712163407827.png)
 
-![image-20230712163412996](https://image.davidingplus.cn/images/2025/01/31/image-20230712163412996.png)
+![image-20230712163412996](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712163412996.png)
 
 关于-D：**用于在编译的时候指定一个宏**
 
@@ -98,39 +98,39 @@ int main() {
 
 ### gcc和g++区别
 
-![image-20230712170016696](https://image.davidingplus.cn/images/2025/01/31/image-20230712170016696.png)
+![image-20230712170016696](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712170016696.png)
 
-![image-20230712170241165](https://image.davidingplus.cn/images/2025/01/31/image-20230712170241165.png)
+![image-20230712170241165](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712170241165.png)
 
 ## 静态库
 
 关于库：
 
-![image-20230712192929996](https://image.davidingplus.cn/images/2025/01/31/image-20230712192929996.png)
+![image-20230712192929996](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712192929996.png)
 
 ### 命名规则
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230712193256400.png" alt="image-20230712193256400" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230712193256400.png" alt="image-20230712193256400" style="zoom:80%;" />
 
 ### 制作
 
-![image-20230712193344515](https://image.davidingplus.cn/images/2025/01/31/image-20230712193344515.png)
+![image-20230712193344515](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712193344515.png)
 
 制作示例：
 
 现在我想把四则运算的代码打成一个静态库供别人使用
 
-![image-20230712194227453](https://image.davidingplus.cn/images/2025/01/31/image-20230712194227453.png)
+![image-20230712194227453](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712194227453.png)
 
 **按照上面的操作，先通过gcc生成 .o 文件，也就是 -c 到编译汇编，但是不链接的状态，这就得到了各个文件的.o**
 
-![image-20230712194715642](https://image.davidingplus.cn/images/2025/01/31/image-20230712194715642.png)
+![image-20230712194715642](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712194715642.png)
 
 ### 使用
 
 在实际的开发环境中，代码的结构往往是这样的
 
-![image-20230712200023339](https://image.davidingplus.cn/images/2025/01/31/image-20230712200023339.png)
+![image-20230712200023339](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712200023339.png)
 
 **include文件夹包含相应库当中实现的头文件，lib就存放对应的库，src存放源码，这个对程序的运行没有影响，可以理解为就是工作目录**
 
@@ -138,51 +138,51 @@ int main() {
 
 这就需要在g++或者gcc编译的过程中加入参数了
 
-![image-20230712200254526](https://image.davidingplus.cn/images/2025/01/31/image-20230712200254526.png)
+![image-20230712200254526](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712200254526.png)
 
 直接编译会导致找不到头文件，因为这个时候head.h和main.c不在同一目录，所以需要用 -I 来包含头文件搜索的目录
 
-![image-20230712200359114](https://image.davidingplus.cn/images/2025/01/31/image-20230712200359114.png)
+![image-20230712200359114](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712200359114.png)
 
 在包含了头文件之后，发现里面的函数进行了声明但是没有实现，这个时候就需要引用库文件了
 
-![image-20230712200507667](https://image.davidingplus.cn/images/2025/01/31/image-20230712200507667.png)
+![image-20230712200507667](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712200507667.png)
 
 **calc是库的名称，libcalc.a是我们认为要求的库文件的名称**
 
-![image-20230712200537940](https://image.davidingplus.cn/images/2025/01/31/image-20230712200537940.png)
+![image-20230712200537940](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712200537940.png)
 
 ## 动态库
 
 ### 命名规则
 
-![image-20230712202308744](https://image.davidingplus.cn/images/2025/01/31/image-20230712202308744.png)
+![image-20230712202308744](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712202308744.png)
 
 ### 制作
 
 **得到与位置无关的代码 -fpic/-fPIC (这个 / 是或者的意思，就是两个任选一个写都可以)**
 
-![image-20230712202505969](https://image.davidingplus.cn/images/2025/01/31/image-20230712202505969.png)
+![image-20230712202505969](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712202505969.png)
 
-![image-20230712204636658](https://image.davidingplus.cn/images/2025/01/31/image-20230712204636658.png)
+![image-20230712204636658](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712204636658.png)
 
 ### 使用
 
 和静态库的使用方法一致，但是这里会出现动态库加载失败的问题
 
-![image-20230712204703427](https://image.davidingplus.cn/images/2025/01/31/image-20230712204703427.png)
+![image-20230712204703427](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712204703427.png)
 
-![image-20230712204335700](https://image.davidingplus.cn/images/2025/01/31/image-20230712204335700.png)
+![image-20230712204335700](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712204335700.png)
 
 ### 加载失败及其解决
 
-![image-20230712205553942](https://image.davidingplus.cn/images/2025/01/31/image-20230712205553942.png)
+![image-20230712205553942](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712205553942.png)
 
 **ldd命令(找到动态库的依赖关系)**
 
 可以看出libcalc.so，我们自己写的动态库找不到依赖，显然无法执行
 
-![image-20230712210027653](https://image.davidingplus.cn/images/2025/01/31/image-20230712210027653.png)
+![image-20230712210027653](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712210027653.png)
 
 **/lib64/ld-linux-x86-64.so.2 这个是系统提供的动态载入器，用来获取依赖库的绝对路径并且装入到内存当中，这样程序就不会报错了**
 
@@ -200,7 +200,7 @@ export就是修改环境变量的意思，$获取原先的环境变量，:表示
 
 添加完之后就可以正常运行了
 
-![image-20230712212247869](https://image.davidingplus.cn/images/2025/01/31/image-20230712212247869.png)
+![image-20230712212247869](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712212247869.png)
 
 **但是注意：这个环境变量的配置只是暂时的，当终端关闭环境变量也就消失了，每次需要重新配置**
 
@@ -210,17 +210,17 @@ export就是修改环境变量的意思，$获取原先的环境变量，:表示
 
 **通过 .bashrc 来进行配置**
 
-![image-20230712212541900](https://image.davidingplus.cn/images/2025/01/31/image-20230712212541900.png)
+![image-20230712212541900](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712212541900.png)
 
 vim .bashrc 进入并修改
 
-![image-20230712212710023](https://image.davidingplus.cn/images/2025/01/31/image-20230712212710023.png)
+![image-20230712212710023](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712212710023.png)
 
 在里面添加一行表示配置好了
 
 **完事之后进行更新，以使其应用生效**
 
-![image-20230712212817883](https://image.davidingplus.cn/images/2025/01/31/image-20230712212817883.png)
+![image-20230712212817883](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712212817883.png)
 
 之后也能正常运行
 
@@ -228,15 +228,15 @@ vim .bashrc 进入并修改
 
  在这个文件( /etc/profile )当中进行添加，需要sudo权限
 
-![image-20230712213659601](https://image.davidingplus.cn/images/2025/01/31/image-20230712213659601.png)
+![image-20230712213659601](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712213659601.png)
 
 同样加上这句话
 
-![image-20230712213823973](https://image.davidingplus.cn/images/2025/01/31/image-20230712213823973.png)
+![image-20230712213823973](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712213823973.png)
 
 然后保存更新
 
-![image-20230712213917346](https://image.davidingplus.cn/images/2025/01/31/image-20230712213917346.png)
+![image-20230712213917346](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712213917346.png)
 
 然后同样能正常执行
 
@@ -244,15 +244,15 @@ vim .bashrc 进入并修改
 
 通过这个文件进行配置 /etc/ld.so.conf
 
-![image-20230712214441428](https://image.davidingplus.cn/images/2025/01/31/image-20230712214441428.png)
+![image-20230712214441428](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712214441428.png)
 
 然后把路径放到这个文件里面就好了
 
-![image-20230712214549726](https://image.davidingplus.cn/images/2025/01/31/image-20230712214549726.png)
+![image-20230712214549726](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712214549726.png)
 
 然后进行更新
 
-![image-20230712215334405](https://image.davidingplus.cn/images/2025/01/31/image-20230712215334405.png)
+![image-20230712215334405](https://cdn.davidingplus.cn/images/2025/01/31/image-20230712215334405.png)
 
 也能正常运行
 
@@ -266,23 +266,23 @@ vim .bashrc 进入并修改
 
 **静态库和动态库都是在链接阶段起作用**
 
-![image-20230713095340490](https://image.davidingplus.cn/images/2025/01/31/image-20230713095340490.png)
+![image-20230713095340490](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713095340490.png)
 
 ### 静态库制作过程
 
-![image-20230713095639181](https://image.davidingplus.cn/images/2025/01/31/image-20230713095639181.png)
+![image-20230713095639181](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713095639181.png)
 
 ### 动态库制作过程
 
-![image-20230713100533853](https://image.davidingplus.cn/images/2025/01/31/image-20230713100533853.png)
+![image-20230713100533853](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713100533853.png)
 
 ### 静态库的优缺点
 
-![image-20230713100855560](https://image.davidingplus.cn/images/2025/01/31/image-20230713100855560.png)
+![image-20230713100855560](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713100855560.png)
 
 ### 动态库的优缺点
 
-![image-20230713101528981](https://image.davidingplus.cn/images/2025/01/31/image-20230713101528981.png)
+![image-20230713101528981](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713101528981.png)
 
 ## makefile
 
@@ -290,39 +290,39 @@ vim .bashrc 进入并修改
 
 **主要是为了方便进行自动化编译，因为实际的开发过程中代码的存放位置是有规定的，不一定都在同一个目录，这样就导致可能文件依赖出问题，找不到这种，还有就是某个文件依赖于另一个文件，这就需要要求哪些文件需要先编译，哪些文件后编译，这样就需要一个makefile文件来全自动化编译**
 
-![image-20230713102059928](https://image.davidingplus.cn/images/2025/01/31/image-20230713102059928.png)
+![image-20230713102059928](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713102059928.png)
 
 ### 命名规则
 
 提供一个或者多个规则
 
-![image-20230713103610886](https://image.davidingplus.cn/images/2025/01/31/image-20230713103610886.png)
+![image-20230713103610886](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713103610886.png)
 
 ### 简单案例
 
 创建Makefile文件
 
-![image-20230713103811609](https://image.davidingplus.cn/images/2025/01/31/image-20230713103811609.png)
+![image-20230713103811609](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713103811609.png)
 
 编写
 
-![image-20230713104023510](https://image.davidingplus.cn/images/2025/01/31/image-20230713104023510.png)
+![image-20230713104023510](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713104023510.png)
 
 **第一行app：生成的目标，: 后面是生成目标所需要的依赖文件**
 
 **第二行(需要Tab缩进)：通过执行该命令生成目标**
 
-![image-20230713104408213](https://image.davidingplus.cn/images/2025/01/31/image-20230713104408213.png)
+![image-20230713104408213](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713104408213.png)
 
 ### 工作原理
 
-![image-20230713105602304](https://image.davidingplus.cn/images/2025/01/31/image-20230713105602304.png)
+![image-20230713105602304](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713105602304.png)
 
 **makefile可以检测更新，就是我执行命令的时候，会看上次目标的生成时间和现在的依赖文件的时候是否匹配，不匹配则更新了，于是重新执行相对应的代码然后更新目标文件**
 
 举个例子来说明：
 
-![image-20230713105556164](https://image.davidingplus.cn/images/2025/01/31/image-20230713105556164.png)
+![image-20230713105556164](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713105556164.png)
 
 **现在我的目标是app文件，然后我写的依赖是这些 .o 文件，也就是编译了但未链接的可执行文件**
 
@@ -336,31 +336,31 @@ vim .bashrc 进入并修改
 
 **自动变量只能在规则的命令当中使用!!!**
 
-![image-20230713113345866](https://image.davidingplus.cn/images/2025/01/31/image-20230713113345866.png)
+![image-20230713113345866](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713113345866.png)
 
 ### 模式匹配
 
 **把一些格式差不多的规则用通式写出来**!
 
-![image-20230713113808672](https://image.davidingplus.cn/images/2025/01/31/image-20230713113808672.png)
+![image-20230713113808672](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713113808672.png)
 
 ### 函数
 
 **wildcard这个函数只能用来获取 .c 文件**
 
-![image-20230713132533052](https://image.davidingplus.cn/images/2025/01/31/image-20230713132533052.png)
+![image-20230713132533052](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713132533052.png)
 
 **用patsubst 来将 .c 文件替换为 .o文件**
 
-![image-20230713132756923](https://image.davidingplus.cn/images/2025/01/31/image-20230713132756923.png)
+![image-20230713132756923](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713132756923.png)
 
 举例：这样就可以把上面的例子优化成这样
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230713133926048.png" alt="image-20230713133926048" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230713133926048.png" alt="image-20230713133926048" style="zoom:80%;" />
 
 遇到c++可以这么写：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230713140259470.png" alt="image-20230713140259470" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230713140259470.png" alt="image-20230713140259470" style="zoom:80%;" />
 
 **注意：patsubst里面几个逗号之间不能用空格!!!!(否则出错)**
 
@@ -368,91 +368,91 @@ vim .bashrc 进入并修改
 
 ### 什么是GDB
 
-![image-20230713140857081](https://image.davidingplus.cn/images/2025/01/31/image-20230713140857081.png)
+![image-20230713140857081](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713140857081.png)
 
 ### 准备工作
 
 **gdb是调试可执行程序的，所以我们需要先编译文件成为一个可执行程序**
 
-![image-20230713141622040](https://image.davidingplus.cn/images/2025/01/31/image-20230713141622040.png)
+![image-20230713141622040](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713141622040.png)
 
 示例
 
 **-g 保证了gdb能找到源文件**
 
-![image-20230713143121240](https://image.davidingplus.cn/images/2025/01/31/image-20230713143121240.png)
+![image-20230713143121240](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713143121240.png)
 
 ### GDB命令
 
 **gdb 启动的是可执行程序!!!**
 
-![image-20230713142329930](https://image.davidingplus.cn/images/2025/01/31/image-20230713142329930.png)
+![image-20230713142329930](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713142329930.png)
 
 示例：
 
-![image-20230713143240623](https://image.davidingplus.cn/images/2025/01/31/image-20230713143240623.png)
+![image-20230713143240623](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713143240623.png)
 
 #### 查看 list
 
 **list命令**
 
-![image-20230713143813271](https://image.davidingplus.cn/images/2025/01/31/image-20230713143813271.png)
+![image-20230713143813271](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713143813271.png)
 
 **查看别的文件**
 
 先把这三个cpp文件编译连接成为一个可执行文件，加上-g -Wall
 
-![image-20230713144716128](https://image.davidingplus.cn/images/2025/01/31/image-20230713144716128.png)
+![image-20230713144716128](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713144716128.png)
 
 进入gdb，默认查看的是main.cpp，现在我看bubble.cpp
 
-![image-20230713144828842](https://image.davidingplus.cn/images/2025/01/31/image-20230713144828842.png)
+![image-20230713144828842](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713144828842.png)
 
 #### 断点操作 break
 
-![image-20230713150206430](https://image.davidingplus.cn/images/2025/01/31/image-20230713150206430.png)
+![image-20230713150206430](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713150206430.png)
 
 **示例：**
 
-![image-20230713150556682](https://image.davidingplus.cn/images/2025/01/31/image-20230713150556682.png)
+![image-20230713150556682](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713150556682.png)
 
 **在其他文件打断点**
 
-![image-20230713150932690](https://image.davidingplus.cn/images/2025/01/31/image-20230713150932690.png)
+![image-20230713150932690](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713150932690.png)
 
 **设置断点无效或者有效**
 
-![image-20230713151406288](https://image.davidingplus.cn/images/2025/01/31/image-20230713151406288.png)
+![image-20230713151406288](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713151406288.png)
 
 **设置条件断点(一般用在循环的位置)**
 
-![image-20230713151623439](https://image.davidingplus.cn/images/2025/01/31/image-20230713151623439.png)
+![image-20230713151623439](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713151623439.png)
 
 #### 调试命令
 
-![image-20230713152020106](https://image.davidingplus.cn/images/2025/01/31/image-20230713152020106.png)
+![image-20230713152020106](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713152020106.png)
 
 示例：
 
 start
 
-![image-20230713152439462](https://image.davidingplus.cn/images/2025/01/31/image-20230713152439462.png)
+![image-20230713152439462](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713152439462.png)
 
 run，next，step
 
-![image-20230713153024581](https://image.davidingplus.cn/images/2025/01/31/image-20230713153024581.png)
+![image-20230713153024581](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713153024581.png)
 
-![image-20230713153323313](https://image.davidingplus.cn/images/2025/01/31/image-20230713153323313.png)
+![image-20230713153323313](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713153323313.png)
 
 **next不会进入函数体，step会进入函数体**
 
-![image-20230713153540431](https://image.davidingplus.cn/images/2025/01/31/image-20230713153540431.png)
+![image-20230713153540431](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713153540431.png)
 
 **自动变量操作**
 
 **这样每次执行代码都可以打印变量的值**
 
-![image-20230713154539740](https://image.davidingplus.cn/images/2025/01/31/image-20230713154539740.png)
+![image-20230713154539740](https://cdn.davidingplus.cn/images/2025/01/31/image-20230713154539740.png)
 
 ## 文件IO
 
@@ -462,13 +462,13 @@ run，next，step
 
 **标准C库的IO函数的效率更高，因为当中带有缓冲区(设置在内存当中)**
 
-![image-20230714100055222](https://image.davidingplus.cn/images/2025/01/31/image-20230714100055222.png)
+![image-20230714100055222](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714100055222.png)
 
 标准C库的IO和Linux系统IO的关系
 
 **调用这两个标准C库IO函数的时候，会让数据进入设置在内存当中的缓冲区IO buffer，然后通过系统提供的API例如write和read来进行内存到磁盘的读写操作；如果直接使用Linux系统IO函数，则不会经过内存中的缓冲区**
 
-![image-20230714101445015](https://image.davidingplus.cn/images/2025/01/31/image-20230714101445015.png)
+![image-20230714101445015](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714101445015.png)
 
 ### 虚拟地址空间
 
@@ -476,15 +476,15 @@ run，next，step
 
 **栈空间是从上往下村，也就是高地址到低地址**
 
-![image-20230714102646385](https://image.davidingplus.cn/images/2025/01/31/image-20230714102646385.png)
+![image-20230714102646385](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714102646385.png)
 
 ### 文件描述符
 
-![image-20230714105536343](https://image.davidingplus.cn/images/2025/01/31/image-20230714105536343.png)
+![image-20230714105536343](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714105536343.png)
 
 ### Linux系统IO函数
 
-![image-20230714110840838](https://image.davidingplus.cn/images/2025/01/31/image-20230714110840838.png)
+![image-20230714110840838](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714110840838.png)
 
 ### open函数
 
@@ -528,7 +528,7 @@ errno属于linux系统函数库，库里面一个全局变量，记录错误号�
 
 s参数：用户描述，比如hello，最终输出的内容是 hello:xxx(实际的错误描述)
 
-![image-20230714113744182](https://image.davidingplus.cn/images/2025/01/31/image-20230714113744182.png)
+![image-20230714113744182](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714113744182.png)
 
 代码：
 
@@ -611,9 +611,9 @@ int main() {
 
 **用shell命令 ll 来查看文件的权限**
 
-![image-20230714134141808](https://image.davidingplus.cn/images/2025/01/31/image-20230714134141808.png)
+![image-20230714134141808](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714134141808.png)
 
-![image-20230714134158964](https://image.davidingplus.cn/images/2025/01/31/image-20230714134158964.png)
+![image-20230714134158964](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714134158964.png)
 
 ### read,write函数
 
@@ -802,13 +802,13 @@ int main() {
 
 #### stat结构体(!!!)
 
-![image-20230714152755154](https://image.davidingplus.cn/images/2025/01/31/image-20230714152755154.png)
+![image-20230714152755154](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714152755154.png)
 
 比较重要的是mode_t类型的 st_mode变量：**就是下面的16位数(01)**
 
 **之前创建文件open函数的第三个参数也是这个类型，只不过里面只用了User,Group,Others这三个**
 
-![image-20230714153204023](https://image.davidingplus.cn/images/2025/01/31/image-20230714153204023.png)
+![image-20230714153204023](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714153204023.png)
 
 **判断后面某一位是否为1，也就是比如User是否具有r权限，就用st_mode变量(他就是这16位数)与其相与**
 
@@ -818,7 +818,7 @@ int main() {
 
 软链接文件
 
-![image-20230714154550861](https://image.davidingplus.cn/images/2025/01/31/image-20230714154550861.png)
+![image-20230714154550861](https://cdn.davidingplus.cn/images/2025/01/31/image-20230714154550861.png)
 
 **就是说 2.txt 是指向 1.txt 文件的!!!但是它本身的大小是5个字节**
 
@@ -866,13 +866,13 @@ int main() {
 
 **在shell终端中可以用 stat 命令来获取文件的信息，这里的文件信息就是本文件了，就不是软链接文件的指向文件**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230714154900243.png" alt="image-20230714154900243"  />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230714154900243.png" alt="image-20230714154900243"  />
 
 ### 模拟实现ls -l 命令
 
 **里面有很多库函数的调用，这些大概知道就行，开发的时候去查文档就好了**
 
-![image-20230715104004715](https://image.davidingplus.cn/images/2025/01/31/image-20230715104004715.png)
+![image-20230715104004715](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715104004715.png)
 
 第一个字符( ’-‘ )是文件类型，后面一堆rwx是读写权限
 
@@ -1017,7 +1017,7 @@ char *ctime(const time_t *timep);
 
 四个函数
 
-![image-20230715110918357](https://image.davidingplus.cn/images/2025/01/31/image-20230715110918357.png)
+![image-20230715110918357](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715110918357.png)
 
 #### access函数
 
@@ -1130,7 +1130,7 @@ int main() {
 
 ### 文件目录操作函数
 
-![image-20230715113517243](https://image.davidingplus.cn/images/2025/01/31/image-20230715113517243.png)
+![image-20230715113517243](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715113517243.png)
 
 #### mkdir函数
 
@@ -1269,7 +1269,7 @@ int main() {
 
 ### 文件目录遍历函数
 
-![image-20230715125019218](https://image.davidingplus.cn/images/2025/01/31/image-20230715125019218.png)
+![image-20230715125019218](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715125019218.png)
 
 #### opendir函数
 
@@ -1288,7 +1288,7 @@ DIR *opendir(const char *name);
 
 #### dirent结构体和d_type(!!!)
 
-![image-20230715130311932](https://image.davidingplus.cn/images/2025/01/31/image-20230715130311932.png)
+![image-20230715130311932](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715130311932.png)
 
 **这个dirent存储的也是文件的信息，前面也有个stat结构体也有存储，但是这两个存储的东西不太一样**
 
@@ -1375,7 +1375,7 @@ int main(int argc, char* const argv[]) {
 
 ### dup,dup2函数(与文件描述符相关)
 
-![image-20230715141246853](https://image.davidingplus.cn/images/2025/01/31/image-20230715141246853.png)
+![image-20230715141246853](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715141246853.png)
 
 #### dup()
 
@@ -1495,7 +1495,7 @@ int main() {
 
 **设置或者获取文件的状态标志**
 
-![image-20230715145100478](https://image.davidingplus.cn/images/2025/01/31/image-20230715145100478.png)
+![image-20230715145100478](https://cdn.davidingplus.cn/images/2025/01/31/image-20230715145100478.png)
 
 ~~~cpp
 #include <fcntl.h>
@@ -1596,41 +1596,41 @@ int remove(const char *pathname); // 标准C库的函数
 
 ### 程序和进程
 
-![image-20230716113520531](https://image.davidingplus.cn/images/2025/01/31/image-20230716113520531.png)
+![image-20230716113520531](https://cdn.davidingplus.cn/images/2025/01/31/image-20230716113520531.png)
 
-![image-20230716113908652](https://image.davidingplus.cn/images/2025/01/31/image-20230716113908652.png)
+![image-20230716113908652](https://cdn.davidingplus.cn/images/2025/01/31/image-20230716113908652.png)
 
 ### 单道，多道程序设计
 
-![image-20230716114055627](https://image.davidingplus.cn/images/2025/01/31/image-20230716114055627.png)
+![image-20230716114055627](https://cdn.davidingplus.cn/images/2025/01/31/image-20230716114055627.png)
 
 ### 时间片
 
-![image-20230716114135444](https://image.davidingplus.cn/images/2025/01/31/image-20230716114135444.png)
+![image-20230716114135444](https://cdn.davidingplus.cn/images/2025/01/31/image-20230716114135444.png)
 
 
 
 ### 并行和并发
 
-![image-20230716114205304](https://image.davidingplus.cn/images/2025/01/31/image-20230716114205304.png)
+![image-20230716114205304](https://cdn.davidingplus.cn/images/2025/01/31/image-20230716114205304.png)
 
 ### 进程控制块PCB
 
 **在Linux内核的进程控制块是 task_struct 结构体**
 
-![image-20230716120419774](https://image.davidingplus.cn/images/2025/01/31/image-20230716120419774.png)
+![image-20230716120419774](https://cdn.davidingplus.cn/images/2025/01/31/image-20230716120419774.png)
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230716121448756.png" alt="image-20230716121448756" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230716121448756.png" alt="image-20230716121448756" style="zoom:80%;" />
 
 ## 进程状态
 
 ### 状态转化图
 
-![image-20230718093121456](https://image.davidingplus.cn/images/2025/01/31/image-20230718093121456.png)
+![image-20230718093121456](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718093121456.png)
 
 **加入新建和终止的状态**
 
-![image-20230718093806701](https://image.davidingplus.cn/images/2025/01/31/image-20230718093806701.png)
+![image-20230718093806701](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718093806701.png)
 
 ### 进程相关命令
 
@@ -1639,31 +1639,31 @@ ps aux / ajx
 #注意aux和ajx的区别
 ~~~
 
-![image-20230718094028703](https://image.davidingplus.cn/images/2025/01/31/image-20230718094028703.png)
+![image-20230718094028703](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718094028703.png)
 
 #### ps aux
 
-![image-20230718094423758](https://image.davidingplus.cn/images/2025/01/31/image-20230718094423758.png)
+![image-20230718094423758](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718094423758.png)
 
 stat参数的意义：
 
-![image-20230718095104233](https://image.davidingplus.cn/images/2025/01/31/image-20230718095104233.png)
+![image-20230718095104233](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718095104233.png)
 
 #### ps ajx
 
-![image-20230718095230919](https://image.davidingplus.cn/images/2025/01/31/image-20230718095230919.png)
+![image-20230718095230919](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718095230919.png)
 
 #### top
 
 **实时显示进程动态**
 
-![image-20230718095445176](https://image.davidingplus.cn/images/2025/01/31/image-20230718095445176.png)
+![image-20230718095445176](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718095445176.png)
 
 #### kill
 
 **杀死进程**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230718095843259.png" alt="image-20230718095843259" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230718095843259.png" alt="image-20230718095843259" style="zoom: 80%;" />
 
 里面有一个 9 号信号(SIGKILL)，比如：
 
@@ -1673,13 +1673,13 @@ kill -9 <pid>
 
 **这个命令可以强制杀掉某个进程**
 
-![image-20230718100643298](https://image.davidingplus.cn/images/2025/01/31/image-20230718100643298.png)
+![image-20230718100643298](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718100643298.png)
 
 #### ./a.out & 后台运行程序
 
 **这个时候，这个进程会被挂在后台进行运行，然后他的打印信息仍然会打印在屏幕上，这里使用ps aux查看命令可以看出是可以正常执行命令的，不冲突，然后可以用 kill 998 将其杀掉**
 
-![image-20230718101259447](https://image.davidingplus.cn/images/2025/01/31/image-20230718101259447.png)
+![image-20230718101259447](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718101259447.png)
 
 ## 创建进程
 
@@ -1687,11 +1687,11 @@ kill -9 <pid>
 
 **进程组是一个或者多个进程的集合，他们相关联，并且可以接受同一终端的各种信号，具有一个进程组号(pgid)**
 
-![image-20230718101452289](https://image.davidingplus.cn/images/2025/01/31/image-20230718101452289.png)
+![image-20230718101452289](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718101452289.png)
 
 ### 进程创建
 
-![image-20230718101951634](https://image.davidingplus.cn/images/2025/01/31/image-20230718101951634.png)
+![image-20230718101951634](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718101951634.png)
 
 #### fork()
 
@@ -1743,11 +1743,11 @@ int main() {
 
 例如这是两次的执行结果：
 
-![image-20230718104207327](https://image.davidingplus.cn/images/2025/01/31/image-20230718104207327.png)
+![image-20230718104207327](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718104207327.png)
 
 当给多点的时候，到后面并发执行的时候就可能是交替执行
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230718105046657.png" alt="image-20230718105046657" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230718105046657.png" alt="image-20230718105046657" style="zoom:67%;" />
 
 ### 父子进程虚拟地址空间
 
@@ -1755,13 +1755,13 @@ int main() {
 
 **但其实这两个空间大部分的东西都是一样的!!!**
 
-![image-20230718142613257](https://image.davidingplus.cn/images/2025/01/31/image-20230718142613257.png)
+![image-20230718142613257](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718142613257.png)
 
 #### 读时拷贝，写时共享
 
 **子进程在被创建出来的时候，如果没有对变量进行修改，进行写的操作，那么父子进程共享一块空间；当父子进程需要进行写，就是修改变量的值的时候就拷贝一块空间，这样就节省了物理内粗拿到空间!!!**
 
-![image-20230718143403658](https://image.davidingplus.cn/images/2025/01/31/image-20230718143403658.png)
+![image-20230718143403658](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718143403658.png)
 
 ### 总结：父子进程关系
 
@@ -1786,19 +1786,19 @@ int main() {
 
 **默认情况下gdb调试的都是父进程，加了断点的话默认只对父进程生效，可以设置**
 
-![image-20230718145227613](https://image.davidingplus.cn/images/2025/01/31/image-20230718145227613.png)
+![image-20230718145227613](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718145227613.png)
 
 ### 设置调试子进程
 
-![image-20230718145632605](https://image.davidingplus.cn/images/2025/01/31/image-20230718145632605.png)
+![image-20230718145632605](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718145632605.png)
 
 ### 设置调试模式
 
 **这里我把 detac-on-fork 模式关闭了，父进程在被调试的时候，子进程会被挂起，所以屏幕上没显示j的信息**
 
-![image-20230718151209448](https://image.davidingplus.cn/images/2025/01/31/image-20230718151209448.png)
+![image-20230718151209448](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718151209448.png)
 
-![image-20230718151224879](https://image.davidingplus.cn/images/2025/01/31/image-20230718151224879.png)
+![image-20230718151224879](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718151224879.png)
 
 ## exec函数族
 
@@ -1810,17 +1810,17 @@ int main() {
 
 **执行成功了不会返回，因为新的已经取代了旧的，旧的再接受返回值并做操作没有任何意义；只有调用失败了才会返回-1，这个时候新的不会进来，还是旧的**
 
-![image-20230718152959795](https://image.davidingplus.cn/images/2025/01/31/image-20230718152959795.png)
+![image-20230718152959795](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718152959795.png)
 
 图解
 
-![image-20230718154755731](https://image.davidingplus.cn/images/2025/01/31/image-20230718154755731.png)
+![image-20230718154755731](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718154755731.png)
 
 ### 函数族(附图)
 
 **前面6个函数是C标准库当中的函数，最后一个(execve)是Linux下的系统函数**
 
-![image-20230718154816547](https://image.davidingplus.cn/images/2025/01/31/image-20230718154816547.png)
+![image-20230718154816547](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718154816547.png)
 
 #### execl()
 
@@ -1873,7 +1873,7 @@ int main() {
 
 可以看出 child process 这句话没有打印出来，他被可执行文件hello替换掉了，最后的打印i是父进程打印出来的
 
-![image-20230718170703719](https://image.davidingplus.cn/images/2025/02/01/image-20230718170703719.png)
+![image-20230718170703719](https://cdn.davidingplus.cn/images/2025/02/01/image-20230718170703719.png)
 
 **还可以让其执行linux的shell命令**
 
@@ -1915,7 +1915,7 @@ int main() {
 
 执行结果：
 
-![image-20230718171319019](https://image.davidingplus.cn/images/2025/01/31/image-20230718171319019.png)
+![image-20230718171319019](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718171319019.png)
 
 #### execlp()
 
@@ -1981,7 +1981,7 @@ int main() {
 
 **exit()是标准C库的函数，在linux系统下底层会调用linux系统的函数_exit()**
 
-![image-20230718194621050](https://image.davidingplus.cn/images/2025/01/31/image-20230718194621050.png)
+![image-20230718194621050](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718194621050.png)
 
 两个的区别：**exit()在调用之后需要比_exit()做更多的事情，其中有一个就是刷新I/O缓冲关闭文件描述符**
 
@@ -2007,11 +2007,11 @@ int main() {
 
 exit:
 
-![image-20230718195742100](https://image.davidingplus.cn/images/2025/01/31/image-20230718195742100.png)
+![image-20230718195742100](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718195742100.png)
 
 _exit:
 
-![image-20230718195756973](https://image.davidingplus.cn/images/2025/02/01/image-20230718195756973.png)
+![image-20230718195756973](https://cdn.davidingplus.cn/images/2025/02/01/image-20230718195756973.png)
 
 那么为什么会这样呢？
 
@@ -2019,7 +2019,7 @@ _exit:
 
 **c++和c语言中的cout或者printf()也好，本质都是printf()，printf()作为C语言标准库的函数，并不是直接输出到终端屏幕上，而是先写在缓冲区当中，然后当缓冲区刷新的时候在清空缓冲区输出到屏幕当中!!!**
 
-![image-20230718200326121](https://image.davidingplus.cn/images/2025/01/31/image-20230718200326121.png)
+![image-20230718200326121](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718200326121.png)
 
 于是乎刚才的代码：
 
@@ -2055,7 +2055,7 @@ int main() {
 
 **父进程有义务回收子进程的资源，但是当父进程结束而子进程未结束的时候这一点无法做到，所以这个时候内核会把这个子进程的父进程设置为init进程(linux上的第一层进程，linux下的进程都是不断的创建子进程而创建出来的)，init进程会循环的wait()等待这个子进程，当这个子进程结束了之后，init进程会将其回收，处理善后工作!!!**
 
-![image-20230718202030384](https://image.davidingplus.cn/images/2025/01/31/image-20230718202030384.png)
+![image-20230718202030384](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718202030384.png)
 
 演示代码：
 
@@ -2090,7 +2090,7 @@ int main() {
 
 输出效果：
 
-![image-20230718203522772](https://image.davidingplus.cn/images/2025/01/31/image-20230718203522772.png)
+![image-20230718203522772](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718203522772.png)
 
 **父进程创建出来子进程之后，子进程休眠1秒，父进程早已跑完，结束，子进程交给_init进程作为他的父进程进行管理，所以会显示终端是因为父进程结束了，但是这个时候子进程尚未结束，父进程和子进程在内核区域有一些数据是一样的，比如文件描述符012的标准输入，输出和错误，所以仍然可以在当前终端输出信息。并且这里 _init还让他结束之后阻塞了**
 
@@ -2104,7 +2104,7 @@ int main() {
 
 **僵尸进程多了会占据进程号，进程号范围 0 ~ 32767，占据完了就会有危险**
 
-![image-20230718203825193](https://image.davidingplus.cn/images/2025/01/31/image-20230718203825193.png)
+![image-20230718203825193](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718203825193.png)
 
 演示代码：
 
@@ -2136,27 +2136,27 @@ int main() {
 
 输出结果：
 
-![image-20230718205238264](https://image.davidingplus.cn/images/2025/01/31/image-20230718205238264.png)
+![image-20230718205238264](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718205238264.png)
 
 可以看出，子进程结束了但是父进程没结束，没有办法释放子进程内核区域的数据，导致了僵尸进程
 
-![image-20230718205324350](https://image.davidingplus.cn/images/2025/02/01/image-20230718205324350.png)
+![image-20230718205324350](https://cdn.davidingplus.cn/images/2025/02/01/image-20230718205324350.png)
 
 现在的状态，子进程Z+代表是僵尸进程，< defunct >代表不存在的；父进程S+代表睡眠
 
 kill -9 杀不掉僵尸进程
 
-![image-20230718205637544](https://image.davidingplus.cn/images/2025/01/31/image-20230718205637544.png)
+![image-20230718205637544](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718205637544.png)
 
-![image-20230718205647171](https://image.davidingplus.cn/images/2025/02/01/image-20230718205647171.png)
+![image-20230718205647171](https://cdn.davidingplus.cn/images/2025/02/01/image-20230718205647171.png)
 
 **这个时候想要解决这个问题只能杀掉父进程，把子进程托管给 /init ，这样才能将其释放，但是实际开发当中杀掉父进程往往不现实，所以需要父进程调用wait()和waitpid()来保证父进程会把子进程的内核PCB的数据给释放掉，这样才能避免僵尸进程**
 
-![image-20230718210109506](https://image.davidingplus.cn/images/2025/01/31/image-20230718210109506.png)
+![image-20230718210109506](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718210109506.png)
 
 ### 进程回收
 
-![image-20230718211154805](https://image.davidingplus.cn/images/2025/01/31/image-20230718211154805.png)
+![image-20230718211154805](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718211154805.png)
 
 #### wait()
 
@@ -2233,7 +2233,7 @@ int main() {
 
 执行结果：
 
-![image-20230719094953685](https://image.davidingplus.cn/images/2025/01/31/image-20230719094953685.png)
+![image-20230719094953685](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719094953685.png)
 
 稍加修改，现在我需要查看进程退出的状态：
 
@@ -2303,19 +2303,19 @@ int main() {
 
 执行结果：
 
-![image-20230719095319683](https://image.davidingplus.cn/images/2025/01/31/image-20230719095319683.png)
+![image-20230719095319683](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719095319683.png)
 
 现在我把子进程改成while(1)循环，然后用 kill -9 杀掉他，看看他是被哪个信号干掉的
 
 ##### 退出信息宏函数(status相关)
 
-![image-20230718220547310](https://image.davidingplus.cn/images/2025/01/31/image-20230718220547310.png)
+![image-20230718220547310](https://cdn.davidingplus.cn/images/2025/01/31/image-20230718220547310.png)
 
 执行结果：
 
-![image-20230719095606504](https://image.davidingplus.cn/images/2025/01/31/image-20230719095606504.png)
+![image-20230719095606504](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719095606504.png)
 
-![image-20230719095625400](https://image.davidingplus.cn/images/2025/01/31/image-20230719095625400.png)
+![image-20230719095625400](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719095625400.png)
 
 #### waitpid()
 
@@ -2417,25 +2417,25 @@ int main() {
 
 我不管他是这样，可以父进程是非阻塞的一直在工作的
 
-![image-20230719103805234](https://image.davidingplus.cn/images/2025/01/31/image-20230719103805234.png)
+![image-20230719103805234](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719103805234.png)
 
 现在我把子进程kill掉
 
-![image-20230719103852259](https://image.davidingplus.cn/images/2025/01/31/image-20230719103852259.png)
+![image-20230719103852259](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719103852259.png)
 
 kill一次输出一个信息，然后kill完毕之后结束进程
 
-![image-20230719103900180](https://image.davidingplus.cn/images/2025/01/31/image-20230719103900180.png)
+![image-20230719103900180](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719103900180.png)
 
 ## 进程间通信 IPC
 
 ### 概念
 
-![image-20230719104207710](https://image.davidingplus.cn/images/2025/01/31/image-20230719104207710.png)
+![image-20230719104207710](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719104207710.png)
 
 进程间通信方式(记忆!!!)
 
-![image-20230719110333954](https://image.davidingplus.cn/images/2025/01/31/image-20230719110333954.png)
+![image-20230719110333954](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719110333954.png)
 
 ### 管道
 
@@ -2449,13 +2449,13 @@ kill一次输出一个信息，然后kill完毕之后结束进程
 
 **一个管道就是一个字节流，管道没有消息或者消息边界的概念，从管道读数据可以任意读，不用考虑写入的数据是多少；并且管道传递的数据是有顺序的**
 
-![image-20230719112527654](https://image.davidingplus.cn/images/2025/01/31/image-20230719112527654.png)
+![image-20230719112527654](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719112527654.png)
 
 **管道单向，一边写，一边读；半双工**
 
 **匿名管道只能在拥有共同祖先的进程当中使用，例如父进程和子进程；两个兄弟进程**
 
-![image-20230719143725384](https://image.davidingplus.cn/images/2025/01/31/image-20230719143725384.png)
+![image-20230719143725384](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719143725384.png)
 
 **为什么可以用管道通信**
 
@@ -2467,15 +2467,15 @@ kill一次输出一个信息，然后kill完毕之后结束进程
 
 **因为fork()之前建立管道，比如如图，管道占据两个文件描述符5和6，现在fork()之后，由于管道具有文件描述符，子进程内核区域文件描述符指向的东西是和父进程一块东西，所以他们两个指向的是同一块管道，这样才能进行通信!!!**
 
-![image-20230719144556698](https://image.davidingplus.cn/images/2025/01/31/image-20230719144556698.png)
+![image-20230719144556698](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719144556698.png)
 
 管道的数据结构：环形队列
 
-![image-20230719145008340](https://image.davidingplus.cn/images/2025/01/31/image-20230719145008340.png)
+![image-20230719145008340](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719145008340.png)
 
 #### 匿名管道(pipe)
 
-![image-20230719111308071](https://image.davidingplus.cn/images/2025/01/31/image-20230719111308071.png)
+![image-20230719111308071](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719111308071.png)
 
 看如图的命令：
 
@@ -2491,7 +2491,7 @@ ls | wc -l
 
 匿名管道的使用
 
-![image-20230719145051553](https://image.davidingplus.cn/images/2025/02/01/image-20230719145051553.png)
+![image-20230719145051553](https://cdn.davidingplus.cn/images/2025/02/01/image-20230719145051553.png)
 
 ##### pipe()
 
@@ -2586,7 +2586,7 @@ int main() {
 
 代码当中用了两个循环，子进程循环写数据给管道，父进程调用read()函数接受，read()函数默认是阻塞的，调用while(1)一直读，因此最后的结果是这样
 
-![image-20230719153654422](https://image.davidingplus.cn/images/2025/01/31/image-20230719153654422.png)
+![image-20230719153654422](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719153654422.png)
 
 变式：
 
@@ -2658,7 +2658,7 @@ int main() {
 
 执行结果：
 
-![image-20230719153922897](https://image.davidingplus.cn/images/2025/01/31/image-20230719153922897.png)
+![image-20230719153922897](https://cdn.davidingplus.cn/images/2025/01/31/image-20230719153922897.png)
 
 ##### fpathconf()
 
@@ -2704,21 +2704,21 @@ int main() {
 
 一般的交互情况如下所示：
 
-![image-20230721103551177](https://image.davidingplus.cn/images/2025/01/31/image-20230721103551177.png)
+![image-20230721103551177](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721103551177.png)
 
-![image-20230721103558631](https://image.davidingplus.cn/images/2025/01/31/image-20230721103558631.png)
+![image-20230721103558631](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721103558631.png)
 
 **但是有可能在cpu分配时间片的时候处理不得当，或者说我写了数据之后忘了加sleep让自己的进程和对面抢夺read，就可能导致自己写的数据被自己读取，并且在实际开发的过程中我们肯定不可能让写的一方sleep来让出cpu让对方来读取，所以就很可能出现这种情况，这个是没有办法避免的**
 
 **所以我们匿名管道在实际运用的时候一般规定数据流只从一端流向另一端，不会去实现双向的数据流动，因为这样就可能发生自己数据被自己接受的情况**
 
-![image-20230721103607149](https://image.davidingplus.cn/images/2025/01/31/image-20230721103607149.png)
+![image-20230721103607149](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721103607149.png)
 
 所以在实际的开发过程中我们往往直接关闭一方的写端和另一方的读端，如下所示：
 
 我们想要的就是第三种情况
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230721104349892.png" alt="image-20230721104349892" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230721104349892.png" alt="image-20230721104349892" style="zoom:80%;" />
 
 ~~~cpp
 #include <cstring>
@@ -2787,7 +2787,7 @@ int main() {
 
 实现 ps aux | grep root，父子进程之间通信
 
-![image-20230721115524021](https://image.davidingplus.cn/images/2025/01/31/image-20230721115524021.png)
+![image-20230721115524021](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721115524021.png)
 
 代码：(看代码理解!!!)
 
@@ -2922,7 +2922,7 @@ int main() {
 
 执行结果：
 
-![image-20230721115546729](https://image.davidingplus.cn/images/2025/01/31/image-20230721115546729.png)
+![image-20230721115546729](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721115546729.png)
 
 #### 管道的读写特点
 
@@ -2932,17 +2932,17 @@ int main() {
 
   如图所示，这里的读端计数为2，写端计数为0
 
-  ![image-20230721134808630](https://image.davidingplus.cn/images/2025/01/31/image-20230721134808630.png)
+  ![image-20230721134808630](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721134808630.png)
 
 - **如果有指向管道写端的文件描述符没有关闭(管道写端的引用计数大于0)，而持有管道写端的进程也没有往管道中写数据，这个时候有进程往管道中读取数据，那么管道中剩余的数据被读取完毕之后，再次read阻塞，直到管道中有数据可以读取了才会读取数据并且返回**
-  ![image-20230721135603117](https://image.davidingplus.cn/images/2025/01/31/image-20230721135603117.png)
+  ![image-20230721135603117](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721135603117.png)
 
 - **如果所有指向管道读端的文件描述符没有关闭(管道读端的引用计数为0)，这个时候有进程向管道中写数据，那么该进程会收到一个信号SIGPIPE，通常会导致进程异常终止**
 
-  ![image-20230721135452517](https://image.davidingplus.cn/images/2025/01/31/image-20230721135452517.png)
+  ![image-20230721135452517](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721135452517.png)
 
 - **如果有指向管道读端的文件描述符没有关闭(管道读端的引用计数大于0)，而持有管道读端的进程也没有从管道中读取数据，这时候有进程向管道中写数据，那么在管道被写满的时候再次调用write()会阻塞，直到管道中有空位置才能再次写入数据并返回**
-  ![image-20230721140511484](https://image.davidingplus.cn/images/2025/01/31/image-20230721140511484.png)
+  ![image-20230721140511484](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721140511484.png)
 
 总结：
 
@@ -3071,33 +3071,33 @@ int main() {
 
 可见子进程在睡眠的时候父进程执行到read()并没有阻塞，而是执行走了!!!
 
-![image-20230721145953793](https://image.davidingplus.cn/images/2025/01/31/image-20230721145953793.png)
+![image-20230721145953793](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721145953793.png)
 
 #### 有名管道(FIFO)
 
 **有名管道和匿名管道的区别在于：匿名管道本身没有一个文件描述符或者说路径可以让两个进程找到他，这就导致我们只能通过某种方式让两个进程指向同一块管道，比如主进程先建立管道，然后创建子进程，这样保证了两个进程的读端和写端的文件描述符指向的是同样的匿名管道的两端，这样就只能用于亲缘关系的进程之间通信，而有名管道则恰好克服了这个问题；设置了一个路径名方便两个进程关联，并且这个路径名可以像文件一样被访问(FIFO)，这样就可以被任意关系的两个进程找到并且建立通信**
 
-![image-20230721150130194](https://image.davidingplus.cn/images/2025/01/31/image-20230721150130194.png)
+![image-20230721150130194](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721150130194.png)
 
 区别：
 
-![image-20230721151257066](https://image.davidingplus.cn/images/2025/01/31/image-20230721151257066.png)
+![image-20230721151257066](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721151257066.png)
 
 ##### mkinfo()
 
-![image-20230721151329604](https://image.davidingplus.cn/images/2025/01/31/image-20230721151329604.png)
+![image-20230721151329604](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721151329604.png)
 
 **通过命令 mkfifo < name >**
 
-![image-20230721152717230](https://image.davidingplus.cn/images/2025/01/31/image-20230721152717230.png)
+![image-20230721152717230](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721152717230.png)
 
 这里创建失败，为什么呢？因为windows系统的文件系统不支持管道文件(匿名管道没有管道文件)
 
-![image-20230721151935217](https://image.davidingplus.cn/images/2025/01/31/image-20230721151935217.png)
+![image-20230721151935217](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721151935217.png)
 
 在linux系统自己的本地文件夹当中创建
 
-![image-20230721152127780](https://image.davidingplus.cn/images/2025/01/31/image-20230721152127780.png)
+![image-20230721152127780](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721152127780.png)
 
 **观察发现fifo文件的大小为0，这是因为fifo管道文件的信息是存储在内核的缓冲区里面的，当程序结束之后便会清空，留给下一次使用**
 
@@ -3233,9 +3233,9 @@ int main() {
 
 执行结果：(本来想写注意事项的，都在下面了)
 
-![image-20230721164727872](https://image.davidingplus.cn/images/2025/01/31/image-20230721164727872.png)
+![image-20230721164727872](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721164727872.png)
 
-![image-20230721164735118](https://image.davidingplus.cn/images/2025/01/31/image-20230721164735118.png)
+![image-20230721164735118](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721164735118.png)
 
 **有名管道的注意事项：**
 
@@ -3266,7 +3266,7 @@ int main() {
 
 ##### 思路
 
-![image-20230721170443404](https://image.davidingplus.cn/images/2025/01/31/image-20230721170443404.png)
+![image-20230721170443404](https://cdn.davidingplus.cn/images/2025/01/31/image-20230721170443404.png)
 
 需要注意一点的就是两个进程是你来我往的，所以需要一方先写，另一方先读，否则就会导致阻塞
 
@@ -3460,13 +3460,13 @@ int main() {
 
 将磁盘文件的数据映射到内存，用户修改内存就能修改磁盘文件
 
-![image-20230722143701427](https://image.davidingplus.cn/images/2025/01/31/image-20230722143701427.png)
+![image-20230722143701427](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722143701427.png)
 
 #### 相关函数(!!!)
 
 mmap()用来建立映射，munmap()用来取消映射
 
-![image-20230722143806582](https://image.davidingplus.cn/images/2025/01/31/image-20230722143806582.png)
+![image-20230722143806582](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722143806582.png)
 
 ~~~cpp
     #include <sys/mman.h>
@@ -3690,7 +3690,7 @@ int main() {
 
 执行结果：
 
-![image-20230722155039444](https://image.davidingplus.cn/images/2025/01/31/image-20230722155039444.png)
+![image-20230722155039444](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722155039444.png)
 
 **但是要注意一点，写的数据不能比文件本身的大小大，不然就会超出内存的大小范围了，就会写不进去!!!**
 
@@ -3881,41 +3881,41 @@ int main() {
 
 #### 概念
 
-![image-20230722171544342](https://image.davidingplus.cn/images/2025/01/31/image-20230722171544342.png)
+![image-20230722171544342](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722171544342.png)
 
 软件中断
 
 处理紧急事务，完毕后回到保存的位置继续执行
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722171944530.png" alt="image-20230722171944530" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722171944530.png" alt="image-20230722171944530" style="zoom:67%;" />
 
 #### 目的
 
 **让进程知道了已经发生了某一个特定的事情；强迫进程执行他自己代码当中的信号处理程序**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722172651186.png" alt="image-20230722172651186" style="zoom: 67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722172651186.png" alt="image-20230722172651186" style="zoom: 67%;" />
 
 #### Linux信号列表
 
 **一共62个(32 33没有)，1-31是常规信号，32-64是预定义好的信号，目前还没有使用，将来可能会使用，并且是实时信号**
 
-![image-20230722172945238](https://image.davidingplus.cn/images/2025/01/31/image-20230722172945238.png)
+![image-20230722172945238](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722172945238.png)
 
 红色信号比较重要：
 
-![image-20230722173136070](https://image.davidingplus.cn/images/2025/01/31/image-20230722173136070.png)
+![image-20230722173136070](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722173136070.png)
 
-![image-20230722173332099](https://image.davidingplus.cn/images/2025/01/31/image-20230722173332099.png)
+![image-20230722173332099](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722173332099.png)
 
-![image-20230722173427247](https://image.davidingplus.cn/images/2025/01/31/image-20230722173427247.png)
+![image-20230722173427247](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722173427247.png)
 
-![image-20230722173511150](https://image.davidingplus.cn/images/2025/01/31/image-20230722173511150.png)
+![image-20230722173511150](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722173511150.png)
 
 #### 信号的5种默认处理动作
 
 其中，Core是指终止进程并且生成一个Core文件，这个文件当中记载了程序异常终止时候保存的一些错误信息等等
 
-![image-20230722173544492](https://image.davidingplus.cn/images/2025/01/31/image-20230722173544492.png)
+![image-20230722173544492](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722173544492.png)
 
 ##### 查看并且使用Core文件
 
@@ -3925,11 +3925,11 @@ Core文件里面记录了程序异常退出的状态信息，可以让程序在�
 
 可以看出 core file size 这一项默认是0
 
-![image-20230722190246653](https://image.davidingplus.cn/images/2025/01/31/image-20230722190246653.png)
+![image-20230722190246653](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722190246653.png)
 
 我们将其设置一下，可以设置为一个具体的大小或者不限制
 
-![image-20230722190333227](https://image.davidingplus.cn/images/2025/01/31/image-20230722190333227.png)
+![image-20230722190333227](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722190333227.png)
 
 现在就应该有了
 
@@ -3952,11 +3952,11 @@ int main() {
 }
 ~~~
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722190630746.png" alt="image-20230722190630746" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722190630746.png" alt="image-20230722190630746" style="zoom:67%;" />
 
 执行 a.out 之后，报了段错误，我们来查看下core文件的大小，不为0，可见记录了相关错误信息
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722190751504.png" alt="image-20230722190751504" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722190751504.png" alt="image-20230722190751504" style="zoom:80%;" />
 
 怎么查看呢？可以通过gdb调试来查看，这也是为什么我们编译的时候加上 -g 调试参数的原因
 
@@ -3966,7 +3966,7 @@ int main() {
 core-file core #用来查看该可执行文件对应的core文件信息
 ~~~
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722190919579.png" alt="image-20230722190919579" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722190919579.png" alt="image-20230722190919579" style="zoom:80%;" />
 
 可以看出程序的异常终止是因为这一行的问题，与我们的预期一致；
 
@@ -3976,7 +3976,7 @@ core-file core #用来查看该可执行文件对应的core文件信息
 
 ##### kill(),raise(),abort()
 
-![image-20230722174710585](https://image.davidingplus.cn/images/2025/01/31/image-20230722174710585.png)
+![image-20230722174710585](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722174710585.png)
 
 ~~~cpp
     #include <signal.h>
@@ -4038,9 +4038,9 @@ int main() {
 
 执行结果：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722193118885.png" alt="image-20230722193118885" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722193118885.png" alt="image-20230722193118885" style="zoom:67%;" />
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722193131543.png" alt="image-20230722193131543" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722193131543.png" alt="image-20230722193131543" style="zoom:67%;" />
 
 **有可能为2次也有可能为3次，因为父子进程是并发执行的，谁先运行要看抢占cpu，这里如果是父进程先执行就是2次，子进程先执行就会先偷偷打印一次，就是3次，这也体现了多进程程序执行结果的不确定性，这完全取决于操作系统对于进程的调度**
 
@@ -4093,7 +4093,7 @@ int main() {
 
 执行结果：
 
-![image-20230722200410797](https://image.davidingplus.cn/images/2025/01/31/image-20230722200410797.png)
+![image-20230722200410797](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722200410797.png)
 
 案例：查看计算机一秒能输出多少个数
 
@@ -4116,7 +4116,7 @@ int main() {
 
 执行结果：
 
-![image-20230722200801779](https://image.davidingplus.cn/images/2025/01/31/image-20230722200801779.png)
+![image-20230722200801779](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722200801779.png)
 
 但是我们观察到输出完毕花的时间好像不止1秒，这是为什么呢？
 
@@ -4124,9 +4124,9 @@ int main() {
 
 **但是这里只数了20万不到，感觉少太多了，这是因为往终端上输出的时候需要调用文件描述符，输出一次调用一次磁盘I/O，这样浪费时间，CPU没有百分百去执行数的这个操作，我们可以将其输出重定向到一个文本当中，这样只用调用一次文件I/O就可以把文件写在里面**
 
-![image-20230722201704262](https://image.davidingplus.cn/images/2025/01/31/image-20230722201704262.png)
+![image-20230722201704262](https://cdn.davidingplus.cn/images/2025/01/31/image-20230722201704262.png)
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230722201732964.png" alt="image-20230722201732964" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230722201732964.png" alt="image-20230722201732964" style="zoom:67%;" />
 
 可见这样就多了很多
 
@@ -4219,7 +4219,7 @@ int main() {
 
 #### 信号捕捉函数
 
-![image-20230723150743944](https://image.davidingplus.cn/images/2025/01/31/image-20230723150743944.png)
+![image-20230723150743944](https://cdn.davidingplus.cn/images/2025/01/31/image-20230723150743944.png)
 
 ##### signal()
 
@@ -4318,7 +4318,7 @@ int main() {
 
 **系统PCB当中自带阻塞信号集和未决信号集，我们也不能直接操作，需要借助系统提供的API才能操作**
 
-![image-20230723154213795](https://image.davidingplus.cn/images/2025/01/31/image-20230723154213795.png)
+![image-20230723154213795](https://cdn.davidingplus.cn/images/2025/01/31/image-20230723154213795.png)
 
 阻塞信号集和未决信号集(在PCB当中)
 
@@ -4333,11 +4333,11 @@ int main() {
   - **没有阻塞，这个信号就会被处理**
   - **如果阻塞了，这个信号就继续处于未决状态，直到阻塞解除，这个信号被处理**
 
-![image-20230723165142990](https://image.davidingplus.cn/images/2025/01/31/image-20230723165142990.png)
+![image-20230723165142990](https://cdn.davidingplus.cn/images/2025/01/31/image-20230723165142990.png)
 
 ##### 相关函数
 
-![image-20230723170027725](https://image.davidingplus.cn/images/2025/01/31/image-20230723170027725.png)
+![image-20230723170027725](https://cdn.davidingplus.cn/images/2025/01/31/image-20230723170027725.png)
 
 **前面五个，都是对自己定义的信号集进行操作，信号集的类型是 sigset_t，本质就是一个数组，下标对应信号signum，值代表是否信号状态**
 
@@ -4443,7 +4443,7 @@ int main() {
 
 **调用之后就可以把我们自己设置的信号集设置到系统提供的阻塞信号集当中，这也是我们唯一能设置系统内核PCB中的信号集，未决信号集不能被设置或者处理，只能被读取**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230724150434261.png" alt="image-20230724150434261" style="zoom:50%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230724150434261.png" alt="image-20230724150434261" style="zoom:50%;" />
 
 ~~~cpp
     #include <signal.h>
@@ -4572,7 +4572,7 @@ int main() {
 
 这里输出一个空行是因为第一，字符串我输出了换行，第二，SIGINT信号和SIGQUIT信号执行后都会输出空行，这里是执行了SIGINT信号
 
-![image-20230724155507574](https://image.davidingplus.cn/images/2025/01/31/image-20230724155507574.png)
+![image-20230724155507574](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724155507574.png)
 
 补充：将程序挂到后台执行，加上 & 符号
 
@@ -4584,7 +4584,7 @@ int main() {
 
 并且由于这个进程的输出是默认定向到终端的，所以终端会输出
 
-![image-20230724160250340](https://image.davidingplus.cn/images/2025/01/31/image-20230724160250340.png)
+![image-20230724160250340](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724160250340.png)
 
 切换到前台
 
@@ -4592,7 +4592,7 @@ int main() {
 fg
 ~~~
 
-![image-20230724160542261](https://image.davidingplus.cn/images/2025/01/31/image-20230724160542261.png)
+![image-20230724160542261](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724160542261.png)
 
 #### (续信号捕捉函数)sigaction()
 
@@ -4690,7 +4690,7 @@ int main() {
 
 ##### 更好理解信号捕捉
 
-![image-20230724170811186](https://image.davidingplus.cn/images/2025/01/31/image-20230724170811186.png)
+![image-20230724170811186](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724170811186.png)
 
 要注意几点：
 
@@ -4698,7 +4698,7 @@ int main() {
 - **信号发出之后不会立即处理，先进入未决信号集，变为1，然后去找对应的阻塞信号集，不阻塞则处理，并且修改未决信号集相应为0，当信号在处理过程当中如果未处理完毕这时候收到一个对应的新的信号，不会处理，而是先填入未决信号集，然后等待处理结束然后处理**
 - **如果查找阻塞信号集发现阻塞，则阻塞等待，这个时候如果收到新的信号，由于未决信号集相应位置都还是1，那么表示信号尚未被处理，新来的信号会被忽略，当然也不可能记录来了几个，到时候一起处理这种，因为只能存0 1，这也是忽略的原因**
 
-![image-20230724172117665](https://image.davidingplus.cn/images/2025/01/31/image-20230724172117665.png)
+![image-20230724172117665](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724172117665.png)
 
 #### SIGCHLD信号
 
@@ -4714,7 +4714,7 @@ int main() {
 
 **如果我们能接受这个信号，然后去回收子进程的资源，因为wait()函数是阻塞的，父进程不可能一直等待子进程等待结束然后回收，那么可以捕捉子进程结束时候(当然还有其他两种情况)发出的SIGCHLD信号，然后父进程中断去处理这个事情，回收子进程，这样就很好的避免了僵尸进程的问题**
 
-![image-20230724173035421](https://image.davidingplus.cn/images/2025/01/31/image-20230724173035421.png)
+![image-20230724173035421](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724173035421.png)
 
 代码：
 
@@ -4805,17 +4805,17 @@ int main() {
 
 并不是完全没有内核介入，而是相比于其他通信的操作要少得多，因为没有经过内核和用户之间的切换操作或者说非常少，省去了这一大部分的时间，就是将数据从用户空间当中拷贝到内核当中的这一段时间，所以他的效率是最高的
 
-![image-20230724204226816](https://image.davidingplus.cn/images/2025/01/31/image-20230724204226816.png)
+![image-20230724204226816](https://cdn.davidingplus.cn/images/2025/01/31/image-20230724204226816.png)
 
 #### 使用步骤
 
 创建共享内存，连接共享内存；分离，删除
 
-![image-20230725090718804](https://image.davidingplus.cn/images/2025/01/31/image-20230725090718804.png)
+![image-20230725090718804](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725090718804.png)
 
 #### 相关函数
 
-![image-20230725091618011](https://image.davidingplus.cn/images/2025/01/31/image-20230725091618011.png)
+![image-20230725091618011](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725091618011.png)
 
 记得查man文档，太多太杂了!!!
 
@@ -4986,15 +4986,15 @@ int main() {
 
 执行结果：
 
-![image-20230725102001298](https://image.davidingplus.cn/images/2025/01/31/image-20230725102001298.png)
+![image-20230725102001298](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725102001298.png)
 
-![image-20230725102008328](https://image.davidingplus.cn/images/2025/01/31/image-20230725102008328.png)
+![image-20230725102008328](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725102008328.png)
 
 #### 共享内存操作命令
 
 **注意，shmctl()执行的删除只是标记删除操作，执行到这一步后，这个共享内存的key修改为0，然后不再接受连接，其他程序再次执行shmctl()标记删除相当于什么也没做，但是可以执行不会报错，系统就监听其他进程对这个共享内存的解除连接操作，然后维护shm_nattach，记录关联数，当程序执行shmdt()手动解除或者程序结束的时候系统自动解除连接，当连接数为0之后系统就删除这块共享内存。之所以标记删除，是为了防止删除后还有其他进程在使用这块内存造成不必要的危险**
 
-![image-20230725104726840](https://image.davidingplus.cn/images/2025/01/31/image-20230725104726840.png)
+![image-20230725104726840](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725104726840.png)
 
 #### 注意
 
@@ -5028,31 +5028,31 @@ int main() {
 
 ### 终端
 
-![image-20230725111929961](https://image.davidingplus.cn/images/2025/01/31/image-20230725111929961.png)
+![image-20230725111929961](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725111929961.png)
 
 ### 进程组
 
-![image-20230725112626809](https://image.davidingplus.cn/images/2025/01/31/image-20230725112626809.png)
+![image-20230725112626809](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725112626809.png)
 
 ### 会话
 
-![image-20230725113205286](https://image.davidingplus.cn/images/2025/01/31/image-20230725113205286.png)
+![image-20230725113205286](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725113205286.png)
 
 ### 理解关系举例
 
-![image-20230725113517970](https://image.davidingplus.cn/images/2025/01/31/image-20230725113517970.png)
+![image-20230725113517970](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725113517970.png)
 
 ### 操作函数
 
 gid：进程组id；sid：会话的id
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230725113838738.png" alt="image-20230725113838738" style="zoom: 67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230725113838738.png" alt="image-20230725113838738" style="zoom: 67%;" />
 
 ### 守护进程(Daemon进程，精灵进程)
 
 **后台服务进程，是一个生存期较长的进程，一般采用以d结尾的名字**
 
-![image-20230725114051864](https://image.davidingplus.cn/images/2025/01/31/image-20230725114051864.png)
+![image-20230725114051864](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725114051864.png)
 
 #### 创建步骤(!!!)
 
@@ -5060,11 +5060,11 @@ gid：进程组id；sid：会话的id
 
 **首先为什么要用子进程来创建会话，因为如果是父进程创建会话的话，一旦父进程是这个进程组的首进程，进程组号就是父进程的id，然后创建会话之后新会话中创建出来的进程组号也用的是这个，两个不同会话中存在同一个进程组号，这个显然是不可以的，所以我们用子进程创建，就避免了这个问题；然后父进程退出一是为了保证不出现僵尸进程(这是孤儿进程没有什么危险)，而是避免子进程运行着时候父进程完了然后输出终端提示符，就是如下(突然冒出来很诡异)**
 
-![image-20230725150200682](https://image.davidingplus.cn/images/2025/01/31/image-20230725150200682.png)
+![image-20230725150200682](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725150200682.png)
 
 **第二，为什么要创建一个新会话？因为如果不是新创建而是挪入其他的会话或者就用自身的会话，那么可能这个会话绑定了控制终端，能够接受信号处理信号这些，这显然与守护进程的初衷不符，所以我们要创建一个新会话，新会话默认是不绑定控制终端的，但是不代表没有终端，至少文件描述符012，标准输入输出错误是有的，言下之意就是可以向屏幕上输出数据，所以这就有了下面关闭文件描述符，然后重定向到 dev/null 的操作，当然这一步也不是必须的**
 
-![image-20230725114544913](https://image.davidingplus.cn/images/2025/01/31/image-20230725114544913.png)
+![image-20230725114544913](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725114544913.png)
 
 ##### 示例
 
@@ -5186,15 +5186,15 @@ int main() {
 
 执行结果：
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230725162229689.png" alt="image-20230725162229689" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230725162229689.png" alt="image-20230725162229689" style="zoom:67%;" />
 
 并且从文件大小不断变化可以看出是实时更新的
 
-![image-20230725162327872](https://image.davidingplus.cn/images/2025/01/31/image-20230725162327872.png)
+![image-20230725162327872](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725162327872.png)
 
 守护进程没有控制终端，所以没有办法接受控制终端发出的信号(例如SIGINT( ctrl+c )和SIGQUIT( ctrl+\ ) )，我们只能通过kill -9 强制杀死
 
-![image-20230725162413359](https://image.davidingplus.cn/images/2025/01/31/image-20230725162413359.png)
+![image-20230725162413359](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725162413359.png)
 
 # 第三章 Linux多线程开发
 
@@ -5208,13 +5208,13 @@ int main() {
 
 **线程是轻量级的进程(LWP)，在Linux下线程的本质仍是进程**
 
-![image-20230725162732120](https://image.davidingplus.cn/images/2025/01/31/image-20230725162732120.png)
+![image-20230725162732120](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725162732120.png)
 
 查看指定进程的LWP号
 
 例如这里打开firefox进程，它的内部是多线程实现的
 
-![image-20230725163508676](https://image.davidingplus.cn/images/2025/01/31/image-20230725163508676.png)
+![image-20230725163508676](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725163508676.png)
 
 我们用命令查看，图中进程号是105266
 
@@ -5226,7 +5226,7 @@ ps -LF 105266
 
 可以看出，firefox进程的这么多线程，虽然进程号都是一样的，但是线程号是不一样的
 
-![image-20230725163632242](https://image.davidingplus.cn/images/2025/01/31/image-20230725163632242.png)
+![image-20230725163632242](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725163632242.png)
 
 ### 进程和线程区别
 
@@ -5236,7 +5236,7 @@ ps -LF 105266
 
 **创建线程的速率比进程通常快很多，10倍甚至更多；线程之间共享虚拟地址空间，无序采取写时复制的方式复制内存，也无须复制页表**
 
-![image-20230725164029090](https://image.davidingplus.cn/images/2025/01/31/image-20230725164029090.png)
+![image-20230725164029090](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725164029090.png)
 
 我们画个图来理解一下
 
@@ -5246,18 +5246,18 @@ ps -LF 105266
 
 **栈空间也是不共享的，各个线程将这一块栈空间划分出自己的一块区域**
 
-![image-20230725203244279](https://image.davidingplus.cn/images/2025/01/31/image-20230725203244279.png)
+![image-20230725203244279](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725203244279.png)
 
 ### 线程的共享和非共享资源
 
 - **用户区中，虚拟地址空间除了栈和代码段不共享，其他共享；剩余的都是内核区的数据，这些是共享的，没有复制操作**
 - **非共享资源：线程ID，信号掩码(阻塞信号集)，线程特有的数据，errno变量，实时调度策略和优先级；栈，本地变量和函数调用链接信息**
 
-![image-20230725201723897](https://image.davidingplus.cn/images/2025/01/31/image-20230725201723897.png)
+![image-20230725201723897](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725201723897.png)
 
 ## 线程操作
 
-![image-20230726174153972](https://image.davidingplus.cn/images/2025/01/31/image-20230726174153972.png)
+![image-20230726174153972](https://cdn.davidingplus.cn/images/2025/01/31/image-20230726174153972.png)
 
 ### 创建线程 pthead_create()
 
@@ -5333,11 +5333,11 @@ int main() {
 
 **注意编译要链接上pthread动态库，文件名是libpthread.so，库名字是pthread，用 -l 参数链接**
 
-![image-20230725212001708](https://image.davidingplus.cn/images/2025/01/31/image-20230725212001708.png)
+![image-20230725212001708](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725212001708.png)
 
 当然，由于主线程和子线程是并发的关系，很有可能执行结果不一样
 
-![image-20230725212124179](https://image.davidingplus.cn/images/2025/01/31/image-20230725212124179.png)
+![image-20230725212124179](https://cdn.davidingplus.cn/images/2025/01/31/image-20230725212124179.png)
 
 ### 终止线程 pthread_exit()
 
@@ -5495,7 +5495,7 @@ int main() {
 
   那为什么要传递二级指针呢？就是传出参数的含义了，因为回调函数返回的是void*一级指针类型，我们要想通过传入的参数让系统帮我们修改不能return by value，只能return by pointer或者return by reference，这样才能正确修改，所以需要传入的是二级指针
 
-- ![image-20230727111343535](https://image.davidingplus.cn/images/2025/01/31/image-20230727111343535.png)
+- ![image-20230727111343535](https://cdn.davidingplus.cn/images/2025/01/31/image-20230727111343535.png)
 
 call_back()函数里面的返回的变量不能是局部变量，也就是放在栈上面的，因为线程之间非常重要的两个不共享的东西就是栈空间和.text代码段，栈空间里面的变量在子线程结束后就会释放掉，所以如果要传递的话最好选择全局变量。堆空间虽然也是共享的，但是可能有问题(不管是全局堆还是局部堆)，虽然空间是公用的，但是好像其他线程一是没有办法free()这个数据，二是我测试过好像不行，我也不知道为什么。所以建议就用全局变量
 
@@ -5566,7 +5566,7 @@ int main() {
 
 如果强行加上的话pthread_join()的返回值就会是个错误号了，但是Linux本身并未对他进行处理，没有发出信号说错误什么什么的，这就需要我们自己进行严谨的判断了，加上的话ret是个错误号，然后就会获取到错误信息，如下：
 
-![image-20230727114257371](https://image.davidingplus.cn/images/2025/01/31/image-20230727114257371.png)
+![image-20230727114257371](https://cdn.davidingplus.cn/images/2025/01/31/image-20230727114257371.png)
 
 因此不能手动释放(连接 join)已经分离的线程
 
@@ -5628,15 +5628,15 @@ int main() {
 
 输出的结果每次可能都是不一样的，因为主线程和子线程运行的顺序可能不同，所以执行到的取消点位置也可能不同，所以很可能输出的结果是不一样的，比如下面：
 
-![image-20230731101134205](https://image.davidingplus.cn/images/2025/01/31/image-20230731101134205.png)
+![image-20230731101134205](https://cdn.davidingplus.cn/images/2025/01/31/image-20230731101134205.png)
 
 ## 线程属性
 
-![image-20230731101232100](https://image.davidingplus.cn/images/2025/01/31/image-20230731101232100.png)
+![image-20230731101232100](https://cdn.davidingplus.cn/images/2025/01/31/image-20230731101232100.png)
 
 注意：线程的属性不只这一个，还有很多其他的，如下，都可以由我们自己去设置：
 
-![image-20230731103140397](https://image.davidingplus.cn/images/2025/01/31/image-20230731103140397.png)
+![image-20230731103140397](https://cdn.davidingplus.cn/images/2025/01/31/image-20230731103140397.png)
 
 ~~~cpp
     #include <pthread.h>
@@ -5758,7 +5758,7 @@ int main() {
 
 在代码当中我使用了全局变量tickets，来让三个线程进行共享对他进行处理，但是想法是很美好的，现实却不美好
 
-![image-20230731143537103](https://image.davidingplus.cn/images/2025/01/31/image-20230731143537103.png)
+![image-20230731143537103](https://cdn.davidingplus.cn/images/2025/01/31/image-20230731143537103.png)
 
 图中有两个问题，一是7号票三个线程卖了三次；二是线程卖了0号和-1号票，这如果对于实际的问题将会是毁灭性的打击
 
@@ -5778,21 +5778,21 @@ int main() {
 
 线程同步就是让一个线程在内存进行操作的时候，其他线程都不允许对这个内存资源进行访问，只有该线程完成操作，其他线程才能对该内存地址进行操作，在执行的过程中其他线程位于阻塞等待状态
 
-![image-20230731154000837](https://image.davidingplus.cn/images/2025/01/31/image-20230731154000837.png)
+![image-20230731154000837](https://cdn.davidingplus.cn/images/2025/01/31/image-20230731154000837.png)
 
 ### 互斥锁
 
 所以访问共享资源的时候，为了避免线程更新共享变量的时候出现问题，需要使用互斥锁mutex来对访问进行限制，访问的时候线程给这个共享资源加上互斥锁，其他线程不能试图在加锁的时候对该资源进行访问或者尝试解锁，只有所有者才能给互斥量解锁
 
-![image-20230731161340736](https://image.davidingplus.cn/images/2025/01/31/image-20230731161340736.png)
+![image-20230731161340736](https://cdn.davidingplus.cn/images/2025/01/31/image-20230731161340736.png)
 
 加了互斥锁之后，现在的访问过程就是这样了：
 
-![image-20230801145448245](https://image.davidingplus.cn/images/2025/01/31/image-20230801145448245.png)
+![image-20230801145448245](https://cdn.davidingplus.cn/images/2025/01/31/image-20230801145448245.png)
 
 #### 相关函数
 
-![image-20230801145628830](https://image.davidingplus.cn/images/2025/01/31/image-20230801145628830.png)
+![image-20230801145628830](https://cdn.davidingplus.cn/images/2025/01/31/image-20230801145628830.png)
 
 #### 示例修改(!!!)
 
@@ -5855,7 +5855,7 @@ int main() {
 
 我们发现所有的票都是由一个线程卖出的，我们从代码中查看是为什么
 
-![image-20230802144136067](https://image.davidingplus.cn/images/2025/01/31/image-20230802144136067.png)
+![image-20230802144136067](https://cdn.davidingplus.cn/images/2025/01/31/image-20230802144136067.png)
 
 来看我们进行加锁的这段逻辑：
 
@@ -5916,7 +5916,7 @@ void* CALLBACK_sell(void* arg) {
 
 我们观察发现，我们卖完票睡眠了一段时间，这段时间肯定是比CPU的时间片要大的，并且线程A在休眠的过程中还是被加锁保护了的，除非这段时间小于时间片，系统才会把CPU给他，但是没有，所以往返而来就是一个线程在卖
 
-![image-20230802145837448](https://image.davidingplus.cn/images/2025/01/31/image-20230802145837448.png)
+![image-20230802145837448](https://cdn.davidingplus.cn/images/2025/01/31/image-20230802145837448.png)
 
 所以我们可以把睡眠去掉再来看
 
@@ -5950,9 +5950,9 @@ void* CALLBACK_sell(void* arg) {
 
 并且由于我们的设计是while(1)死循环，跳出的点是票卖完了，所以我们的线程可以进行第二轮的卖票，而不是卖了一轮就结束
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230802150151733.png" alt="image-20230802150151733" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230802150151733.png" alt="image-20230802150151733" style="zoom:67%;" />
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230802150219200.png" alt="image-20230802150219200" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230802150219200.png" alt="image-20230802150219200" style="zoom:67%;" />
 
 ### 死锁
 
@@ -5969,7 +5969,7 @@ void* CALLBACK_sell(void* arg) {
 - **请求和保持**
 - **环路等待**
 
-![image-20230803135330646](https://image.davidingplus.cn/images/2025/01/31/image-20230803135330646.png)
+![image-20230803135330646](https://cdn.davidingplus.cn/images/2025/01/31/image-20230803135330646.png)
 
 我们来看死锁产生的几种情景：
 
@@ -5999,7 +5999,7 @@ void* CALLBACK_sell(void* arg) {
   }
   ~~~
 
-  ![image-20230803143045431](https://image.davidingplus.cn/images/2025/01/31/image-20230803143045431.png)
+  ![image-20230803143045431](https://cdn.davidingplus.cn/images/2025/01/31/image-20230803143045431.png)
 
 - 重复加相同的锁：设想一个我们写代码的时候应该不会犯的错误，就是在我要加锁的时候，我加了两次，第一把锁能够加上，但是第二把是加不上的，因为第一把锁还没加开，所以自己没办法访问，显然其他的线程更没办法访问了；但是我们一般不会犯这么傻的错误，我们可能加了锁之后去调用其他的函数，然后其他的函数当中存在加锁，这样显然就出现了上面的情况，然而这样的话我们不易察觉
 
@@ -6030,7 +6030,7 @@ void* CALLBACK_sell(void* arg) {
   }
   ~~~
 
-  ![image-20230803143334595](https://image.davidingplus.cn/images/2025/01/31/image-20230803143334595.png)
+  ![image-20230803143334595](https://cdn.davidingplus.cn/images/2025/01/31/image-20230803143334595.png)
 
 - 多线程多锁，抢占锁资源：看图中，线程A和线程B分别给资源1和资源2加锁，但是线程的执行依赖于这两个资源的共同访问，所以谁都没办法进行，这就导致了环路等待，产生了死锁
 
@@ -6100,7 +6100,7 @@ void* CALLBACK_sell(void* arg) {
   }
   ~~~
 
-  ![image-20230803151736722](https://image.davidingplus.cn/images/2025/01/31/image-20230803151736722.png)
+  ![image-20230803151736722](https://cdn.davidingplus.cn/images/2025/01/31/image-20230803151736722.png)
 
 ### 读写锁
 
@@ -6112,11 +6112,11 @@ void* CALLBACK_sell(void* arg) {
 - **如果有线程在写数据，其他线程都不允许进行读写操作**
 - **写数据是独占的，他的优先级更高**
 
-![image-20230804134719753](https://image.davidingplus.cn/images/2025/01/31/image-20230804134719753.png)
+![image-20230804134719753](https://cdn.davidingplus.cn/images/2025/01/31/image-20230804134719753.png)
 
 #### 相关函数
 
-![image-20230816104436489](https://image.davidingplus.cn/images/2025/01/31/image-20230816104436489.png)
+![image-20230816104436489](https://cdn.davidingplus.cn/images/2025/01/31/image-20230816104436489.png)
 
 示例代码：(8个线程，3个写线程，5个读线程)
 
@@ -6212,11 +6212,11 @@ int main() {
 
 执行结果：
 
-![image-20230816112647486](https://image.davidingplus.cn/images/2025/01/31/image-20230816112647486.png)
+![image-20230816112647486](https://cdn.davidingplus.cn/images/2025/01/31/image-20230816112647486.png)
 
 ### 生产者消费者模型
 
-![image-20230816150325060](https://image.davidingplus.cn/images/2025/01/31/image-20230816150325060.png)
+![image-20230816150325060](https://cdn.davidingplus.cn/images/2025/01/31/image-20230816150325060.png)
 
 我们现在用一个简陋的实现来模拟这个过程
 
@@ -6301,7 +6301,7 @@ int main() {
 
 这个程序没有对多线程进行数据处理的同步操作，会导致一系列问题，比如链表没有数据就进行释放，这样就会导致内存的访问错误，也就是会报段错误，多次执行，每次执行的结果可能都是不一样的
 
-![image-20230817102529078](https://image.davidingplus.cn/images/2025/01/31/image-20230817102529078.png)
+![image-20230817102529078](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817102529078.png)
 
 #### 自己的思路
 
@@ -6428,7 +6428,7 @@ int main() {
 
 **我们发现阻塞和解除阻塞，还要满足某个条件，这不就是我想要的嘛？所以head为空就阻塞，head不为空就解除阻塞，这就是基本的思路**
 
-![image-20230817104711611](https://image.davidingplus.cn/images/2025/01/31/image-20230817104711611.png)
+![image-20230817104711611](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817104711611.png)
 
 将我们的代码进行改进：
 
@@ -6556,7 +6556,7 @@ int main() {
 
 看到 sem_wait() 和 sem_post() 函数就想到操作系统中学到的PV问题了
 
-![image-20230817114724983](https://image.davidingplus.cn/images/2025/01/31/image-20230817114724983.png)
+![image-20230817114724983](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817114724983.png)
 
 ~~~cpp
     #include <semaphore.h>
@@ -6740,7 +6740,7 @@ B/S 架构最大的优点是总体拥有成本低、维护方便、 分布性强
 
 网卡是一块被设计用来允许计算机在计算机网络上进行通讯的计算机硬件，又称为网络适配器或网络接口卡NIC。其拥有 MAC 地址，属于 OSI 模型的第 2 层，它使得用户可以通过电缆或无线相互 连接。每一个网卡都有一个被称为 MAC 地址的独一无二的 48 位串行号。网卡的主要功能：1.数据的封装与解封装、2.链路管理、3.数据编码与译码。
 
-![image-20230817154336052](https://image.davidingplus.cn/images/2025/01/31/image-20230817154336052.png)
+![image-20230817154336052](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817154336052.png)
 
 MAC 地址（Media Access Control Address），直译为媒体存取控制位址，也称为局域网地址、 以太网地址、物理地址或硬件地址，它是一个用来确认网络设备位置的位址，由网络设备制造商生产时烧录在网卡中。在 OSI 模型中，第三层网络层负责 IP 地址，第二层数据链路层则负责 MAC 位址 。MAC 地址用于在网络中唯一标识一个网卡，一台设备若有一或多个网卡，则每个网卡都需 要并会有一个唯一的 MAC 地址。
 
@@ -6762,7 +6762,7 @@ IP 地址（Internet Protocol Address）是指互联网协议地址，又译为�
 
 其中 A、B、C 3类（如下表格）由 InternetNIC 在全球范围内统一分配，D、E 类为特殊地址。
 
-![image-20230817162026337](https://image.davidingplus.cn/images/2025/01/31/image-20230817162026337.png)
+![image-20230817162026337](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817162026337.png)
 
 #### A类IP地址
 
@@ -6838,7 +6838,7 @@ IP地址中不能以十进制 “127” 作为开头，该类地址中数字 127
 
 它是一个七层的、抽象的模型体，不仅包括一系列抽象的术语或概念，也包括具体的协议。
 
-![image-20230817164927457](https://image.davidingplus.cn/images/2025/01/31/image-20230817164927457.png)
+![image-20230817164927457](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817164927457.png)
 
 1. 物理层：主要定义物理设备标准，如网线的接口类型、光纤的接口类型、各种传输介质的传输速率 等。它的主要作用是传输比特流（就是由1、0转化为电流强弱来进行传输，到达目的地后再转化为 1、0，也就是我们常说的数模转换与模数转换）。这一层的数据叫做比特。 
 2. 数据链路层：建立逻辑连接、进行硬件地址寻址、差错校验等功能。定义了如何让格式化数据以帧 为单位进行传输，以及如何让控制对物理介质的访问。将比特组合成字节进而组合成帧，用MAC地 址访问介质。 
@@ -6854,7 +6854,7 @@ IP地址中不能以十进制 “127” 作为开头，该类地址中数字 127
 
 现在 Internet（因特网）使用的主流协议族是 TCP/IP 协议族，它是一个分层、多协议的通信体 系。TCP/IP协议族是一个四层协议系统，自底而上分别是数据链路层、网络层、传输层和应用 层。每一层完成不同的功能，且通过若干协议来实现，上层协议使用下层协议提供的服务。
 
-![image-20230817165030403](https://image.davidingplus.cn/images/2025/01/31/image-20230817165030403.png)
+![image-20230817165030403](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817165030403.png)
 
 TCP/IP 协议在一定程度上参考了 OSI 的体系结构。OSI 模型共有七层，从下到上分别是物理层、数据链路层、网络层、传输层、会话层、表示层和应用层。但是这显然是有些复杂的，所以在 TCP/IP 协议中， 它们被简化为了四个层次。
 
@@ -6864,7 +6864,7 @@ TCP/IP 协议在一定程度上参考了 OSI 的体系结构。OSI 模型共有�
 
 （3）因为数据链路层和物理层的内容相差不多，所以在 TCP/IP 协议中它们被归并在网络接口层一个层 次里。只有四层体系结构的 TCP/IP 协议，与有七层体系结构的 OSI 相比要简单了不少，也正是这样， TCP/IP 协议在实际的应用中效率更高，成本更低。
 
-![image-20230817165057099](https://image.davidingplus.cn/images/2025/01/31/image-20230817165057099.png)
+![image-20230817165057099](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817165057099.png)
 
 #### 四层介绍
 
@@ -6896,31 +6896,31 @@ TCP/IP 协议在一定程度上参考了 OSI 的体系结构。OSI 模型共有�
 
 ### UDP协议
 
-![image-20230817171145866](https://image.davidingplus.cn/images/2025/01/31/image-20230817171145866.png)
+![image-20230817171145866](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171145866.png)
 
 ### TCP协议
 
-![image-20230817171159785](https://image.davidingplus.cn/images/2025/01/31/image-20230817171159785.png)
+![image-20230817171159785](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171159785.png)
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230817171216720.png" alt="image-20230817171216720" style="zoom:125%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230817171216720.png" alt="image-20230817171216720" style="zoom:125%;" />
 
 ### IP协议
 
-![image-20230817171259144](https://image.davidingplus.cn/images/2025/01/31/image-20230817171259144.png)
+![image-20230817171259144](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171259144.png)
 
-![image-20230817171313342](https://image.davidingplus.cn/images/2025/01/31/image-20230817171313342.png)
+![image-20230817171313342](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171313342.png)
 
 ### 以太网帧协议
 
-![image-20230817171325127](https://image.davidingplus.cn/images/2025/01/31/image-20230817171325127.png)
+![image-20230817171325127](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171325127.png)
 
 ### ARP协议
 
-![image-20230817171331187](https://image.davidingplus.cn/images/2025/01/31/image-20230817171331187.png)
+![image-20230817171331187](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171331187.png)
 
 例如，这里就是一个arp请求包
 
-![image-20230817203353404](https://image.davidingplus.cn/images/2025/01/31/image-20230817203353404.png)
+![image-20230817203353404](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817203353404.png)
 
 当然，需要发送出去还要加上帧头帧尾能封装成为一个完整的帧
 
@@ -6928,21 +6928,21 @@ TCP/IP 协议在一定程度上参考了 OSI 的体系结构。OSI 模型共有�
 
 上层协议是如何使用下层协议提供的服务的呢？其实这是通过封装（encapsulation）实现的。应用程序 数据在发送到物理网络上之前，将沿着协议栈从上往下依次传递。每层协议都将在上层数据的基础上加上自己的头部信息（有时还包括尾部信息），以实现该层的功能，这个过程就称为封装。
 
-![image-20230817171342456](https://image.davidingplus.cn/images/2025/01/31/image-20230817171342456.png)
+![image-20230817171342456](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171342456.png)
 
 ### 分用
 
 当帧到达目的主机时，将沿着协议栈自底向上依次传递。各层协议依次处理帧中本层负责的头部数据， 以获取所需的信息，并最终将处理后的帧交给目标应用程序。这个过程称为分用（demultiplexing）。 分用是依靠头部信息中的类型字段实现的。
 
-![image-20230817171356559](https://image.davidingplus.cn/images/2025/01/31/image-20230817171356559.png)
+![image-20230817171356559](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171356559.png)
 
-![image-20230817171401748](https://image.davidingplus.cn/images/2025/01/31/image-20230817171401748.png)
+![image-20230817171401748](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817171401748.png)
 
 ## 网络通信的过程
 
 示意图
 
-![image-20230817201604241](https://image.davidingplus.cn/images/2025/01/31/image-20230817201604241.png)
+![image-20230817201604241](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817201604241.png)
 
 ## socket介绍
 
@@ -6952,7 +6952,7 @@ socket 可以看成是两个网络应用程序进行通信时，各自通信连�
 
 **socket 本身有“插座”的意思，在 Linux 环境下，用于表示进程间网络通信的特殊文件类型。本质为内核借助缓冲区形成的伪文件。既然是文件，那么理所当然的，我们可以使用文件描述符引用套接字。与管道类似的，也存在读写缓冲区，写方向写的缓冲区写入数据，读方接收到数据在读缓冲区中，这就形成了数据的传递，Linux 系统将其封装成文件的目的是为了统一接口，使得读写套接字和读写文件的操作一致。区别是管道主要应用于本地进程间通信，而套接字多应用于网络进程间数据的传递。**
 
-![image-20230817210404237](https://image.davidingplus.cn/images/2025/01/31/image-20230817210404237.png)
+![image-20230817210404237](https://cdn.davidingplus.cn/images/2025/01/31/image-20230817210404237.png)
 
 ~~~cpp
 // 套接字通信分两部分：
@@ -6977,9 +6977,9 @@ socket是一套通信的接口，Linux 和 Windows 都有，但是有一些细�
 
 **图中的0x11就是一个字节，因为他是用16进制表示的，也就是0x11对应的11是8个bit，然后就是一个字节，这个数就是这么存储下来的，因此就有了高位字节和低位字节在内存中的顺序问题**
 
-![image-20230818092738767](https://image.davidingplus.cn/images/2025/01/31/image-20230818092738767.png)
+![image-20230818092738767](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818092738767.png)
 
-![image-20230818092744993](https://image.davidingplus.cn/images/2025/01/31/image-20230818092744993.png)
+![image-20230818092744993](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818092744993.png)
 
 好，我们了解了这些就可以写一个测试样例来查看我们的主机是小端字节序还是大端字节序(记忆：小端字节序就是内存高位对应数里面的高位)
 
@@ -7173,13 +7173,13 @@ typedef unsigned short int sa_family_t;
 
 **sa_family 成员是地址族类型（sa_family_t）的变量。**地址族类型通常与协议族类型对应。常见的协议族（protocol family，也称 domain）和对应的地址族入下所示：
 
-![image-20230818115634758](https://image.davidingplus.cn/images/2025/01/31/image-20230818115634758.png)
+![image-20230818115634758](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818115634758.png)
 
 宏 PF_ * 和 AF_ * 都定义在 bits/socket.h 头文件中，且后者与前者有完全相同的值，所以二者通常混用。
 
 sa_data 成员用于存放 socket 地址值。但是，不同的协议族的地址值具有不同的含义和长度，如下所示：
 
-![image-20230818115654321](https://image.davidingplus.cn/images/2025/01/31/image-20230818115654321.png)
+![image-20230818115654321](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818115654321.png)
 
 由上表可知，14 字节的 sa_data 根本无法容纳多数协议族的地址值。因此，Linux 定义了下面这个新的 通用的 socket 地址结构体，这个结构体不仅提供了足够大的空间用于存放地址值，而且是内存对齐的。
 
@@ -7198,7 +7198,7 @@ typedef unsigned short int sa_family_t;
 
 **很多网络编程函数诞生早于 IPv4 协议，那时候都使用的是 struct sockaddr 结构体，为了向前兼容，现 在sockaddr 退化成了（void *）的作用，传递一个地址给函数，至于这个函数是 sockaddr_in 还是 sockaddr_in6，由地址族确定，然后函数内部再强制类型转化为所需的地址类型。**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230818115728450.png" alt="image-20230818115728450" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230818115728450.png" alt="image-20230818115728450" style="zoom:80%;" />
 
 UNIX 本地域协议族使用如下专用的 socket 地址结构体：
 
@@ -7333,7 +7333,7 @@ int main() {
     适用场景 		       实时应用（视频会议，直播） 	  可靠性高的应用（文件传输）
 ~~~
 
-![image-20230818143501064](https://image.davidingplus.cn/images/2025/01/31/image-20230818143501064.png)
+![image-20230818143501064](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818143501064.png)
 
 ~~~cpp
 // TCP 通信的流程
@@ -7630,7 +7630,7 @@ TCP 提供了一种可靠、面向连接、字节流、传输层的服务，采�
 
 **三次握手发生在客户端连接的时候，当调用connect()的时候，底层会通过TCP协议进行三次握手。**
 
-![image-20230818175354581](https://image.davidingplus.cn/images/2025/01/31/image-20230818175354581.png)
+![image-20230818175354581](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818175354581.png)
 
 - 16 位端口号（port number）：告知主机报文段是来自哪里（源端口）以及传给哪个上层协议或 应用程序（目的端口）的。进行 TCP 通信时，客户端通常使用系统自动选择的临时端口号。
 - 32 位序号（sequence number）：一次 TCP 通信（从 TCP 连接建立到断开）过程中某一个传输 方向上的字节流的每个字节的编号。假设主机 A 和主机 B 进行 TCP 通信，A 发送给 B 的第一个 TCP 报文段中，序号值被系统初始化为某个随机值 ISN（Initial Sequence Number，初始序号 值）。那么在该传输方向上（从 A 到 B），后续的 TCP 报文段中序号值将被系统设置成 ISN 加上 该报文段所携带数据的第一个字节在整个字节流中的偏移。例如，某个 TCP 报文段传送的数据是字 节流中的第 1025 ~ 2048 字节，那么该报文段的序号值就是 ISN + 1025。另外一个传输方向（从 B 到 A）的 TCP 报文段的序号值也具有相同的含义。 
@@ -7646,15 +7646,15 @@ TCP 提供了一种可靠、面向连接、字节流、传输层的服务，采�
   - 16 位校验和（TCP checksum）：由发送端填充，接收端对 TCP 报文段执行 CRC 算法以校验 TCP 报文段在传输过程中是否损坏。注意，这个校验不仅包括 TCP 头部，也包括数据部分。 这也是 TCP 可靠传输的一个重要保障。 
   - 16 位紧急指针（urgent pointer）：是一个正的偏移量。它和序号字段的值相加表示最后一 个紧急数据的下一个字节的序号。因此，确切地说，这个字段是紧急指针相对当前序号的偏移，不妨称之为紧急偏移。TCP 的紧急指针是发送端向接收端发送紧急数据的方法。
 
-![image-20230818175513668](https://image.davidingplus.cn/images/2025/01/31/image-20230818175513668.png)
+![image-20230818175513668](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818175513668.png)
 
-![image-20230819113154633](https://image.davidingplus.cn/images/2025/01/31/image-20230819113154633.png)
+![image-20230819113154633](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819113154633.png)
 
 ### 类比
 
 我们用男女朋友的例子来进行举例，画图如下：
 
-![image-20230819103736969](https://image.davidingplus.cn/images/2025/01/31/image-20230819103736969.png)
+![image-20230819103736969](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819103736969.png)
 
 男生向女生说能不能做我女朋友，女生说可以，但是这个时候女生不放心，需要问男生能不能做自己的男朋友，为了进行确认；男生回复可以，双方都表示愿意做男女朋友，也就是双方都要确认对方和自己能够建立连接并且能够发送消息和收到消息，这才能保证整个TCP连接的可靠性，这也是为什么TCP连接需要建立连接
 
@@ -7687,7 +7687,7 @@ TCP 中采用滑动窗口来进行传输控制，滑动窗口的大小意味着�
   - 发送缓冲区  (发送缓冲区的窗口)
   - 接受缓冲区  (接受缓冲区的窗口)
 
-![image-20230818175617550](https://image.davidingplus.cn/images/2025/01/31/image-20230818175617550.png)
+![image-20230818175617550](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818175617550.png)
 
 ~~~cpp
 发送方的缓冲区：
@@ -7700,7 +7700,7 @@ TCP 中采用滑动窗口来进行传输控制，滑动窗口的大小意味着�
     紫色格子：已经接收到的数据
 ~~~
 
-![image-20230818175628648](https://image.davidingplus.cn/images/2025/01/31/image-20230818175628648.png)
+![image-20230818175628648](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818175628648.png)
 
 ~~~cpp
 # mss : Maximum Segment Size(一条数据最大的数据量)
@@ -7728,7 +7728,7 @@ TCP 中采用滑动窗口来进行传输控制，滑动窗口的大小意味着�
 
 **因为在TCP连接的时候，采用三次握手建立的连接是双向的，因此在断开的时候也需要双向断开，这就是为什么需要四次挥手**
 
-![image-20230818175657616](https://image.davidingplus.cn/images/2025/01/31/image-20230818175657616.png)
+![image-20230818175657616](https://cdn.davidingplus.cn/images/2025/01/31/image-20230818175657616.png)
 
 ### 类比
 
@@ -7736,7 +7736,7 @@ TCP 中采用滑动窗口来进行传输控制，滑动窗口的大小意味着�
 
 **客户端向服务端发出断开连接请求FIN，服务端接受请求，并返回确认，至此，客户端向服务端方向的数据传输就断开了；但是服务端仍可以向客户端发送数据，当发送数据完毕之后(或者不发)服务端向客户端发送断开连接请求FIN，客户端接受请求，然后返回针对该请求报文的确认，至此服务端向客户端方向的数据传输断开，该TCP连接就此关闭**
 
-![image-20230819150618612](https://image.davidingplus.cn/images/2025/01/31/image-20230819150618612.png)
+![image-20230819150618612](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819150618612.png)
 
 那我们想一下，第二步和第三步能不能合起来呢？也就是：
 
@@ -7902,7 +7902,7 @@ FINAL:
 
 直截取了服务端的图片
 
-![image-20230819170952283](https://image.davidingplus.cn/images/2025/01/31/image-20230819170952283.png)
+![image-20230819170952283](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819170952283.png)
 
 **服务器的代码涉及到两个问题：**
 
@@ -7916,13 +7916,13 @@ FINAL:
 
   **当我一个子进程结束的时候，父进程中断处理之后，应该回到原来accept()的状态，但是这时accept()报错了**
 
-  **![image-20230819172037175](https://image.davidingplus.cn/images/2025/01/31/image-20230819172037175.png)**
+  **![image-20230819172037175](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819172037175.png)**
 
   **是什么原因呢？**
 
   **因为accpt()这里软中断结束之后，会从阻塞中断变成非阻塞的，然后没有客户端连接，就报错了，程序结束，errno被设置为EINTR**
 
-  **![image-20230819172505207](https://image.davidingplus.cn/images/2025/01/31/image-20230819172505207.png)**
+  **![image-20230819172505207](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819172505207.png)**
 
   **所以这里我们判断一下errno的值特殊处理就好了**
 
@@ -8258,9 +8258,9 @@ int main(int argc, char const* argv[]) {
 
 ## TCP状态转换
 
-![image-20230819153502987](https://image.davidingplus.cn/images/2025/01/31/image-20230819153502987.png)
+![image-20230819153502987](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819153502987.png)
 
-![image-20230819153510357](https://image.davidingplus.cn/images/2025/01/31/image-20230819153510357.png)
+![image-20230819153510357](https://cdn.davidingplus.cn/images/2025/01/31/image-20230819153510357.png)
 
 ### 2MSL（Maximum Segment Lifetime） 
 
@@ -8275,7 +8275,7 @@ int main(int argc, char const* argv[]) {
 
 **在四次挥手关闭的过程中主动断开连接方收到了两次被动连接方的报文，第一个是第二次挥手的ACK确认，第二个是第三次挥手的FIN请求，为什么叫FIN_WAIT_1和FIN_WAIT_2？就是因为第一次主动断开连接方发送FIN请求后等待ACK确认，然后第二次就主动等待被动连接方的FIN请求，最后就进入TIME_WAIT状态，这么说了理解得更透彻，参照下图理解**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230821093427390.png" alt="image-20230821093427390" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230821093427390.png" alt="image-20230821093427390" style="zoom: 80%;" />
 
 **当 TCP 链接中 A 向 B 发送 FIN 请求关闭，另一端 B 回应 ACK 之后（A 端进入 FIN_WAIT_2 状态），并没有立即发送 FIN 给 A，A 方处于半连接状态（半开关），此时 A 可以接收 B 发 送的数据，但是 A 已经不能再向 B 发送数据。**
 
@@ -8309,7 +8309,7 @@ int shutdown(int sockfd, int how);
 3. **引申：为什么多进程中的文件描述符的引用计数不为1呢？我们来看我们代码的逻辑：**
 
    **我们用父进程接受连接，然后用子进程进行处理；文件描述符是内核区的，因此父进程和子进程就共享了这一份文件描述符数据了，父进程当然可以通过这个通信，但是逻辑没有这么干**
-   ![image-20230822153655659](https://image.davidingplus.cn/images/2025/01/31/image-20230822153655659.png)
+   ![image-20230822153655659](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822153655659.png)
 
 #### 关于文件描述符的引用计数(file_description)
 
@@ -8449,7 +8449,7 @@ int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 
 关于level参数，有很多，我们这里选择 SOL_SOCKET，代表是端口复用的级别
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230820172341423.png" alt="image-20230820172341423" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230820172341423.png" alt="image-20230820172341423" style="zoom: 80%;" />
 
 查看网络信息相关的命令
 
@@ -8621,7 +8621,7 @@ int main() {
 
 我们先把TCP通信的图拿过来
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230819153502987.png" alt="image-20230819153502987" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230819153502987.png" alt="image-20230819153502987" style="zoom:67%;" />
 
 这段代码的作用是服务端发送字符串，服务端接受并且返回大写后的版本，代码逻辑我们不谈，前面早就谈过了，我们来看看释放连接时候会发生些什么事情
 
@@ -8646,29 +8646,29 @@ netstat -anp | grep 9999
 
 服务端使用的端口是9999
 
-![image-20230820174841668](https://image.davidingplus.cn/images/2025/01/31/image-20230820174841668.png)
+![image-20230820174841668](https://cdn.davidingplus.cn/images/2025/01/31/image-20230820174841668.png)
 
 现在我们使用 ctrl + c 发送SIGINT信号是服务端异常终止，输出：
 
 此时，服务端到客户端的单向连接就关闭了，但是客户端还在，服务端处于FIN_WAIT2状态，等待客户端发送FIN的关闭连接报文；客户端处于CLOSE_WAIT状态
 
-![image-20230820175148993](https://image.davidingplus.cn/images/2025/01/31/image-20230820175148993.png)
+![image-20230820175148993](https://cdn.davidingplus.cn/images/2025/01/31/image-20230820175148993.png)
 
 好，现在我们也类似强制关闭客户端，输出：
 
 此时服务端进入TIME_WAIT状态，这个状态服务端接收到了FIN报文然后发送针对该报文的ACK报文，为了避免最后一次报文丢失，所以会有这个阶段，这个阶段的持续时间是2MSL，在Linux上大概是60秒
 
-![image-20230820175507945](https://image.davidingplus.cn/images/2025/01/31/image-20230820175507945.png)
+![image-20230820175507945](https://cdn.davidingplus.cn/images/2025/01/31/image-20230820175507945.png)
 
 如果我们在这段时间重开服务器，就会这样，表示端口被占用，这就是TIME_WAIT惹的祸
 
-![image-20230820175849220](https://image.davidingplus.cn/images/2025/01/31/image-20230820175849220.png)
+![image-20230820175849220](https://cdn.davidingplus.cn/images/2025/01/31/image-20230820175849220.png)
 
 因此，setsockapt()就是可以设置这个属性，使得端口能够复用，将那行代码恢复后，就可以正常打开服务器，并且网络状态是这样的
 
 可以看出，之前的TIME_WAIT和现在的LISTEN状态共存了，这就是setsockapt()的作用，当然他不只可以设置端口复用，还有其他功能
 
-![image-20230820180107223](https://image.davidingplus.cn/images/2025/01/31/image-20230820180107223.png)
+![image-20230820180107223](https://cdn.davidingplus.cn/images/2025/01/31/image-20230820180107223.png)
 
 #### 思考
 
@@ -8694,13 +8694,13 @@ netstat -anp | grep 9999
 
 比如accept()和wait()就是阻塞等待的例子，阻塞等待客户端的连接和子进程的结束，优点就是阻塞在那里不吃CPU的时间片，缺点就是同一时刻只能处理一个操作，效率很低；所以想到用多进程或者多线程解决，但是缺点就是消耗资源
 
-![image-20230821101046107](https://image.davidingplus.cn/images/2025/01/31/image-20230821101046107.png)
+![image-20230821101046107](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821101046107.png)
 
 ##### BIO模型
 
 这就是阻塞等待的例子，就是因为read()或者recv()是阻塞的，当我主程序接受客户端连接之后阻塞等待客户端的数据到达，这段时间内主程序没有办法接受其他客户端的连接，所以我们选择多进程或者多线程来解决问题，缺点也显而易见就是消耗资源，但是究其根本原因就是阻塞blocking的问题
 
-![image-20230821101622911](https://image.davidingplus.cn/images/2025/01/31/image-20230821101622911.png)
+![image-20230821101622911](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821101622911.png)
 
 #### 非阻塞，忙轮询
 
@@ -8708,13 +8708,13 @@ netstat -anp | grep 9999
 
 解决方案：使用I/O多路转接技术select/poll/epoll
 
-![image-20230821102216612](https://image.davidingplus.cn/images/2025/01/31/image-20230821102216612.png)
+![image-20230821102216612](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821102216612.png)
 
 ##### NIO模型
 
 这里把accept()和read()都设置成为非阻塞的，意味着我程序执行到这里的时候我不阻塞了，但是需要判断是否有客户端连接或者有数据到达，如果没有就继续循环直到有，有就进行相应的处理，但是这样消耗的CPU和资源代价非常大
 
-![image-20230821102411708](https://image.davidingplus.cn/images/2025/01/31/image-20230821102411708.png)
+![image-20230821102411708](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821102411708.png)
 
 ### I/O多路转接技术
 
@@ -8724,11 +8724,11 @@ netstat -anp | grep 9999
 
 第一种 select/poll
 
-![image-20230821102813978](https://image.davidingplus.cn/images/2025/01/31/image-20230821102813978.png)
+![image-20230821102813978](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821102813978.png)
 
 第二种 epoll
 
-![image-20230821102923936](https://image.davidingplus.cn/images/2025/01/31/image-20230821102923936.png)
+![image-20230821102923936](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821102923936.png)
 
 #### select
 
@@ -8784,7 +8784,7 @@ void FD_ZERO(fd_set *set);
 
 **在函数执行的过程中，系统先把用户区的这份文件描述符集合拷贝一份到内核当中，然后在内核当中检测标志位并且根据实际情况(比如这里就是哪些文件描述符的读端数据到达了)然后修改标志位，0就是没有，1就是有，然后从内核态重新拷贝到用户态，工作过程大致就是这样**
 
-![image-20230821132937309](https://image.davidingplus.cn/images/2025/01/31/image-20230821132937309.png)
+![image-20230821132937309](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821132937309.png)
 
 ##### 代码
 
@@ -9183,7 +9183,7 @@ void Communicate(const int& _connect_fd) {
 
 所以我们想到的解决方案就是使用临时变量，但是像新客户端连接，写端关闭的时候删除文件描述符的检测这些还是要操作read_set，也很好理解
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230821162010058.png" alt="image-20230821162010058" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230821162010058.png" alt="image-20230821162010058" style="zoom: 80%;" />
 
 #### poll
 
@@ -9195,7 +9195,7 @@ void Communicate(const int& _connect_fd) {
 
 **其中的第四条就是不使用临时 tmp_set 的问题，read_set应该要继续检测的部分被置为0了，就因为这个时候没有数据进来，所以言下之意就是不能重用，每次都需要重置**
 
-![image-20230821162714320](https://image.davidingplus.cn/images/2025/01/31/image-20230821162714320.png)
+![image-20230821162714320](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821162714320.png)
 
 ##### poll()
 
@@ -9226,7 +9226,7 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout);
         >0（n） : 成功,n表示检测到集合中有n个文件描述符发生变化
 ~~~
 
-![image-20230821095539250](https://image.davidingplus.cn/images/2025/01/31/image-20230821095539250.png)
+![image-20230821095539250](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821095539250.png)
 
 ##### 代码
 
@@ -9409,7 +9409,7 @@ struct pollfd {
 
 值得注意的是这些事件的类型和存储方法，是short类型的，我们来看它可以描述哪些事件
 
-![image-20230821095539250](https://image.davidingplus.cn/images/2025/01/31/image-20230821095539250.png)
+![image-20230821095539250](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821095539250.png)
 
 **其实他和文件属性stat变量里面st_mode(表示文件类型和权限)是一个道理，一个bit位表示一个权限，1表示有，0表示没有，因此添加权限应该用 按位或 | ， 这里的事件也是一样的道理，我们一般判断读事件就POLLIN，写事件就POLLOUT**
 
@@ -9438,7 +9438,7 @@ select技术和poll技术虽然实现方式有所不同，poll技术是select技
 
 **总结一下，二者的区别一是epoll省去了从用户态到内核态相互的切换，直接在内核态操作，效率更高；二是epoll不仅返回了检测到了多少个，而且还直接通过双链表的形式告诉我们哪几个返回了，而select和poll技术并未做到这一点，select技术修改了我们传给他的表，返回值是检测到了多少个，但是哪些变化了需要我们遍历这个以文件描述符为下标的表；poll技术给每个需要检测的文件描述符封装了一个结构体，并且保存了需要检测的事件和实际发生的事件，但是仍然需要我们去遍历poll()参数中的pollfd结构体数组才行；但是epoll却将检测到的事件封装在双链表 rdlist 中，由此可见这就是他的优势**
 
-![image-20230821194458779](https://image.davidingplus.cn/images/2025/01/31/image-20230821194458779.png)
+![image-20230821194458779](https://cdn.davidingplus.cn/images/2025/01/31/image-20230821194458779.png)
 
 ##### epoll() 
 
@@ -9811,11 +9811,11 @@ struct epoll_event {
 
 客户端
 
-![image-20230822113418607](https://image.davidingplus.cn/images/2025/01/31/image-20230822113418607.png)
+![image-20230822113418607](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822113418607.png)
 
 服务端
 
-![image-20230822113459363](https://image.davidingplus.cn/images/2025/01/31/image-20230822113459363.png)
+![image-20230822113459363](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822113459363.png)
 
 **我们明显可以看出，缓冲区调小之后，一次读不完，然后循环之后仍然能够检测得到，直到将其全部读完**
 
@@ -9838,21 +9838,21 @@ connect_event.events = EPOLLIN | EPOLLET;  // 设置边沿触发，结合非阻�
 
 客户端
 
-![image-20230822114219505](https://image.davidingplus.cn/images/2025/01/31/image-20230822114219505.png)
+![image-20230822114219505](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822114219505.png)
 
 服务端
 
-![image-20230822114228554](https://image.davidingplus.cn/images/2025/01/31/image-20230822114228554.png)
+![image-20230822114228554](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822114228554.png)
 
 可以看出只读取了一次，后续就没有下文了，只有当我第二次手动让客户端检测，比如这里我输入字符，服务端才会继续收到数据，注意上次通信没读完，数据还在缓冲区中，是接着缓冲区读的，如下：
 
 客户端
 
-![image-20230822114407108](https://image.davidingplus.cn/images/2025/01/31/image-20230822114407108.png)
+![image-20230822114407108](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822114407108.png)
 
 服务端
 
-![image-20230822114413347](https://image.davidingplus.cn/images/2025/01/31/image-20230822114413347.png)
+![image-20230822114413347](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822114413347.png)
 
 好，既然想到了读不完，那么我们就需要循环读，但是循环读如果配上阻塞的read()函数，读完了就会阻塞在那里，程序就尬住了，其他工作没办法做，这也是前面提到的需要使用非阻塞non-block的API，因此这里我们需要设置read()为非阻塞
 
@@ -9922,13 +9922,13 @@ void Communicate(const struct epoll_event &_ret_event, const int &_epoll_fd) {
 
 客户端
 
-![image-20230822115230225](https://image.davidingplus.cn/images/2025/01/31/image-20230822115230225.png)
+![image-20230822115230225](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822115230225.png)
 
 服务端
 
 可以看出我做的特殊判断也被打印出来了
 
-![image-20230822115243021](https://image.davidingplus.cn/images/2025/01/31/image-20230822115243021.png)
+![image-20230822115243021](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822115243021.png)
 
 这个程序应该还有小bug，但是大体逻辑是没有问题的，这个我就尚不知道了
 
@@ -9938,7 +9938,7 @@ void Communicate(const struct epoll_event &_ret_event, const int &_epoll_fd) {
 
 **相比于TCP，UDP的通信就非常简单了，TCP的服务端需要创建监听的套接字用于监听建立连接，客户端需要使用connect()和服务端建立连接；而UDP创建了用于通信的文件描述符后直接通信即可，注意服务端还是要绑定bind()IP和端口**
 
-![image-20230822145319237](https://image.davidingplus.cn/images/2025/01/31/image-20230822145319237.png)
+![image-20230822145319237](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822145319237.png)
 
 **在UDP中系统专门给我们提供了接口叫 sendto() 和 recvfrom() ；同样的在TCP当中，我们之前一直使用的是read()和write()来操作通信的文件描述符，没问题，但是系统当然也提供了专门的API，叫 send() 和 recv()**
 
@@ -10107,7 +10107,7 @@ int main() {
 
 - **sendto() 函数的参数，最后两项也是对方的信息，这是必须要给的，因为TCP没有建立连接同于通信的文件描述符，所以必须要给出对方的信息才可能正确发到；由此我们也可以推出我们的这个 sockfd 可以和很多客户端连接，因此UDP不用多进程或者多线程也可以实现，结果类似如下：**
 
-  ![image-20230822154224472](https://image.davidingplus.cn/images/2025/01/31/image-20230822154224472.png)
+  ![image-20230822154224472](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822154224472.png)
 
 - **recvfrom 返回0是可以接受的，不像read返回0表示对端关闭连接。因为UDP是无连接的，也就没有所谓的关闭。我们的程序在另一方断开之后会卡住，这里我尚不知道为什么，应该是recvfrom() 内核里面的设计了；我们总之知道 UDP 提供的 recvfrom() 函数返回0是合法的**
 
@@ -10115,10 +10115,10 @@ int main() {
   我们通过程序查看是否相同，首先是TCP：
 
   服务端
-  ![image-20230822155038817](https://image.davidingplus.cn/images/2025/01/31/image-20230822155038817.png)
+  ![image-20230822155038817](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822155038817.png)
 
   客户端
-  ![image-20230822155057787](https://image.davidingplus.cn/images/2025/01/31/image-20230822155057787.png)
+  ![image-20230822155057787](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822155057787.png)
 
   **他们是不相同的，如何理解？**
   **这是两个进程，TCP的3号文件描述符用在了监听，4号用来和客户端进行通信，客户端也具有自己的文件描述符表，用的自然就是3号文件描述符**
@@ -10126,10 +10126,10 @@ int main() {
   然后是UDP：
 
   服务端
-  ![image-20230822155443323](https://image.davidingplus.cn/images/2025/01/31/image-20230822155443323.png)
+  ![image-20230822155443323](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822155443323.png)
 
   客户端
-  ![image-20230822155501635](https://image.davidingplus.cn/images/2025/01/31/image-20230822155501635.png)
+  ![image-20230822155501635](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822155501635.png)
 
   **两个进程都只建立了一个文件描述符，所以当然各自进程都用自己最小可用的文件描述符就是3啊，这个跟文件描述符引用计数没关系，前提是需要是同一个进程，并且socket套接字指向的东西还是一样的**
 
@@ -10145,7 +10145,7 @@ a.只能在局域网中使用。
 
 b.客户端需要绑定服务器广播使用的端口，才可以接收到广播消息。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230822160604851.png" alt="image-20230822160604851" style="zoom:67%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230822160604851.png" alt="image-20230822160604851" style="zoom:67%;" />
 
 ~~~cpp
 // 设置广播属性的函数
@@ -10304,17 +10304,17 @@ setsockopt(socket_fd, SOL_SOCKET, SO_BROADCAST, &_optval, sizeof(_optval));
 
 **b.客户端需要加入多播组，才能接收到多播的数据**
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230822160649282.png" alt="image-20230822160649282" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230822160649282.png" alt="image-20230822160649282" style="zoom:80%;" />
 
 - 组播地址
 
 IP 多播通信必须依赖于 IP 多播地址，在 IPv4 中它的范围从 224.0.0.0 到 239.255.255.255 ， 并被划分为局部链接多播地址、预留多播地址和管理权限多播地址三类:
 
-![image-20230822160933192](https://image.davidingplus.cn/images/2025/01/31/image-20230822160933192.png)
+![image-20230822160933192](https://cdn.davidingplus.cn/images/2025/01/31/image-20230822160933192.png)
 
 - 设置组播
 
-  ![image-20230823114653916](https://image.davidingplus.cn/images/2025/01/31/image-20230823114653916.png)
+  ![image-20230823114653916](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823114653916.png)
 
 多播的API用的比较少，需要用的时候来查询就可以了，但是要知道工作原理
 
@@ -10507,7 +10507,7 @@ setsockopt(socket_fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &_optval, sizeof(_optval));
 
 本地套接字实现流程和网络套接字类似，一般呢采用**TCP**的通信流程。
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230823123131126.png" alt="image-20230823123131126" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230823123131126.png" alt="image-20230823123131126" style="zoom: 80%;" />
 
 ### API
 
@@ -10562,7 +10562,7 @@ struct sockaddr_un {
 
 **我们观察他的流程图以及结合上面API的注释，在本地文件socket地址中，由于是本地的通信，我们不使用IPV4地址或者IPV6地址，也就是sockaddr_in和sockadd_in6，我们使用 sockaddr_un 这个结构体来封装本地的信息，这个结构体一个参数是地址族，另一个参数就非常重要了，就是指定我们用于通信的套接字文件的路径，例如图中就是server.sock和client.sock，这是一个伪文件，大小永远都是0，是用来进行本地进程间通信的；这个文件会在磁盘中被创建出来，在通信的时候，在内核中对应了一块缓冲区，如图所示，客户端B发送数据，先将数据写道他的写缓冲区，在发送到服务端的读缓冲区，因此读写双方都必须有一个这个套接字文件的路径，也就是都需要绑定bind()，这就和一般的TCP通信有区别**
 
-![image-20230823124612140](https://image.davidingplus.cn/images/2025/01/31/image-20230823124612140.png)
+![image-20230823124612140](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823124612140.png)
 
 ### 代码
 
@@ -10732,21 +10732,21 @@ int main() {
 
 服务端
 
-<img src="https://image.davidingplus.cn/images/2025/01/31/image-20230823151111152.png" alt="image-20230823151111152" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/01/31/image-20230823151111152.png" alt="image-20230823151111152" style="zoom:80%;" />
 
 客户端
 
-![image-20230823151122954](https://image.davidingplus.cn/images/2025/01/31/image-20230823151122954.png)
+![image-20230823151122954](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823151122954.png)
 
 可以看出能够正常跑出来，当我们绑定bind()套接字文件之后我们查看目录下多出了两个文件，这两个文件正是用来与内核中缓冲区直接联系并且用于通信的；可以看出他们并没有大小，是一个伪文件
 
-![image-20230823151222376](https://image.davidingplus.cn/images/2025/01/31/image-20230823151222376.png)
+![image-20230823151222376](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823151222376.png)
 
 现在我再次运行服务端或者客户端，发现出现了这样的情况：
 
 报错：bind Address already in use；这正是因为我们创建的套接字文件还在这里没有被释放(删除)导致被占据而没有办法bind()成功导致的，我们将其删除即可
 
-![image-20230823151351101](https://image.davidingplus.cn/images/2025/01/31/image-20230823151351101.png)
+![image-20230823151351101](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823151351101.png)
 
 我们查看代码中的这一部分：
 
@@ -10784,11 +10784,11 @@ while (1) {
 
 客户端
 
-![image-20230823152331909](https://image.davidingplus.cn/images/2025/01/31/image-20230823152331909.png)
+![image-20230823152331909](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823152331909.png)
 
 服务端
 
-![image-20230823152340686](https://image.davidingplus.cn/images/2025/01/31/image-20230823152340686.png)
+![image-20230823152340686](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823152340686.png)
 
 可以看出在读数据的时候报错了，错误信息是 Connection rest by peer，我不知道具体原因，但是我猜测大致应该是强制停掉客户端，客户端结束后会给服务端发送一个信号，然后服务端这个时候也在阻塞读，收到这个信号后就不阻塞了(和之前那个软中断类似)，然后发生了错误，但是其实是客户端断开了连接导致的
 
@@ -10798,11 +10798,11 @@ while (1) {
 
 客户端
 
-![image-20230823152830630](https://image.davidingplus.cn/images/2025/01/31/image-20230823152830630.png)
+![image-20230823152830630](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823152830630.png)
 
 服务端
 
-![image-20230823152839250](https://image.davidingplus.cn/images/2025/01/31/image-20230823152839250.png)
+![image-20230823152839250](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823152839250.png)
 
 因此这个recv()函数什么时候返回，或者返回什么值，甚至read()的认知都有可能在这里和我的不完全一样，等待后续的进一步研究吧
 
@@ -10810,11 +10810,11 @@ while (1) {
 
 服务端
 
-![image-20230823153112240](https://image.davidingplus.cn/images/2025/01/31/image-20230823153112240.png)
+![image-20230823153112240](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823153112240.png)
 
 客户端
 
-![image-20230823153119822](https://image.davidingplus.cn/images/2025/01/31/image-20230823153119822.png)
+![image-20230823153119822](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823153119822.png)
 
 我们发现客户端直接停止运行了，没有报错也没有正常的输出，肯定是异常退出，但是这里我确实不知道为什么，可见水很深
 
@@ -10848,13 +10848,13 @@ while (1) {
 
   **异步：操作系统给我们搬，搬完了通知我们，比较常见的方式是sigio信号，相比同步效率更高，因为搬动过程中应用程序可以干自己的工作，但是要看系统有没有提供接口并且代码的编写也不简单**
 
-![阻塞、非阻塞、同步、异步](https://image.davidingplus.cn/images/2025/02/01/阻塞、非阻塞、同步、异步.png)
+![阻塞、非阻塞、同步、异步](https://cdn.davidingplus.cn/images/2025/02/01/阻塞、非阻塞、同步、异步.png)
 
 陈硕：**在处理 IO 的时候，阻塞和非阻塞都是同步 IO，只有使用了特殊的 API 才是异步 IO。**
 
 注意：I/O多路复用(多路转接)技术，select/poll/epoll 三种技术都是同步操作；首先它只能帮我们检测到有多少个客户端是数据就绪的，或者哪几个(epoll)，真正的数据读写操作还是我们自己解决，因此是同步；第二，根据陈硕老师说的话，一般情况我们都是使用同步的I/O，因为异步I/O会导致一些不可预期的问题，并且用的很少，一般只有使用特殊的API才是异步I/O
 
-![image-20230823155027679](https://image.davidingplus.cn/images/2025/01/31/image-20230823155027679.png)
+![image-20230823155027679](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823155027679.png)
 
 **一个典型的网络IO接口调用，分为两个阶段，分别是“数据就绪” 和“数据读写”，数据就绪阶段分为阻塞和非阻塞，表现得结果就是，阻塞当前线程或是直接返回。** 
 
@@ -10873,25 +10873,25 @@ while (1) {
 
 调用者调用了某个函数，等待这个函数返回，期间什么也不做，不停的去检查这个函数有没有返回，必须等这个函数返回才能进行下一步动作。
 
-![image-20230823155137394](https://image.davidingplus.cn/images/2025/01/31/image-20230823155137394.png)
+![image-20230823155137394](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823155137394.png)
 
 ### 非阻塞 non-blocking（NIO）
 
 非阻塞等待，每隔一段时间就去检测IO事件是否就绪。没有就绪就可以做其他事。非阻塞I/O执行系统调用总是立即返回**，不管事件是否已经发生，若事件没有发生，则返回-1，此时可以根据 errno 区分这两种情况，对于accept，recv 和 send，事件未发生时，errno 通常被设置成 EAGAIN。**
 
-![image-20230823155156625](https://image.davidingplus.cn/images/2025/01/31/image-20230823155156625.png)
+![image-20230823155156625](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823155156625.png)
 
 ### IO复用（IO multiplexing）
 
 Linux 用 select/poll/epoll 函数实现 IO 复用模型，这些函数也会使进程阻塞，但是和阻塞IO所不同的是 这些函数可以同时阻塞多个IO操作。而且可以同时对多个读操作、写操作的IO函数进行检测。直到有数 据可读或可写时，才真正调用IO操作函数。
 
-![image-20230823155217650](https://image.davidingplus.cn/images/2025/01/31/image-20230823155217650.png)
+![image-20230823155217650](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823155217650.png)
 
 ### 信号驱动（signal-driven）
 
 Linux 用套接口进行信号驱动 IO，安装一个信号处理函数，进程继续运行并不阻塞，当IO事件就绪，进程收到 SIGIO 信号，然后处理 IO 事件。
 
-![image-20230823155237200](https://image.davidingplus.cn/images/2025/01/31/image-20230823155237200.png)
+![image-20230823155237200](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823155237200.png)
 
 内核在第一个阶段是异步，在第二个阶段是同步；与非阻塞IO的区别在于它提供了消息通知机制，不需要用户进程不断的轮询检查，减少了系统API的调用次数，提高了效率。 
 
@@ -10899,7 +10899,7 @@ Linux 用套接口进行信号驱动 IO，安装一个信号处理函数，进�
 
 Linux中，可以调用 aio_read 函数告诉内核描述字缓冲区指针和缓冲区的大小、文件偏移及通知的方式，然后立即返回，当内核将数据拷贝到缓冲区后，再通知应用程序
 
-![image-20230823155255891](https://image.davidingplus.cn/images/2025/01/31/image-20230823155255891.png)
+![image-20230823155255891](https://cdn.davidingplus.cn/images/2025/01/31/image-20230823155255891.png)
 
 ~~~cpp
 /* Asynchronous I/O control block. */
@@ -10932,7 +10932,7 @@ struct aiocb {
 
 一个 Web Server 就是一个服务器软件（程序），或者是运行这个服务器软件的硬件（计算机）。其主要功能是通过 HTTP 协议与客户端（通常是浏览器（Browser））进行通信，来接收，存储，处理来自客户端的 HTTP 请求，并对其请求做出 HTTP 响应，返回给客户端其请求的内容（文件、网页等）或返 回一个 Error 信息。
 
-![image-20230825104334383](https://image.davidingplus.cn/images/2025/01/31/image-20230825104334383.png)
+![image-20230825104334383](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825104334383.png)
 
 通常用户使用 Web 浏览器与相应服务器进行通信。在浏览器中键入“域名”或“IP地址:端口号”，浏览器则 先将你的域名解析成相应的 IP 地址或者直接根据你的IP地址向对应的 Web 服务器发送一个 HTTP 请求。这一过程首先要通过 TCP 协议的三次握手建立与目标 Web 服务器的连接，然后 HTTP 协议生成针 对目标 Web 服务器的 HTTP 请求报文，通过 TCP、IP 等协议发送到目标 Web 服务器上。
 
@@ -10973,13 +10973,13 @@ HTTP 是一个客户端终端（用户）和服务器端（网站）请求和应
 5. 释放 TCP 连接; 
 6. 浏览器将该 HTML 文本并显示内容。
 
-![image-20230825104527500](https://image.davidingplus.cn/images/2025/01/31/image-20230825104527500.png)
+![image-20230825104527500](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825104527500.png)
 
 HTTP 协议是基于 TCP/IP 协议之上的应用层协议，基于 请求-响应 的模式。HTTP 协议规定，请求从客 户端发出，最后服务器端响应该请求并返回。换句话说，肯定是先从客户端开始建立通信的，服务器端 在没有接收到请求之前不会发送响应。
 
 ### HTTP请求报文格式
 
-![image-20230825104549067](https://image.davidingplus.cn/images/2025/01/31/image-20230825104549067.png)
+![image-20230825104549067](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825104549067.png)
 
 请求头示例：
 
@@ -11005,7 +11005,7 @@ sec-ch-ua-platform: "Windows"
 
 ### HTTP响应报文格式
 
-![image-20230825104624298](https://image.davidingplus.cn/images/2025/01/31/image-20230825104624298.png)
+![image-20230825104624298](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825104624298.png)
 
 响应头示例：
 
@@ -11052,7 +11052,7 @@ HTTP/1.1 协议中共定义了八种方法（也叫“动作”）来以不同�
 
 虽然 RFC 2616 中已经推荐了描述状态的短语，例如"200 OK"，"404 Not Found"，但是WEB开发者仍 然能够自行决定采用何种短语，用以显示本地化的状态描述或者自定义信息。
 
-![image-20230825104759498](https://image.davidingplus.cn/images/2025/01/31/image-20230825104759498.png)
+![image-20230825104759498](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825104759498.png)
 
 更多状态码: https://baike.baidu.com/item/HTTP%E7%8A%B6%E6%80%81%E7%A0%81/5053660?r=aladdin
 
@@ -11060,7 +11060,7 @@ HTTP/1.1 协议中共定义了八种方法（也叫“动作”）来以不同�
 
 虽然服务器程序种类繁多，但其基本框架都一样，不同之处在于逻辑处理。
 
-![image-20230825114344227](https://image.davidingplus.cn/images/2025/01/31/image-20230825114344227.png)
+![image-20230825114344227](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825114344227.png)
 
 | 模块         | 功能                       |
 | ------------ | :------------------------- |
@@ -11097,7 +11097,7 @@ HTTP/1.1 协议中共定义了八种方法（也叫“动作”）来以不同�
 
 Reactor 模式的工作流程：
 
-![image-20230825114619086](https://image.davidingplus.cn/images/2025/01/31/image-20230825114619086.png)
+![image-20230825114619086](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825114619086.png)
 
 ### Proactor模式
 
@@ -11115,7 +11115,7 @@ Reactor 模式的工作流程：
 
 Proactor 模式的工作流程：
 
-![image-20230825114659772](https://image.davidingplus.cn/images/2025/01/31/image-20230825114659772.png)
+![image-20230825114659772](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825114659772.png)
 
 ### 模拟 Proactor 模式
 
@@ -11132,7 +11132,7 @@ Proactor 模式的工作流程：
 
 同步 I/O 模拟 Proactor 模式的工作流程：
 
-![image-20230825114740311](https://image.davidingplus.cn/images/2025/01/31/image-20230825114740311.png)
+![image-20230825114740311](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825114740311.png)
 
 ## 线程池
 
@@ -11145,7 +11145,7 @@ Proactor 模式的工作流程：
 
 线程池的一般模型为：
 
-![image-20230825145330177](https://image.davidingplus.cn/images/2025/01/31/image-20230825145330177.png)
+![image-20230825145330177](https://cdn.davidingplus.cn/images/2025/01/31/image-20230825145330177.png)
 
 线程池中的线程数量最直接的限制因素是中央处理器(CPU)的处理器(processors/cores)的数量 N ：如果你的CPU是4-cores的，对于CPU密集型的任务(如视频剪辑等消耗CPU计算资源的任务)来 说，那线程池中的线程数量最好也设置为4（或者+1防止其他因素造成的线程阻塞）；对于IO密集 型的任务，一般要多于CPU的核数，因为线程间竞争的不是CPU的计算资源而是IO，IO的处理一 般较慢，多于cores数的线程将为CPU争取更多的任务，不至在线程处理IO的过程造成CPU空闲导 致资源浪费。
 

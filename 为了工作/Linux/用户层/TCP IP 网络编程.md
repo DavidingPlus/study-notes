@@ -28,7 +28,7 @@ updated: 2024-06-20 23:00:00
 
 这是TCP协议的通信过程，我们来看一下其中哪些地方比较重要：
 
-![image-20230818143501064](https://image.davidingplus.cn/images/2025/02/01/image-20230818143501064.png)
+![image-20230818143501064](https://cdn.davidingplus.cn/images/2025/02/01/image-20230818143501064.png)
 
 我们将通信过程总结如下：
 
@@ -227,11 +227,11 @@ int main(int argc, char* const argv[]) {
 
 服务端
 
-![image-20230903173752565](https://image.davidingplus.cn/images/2025/02/01/image-20230903173752565.png)
+![image-20230903173752565](https://cdn.davidingplus.cn/images/2025/02/01/image-20230903173752565.png)
 
 客户端
 
-![image-20230903173820969](https://image.davidingplus.cn/images/2025/02/01/image-20230903173820969.png)
+![image-20230903173820969](https://cdn.davidingplus.cn/images/2025/02/01/image-20230903173820969.png)
 
 ## 基于Linux的文件操作
 
@@ -382,7 +382,7 @@ int socket(int domain, int type, int protocol);
 
 我们用的最多的就是`PF_INET`和`PF_LOCAL`，也就是网络上通过`IPV4`，本地通过本地套接字，当然本地也可以用`IPV4`
 
-![image-20230904193622248](https://image.davidingplus.cn/images/2025/02/01/image-20230904193622248.png)
+![image-20230904193622248](https://cdn.davidingplus.cn/images/2025/02/01/image-20230904193622248.png)
 
 ### 套接字类型(重要)
 
@@ -392,7 +392,7 @@ int socket(int domain, int type, int protocol);
 
 面向连接，顾名思义，就是在进行正式数据传输之前需要建立连接，可以理解为在双方之间建立了一条逻辑通道，这种方式书上给出了一个类比的例子，同时图中也给出了他的特点：
 
-![image-20230904194133084](https://image.davidingplus.cn/images/2025/02/01/image-20230904194133084.png)
+![image-20230904194133084](https://cdn.davidingplus.cn/images/2025/02/01/image-20230904194133084.png)
 
 在运输层当中这就对应者TCP协议，TCP协议是面向字节流的建立连接的可靠的传输服务，下面是一些理解：
 
@@ -406,7 +406,7 @@ int socket(int domain, int type, int protocol);
 
 书上给出了类比图和特点：
 
-![image-20230904195220706](https://image.davidingplus.cn/images/2025/02/01/image-20230904195220706.png)
+![image-20230904195220706](https://cdn.davidingplus.cn/images/2025/02/01/image-20230904195220706.png)
 
 理解：
 
@@ -449,7 +449,7 @@ if (len > 0)
 
 服务端接收到的数据仍然没有任何问题，说明TCP的数据传输是没有边界的
 
-![image-20230904203131451](https://image.davidingplus.cn/images/2025/02/01/image-20230904203131451.png)
+![image-20230904203131451](https://cdn.davidingplus.cn/images/2025/02/01/image-20230904203131451.png)
 
 # 第三章 地址族与数据序列
 
@@ -471,15 +471,15 @@ if (len > 0)
 
 书上写的很清楚，这里截图：
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230905105657336.png" alt="image-20230905105657336" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230905105657336.png" alt="image-20230905105657336" style="zoom:80%;" />
 
 当然更详细的分类如下：
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230624203408369.png" alt="image-20230624203408369" style="zoom: 50%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230624203408369.png" alt="image-20230624203408369" style="zoom: 50%;" />
 
 当然还有一些特殊的IP使用：
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230624211609006.png" alt="image-20230624211609006" style="zoom: 80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230624211609006.png" alt="image-20230624211609006" style="zoom: 80%;" />
 
 ### 用于区分套接字的端口号
 
@@ -493,7 +493,7 @@ if (len > 0)
 
 用一个图可以如下形象的表示：
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230905112425335.png" alt="image-20230905112425335" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230905112425335.png" alt="image-20230905112425335" style="zoom:80%;" />
 
 ## 地址信息的表示
 
@@ -514,7 +514,7 @@ typedef unsigned short int sa_family_t;
 
 我们向内核提供的是这个通用的`socket`地址，但是`socket`地址实际上根据不同的用途可以分为很多种，比如`IPv4`，`IPv6`还有本地套接字，他们都有适用于自己的专用`socket`地址，下图就非常清晰的列出来了，我们在这里主要研究`IPv4`的`socket`地址
 
-![image-20230905154922422](https://image.davidingplus.cn/images/2025/02/01/image-20230905154922422.png)
+![image-20230905154922422](https://cdn.davidingplus.cn/images/2025/02/01/image-20230905154922422.png)
 
 #### sockaddr_in结构体
 
@@ -538,9 +538,9 @@ struct in_addr {
 
 - `sin_family`：**每种协议族对应了一个地址族，其实在实现的时候协议族和地址族宏对应的值是相同的**，所以用哪个都无所谓，以下是对应的协议族和地址族：
 
-![image-20230904193622248](https://image.davidingplus.cn/images/2025/02/01/image-20230904193622248.png)
+![image-20230904193622248](https://cdn.davidingplus.cn/images/2025/02/01/image-20230904193622248.png)
 
-![image-20230905155342817](https://image.davidingplus.cn/images/2025/02/01/image-20230905155342817.png)
+![image-20230905155342817](https://cdn.davidingplus.cn/images/2025/02/01/image-20230905155342817.png)
 
 - `sin_port`：**保存16位端口号，注意传入的时候记得转化为大端网络字节序**
 - `sin_addr`：**是一个结构体，保存32位IPv4地址信息，也是按照大端网络字节序保存的**，但是我们不用自己动手，有系统调用(`inet_pton`)帮我们做了
@@ -582,7 +582,7 @@ int main() {
 
 在我的电脑上是以小端字节序存储的，也就是高位存在高地址的地方
 
-![image-20230905162539547](https://image.davidingplus.cn/images/2025/02/01/image-20230905162539547.png)
+![image-20230905162539547](https://cdn.davidingplus.cn/images/2025/02/01/image-20230905162539547.png)
 
 ### 思考
 
@@ -646,7 +646,7 @@ int main() {
 
 我们看到了主机字节序和网络字节序的区别
 
-![image-20230905164245873](https://image.davidingplus.cn/images/2025/02/01/image-20230905164245873.png)
+![image-20230905164245873](https://cdn.davidingplus.cn/images/2025/02/01/image-20230905164245873.png)
 
 #### 补充
 
@@ -716,7 +716,7 @@ const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 
 以下是书上的例子：
 
-![image-20230905165356272](https://image.davidingplus.cn/images/2025/02/01/image-20230905165356272.png)
+![image-20230905165356272](https://cdn.davidingplus.cn/images/2025/02/01/image-20230905165356272.png)
 
 # 第四章 基于TCP的服务端/客户端(1)
 
@@ -730,13 +730,13 @@ const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 
 我们的计算机网络问题并不是仅凭软件就能够解决的，编写软件之前需要构建硬件系统，在此基础上通过软件实现各种算法；因此我们是把一个大问题划分为若干个小问题再逐个击破，这样可以大幅度的提高效率
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230909150644608.png" alt="image-20230909150644608" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230909150644608.png" alt="image-20230909150644608" style="zoom:80%;" />
 
 ###  链路层
 
 链路层是将`IP`数据报封装成为帧并且传输的过程，又叫数据链路层(实际的`bit`传输在物理层)
 
-<img src="https://image.davidingplus.cn/images/2025/02/01/image-20230909151100190.png" alt="image-20230909151100190" style="zoom:80%;" />
+<img src="https://cdn.davidingplus.cn/images/2025/02/01/image-20230909151100190.png" alt="image-20230909151100190" style="zoom:80%;" />
 
 ### IP层(网络层)
 
@@ -750,7 +750,7 @@ TCP/UDP是在网络层之上的运输层，TCP协议是面向字节流的可靠�
 
 TCP具体来说是这么为IP的不可靠服务提供可靠性的：
 
-![image-20230909151937552](https://image.davidingplus.cn/images/2025/02/01/image-20230909151937552.png)
+![image-20230909151937552](https://cdn.davidingplus.cn/images/2025/02/01/image-20230909151937552.png)
 
 ### 应用层
 
@@ -766,7 +766,7 @@ TCP具体来说是这么为IP的不可靠服务提供可靠性的：
 
 [第四章：TCP套接字通信（这一篇就够了！）](https://blog.csdn.net/m0_61588837/article/details/132432615)
 
-![image-20230909152233914](https://image.davidingplus.cn/images/2025/02/01/image-20230909152233914.png)
+![image-20230909152233914](https://cdn.davidingplus.cn/images/2025/02/01/image-20230909152233914.png)
 
 我们注意一点的`listen`函数，注意他的第二个参数`backlog`
 
@@ -784,13 +784,13 @@ int listen(int sockfd, int backlog); // /proc/sys/net/core/somaxconn
 
 客户端一般不需要绑定`bind`，因为服务端绑定是因为客户端需要`IP`和端口号来进行请求连接，所以需要绑定而不是让系统自动给我分配，我们也可以看到在没有绑定的客户端的IP和端口都是系统分配的
 
-![image-20230909153956078](https://image.davidingplus.cn/images/2025/02/01/image-20230909153956078.png)
+![image-20230909153956078](https://cdn.davidingplus.cn/images/2025/02/01/image-20230909153956078.png)
 
 ### TCP服务端和客户端的关系
 
 总体流程如下：
 
-![image-20230909154125497](https://image.davidingplus.cn/images/2025/02/01/image-20230909154125497.png)
+![image-20230909154125497](https://cdn.davidingplus.cn/images/2025/02/01/image-20230909154125497.png)
 
 ## 实现迭代服务端和客户端
 

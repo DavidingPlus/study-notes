@@ -2,7 +2,7 @@
 
 ## 1、 演讲比赛程序需求
 
-![1548154762048](https://image.davidingplus.cn/images/2025/01/29/1548154762048.png)
+![1548154762048](https://cdn.davidingplus.cn/images/2025/01/29/1548154762048.png)
 
 
 
@@ -25,7 +25,7 @@
 
 ### 1.3 程序效果图：
 
-![1548155966702](https://image.davidingplus.cn/images/2025/01/29/1548155966702.png)
+![1548155966702](https://cdn.davidingplus.cn/images/2025/01/29/1548155966702.png)
 
 
 
@@ -44,13 +44,13 @@
 
 如图：
 
-![1548121881969](https://image.davidingplus.cn/images/2025/01/29/1548121881969.png)
+![1548121881969](https://cdn.davidingplus.cn/images/2025/01/29/1548121881969.png)
 
 
 
 * 填写项目名称以及选取项目路径，点击确定生成项目
 
-![1548122271773](https://image.davidingplus.cn/images/2025/01/29/1548122271773.png)
+![1548122271773](https://cdn.davidingplus.cn/images/2025/01/29/1548122271773.png)
 
 
 
@@ -58,13 +58,13 @@
 
 * 右键源文件，进行添加文件操作
 
-![1548122420253](https://image.davidingplus.cn/images/2025/01/29/1548122420253.png)
+![1548122420253](https://cdn.davidingplus.cn/images/2025/01/29/1548122420253.png)
 
 * 填写文件名称，点击添加
 
 * 生成文件成功，效果如下图
 
-![1548122619712](https://image.davidingplus.cn/images/2025/01/29/1548122619712.png)
+![1548122619712](https://cdn.davidingplus.cn/images/2025/01/29/1548122619712.png)
 
 
 
@@ -89,7 +89,7 @@
 
 * 在头文件和源文件的文件夹下分别创建speechManager.h 和 speechManager.cpp文件
 
-![1548123402593](https://image.davidingplus.cn/images/2025/01/29/1548123402593.png)
+![1548123402593](https://cdn.davidingplus.cn/images/2025/01/29/1548123402593.png)
 
 
 
@@ -146,7 +146,7 @@ SpeechManager::~SpeechManager()
 
 在管理类speechManager.h中添加成员函数  `void show_Menu();`
 
-![1548123942072](https://image.davidingplus.cn/images/2025/01/29/1548123942072.png)
+![1548123942072](https://cdn.davidingplus.cn/images/2025/01/29/1548123942072.png)
 
  
 
@@ -197,7 +197,7 @@ int main() {
 
 * 运行效果如图：
 
-![1548124599641](https://image.davidingplus.cn/images/2025/01/29/1548124599641.png)
+![1548124599641](https://cdn.davidingplus.cn/images/2025/01/29/1548124599641.png)
 
 * 菜单界面搭建完毕
 
@@ -270,13 +270,13 @@ void SpeechManager::exitSystem()
 
 在main函数分支 0  选项中，调用退出程序的接口
 
-![1548124853576](https://image.davidingplus.cn/images/2025/01/29/1548124853576.png)
+![1548124853576](https://cdn.davidingplus.cn/images/2025/01/29/1548124853576.png)
 
 
 
 运行测试效果如图：
 
-![1548124888578](https://image.davidingplus.cn/images/2025/01/29/1548124888578.png)
+![1548124888578](https://cdn.davidingplus.cn/images/2025/01/29/1548124888578.png)
 
 
 
@@ -444,11 +444,11 @@ for (map<int, Speaker>::iterator it = sm.m_Speaker.begin(); it != sm.m_Speaker.e
 }
 ```
 
-![1548141605742](https://image.davidingplus.cn/images/2025/01/29/1548141605742.png)
+![1548141605742](https://cdn.davidingplus.cn/images/2025/01/29/1548141605742.png)
 
 * 测试效果如图：
 
-![1548141560164](https://image.davidingplus.cn/images/2025/01/29/1548141560164.png)
+![1548141560164](https://cdn.davidingplus.cn/images/2025/01/29/1548141560164.png)
 
 * 测试完毕后，可以将测试代码删除或注释。
 
@@ -550,17 +550,17 @@ void SpeechManager::speechDraw()
 
 * 在startSpeech比赛流程控制的函数中，调用抽签函数
 
-![1548143871202](https://image.davidingplus.cn/images/2025/01/29/1548143871202.png)
+![1548143871202](https://cdn.davidingplus.cn/images/2025/01/29/1548143871202.png)
 
 * 在main函数中，分支1选项中，调用开始比赛的接口
 
-![1548143543475](https://image.davidingplus.cn/images/2025/01/29/1548143543475.png)
+![1548143543475](https://cdn.davidingplus.cn/images/2025/01/29/1548143543475.png)
 
 
 
 * 测试
 
-![1548143610682](https://image.davidingplus.cn/images/2025/01/29/1548143610682.png)
+![1548143610682](https://cdn.davidingplus.cn/images/2025/01/29/1548143610682.png)
 
 
 
@@ -661,13 +661,13 @@ void SpeechManager::speechContest()
 
 * 在startSpeech比赛流程控制的函数中，调用比赛函数
 
-![1548144491984](https://image.davidingplus.cn/images/2025/01/29/1548144491984.png)
+![1548144491984](https://cdn.davidingplus.cn/images/2025/01/29/1548144491984.png)
 
 
 
 * 再次运行代码，测试比赛
 
-![1548144765146](https://image.davidingplus.cn/images/2025/01/29/1548144765146.png)
+![1548144765146](https://cdn.davidingplus.cn/images/2025/01/29/1548144765146.png)
 
 
 
@@ -712,11 +712,11 @@ void SpeechManager::showScore()
 
 * 在startSpeech比赛流程控制的函数中，调用显示比赛分数函数
 
-![1548146903960](https://image.davidingplus.cn/images/2025/01/29/1548146903960.png)
+![1548146903960](https://cdn.davidingplus.cn/images/2025/01/29/1548146903960.png)
 
 * 运行代码，测试效果
 
-![1548146961550](https://image.davidingplus.cn/images/2025/01/29/1548146961550.png)
+![1548146961550](https://cdn.davidingplus.cn/images/2025/01/29/1548146961550.png)
 
 
 
@@ -726,13 +726,13 @@ void SpeechManager::showScore()
 
 * 在startSpeech比赛流程控制的函数中，加入第二轮的流程
 
-![1548148593215](https://image.davidingplus.cn/images/2025/01/29/1548148593215.png)
+![1548148593215](https://cdn.davidingplus.cn/images/2025/01/29/1548148593215.png)
 
 
 
 测试，将整个比赛流程都跑通
 
-![1548148536395](https://image.davidingplus.cn/images/2025/01/29/1548148536395.png)
+![1548148536395](https://cdn.davidingplus.cn/images/2025/01/29/1548148536395.png)
 
 
 
@@ -780,19 +780,19 @@ void SpeechManager::saveRecord()
 
 * 在startSpeech比赛流程控制的函数中，最后调用保存记录分数函数
 
-![1548149937860](https://image.davidingplus.cn/images/2025/01/29/1548149937860.png)
+![1548149937860](https://cdn.davidingplus.cn/images/2025/01/29/1548149937860.png)
 
 
 
 * 测试，整个比赛完毕后记录保存情况
 
-![1548149912863](https://image.davidingplus.cn/images/2025/01/29/1548149912863.png)
+![1548149912863](https://cdn.davidingplus.cn/images/2025/01/29/1548149912863.png)
 
 
 
 利用记事本打开文件 speech.csv，里面保存了前三名选手的编号以及得分
 
-![1548150047975](https://image.davidingplus.cn/images/2025/01/29/1548150047975.png)
+![1548150047975](https://cdn.davidingplus.cn/images/2025/01/29/1548150047975.png)
 
 
 
@@ -889,7 +889,7 @@ void SpeechManager::loadRecord()
 
 * 在SpeechManager构造函数中调用获取往届记录函数
 
-![1548151977242](https://image.davidingplus.cn/images/2025/01/29/1548151977242.png)
+![1548151977242](https://cdn.davidingplus.cn/images/2025/01/29/1548151977242.png)
 
 
 
@@ -927,11 +927,11 @@ void SpeechManager::showRecord()
 
 在main函数分支 2  选项中，调用查看记录的接口
 
-![1548152359604](https://image.davidingplus.cn/images/2025/01/29/1548152359604.png)
+![1548152359604](https://cdn.davidingplus.cn/images/2025/01/29/1548152359604.png)
 
 显示效果如图：（本次测试添加了4条记录）
 
-![1548152394715](https://image.davidingplus.cn/images/2025/01/29/1548152394715.png)
+![1548152394715](https://cdn.davidingplus.cn/images/2025/01/29/1548152394715.png)
 
 
 
@@ -943,7 +943,7 @@ void SpeechManager::showRecord()
 
 解决方式：在showRecord函数中，开始判断文件状态并加以判断
 
-![1548152803116](https://image.davidingplus.cn/images/2025/01/29/1548152803116.png)
+![1548152803116](https://cdn.davidingplus.cn/images/2025/01/29/1548152803116.png)
 
 
 
@@ -951,13 +951,13 @@ void SpeechManager::showRecord()
 
 解决方式：saveRecord中更新文件为空的标志
 
-![1548153005042](https://image.davidingplus.cn/images/2025/01/29/1548153005042.png)
+![1548153005042](https://cdn.davidingplus.cn/images/2025/01/29/1548153005042.png)
 
 3. 比完赛后查不到本届比赛的记录，没有实时更新
 
 解决方式：比赛完毕后，所有数据重置
 
-![1548153319587](https://image.davidingplus.cn/images/2025/01/29/1548153319587.png)
+![1548153319587](https://cdn.davidingplus.cn/images/2025/01/29/1548153319587.png)
 
 
 
@@ -965,7 +965,7 @@ void SpeechManager::showRecord()
 
 解决方式：initSpeech中添加 初始化记录容器
 
-![1548154340974](https://image.davidingplus.cn/images/2025/01/29/1548154340974.png)
+![1548154340974](https://cdn.davidingplus.cn/images/2025/01/29/1548154340974.png)
 
 5. 每次记录都是一样的
 
@@ -979,7 +979,7 @@ srand((unsigned int)time(NULL));
 
 所有bug解决后 测试：
 
-![1548153571603](https://image.davidingplus.cn/images/2025/01/29/1548153571603.png)
+![1548153571603](https://cdn.davidingplus.cn/images/2025/01/29/1548153571603.png)
 
 
 
@@ -1036,15 +1036,15 @@ void SpeechManager::clearRecord()
 
 在main函数分支 3  选项中，调用清空比赛记录的接口
 
-![1548154674242](https://image.davidingplus.cn/images/2025/01/29/1548154674242.png)
+![1548154674242](https://cdn.davidingplus.cn/images/2025/01/29/1548154674242.png)
 
 运行程序，测试清空记录：
 
-![1548154004738](https://image.davidingplus.cn/images/2025/01/29/1548154004738.png)
+![1548154004738](https://cdn.davidingplus.cn/images/2025/01/29/1548154004738.png)
 
 speech.csv中记录也为空
 
-![1548154508831](https://image.davidingplus.cn/images/2025/01/29/1548154508831.png)
+![1548154508831](https://cdn.davidingplus.cn/images/2025/01/29/1548154508831.png)
 
 
 
