@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 257909f0
 date: 2025-12-24 17:30:00
-updated: 2025-12-24 17:30:00
+updated: 2025-12-25 16:40:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -113,7 +113,7 @@ SuperBlock 区域的结构如下：
 
 Superblock区域是由两个 `struct f2fs_super_block` 结构组成，互为备份。
 
-## struct f2fs_super_block
+## f2fs_super_block 结构
 
 `struct f2fs_super_block` 定义了文件系统的几何参数和各功能区的物理偏移。我们可以观察到，F2FS 的许多设计都采用了 log2 的指数形式，例如 log_blocksize 和 log_blocks_per_seg。这种设计允许内核在计算物理地址时使用位移操作（Shift）代替昂贵的除法运算，这对于 CPU 资源有限的嵌入式设备（如运行 RTEMS 的环境）非常友好。此外，该结构体包含了一系列以 _blkaddr 结尾的字段，它们精确指向了 Checkpoint、SIT、NAT、SSA 以及 Main Area 的起始块地址。magic 字段（魔数）则用于标识这确实是一个 F2FS 卷，是驱动程序进行合法性检查的第一道关卡。定义如下：
 
@@ -168,7 +168,7 @@ struct f2fs_super_block {
 } __packed;
 ```
 
-## struct f2fs_sb_info
+## f2fs_sb_info 结构
 
 当 RTEMS 成功从磁盘读取了原始的超级块数据后，它并不会直接频繁操作磁盘上的那段字节流，而是会初始化一个内存管理结构体 `struct f2fs_sb_info`（简称 SBI）。SBI 是 F2FS 在运行时的“指挥部”，它不仅包含了原始超级块的指针 raw_super，还整合了节点管理器（NM）、段管理器（SM）以及用于保证线程安全的各类锁机制（如 sb_lock、gc_mutex）。对于移植工作而言，SBI 是最频繁被打交道的数据结构，它将静态的磁盘布局转换成了动态的内存对象，负责维护文件系统的实时挂载状态。`struct f2fs_super_block` 在内存中对应的结构是 `struct f2fs_sb_info`，它除了包含了`struct f2fs_super_block`的信息以外，还包含了一些额外的功能，如锁、SIT、NAT 对应的内存管理结构等。定义如下：
 
@@ -540,7 +540,7 @@ CheckPoint 区域的结构如下。从图中看出分别是 checkpoint 元数据
 
 ![image-20251224170347186](./F2FS 文件系统.assets/image-20251224170347186.png)
 
-## struct f2fs_checkpoint
+## f2fs_checkpoint 结构
 
 `struct f2fs_checkpoint` 定义了恢复系统所需的最少信息量。其中最重要的字段是 checkpoint_ver（版本号），系统通过比较两个 CP 备份的版本号来确定哪一个是最新的。此外，cur_node_segno 和 cur_node_blkoff（以及对应的 Data 字段）记录了上次 CP 时系统 6 个写入头的精确坐标。如果没有这些坐标，挂载后文件系统将不知道该从哪个物理块开始继续追加数据。同时，结构体末尾的 sit_nat_version_bitmap 记录了 SIT 和 NAT 区域的版本位图，帮助系统快速定位元数据表的最前沿更新。F2FS 必须定时执行 Checkpoint 去记录当前系统的 log 分配到哪个位置，否则在系统宕机的时候，会出现数据丢失等一致性问题，因此 cur_xxx_segno 以及 cur_xxx_blkoff 记录了上次 Checkpoint 时，系统正在使用的 log 的 segment number，以及分配到这个 segment 的哪个位置。定义如下：
 
@@ -746,6 +746,1975 @@ static int read_normal_summaries(struct f2fs_sb_info *sbi, int type)
 	return 0;
 }
 ```
+
+# Segment Infomation Table 区域
+
+Segment Infomation Table，简称 SIT，是 F2FS 用于集中管理 segment 状态的结构。它的主要作用是维护的 segment 的分配信息，它的作用可以使用两个常见例子进行描述:
+
+- 用户进行写操作，那么 segment 会根据用户写入的数据量分配特定数目的 block 给用户进行数据写入，SIT 会将这些已经被分配的 block 标记为"已经使用(valid 状态)"，那么之后的写操作就不会再使用这些 block。
+- 用户进行了**覆盖写**操作以后，由于 F2FS **异地更新**的特性，F2FS 会分配新 block 给用户写入，同时会将旧 block 置为"无效状态(invalid 状态)"，这样 gc 的时候可以根据 segment 无效的 block 的数目，采取某种策略进行回收。
+
+综上所述，SIT 的作用是维护每一个 segment 的 block 的使用状态以及有效无效状态。
+
+## 元数据的物理结构
+
+SIT 区域的结构如下。SIT 区域由 N 个 `struct f2fs_sit_block` 组成，每一个 `struct f2fs_sit_block` 包含了 55 个 `struct f2fs_sit_entry`，每一个 entry 对应了一个 segment 的管理状态。每一个 entry 包含了三个变量: vblocks(记录这个 segment 有多少个 block 已经被使用了)，valid_map(记录这个 segment 里面的哪一些 block 是无效的)，mtime(表示修改时间)。
+
+<img src="./F2FS 文件系统.assets/image-20251225152548700.png" alt="image-20251225152548700" style="zoom:67%;" />
+
+SIT 的基本存放单元是 `struct f2fs_sit_block`，定义如下:
+
+```c
+struct f2fs_sit_block {
+	struct f2fs_sit_entry entries[SIT_ENTRY_PER_BLOCK];
+} __packed;
+```
+
+由于一个 block 的尺寸是 4 KB，因此跟根据 `sizeof(struct f2fs_sit_entry entries)` 的值，得到 `SIT_ENTRY_PER_BLOCK` 的值为 55。`struct f2fs_sit_entry entries `用来表示每一个 segment 的状态信息，定义如下：
+
+```c
+struct f2fs_sit_entry {
+	__le16 vblocks;				/* reference above */
+	__u8 valid_map[SIT_VBLOCK_MAP_SIZE];	/* bitmap for valid blocks */
+	__le64 mtime;				/* segment age for cleaning */
+} __packed;
+```
+
+第一个参数 `vblocks` 表示当前 segment 有多少个 block 已经被使用，第二个参数 `valid_map` 表示 segment 内的每一个 block 的有效无效信息; 由于一个 segment 包含了 512 个 block，因此需要用 512 个 bit 去表示每一个 block 的有效无效状态，因此 `SIT_VBLOCK_MAP_SIZE` 的值是 64(8*64=512)。最后一个参数 `mtime` 表示这个 entry 被修改的时间，用于挑选 GC 时需要使用的 segment。
+
+## 内存管理结构
+
+SIT 在内存中对应的管理结构是 `struct f2fs_sm_info`，它在 build_segment_manager() 函数进行初始化：
+
+```c
+struct f2fs_sm_info {
+	struct sit_info *sit_info;		/* whole segment information */
+	struct free_segmap_info *free_info;	/* free segment information */
+	struct dirty_seglist_info *dirty_info;	/* dirty segment information */
+	struct curseg_info *curseg_array;	/* active segment information */
+
+	struct f2fs_rwsem curseg_lock;	/* for preventing curseg change */
+
+	block_t seg0_blkaddr;		/* block address of 0'th segment */
+	block_t main_blkaddr;		/* start block address of main area */
+	block_t ssa_blkaddr;		/* start block address of SSA area */
+
+	unsigned int segment_count;	/* total # of segments */
+	unsigned int main_segments;	/* # of segments in main area */
+	unsigned int reserved_segments;	/* # of reserved segments */
+	unsigned int ovp_segments;	/* # of overprovision segments */
+
+	/* a threshold to reclaim prefree segments */
+	unsigned int rec_prefree_segments;
+
+	struct list_head sit_entry_set;	/* sit entry set list */
+
+	unsigned int ipu_policy;	/* in-place-update policy */
+	unsigned int min_ipu_util;	/* in-place-update threshold */
+	unsigned int min_fsync_blocks;	/* threshold for fsync */
+	unsigned int min_seq_blocks;	/* threshold for sequential blocks */
+	unsigned int min_hot_blocks;	/* threshold for hot block allocation */
+	unsigned int min_ssr_sections;	/* threshold to trigger SSR allocation */
+
+	/* for flush command control */
+	struct flush_cmd_control *fcc_info;
+
+	/* for discard command control */
+	struct discard_cmd_control *dcc_info;
+};
+
+int build_segment_manager(struct f2fs_sb_info *sbi)
+{
+	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
+	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
+	struct f2fs_sm_info *sm_info;
+	int err;
+
+    /* 分配空间 */
+	sm_info = kzalloc(sizeof(struct f2fs_sm_info), GFP_KERNEL);
+
+	/* 初始化一些地址信息，基础信息 */
+	sbi->sm_info = sm_info;
+	INIT_LIST_HEAD(&sm_info->wblist_head);
+	spin_lock_init(&sm_info->wblist_lock);
+	sm_info->seg0_blkaddr = le32_to_cpu(raw_super->segment0_blkaddr);
+	sm_info->main_blkaddr = le32_to_cpu(raw_super->main_blkaddr);
+	sm_info->segment_count = le32_to_cpu(raw_super->segment_count);
+	sm_info->reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+	sm_info->ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+	sm_info->main_segments = le32_to_cpu(raw_super->segment_count_main);
+	sm_info->ssa_blkaddr = le32_to_cpu(raw_super->ssa_blkaddr);
+
+    /* 初始化内存中的entry数据结构 */
+	err = build_sit_info(sbi);
+    
+    /* 初始化可用segment的数据结构 */
+	err = build_free_segmap(sbi);
+
+    /* 恢复checkpoint active segment区域的信息，参考checkpoint结构那一节 */
+	err = build_curseg(sbi);
+
+	/* 从磁盘中将SIT物理区域记录的 物理区域sit_entry与只存在于内存的sit_entry建立联系 */
+	build_sit_entries(sbi);
+
+    /* 根据checkpoint记录的恢复信息，恢复可用segment的映射关系 */
+	init_free_segmap(sbi);
+    
+    /* 恢复脏segment的映射关系 */
+	err = build_dirty_segmap(sbi);
+
+    /* 初始化最大最小的修改时间 */
+	init_min_max_mtime(sbi);
+	return 0;
+}
+```
+
+build_sit_info() 用于初始化内存区域的 entry，这里需要注意的是注意区分内存 entry 以及物理区域的 entry：
+
+```c
+static int build_sit_info(struct f2fs_sb_info *sbi)
+{
+	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
+	struct sit_info *sit_i;
+	unsigned int sit_segs, start;
+	char *src_bitmap, *bitmap;
+	unsigned int bitmap_size, main_bitmap_size, sit_bitmap_size;
+	unsigned int discard_map = f2fs_block_unit_discard(sbi) ? 1 : 0;
+
+	/* allocate memory for SIT information */
+	sit_i = f2fs_kzalloc(sbi, sizeof(struct sit_info), GFP_KERNEL);
+	if (!sit_i)
+		return -ENOMEM;
+
+	SM_I(sbi)->sit_info = sit_i;
+
+	sit_i->sentries =
+		f2fs_kvzalloc(sbi, array_size(sizeof(struct seg_entry),
+					      MAIN_SEGS(sbi)),
+			      GFP_KERNEL);
+	if (!sit_i->sentries)
+		return -ENOMEM;
+
+	main_bitmap_size = f2fs_bitmap_size(MAIN_SEGS(sbi));
+	sit_i->dirty_sentries_bitmap = f2fs_kvzalloc(sbi, main_bitmap_size,
+								GFP_KERNEL);
+	if (!sit_i->dirty_sentries_bitmap)
+		return -ENOMEM;
+
+#ifdef CONFIG_F2FS_CHECK_FS
+	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (3 + discard_map);
+#else
+	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (2 + discard_map);
+#endif
+	sit_i->bitmap = f2fs_kvzalloc(sbi, bitmap_size, GFP_KERNEL);
+	if (!sit_i->bitmap)
+		return -ENOMEM;
+
+	bitmap = sit_i->bitmap;
+
+	for (start = 0; start < MAIN_SEGS(sbi); start++) {
+		sit_i->sentries[start].cur_valid_map = bitmap;
+		bitmap += SIT_VBLOCK_MAP_SIZE;
+
+		sit_i->sentries[start].ckpt_valid_map = bitmap;
+		bitmap += SIT_VBLOCK_MAP_SIZE;
+
+#ifdef CONFIG_F2FS_CHECK_FS
+		sit_i->sentries[start].cur_valid_map_mir = bitmap;
+		bitmap += SIT_VBLOCK_MAP_SIZE;
+#endif
+
+		if (discard_map) {
+			sit_i->sentries[start].discard_map = bitmap;
+			bitmap += SIT_VBLOCK_MAP_SIZE;
+		}
+	}
+
+	sit_i->tmp_map = f2fs_kzalloc(sbi, SIT_VBLOCK_MAP_SIZE, GFP_KERNEL);
+	if (!sit_i->tmp_map)
+		return -ENOMEM;
+
+	if (__is_large_section(sbi)) {
+		sit_i->sec_entries =
+			f2fs_kvzalloc(sbi, array_size(sizeof(struct sec_entry),
+						      MAIN_SECS(sbi)),
+				      GFP_KERNEL);
+		if (!sit_i->sec_entries)
+			return -ENOMEM;
+	}
+
+	/* get information related with SIT */
+	sit_segs = le32_to_cpu(raw_super->segment_count_sit) >> 1;
+
+	/* setup SIT bitmap from ckeckpoint pack */
+	sit_bitmap_size = __bitmap_size(sbi, SIT_BITMAP);
+	src_bitmap = __bitmap_ptr(sbi, SIT_BITMAP);
+
+	sit_i->sit_bitmap = kmemdup(src_bitmap, sit_bitmap_size, GFP_KERNEL);
+	if (!sit_i->sit_bitmap)
+		return -ENOMEM;
+
+#ifdef CONFIG_F2FS_CHECK_FS
+	sit_i->sit_bitmap_mir = kmemdup(src_bitmap,
+					sit_bitmap_size, GFP_KERNEL);
+	if (!sit_i->sit_bitmap_mir)
+		return -ENOMEM;
+
+	sit_i->invalid_segmap = f2fs_kvzalloc(sbi,
+					main_bitmap_size, GFP_KERNEL);
+	if (!sit_i->invalid_segmap)
+		return -ENOMEM;
+#endif
+
+	sit_i->sit_base_addr = le32_to_cpu(raw_super->sit_blkaddr);
+	sit_i->sit_blocks = SEGS_TO_BLKS(sbi, sit_segs);
+	sit_i->written_valid_blocks = 0;
+	sit_i->bitmap_size = sit_bitmap_size;
+	sit_i->dirty_sentries = 0;
+	sit_i->sents_per_block = SIT_ENTRY_PER_BLOCK;
+	sit_i->elapsed_time = le64_to_cpu(sbi->ckpt->elapsed_time);
+	sit_i->mounted_time = ktime_get_boottime_seconds();
+	init_rwsem(&sit_i->sentry_lock);
+	return 0;
+}
+```
+
+build_free_segmap() 用于初始化 segment 的分配状态：
+
+```c
+static int build_free_segmap(struct f2fs_sb_info *sbi)
+{
+	struct free_segmap_info *free_i;
+	unsigned int bitmap_size, sec_bitmap_size;
+
+	/* allocate memory for free segmap information */
+	free_i = f2fs_kzalloc(sbi, sizeof(struct free_segmap_info), GFP_KERNEL);
+	if (!free_i)
+		return -ENOMEM;
+
+	SM_I(sbi)->free_info = free_i;
+
+	bitmap_size = f2fs_bitmap_size(MAIN_SEGS(sbi));
+	free_i->free_segmap = f2fs_kvmalloc(sbi, bitmap_size, GFP_KERNEL);
+	if (!free_i->free_segmap)
+		return -ENOMEM;
+
+	sec_bitmap_size = f2fs_bitmap_size(MAIN_SECS(sbi));
+	free_i->free_secmap = f2fs_kvmalloc(sbi, sec_bitmap_size, GFP_KERNEL);
+	if (!free_i->free_secmap)
+		return -ENOMEM;
+
+	/* set all segments as dirty temporarily */
+	memset(free_i->free_segmap, 0xff, bitmap_size);
+	memset(free_i->free_secmap, 0xff, sec_bitmap_size);
+
+	/* init free segmap information */
+	free_i->start_segno = GET_SEGNO_FROM_SEG0(sbi, MAIN_BLKADDR(sbi));
+	free_i->free_segments = 0;
+	free_i->free_sections = 0;
+	spin_lock_init(&free_i->segmap_lock);
+	return 0;
+}
+```
+
+build_sit_entries() 的作用是从 SIT 的物理区域存放的物理 entry 与内存的 entry 建立联系，首先看看物理 entry 和内存 entry 的差异在哪里。
+
+```c
+static int build_sit_entries(struct f2fs_sb_info *sbi)
+{
+	struct sit_info *sit_i = SIT_I(sbi);
+	struct curseg_info *curseg = CURSEG_I(sbi, CURSEG_COLD_DATA);
+	struct f2fs_journal *journal = curseg->journal;
+	struct seg_entry *se;
+	struct f2fs_sit_entry sit;
+	int sit_blk_cnt = SIT_BLK_CNT(sbi);
+	unsigned int i, start, end;
+	unsigned int readed, start_blk = 0;
+	int err = 0;
+	block_t sit_valid_blocks[2] = {0, 0};
+
+	do {
+		readed = f2fs_ra_meta_pages(sbi, start_blk, BIO_MAX_VECS,
+							META_SIT, true);
+
+		start = start_blk * sit_i->sents_per_block;
+		end = (start_blk + readed) * sit_i->sents_per_block;
+
+		for (; start < end && start < MAIN_SEGS(sbi); start++) {
+			struct f2fs_sit_block *sit_blk;
+			struct folio *folio;
+
+			se = &sit_i->sentries[start];
+			folio = get_current_sit_folio(sbi, start);
+			if (IS_ERR(folio))
+				return PTR_ERR(folio);
+			sit_blk = folio_address(folio);
+			sit = sit_blk->entries[SIT_ENTRY_OFFSET(sit_i, start)];
+			f2fs_folio_put(folio, true);
+
+			err = check_block_count(sbi, start, &sit);
+			if (err)
+				return err;
+			seg_info_from_raw_sit(se, &sit);
+
+			if (se->type >= NR_PERSISTENT_LOG) {
+				f2fs_err(sbi, "Invalid segment type: %u, segno: %u",
+							se->type, start);
+				f2fs_handle_error(sbi,
+						ERROR_INCONSISTENT_SUM_TYPE);
+				return -EFSCORRUPTED;
+			}
+
+			sit_valid_blocks[SE_PAGETYPE(se)] += se->valid_blocks;
+
+			if (!f2fs_block_unit_discard(sbi))
+				goto init_discard_map_done;
+
+			/* build discard map only one time */
+			if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
+				memset(se->discard_map, 0xff,
+						SIT_VBLOCK_MAP_SIZE);
+				goto init_discard_map_done;
+			}
+			memcpy(se->discard_map, se->cur_valid_map,
+						SIT_VBLOCK_MAP_SIZE);
+			sbi->discard_blks += BLKS_PER_SEG(sbi) -
+						se->valid_blocks;
+init_discard_map_done:
+			if (__is_large_section(sbi))
+				get_sec_entry(sbi, start)->valid_blocks +=
+							se->valid_blocks;
+		}
+		start_blk += readed;
+	} while (start_blk < sit_blk_cnt);
+
+	down_read(&curseg->journal_rwsem);
+	for (i = 0; i < sits_in_cursum(journal); i++) {
+		unsigned int old_valid_blocks;
+
+		start = le32_to_cpu(segno_in_journal(journal, i));
+		if (start >= MAIN_SEGS(sbi)) {
+			f2fs_err(sbi, "Wrong journal entry on segno %u",
+				 start);
+			err = -EFSCORRUPTED;
+			f2fs_handle_error(sbi, ERROR_CORRUPTED_JOURNAL);
+			break;
+		}
+
+		se = &sit_i->sentries[start];
+		sit = sit_in_journal(journal, i);
+
+		old_valid_blocks = se->valid_blocks;
+
+		sit_valid_blocks[SE_PAGETYPE(se)] -= old_valid_blocks;
+
+		err = check_block_count(sbi, start, &sit);
+		if (err)
+			break;
+		seg_info_from_raw_sit(se, &sit);
+
+		if (se->type >= NR_PERSISTENT_LOG) {
+			f2fs_err(sbi, "Invalid segment type: %u, segno: %u",
+							se->type, start);
+			err = -EFSCORRUPTED;
+			f2fs_handle_error(sbi, ERROR_INCONSISTENT_SUM_TYPE);
+			break;
+		}
+
+		sit_valid_blocks[SE_PAGETYPE(se)] += se->valid_blocks;
+
+		if (f2fs_block_unit_discard(sbi)) {
+			if (is_set_ckpt_flags(sbi, CP_TRIMMED_FLAG)) {
+				memset(se->discard_map, 0xff, SIT_VBLOCK_MAP_SIZE);
+			} else {
+				memcpy(se->discard_map, se->cur_valid_map,
+							SIT_VBLOCK_MAP_SIZE);
+				sbi->discard_blks += old_valid_blocks;
+				sbi->discard_blks -= se->valid_blocks;
+			}
+		}
+
+		if (__is_large_section(sbi)) {
+			get_sec_entry(sbi, start)->valid_blocks +=
+							se->valid_blocks;
+			get_sec_entry(sbi, start)->valid_blocks -=
+							old_valid_blocks;
+		}
+	}
+	up_read(&curseg->journal_rwsem);
+
+	/* update ckpt_valid_block */
+	if (__is_large_section(sbi)) {
+		unsigned int segno;
+
+		for (segno = 0; segno < MAIN_SEGS(sbi); segno += SEGS_PER_SEC(sbi)) {
+			set_ckpt_valid_blocks(sbi, segno);
+			sanity_check_valid_blocks(sbi, segno);
+		}
+	}
+
+	if (err)
+		return err;
+
+	if (sit_valid_blocks[NODE] != valid_node_count(sbi)) {
+		f2fs_err(sbi, "SIT is corrupted node# %u vs %u",
+			 sit_valid_blocks[NODE], valid_node_count(sbi));
+		f2fs_handle_error(sbi, ERROR_INCONSISTENT_NODE_COUNT);
+		return -EFSCORRUPTED;
+	}
+
+	if (sit_valid_blocks[DATA] + sit_valid_blocks[NODE] >
+				valid_user_blocks(sbi)) {
+		f2fs_err(sbi, "SIT is corrupted data# %u %u vs %u",
+			 sit_valid_blocks[DATA], sit_valid_blocks[NODE],
+			 valid_user_blocks(sbi));
+		f2fs_handle_error(sbi, ERROR_INCONSISTENT_BLOCK_COUNT);
+		return -EFSCORRUPTED;
+	}
+
+	return 0;
+}
+
+// 物理entry
+struct f2fs_sit_entry {
+	__le16 vblocks;				/* reference above */
+	__u8 valid_map[SIT_VBLOCK_MAP_SIZE];	/* bitmap for valid blocks */
+	__le64 mtime;				/* segment age for cleaning */
+} __packed;
+
+// 内存entry
+struct seg_entry {
+	unsigned short valid_blocks;	/* # of valid blocks */
+	unsigned char *cur_valid_map;	/* validity bitmap of blocks */
+	unsigned short ckpt_valid_blocks;
+	unsigned char *ckpt_valid_map;
+	unsigned char type;		/* segment type like CURSEG_XXX_TYPE */
+	unsigned long long mtime;	/* modification time of the segment */
+};
+```
+
+两者之间的差异主要是多了表示 segment 类型的 type 变量，以及多了两个与 checkpoint 相关的内容。
+
+其实物理 entry 也包含了 segment type 的信息，但是为了节省空间，将 segment type 于 vblocks 存放在了一起，及 vblocks 的前 10 位表示数目，后 6 位表示 segment type，关系如下：
+
+```c
+#define SIT_VBLOCKS_SHIFT	10
+#define SIT_VBLOCKS_MASK	((1 << SIT_VBLOCKS_SHIFT) - 1)
+#define GET_SIT_VBLOCKS(raw_sit)				\
+	(le16_to_cpu((raw_sit)->vblocks) & SIT_VBLOCKS_MASK)
+#define GET_SIT_TYPE(raw_sit)					\
+	((le16_to_cpu((raw_sit)->vblocks) & ~SIT_VBLOCKS_MASK)	\
+	 >> SIT_VBLOCKS_SHIFT)
+```
+
+因此，内存 entry 实际上仅仅多了 2 个与 checkpoint 相关的信息，即 `ckpt_valid_blocks` 与 `ckpt_valid_map` 。在系统执行 checkpoint 的时候，会将 `valid_blocks` 以及 `cur_valid_map` 的值分别写入 `ckpt_valid_blocks` 与 `ckpt_valid_map`，当系统出现宕机的时候根据这个值恢复映射信息。
+
+init_free_segmap() 从内存 entry 以及 checkpoint 中恢复 free segment 的信息。
+
+```c
+static void init_free_segmap(struct f2fs_sb_info *sbi)
+{
+	unsigned int start;
+	int type;
+	struct seg_entry *sentry;
+
+	for (start = 0; start < MAIN_SEGS(sbi); start++) {
+		if (f2fs_usable_blks_in_seg(sbi, start) == 0)
+			continue;
+		sentry = get_seg_entry(sbi, start);
+		if (!sentry->valid_blocks)
+			__set_free(sbi, start);
+		else
+			SIT_I(sbi)->written_valid_blocks +=
+						sentry->valid_blocks;
+	}
+
+	/* set use the current segments */
+	for (type = CURSEG_HOT_DATA; type <= CURSEG_COLD_NODE; type++) {
+		struct curseg_info *curseg_t = CURSEG_I(sbi, type);
+
+		__set_test_and_inuse(sbi, curseg_t->segno);
+	}
+}
+```
+
+init_dirty_segmap() 函数恢复脏 segment 的信息。
+
+```c
+static void init_dirty_segmap(struct f2fs_sb_info *sbi)
+{
+	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+	struct free_segmap_info *free_i = FREE_I(sbi);
+	unsigned int segno = 0, offset = 0, secno;
+	block_t valid_blocks, usable_blks_in_seg;
+
+	while (1) {
+		/* find dirty segment based on free segmap */
+		segno = find_next_inuse(free_i, MAIN_SEGS(sbi), offset);
+		if (segno >= MAIN_SEGS(sbi))
+			break;
+		offset = segno + 1;
+		valid_blocks = get_valid_blocks(sbi, segno, false);
+		usable_blks_in_seg = f2fs_usable_blks_in_seg(sbi, segno);
+		if (valid_blocks == usable_blks_in_seg || !valid_blocks)
+			continue;
+		if (valid_blocks > usable_blks_in_seg) {
+			f2fs_bug_on(sbi, 1);
+			continue;
+		}
+		mutex_lock(&dirty_i->seglist_lock);
+		__locate_dirty_segment(sbi, segno, DIRTY);
+		mutex_unlock(&dirty_i->seglist_lock);
+	}
+
+	if (!__is_large_section(sbi))
+		return;
+
+	mutex_lock(&dirty_i->seglist_lock);
+	for (segno = 0; segno < MAIN_SEGS(sbi); segno += SEGS_PER_SEC(sbi)) {
+		valid_blocks = get_valid_blocks(sbi, segno, true);
+		secno = GET_SEC_FROM_SEG(sbi, segno);
+
+		if (!valid_blocks || valid_blocks == CAP_BLKS_PER_SEC(sbi))
+			continue;
+		if (is_cursec(sbi, secno))
+			continue;
+		set_bit(secno, dirty_i->dirty_secmap);
+	}
+	mutex_unlock(&dirty_i->seglist_lock);
+}
+```
+
+# Node Address Table 区域
+
+Node Address Table，简称 NAT，是 F2FS 用于集中管理 node 的结构。**它的主要维护了一张表(如下图)，记录了每一个 node 在 flash 设备的物理地址。**F2FS 给每一个 node 分配了一个 node ID(nid)，系统可以根据 nid 从 NAT 查找到该 node 在 flash 设备上的物理地址，然后从 flash 设备读取出来。表的结构如下：
+
+![image-20251225153846231](./F2FS 文件系统.assets/image-20251225153846231.png)
+
+## 元数据的物理结构
+
+NAT 区域由 N 个 `struct f2fs_nat_block` 组成，每一个 `struct f2fs_nat_block` 包含了 455 个 `struct f2fs_nat_entry`。每一个 nid 对应了一个 entry，每一个 entry 记录了这个 node 的在 flash 设备上的物理地址 block_addr。同时 entry 也记录了一个 ino 的值，这个值用于找到这个 node 的 parent node，如果 nid == ino 则表示这个 node 是 inode，如果 nid != ino，则表示这是一个 direct_node 或者 indrect_node。version 变量用于系统恢复。
+
+<img src="./F2FS 文件系统.assets/image-20251225153933456.png" alt="image-20251225153933456" style="zoom:65%;" />
+
+## 内存管理结构
+
+NAT 在内存中对应的管理结构是 `struct f2fs_nm_info`，它在 build_node_manager() 函数进行初始化。`struct f2fs_nm_info` 不会将所有的 NAT 的数据都读取出来，而是读取 NAT 的一部分，然后构建 free nid 表，用于给新的 node 分配 nid。
+
+```c
+struct f2fs_nm_info {
+	block_t nat_blkaddr;		/* base disk address of NAT */
+	nid_t max_nid;			/* maximum possible node ids */
+	nid_t available_nids;		/* # of available node ids */
+	nid_t next_scan_nid;		/* the next nid to be scanned */
+	nid_t max_rf_node_blocks;	/* max # of nodes for recovery */
+	unsigned int ram_thresh;	/* control the memory footprint */
+	unsigned int ra_nid_pages;	/* # of nid pages to be readaheaded */
+	unsigned int dirty_nats_ratio;	/* control dirty nats ratio threshold */
+
+	/* NAT cache management */
+	struct radix_tree_root nat_root;/* root of the nat entry cache */
+	struct radix_tree_root nat_set_root;/* root of the nat set cache */
+	struct f2fs_rwsem nat_tree_lock;	/* protect nat entry tree */
+	struct list_head nat_entries;	/* cached nat entry list (clean) */
+	spinlock_t nat_list_lock;	/* protect clean nat entry list */
+	unsigned int nat_cnt[MAX_NAT_STATE]; /* the # of cached nat entries */
+	unsigned int nat_blocks;	/* # of nat blocks */
+
+	/* free node ids management */
+	struct radix_tree_root free_nid_root;/* root of the free_nid cache */
+	struct list_head free_nid_list;		/* list for free nids excluding preallocated nids */
+	unsigned int nid_cnt[MAX_NID_STATE];	/* the number of free node id */
+	spinlock_t nid_list_lock;	/* protect nid lists ops */
+	struct mutex build_lock;	/* lock for build free nids */
+	unsigned char **free_nid_bitmap;
+	unsigned char *nat_block_bitmap;
+	unsigned short *free_nid_count;	/* free nid count of NAT block */
+
+	/* for checkpoint */
+	char *nat_bitmap;		/* NAT bitmap pointer */
+
+	unsigned int nat_bits_blocks;	/* # of nat bits blocks */
+	unsigned char *nat_bits;	/* NAT bits blocks */
+	unsigned char *full_nat_bits;	/* full NAT pages */
+	unsigned char *empty_nat_bits;	/* empty NAT pages */
+#ifdef CONFIG_F2FS_CHECK_FS
+	char *nat_bitmap_mir;		/* NAT bitmap mirror */
+#endif
+	int bitmap_size;		/* bitmap size */
+};
+
+int build_node_manager(struct f2fs_sb_info *sbi)
+{
+	int err;
+
+    /* 分配空间 */
+	sbi->nm_info = kzalloc(sizeof(struct f2fs_nm_info), GFP_KERNEL);
+	if (!sbi->nm_info)
+		return -ENOMEM;
+
+    /* 初始化sbi->nm_info的信息 */
+	err = init_node_manager(sbi);
+	if (err)
+		return err;
+
+    /* 构建free nids表，用于给新的node分配nid */
+	build_free_nids(sbi);
+	return 0;
+}
+```
+
+init_node_manager() 函数主要用于初始化 `sbi->nm_info` 内的变量信息。
+
+```c
+static int init_node_manager(struct f2fs_sb_info *sbi)
+{
+	struct f2fs_super_block *sb_raw = F2FS_RAW_SUPER(sbi);
+	struct f2fs_nm_info *nm_i = NM_I(sbi);
+	unsigned char *version_bitmap;
+	unsigned int nat_segs;
+	int err;
+
+	nm_i->nat_blkaddr = le32_to_cpu(sb_raw->nat_blkaddr);
+
+	/* segment_count_nat includes pair segment so divide to 2. */
+	nat_segs = le32_to_cpu(sb_raw->segment_count_nat) >> 1;
+	nm_i->nat_blocks = nat_segs << le32_to_cpu(sb_raw->log_blocks_per_seg);
+	nm_i->max_nid = NAT_ENTRY_PER_BLOCK * nm_i->nat_blocks;
+
+	/* not used nids: 0, node, meta, (and root counted as valid node) */
+	nm_i->available_nids = nm_i->max_nid - sbi->total_valid_node_count -
+						F2FS_RESERVED_NODE_NUM;
+	nm_i->nid_cnt[FREE_NID] = 0;
+	nm_i->nid_cnt[PREALLOC_NID] = 0;
+	nm_i->ram_thresh = DEF_RAM_THRESHOLD;
+	nm_i->ra_nid_pages = DEF_RA_NID_PAGES;
+	nm_i->dirty_nats_ratio = DEF_DIRTY_NAT_RATIO_THRESHOLD;
+	nm_i->max_rf_node_blocks = DEF_RF_NODE_BLOCKS;
+
+	INIT_RADIX_TREE(&nm_i->free_nid_root, GFP_ATOMIC);
+	INIT_LIST_HEAD(&nm_i->free_nid_list);
+	INIT_RADIX_TREE(&nm_i->nat_root, GFP_NOIO);
+	INIT_RADIX_TREE(&nm_i->nat_set_root, GFP_NOIO);
+	INIT_LIST_HEAD(&nm_i->nat_entries);
+	spin_lock_init(&nm_i->nat_list_lock);
+
+	mutex_init(&nm_i->build_lock);
+	spin_lock_init(&nm_i->nid_list_lock);
+	init_f2fs_rwsem(&nm_i->nat_tree_lock);
+
+	nm_i->next_scan_nid = le32_to_cpu(sbi->ckpt->next_free_nid);
+	nm_i->bitmap_size = __bitmap_size(sbi, NAT_BITMAP);
+	version_bitmap = __bitmap_ptr(sbi, NAT_BITMAP);
+	nm_i->nat_bitmap = kmemdup(version_bitmap, nm_i->bitmap_size,
+					GFP_KERNEL);
+	if (!nm_i->nat_bitmap)
+		return -ENOMEM;
+
+	if (!test_opt(sbi, NAT_BITS))
+		disable_nat_bits(sbi, true);
+
+	err = __get_nat_bitmaps(sbi);
+	if (err)
+		return err;
+
+#ifdef CONFIG_F2FS_CHECK_FS
+	nm_i->nat_bitmap_mir = kmemdup(version_bitmap, nm_i->bitmap_size,
+					GFP_KERNEL);
+	if (!nm_i->nat_bitmap_mir)
+		return -ENOMEM;
+#endif
+
+	return 0;
+}
+```
+
+build_free_nids() 主要用于构建 free nid 表，用于给新的 node 分配 nid。 为了节省内存，F2FS 不会将 NAT 中所有的 free nid 读取出来，只会读取一部分，因此使用 `nm_i->fcnt` 表示缓存了多少个 free nid。然后会读取一定的数目的 `f2fs_nat_block` 出来，并遍历其中的每一个 `f2fs_nat_entry`，加入到 free nid 的管理结构中。最后还会搜索一下 log 区域的 free nid 信息，也加入到 free nid 管理结构中。
+
+```c
+void build_free_nids(struct f2fs_sb_info *sbi)
+{
+	struct f2fs_nm_info *nm_i = NM_I(sbi);
+	struct curseg_info *curseg = CURSEG_I(sbi, CURSEG_HOT_DATA);
+	struct f2fs_journal *journal = curseg->journal;
+	int i = 0;
+	nid_t nid = nm_i->next_scan_nid; // next_scan_nid的含义上面有介绍，从这里开始搜索free nid
+
+	/* *
+	 * 为了节省内存，F2FS不会将NAT中所有的free nid读取出来，只会读取一部分
+	 * fcnt表示目前缓存了多少个free nid，如果大于NAT_ENTRY_PER_BLOCK，则不再缓存了
+	 */
+	if (nm_i->fcnt >= NAT_ENTRY_PER_BLOCK)
+		return;
+
+	/* 
+	 * 因为准备开始读取NAT的page(block)，因此根据nid(next_scan_nid)的所在的block开始，
+	 * 读取FREE_NID_PAGES(=8)个page进入内存 
+	 */
+	ra_meta_pages(sbi, NAT_BLOCK_OFFSET(nid), FREE_NID_PAGES,
+							META_NAT, true);
+
+	down_read(&nm_i->nat_tree_lock);
+
+	while (1) {
+		struct page *page = get_current_nat_page(sbi, nid);
+
+        /* 
+         * 读取当前nid所在的f2fs_nat_block(page)，
+         * 然后将free nid加入到nm_i->free_nid_list/root中 
+         */
+		scan_nat_page(sbi, page, nid);
+        
+        /* 释放当前的f2fs_nat_block对应的page */
+		f2fs_put_page(page, 1);
+
+        /* 已经读取了一个f2fs_nat_block，自然要跳到下一个f2fs_nat_block的第一个nid */
+		nid += (NAT_ENTRY_PER_BLOCK - (nid % NAT_ENTRY_PER_BLOCK));
+		if (unlikely(nid >= nm_i->max_nid))
+			nid = 0;
+
+        /* 所有block读完之后就跳出循环 */
+		if (++i >= FREE_NID_PAGES)
+			break;
+	}
+
+	/* 更新next_scan_nid，前面的已经扫描过了，下一次从这个nid开始扫描 */
+	nm_i->next_scan_nid = nid;
+
+	/* 遍历log的nat_journal记录的nat_entry信息，从中寻找free nid */
+	down_read(&curseg->journal_rwsem);
+	for (i = 0; i < nats_in_cursum(journal); i++) {
+		block_t addr;
+		/* 从journal中获取nid信息 */
+        nid = le32_to_cpu(nid_in_journal(journal, i));
+        /* 从journal中获取该nid对应的物理地址 */
+		addr = le32_to_cpu(nat_in_journal(journal, i).block_addr);
+        
+        /* addr==NULL_ADDR 表示这个nid没有被文件使用，因此加入free nid，否则去除free nid */
+		if (addr == NULL_ADDR) 
+			add_free_nid(sbi, nid, true);
+		else
+			remove_free_nid(nm_i, nid);
+	}
+	up_read(&curseg->journal_rwsem);
+	up_read(&nm_i->nat_tree_lock);
+
+	ra_meta_pages(sbi, NAT_BLOCK_OFFSET(nm_i->next_scan_nid),
+					nm_i->ra_nid_pages, META_NAT, false);
+}
+```
+
+scan_nat_page() 函数的作用是扫描当前的 `f2fs_nat_block` 的每一个 entry，并找到其中的 free nid，加入到 `nm_i` 的 free nid 管理结构中。
+
+```c
+static int scan_nat_page(struct f2fs_sb_info *sbi,
+			struct f2fs_nat_block *nat_blk, nid_t start_nid)
+{
+	struct f2fs_nm_info *nm_i = NM_I(sbi);
+	block_t blk_addr;
+	unsigned int nat_ofs = NAT_BLOCK_OFFSET(start_nid);
+	int i;
+
+	__set_bit_le(nat_ofs, nm_i->nat_block_bitmap);
+
+	i = start_nid % NAT_ENTRY_PER_BLOCK;
+
+	for (; i < NAT_ENTRY_PER_BLOCK; i++, start_nid++) {
+		if (unlikely(start_nid >= nm_i->max_nid))
+			break;
+
+		blk_addr = le32_to_cpu(nat_blk->entries[i].block_addr);
+
+		if (blk_addr == NEW_ADDR)
+			return -EFSCORRUPTED;
+
+		if (blk_addr == NULL_ADDR) {
+			add_free_nid(sbi, start_nid, true, true);
+		} else {
+			spin_lock(&NM_I(sbi)->nid_list_lock);
+			update_free_nid_bitmap(sbi, start_nid, false, true);
+			spin_unlock(&NM_I(sbi)->nid_list_lock);
+		}
+	}
+
+	return 0;
+}
+```
+
+# Segment Summary Area 区域
+
+Segment Summary Area，简称 SSA，是 F2FS 用于集中管理物理地址到逻辑地址的映射关系的结构，同时它也具有通过 journal 缓存 sit 或者 nat 的操作用于数据恢复的作用。映射关系的主要作用是当给出一个物理地址的时候，可以通过 SSA 索引得到对应的逻辑地址，主要应用在 GC 流程中; SSA 所包含的 journal 可以缓存一些 sit 或者 nat 的操作，用于避免频繁的元数据更新，以及宕机时候的数据恢复。
+
+## 元数据的物理结构
+
+从结构图可以知道，SSA 区域由 N 个 `struct f2fs_summary_block` 组成，每一个 `struct f2fs_summary_block` 包含了 512 个 `struct f2fs_summary_entry`，刚好对应一个 segment。segment 里面的每一个 block(物理地址)对应一个的 `struct f2fs_summary_entry`，它记录了物理地址到逻辑地址的映射信息。它包含了三个变量: nid(该物理地址是属于哪一个 node 的)，version(用于数据恢复)，ofs_in_node(该物理地址属于该 nid 对应的 node 的第 ofs_in_node 个 block)。
+
+`f2fs_journal` 属于 journal 的信息，它的作用是减少频繁地对 NAT 区域以及 SIT 区域的更新。例如，当系统写压力很大的时候，segment bitmap 更新就会很频繁，就会对 `struct f2fs_sit_entry` 结构进行频繁地改动。如果这个时候频繁将新的映射关系写入 SIT，就会加重写压力。此时可以将数据先写入到 journal 中，因此 **journal 的作用就是维护这些经常修改的数据，等待 CP 被触发的时候才写入磁盘，从而减少写压力**。也许这里会有疑问，为什么将 journal 放在 SSA 区域而不是 NAT 区域以及 SIT 区域呢？这是因为这种存放方式可以减少元数据区域空间的占用。
+
+<img src="./F2FS 文件系统.assets/image-20251225154609242.png" alt="image-20251225154609242" style="zoom:67%;" />
+
+SSA 的基本存放单元是 `struct f2fs_summary_block`，定义如下：
+
+```c
+/* Block-sized summary block structure */
+struct f2fs_summary_block {
+	struct f2fs_summary entries[ENTRIES_IN_SUM];
+	struct f2fs_journal journal;
+	struct summary_footer footer;
+} __packed;
+```
+
+与 summary 直接相关的是 `struct f2fs_summary` 以及 `struct summary_footer`。`ENTRIES_IN_SUM` 的值 512，因此每一个 entry 对应一个 block，记录了从物理地址到逻辑地址的映射关系，entry 的结构如下：
+
+```c
+/* a summary entry for a block in a segment */
+struct f2fs_summary {
+	__le32 nid;		/* parent node id */
+	union {
+		__u8 reserved[3];
+		struct {
+			__u8 version;		/* node version number */
+			__le16 ofs_in_node;	/* block index in parent node */
+		} __packed;
+	};
+} __packed;
+
+struct summary_footer {
+	unsigned char entry_type;	/* SUM_TYPE_XXX */
+	__le32 check_sum;		/* summary checksum */
+} __packed;
+```
+
+`struct f2fs_summary` 用了一个 union 结构进行表示，但是核心信息是 `nid`、`version` 以及 `ofs_in_node`。数据的索引是通过 node 来进行。文件访问某一个页的数据时，需要首先根据页的索引，找到对应的 nid 以及 offset(两者构成逻辑地址)，从而根据 nid 得到 node page，再根据 offset 得到了该页的物理地址，然后从磁盘中读取出来。`f2fs_summary` 则是**记录物理地址到逻辑地址的映射**，即根据物理地址找到对应的 nid 以及 offset。例如，现在需要根据物理地址为 624 的 block，找到对应的 nid 以及 offset。那么物理地址为 624，可以得到该地址位于第二个 segment，然后属于第二个 segment 的第 113 个 block(block 的编址从 0 开始)。因此根据属于第二个 segment 的信息，找到第二个 `struct f2fs_summary_block`，然后根据偏移量为 113 的信息，找到对应的 `struct f2fs_summary` 结构，从而得到 `nid` 以及 `ofs_in_node`。
+
+`struct summary_footer` 结构记录了校验信息，以及这个 summary 对应的 segment 是属于保存 data 数据的 segment 还是 node 数据的segment。
+
+SSA 在内存没有单独的管理结构，summary 以及 journal 在内存中主要存在于 CURSEG 中。
+
+# 文件数据组织方式
+
+文件数据的组织方式一般时被设计为 inode-data 模式，即每一个文件都具有一个 inode，这个 inode 记录 data 的组织关系，这个关系称为**文件结构**。例如用户需要访问 A 文件的第 1000 个字节，系统就会先根据 A 文件的路径找到的 A 的 inode，然后从 inode 找到第 1000 个字节所在的物理地址，然后从磁盘读取出来。那么 F2FS 的文件结构是怎么样的呢？
+
+<img src="./F2FS 文件系统.assets/image-20251225155522809.png" alt="image-20251225155522809" style="zoom:80%;" />
+
+F2FS 中的一个 inode，包含两个主要部分: metadata 部分，和数据块寻址部分。我们重点观察数据块寻址部分，分析 inode 时如何将数据块索引出来。在图中，数据块寻址部分包含 direct pointers，single-indirect，double-indirect，以及 triple-indirect。它们的含义分别是：
+
+- **direct pointer:** inode 内直接指向数据块(图右上角 Data)的地址数组，即 **inode->data模式**。
+- **single-indirect pointer:** inode 记录了两个 single-indirect pointer(图右上角 Direct node)，每一个 single-indirect pointer 存储了多个数据块的地址，即 **inode->direct_node->data 模式**。
+- **double-indirect:** inode 记录了两个 double-indirect pointer(图右上角 indirect node)，每一个 double-indirect pointer 记录了许多 single-indirect pointer，每一个 single-indirect pointer 指向了数据块，即 **inode->indirect_node->direct_node->data 模式**。
+- **triple-indirect:** inode 记录了一个 triple-indirect pointer(图右上角 indirect node)，每一个 triple-indirect pointer 记录了许多 double-indirect pointer，每一个 double-indirect pointer 记录了许多 single-indirect pointer，最后每一个 single-indirect pointer 指向了数据块。即 **inode->indirect_node->indirect_node->direct_node->data 模式**。
+
+可以发现，F2FS 的 inode 结构采取 indirect_node，首先在 inode 内部寻找物理地址，如果找不到再去 direct_node 找，层层深入。
+
+## f2fs_node 结构及其作用
+
+对于一个较大的文件，它可能包含 inode 以外的 node，去保存一些间接寻址的信息。single-indirect pointer 记录的是数据块的地址，而 double-indirect pointer 记录的是 single-indirect pointer 的地址，triple-indirect pointer 记录的 double-indirect pointer 地址。在F2FS中：
+
+- inode 对应的是 `f2fs_inode` 结构，包含了多个 direct pointer 指向数据块物理地址；
+- single-indirect pointer 对应的是 `direct_node` 结构，包含了多个 direct pointer 指向物理地址；
+- double-indirect pointer 对应的是 `indirect_node` 结构，包含了多个指向 `direct_node` 的地址；
+- triple-indirect pointer 对应的也是 `indirect_node` 结构，包含了多个指向 `indirect_node` 的地址。
+
+### 基本 node 结构
+
+为了方便 F2FS 的对 node 的区分和管理，`f2fs_inode` 和 `direct_node` 以及 `indirect_node` 都使用了同一个数据结构 `f2fs_node` 进行描述，并通过 union 的方式，将 `f2fs_node` 初始化成不同的 node 形式。定义如下：
+
+```c
+struct f2fs_node {
+	/* can be one of three types: inode, direct, and indirect types */
+	union {
+		struct f2fs_inode i;
+		struct direct_node dn;
+		struct indirect_node in;
+	};
+	struct node_footer footer;
+} __packed;
+
+struct node_footer {
+	__le32 nid;		/* node id */
+	__le32 ino;		/* inode number */
+	__le32 flag;		/* include cold/fsync/dentry marks and offset */
+	__le64 cp_ver;		/* checkpoint version */
+	__le32 next_blkaddr;	/* next node page block address */
+} __packed;
+```
+
+其中起到区分是哪一种 node 的关键数据结构是 `node_footer`。如果 `node_footer` 的 `nid` 和 `ino` 相等，则表示这是一个 `f2fs_inode` 结构，如果不相等，则表示这是一个 `direct_node` 或者 `indirect_node`。
+
+### f2fs_inode 结构
+
+考虑 `f2fs_inode` 的结构，省略其他元数据的信息，重点关注文件如何索引的，结构如下：
+
+```c
+struct f2fs_inode {
+	...
+	__le32 i_addr[DEF_ADDRS_PER_INODE]; // DEF_ADDRS_PER_INODE=923
+	__le32 i_nid[DEF_NIDS_PER_INODE];	// DEF_NIDS_PER_INODE=5
+	...
+} __packed;
+```
+
+`i_addr` 数组就是前面提及的 direct pointer，数组的下标是文件的逻辑位置，数组的值就是 flash 设备的物理地址。例如文件的第一个页就对应 `i_addr[0]`，第二个页就对应 `i_addr[1]`，而 `i_addr[0]` 和 `i_addr[1]` 所记录的物理地址，就是文件第一个页(page)和第二个页的数据的物理地址，系统可以将两个物理地址提交到 flash 设备，将数据读取出来。
+
+我们可以发现 `i_addr` 的数组长度只有 923，即一个 `f2fs_inode` 只能直接索引到 923 个页/块的地址(约 3.6 MB)，对于大于 3.6 MB的文件，就需要使用**间接寻址**。`f2fs_inode` 的 `i_nid` 数组就是为了间接寻址而设计，`i_nid` 数组是一个长度为 5 的数组，可以记录 5 个 node 的地址。其中：
+
+- `i_nid[0]` 和 `i_nid[1]` 记录的是 `direct_node` 的地址，即对应前述的 single-indirect pointer。
+- `i_nid[2]` 和 `i_nid[3]` 记录的是 `indirect_node` 的地址，这两个 `indirect_node` 记录的是 `direct_node` 的地址，即对应前述的 double-indirect pointer。
+- `i_nid[4]` 记录的是 `indirect_node` 的地址，但是这个 `indirect_node` 记录的是 `indirect_node` 的地址，即前述的 triple-indirect pointer。
+
+### direct_node 和 indirect_node 结构
+
+`direct_node` 记录的是数据块的地址，`indirect_inode` 记录的是 node 的 id，系统可以通过 nid 找到对应的 node 的地址。
+
+```c
+struct direct_node {
+	__le32 addr[ADDRS_PER_BLOCK]; // ADDRS_PER_BLOCK=1018
+} __packed;
+
+struct indirect_node {
+	__le32 nid[NIDS_PER_BLOCK]; // NIDS_PER_BLOCK=1018
+} __packed;
+```
+
+### Wandering Tree 问题
+
+F2FS 的设计是为了解决 wandering tree 的问题，那么现在的设计是如何解决这个问题的呢。假设一个文件发生更改，修改了 `direct_node` 里面的某一个 block 的数据，根据 LFS 的异地更新特性，我们需要给更改后的数据一个新的 block。传统的 LFS 需要将这个新的 block 的地址一层层网上传递，直到 inode 结构。**而 F2FS 的设计是只需要将 `direct_node` 对应位置的 `addr` 的值更新为新 block 的地址，从而没必要往上传递，因此解决了 wandering tree 的问题。**
+
+## 普通文件数据的保存
+
+一个文件由一个 `f2fs_inode` 和多个 `direct_inode` 或者 `indirect_inode` 所组成。当系统创建一个文件的时候，它会首先创建一个 `f2fs_inode` 写入到 flash 设备，然后用户往该文件写入第一个 page 的时候，会将数据写入到 main area 的一个 block 中，然后将该 block 的物理地址赋值到 `f2fs_inode->i_addr[0]` 中，这样就完成了 Node-Data 的管理关系。随着对同一文件写入的数据的增多，会逐渐使用到其他类型的 node 去保存文件的数据。
+
+## 内联数据文件的保存
+
+文件的实际数据是保存在 `f2fs_inode->i_addr` 对应的物理块当中，因此即使一个很小的文件，如 1 个字节的小文件，也需要一个 node 和 data block 才能实现正常的保存和读写，也就是需要 8 KB 的磁盘空间去保存一个尺寸为 1 字节的小文件。而且 `f2fs_inode->i_addr[923]` 里面除了 `f2fs_inode->i_addr[0]` 保存了一个物理地址，其余的 922 个 i_addr 都被闲置，造成了空间的浪费。
+
+F2FS 为了减少空间的使用量，使用内联(inline)文件减少这些空间的浪费。它的核心思想是当文件足够小的时候，使用 `f2fs_inode->i_addr` 数组直接保存数据本身，而不单独写入一个 block 中，再进行寻址。因此，如上面的例子，只有 1 个字节大小的文件，只需要一个 `f2fs_inode` 结构，即 4 KB，就可以同时将 node 信息和 data 信息同时保存，减少了一半的空间使用量。
+
+根据上述定义，可以计算得到多大的文件可以使用内联的方式进行保存，`f2fs_inode` 有尺寸为 923 的用于保存数据物理地址的数组 i_addr，它的数据类型是 __le32，即 4 个字节。保留一个数组成员另做它用，因此内联文件最大尺寸为: 922 * 4 = 3688 字节。
+
+## 文件访问的实际例子
+
+Linux 的文件是通过 page 进行组织起来的，默认 page 的 size 是 4 KB，使用 index 作为编号。
+
+一个小文件访问例子：例如一个 size = 10 KB 的文件，需要 3 个 page 去保存数据，这 3 个 page 的编号是 0，1，2。当用户访问这个文件的第 2~6kb 的数据的时候，系统就会计算出数据保存在 page index = 0 和 1 的 page 中，然后根据文件的路径找到对应的 `f2fs_inode` 结构，page index = 0 和 1 即对应 `f2fs_inode` 的 `i_addr[0]` 和 `i_addr[1]`。系统进而从这两个 `i_addr` 读取物理地址，提交到 flash 设备将数据读取出来。
+
+一个大文件访问例子：假设用户需要读取文件第 4000 个页(page index = 3999)的数据，第一步: 那么首先系统会根据文件路径找到对应的 f2fs_inode 结构。第二步：由于 4000 >（923 + 1018 + 1018），`f2fs_inode->i_addr `和 `f2fs_inode->nid[0]和nid[1]` 都无法满足需求，因此系统根据 `f2fs_inode->nid[2]` 找到对应的 `indirect_node` 的地址。第三步：`indirect_node` 保存的是 `direct_node` 的nid数组，由于 4000 - 923 - 1018 - 1018 = 1041，而一个 `direct_node` 只能保存 1018 个 block，因此可以知道数据位于 `indirect_node->nid[1]` 对应的 `direct_node` 中。第四步：计算剩下的的偏移(4000-923-1018-1018-1018=23)找到数据的物理地址位于该 `direct_node` 的 `direct_node->addr[23]` 中。
+
+# 读流程
+
+F2FS 的读流程包含了以下几个子流程:
+1. vfs_read 函数。
+2. generic_file_read_iter 函数: 根据访问类型执行不同的处理。
+3. generic_file_buffered_read 函数: 根据用户传入的文件偏移，读取尺寸等信息，计算起始位置和页数，然后遍历每一个 page，通过预读或者单个读取的方式从磁盘中读取出来。
+4. f2fs_read_data_page&f2fs_read_data_pages 函数: 从磁盘读取 1 个 page 或者多个 page。
+5. f2fs_mpage_readpages 函数: f2fs 读取数据的主流程。
+
+第一步的 vfs_read 函数是 VFS 层面的流程，下面仅针对涉及 F2FS 的读流程，且经过简化的主要流程进行分析。
+
+## generic_file_read_iter 函数
+这个函数的作用是处理普通方式访问以及 direct 方式访问的读行为，这里仅针对普通方式的读访问进行分析:
+```c
+ssize_t generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+{
+	size_t count = iov_iter_count(iter); // 获取需要读取的字节数
+	ssize_t retval = 0;
+
+	if (!count)
+		goto out;
+
+	if (iocb->ki_flags & IOCB_DIRECT) { // 处理direct方式的访问，这里不做介绍
+		...
+	}
+
+	retval = generic_file_buffered_read(iocb, iter, retval); // 进行普通的读访问
+out:
+	return retval;
+}
+```
+
+## generic_file_buffered_read 函数
+在介绍这两个之前，需要先介绍一种 VFS 提高读取速度的机制: 预读(readahead)机制。它的核心原理是，当用户访问 page 1，系统就会将 page 1 后续的 page 2，page 3，page 4 一起读取到 page cache(减少与磁盘这种速度慢设备的交互次数，提高读性能)。之后用户再连续读取 page 2，page 3，page 4 时，由于已经读取到内存中，因此可以快速地返回给用户。
+
+generic_file_buffered_read() 函数的主要作用是循环地从磁盘或者内存读取用户需要的 page，同时也会在某些情况调用 page_cache_sync_readahead() 函数进行预读，由于函数比较复杂，且很多 goto 语句，简化后的步骤如下：
+
+**情况 1：预读(readahead)机制成功预读到用户需要接下来访问的 page**
+
+1. ind_get_page: 系统无法在 cache 中找到用户需要的 page。
+2. page_cache_sync_readahead: 系统执行该函数进行预读，一次性读取多个 page。
+3. find_get_page: 再重新在 cache 获取一次 page，获取成功后跳转到 page ok 区域。
+4. page_ok: 复制 page 的数据去用户传入的 buffer 中，然后判读是否为最后一个 page，如果是则退出读流程。
+
+**情况 2：预读(readahead)机制错误预读到用户需要接下来访问的 page**
+
+1. find_get_page: 系统无法在 cache 中找到用户需要的 page。
+2. page_cache_sync_readahead: 系统执行该函数进行预读，一次性读取多个 page。
+3. find_get_page: 再重新在 cache 获取一次 page，获取失败，跳转到 no_cached_page 区域。
+4. no_cached_page: 创建一个 page cache 结构，加入到 LRU 后，跳转到 readpage 区域。
+5. readpage: 执行 `mapping->a_ops->readpage` 函数从磁盘读取数据，成功后跳转到 page ok 区域。
+6. page_ok: 复制 page 的数据去用户传入的 buffer 中，然后判读是否为最后一个 page，如果是则退出读流程。
+
+
+```c
+static ssize_t generic_file_buffered_read(struct kiocb *iocb,
+		struct iov_iter *iter, ssize_t written)
+{
+
+	index = *ppos >> PAGE_SHIFT; // 文件指针偏移*ppos除以page的大小就是页偏移index
+	prev_index = ra->prev_pos >> PAGE_SHIFT;
+	prev_offset = ra->prev_pos & (PAGE_SIZE-1);
+	last_index = (*ppos + iter->count + PAGE_SIZE-1) >> PAGE_SHIFT;
+	offset = *ppos & ~PAGE_MASK;
+
+	for (;;) {
+find_page:
+		page = find_get_page(mapping, index); // 根据页偏移index从cache获取page
+		if (!page) { // 获取失败进行一次预读
+			page_cache_sync_readahead(mapping, ra, filp,
+					index, last_index - index);
+			page = find_get_page(mapping, index); // 预读后再从cache获取page
+			if (unlikely(page == NULL)) // 如果仍然失败则跳转到no_cached_page，成功则直接去page ok区域
+				goto no_cached_page;
+		}
+page_ok: 
+		// page数据读取成功后都进入这个区域，用于将数据复制到用户传入的buffer中
+		isize = i_size_read(inode);
+		end_index = (isize - 1) >> PAGE_SHIFT;
+
+		nr = PAGE_SIZE;
+		if (index == end_index) { // 如果到了最后一个index就退出循环
+			nr = ((isize - 1) & ~PAGE_MASK) + 1;
+			if (nr <= offset) {
+				put_page(page);
+				goto out;
+			}
+		}
+		nr = nr - offset;
+		ret = copy_page_to_iter(page, offset, nr, iter); // 复制用户数据到buffer中
+		offset += ret;
+		index += offset >> PAGE_SHIFT;
+		offset &= ~PAGE_MASK;
+		prev_offset = offset;
+
+		put_page(page);
+		written += ret;
+		if (!iov_iter_count(iter))  // 如果将所有数据读取完毕后退出循环
+			goto out;
+		if (ret < nr) {
+			error = -EFAULT;
+			goto out;
+		}
+		continue;
+readpage:
+		ClearPageError(page);
+		error = mapping->a_ops->readpage(filp, page); // 去磁盘进行读取
+		goto page_ok;
+no_cached_page:
+		page = page_cache_alloc(mapping); // 创建page cache
+		error = add_to_page_cache_lru(page, mapping, index,
+				mapping_gfp_constraint(mapping, GFP_KERNEL)); // 加入lru
+		goto readpage;
+	}
+out:
+	ra->prev_pos = prev_index;
+	ra->prev_pos <<= PAGE_SHIFT;
+	ra->prev_pos |= prev_offset;
+
+	*ppos = ((loff_t)index << PAGE_SHIFT) + offset;
+	file_accessed(filp);
+	return written ? written : error;
+}
+```
+预读函数 page_cache_sync_readahead() 的分析由于篇幅有限无法全部展示，这里仅分析它的核心调用函数 __do_page_cache_readahead():
+```c
+unsigned int __do_page_cache_readahead(struct address_space *mapping,
+		struct file *filp, pgoff_t offset, unsigned long nr_to_read,
+		unsigned long lookahead_size)
+{
+	end_index = ((isize - 1) >> PAGE_SHIFT); // 得到文件的最后一个页的页偏移index
+
+	for (page_idx = 0; page_idx < nr_to_read; page_idx++) { // nr_to_read是需要预读的page的数目
+		pgoff_t page_offset = offset + page_idx; // offset表示从第几个page开始预读
+
+		if (page_offset > end_index) // 预读超过了文件大小就退出
+			break;
+			
+		page = __page_cache_alloc(gfp_mask); // 创建page cache
+		page->index = page_offset; // 设置page index
+		list_add(&page->lru, &page_pool); // 将所有预读的page加入到一个list中
+		nr_pages++;
+	}
+
+	if (nr_pages)
+		read_pages(mapping, filp, &page_pool, nr_pages, gfp_mask); // 执行预读
+	BUG_ON(!list_empty(&page_pool));
+out:
+	return nr_pages;
+}
+
+static int read_pages(struct address_space *mapping, struct file *filp,
+		struct list_head *pages, unsigned int nr_pages, gfp_t gfp)
+{
+	struct blk_plug plug;
+	unsigned page_idx;
+	int ret;
+
+	blk_start_plug(&plug);
+
+	if (mapping->a_ops->readpages) {
+		ret = mapping->a_ops->readpages(filp, mapping, pages, nr_pages); // 执行readpages函数进行预读
+		put_pages_list(pages);
+		goto out;
+	}
+	ret = 0;
+
+out:
+	blk_finish_plug(&plug);
+
+	return ret;
+}
+```
+
+## f2fs_read_data_page & f2fs_read_data_pages 函数
+当预读机制会调用 `mapping->a_ops->readpages` 函数一次性读取多个 page。而当预读失败时，也会调用 `mapping->a_ops->readpage` 读取单个 page。这两个函数在 f2fs 中对应的就是 `f2fs_read_page` 和 `f2fs_read_pages`，如下所示:
+```c
+static int f2fs_read_data_page(struct file *file, struct page *page)
+{
+	struct inode *inode = page->mapping->host;
+	int ret = -EAGAIN;
+
+	trace_f2fs_readpage(page, DATA);
+
+	if (f2fs_has_inline_data(inode)) // inline文件使用特定的读取方法，这里暂不分析
+		ret = f2fs_read_inline_data(inode, page);
+	ret = f2fs_mpage_readpages(page->mapping, NULL, page, 1); // 读取1个page
+	return ret;
+}
+
+static int f2fs_read_data_pages(struct file *file,
+			struct address_space *mapping,
+			struct list_head *pages, unsigned nr_pages)
+{
+	struct inode *inode = mapping->host;
+	struct page *page = list_last_entry(pages, struct page, lru);
+
+	trace_f2fs_readpages(inode, page, nr_pages);
+
+	if (f2fs_has_inline_data(inode)) // inline文件是size小于1个page的文件，因此不需要进行预读，直接return 0
+		return 0;
+
+	return f2fs_mpage_readpages(mapping, pages, NULL, nr_pages); // 读取nr_pages个page
+}
+```
+
+## f2fs_mpage_readpages函数
+无论是 `f2fs_read_page` 函数还是 `f2fs_read_pages` 函数，都是调用 `f2fs_mpage_readpages` 函数进行读取，区别仅在于传入参数。`f2fs_mpage_readpages` 的定义为:
+```c
+static int f2fs_mpage_readpages(struct address_space *mapping,
+			struct list_head *pages, struct page *page, unsigned nr_pages);
+```
+1. 第二个参数表示一个链表头，这个链表保存了多个 page，因此需要写入多个 page 的时候，就要传入一个 List。
+2. 第三个参数表示单个 page，在写入单个 page 的时候，通过这个函数写入。
+3. 第四个参数表示需要写入 page 的数目。
+
+因此：
+
+1. 在写入多个 page 的时候，需要设定第二个参数，和第四个参数，然后设定第三个参数为 NULL。
+2. 在写入单个 page 的时候，需要设定第三个参数，和第四个参数，然后设定第二个参数为 NULL。
+
+然后分析这个函数的执行流程:
+
+1. 遍历传入的 page，得到每一个 page 的 index 以及 inode。
+2. 将 page 的 inode 以及 index 传入 f2fs_map_blocks() 函数获取到该 page 的物理地址。
+3. 将物理地址通过 submit_bio() 读取该 page 在磁盘中的数据。
+
+```c
+static int f2fs_mpage_readpages(struct address_space *mapping,
+			struct list_head *pages, struct page *page,
+			unsigned nr_pages)
+{
+	// 主流程第一步 初始化map结构，这个步骤非常重要，用于获取page在磁盘的物理地址
+	struct f2fs_map_blocks map;
+	map.m_pblk = 0;
+	map.m_lblk = 0;
+	map.m_len = 0;
+	map.m_flags = 0;
+	map.m_next_pgofs = NULL;
+
+	// 主流程第二步 开始进行遍历，结束条件为 nr_pages 不为空
+	for (page_idx = 0; nr_pages; page_idx++, nr_pages--) {
+
+		// 循环第一步，如果是读取多个page，则pages不为空，从list里面读取每一次的page结构
+		if (pages) {
+			page = list_entry(pages->prev, struct page, lru);
+			list_del(&page->lru);
+			if (add_to_page_cache_lru(page, mapping,
+						  page->index, GFP_KERNEL))
+				goto next_page;
+		}
+
+		/**
+ 		 * map.m_lblk是上一个block_in_file
+ 		 * map.m_lblk + map.m_len是需要读取长度的最后一个blokaddr
+ 		 * 因此这里的意思是，如果是在这个 map.m_lblk < block_in_file < map.m_lblk + map.m_len 
+ 		 * 这个范围里面，不需要map，直接将上次的blkaddr+1就是需要的地址
+ 		 * 
+		 */
+		// 循环第二步，如果上一次找到了page，则跳到 got_it 通过bio获取page的具体数据
+		if ((map.m_flags & F2FS_MAP_MAPPED) && block_in_file > map.m_lblk &&
+			block_in_file < (map.m_lblk + map.m_len))
+			goto got_it;
+	
+		// 循环第三步，使用page offset和length，通过f2fs_map_blocks获得物理地址
+		map.m_flags = 0;
+		if (block_in_file < last_block) {
+			map.m_lblk = block_in_file; // 文件的第几个block
+			map.m_len = last_block - block_in_file; // 读取的block的长度
+
+			if (f2fs_map_blocks(inode, &map, 0,
+						F2FS_GET_BLOCK_READ))
+				goto set_error_page;
+		}
+
+got_it:
+		// 循环第四步，通过map的结果执行不一样的处理方式
+		if ((map.m_flags & F2FS_MAP_MAPPED)) { // 如果找到了地址，则计算block_nr得到磁盘的地址
+			block_nr = map.m_pblk + block_in_file - map.m_lblk;
+			SetPageMappedToDisk(page);
+
+			if (!PageUptodate(page) && !cleancache_get_page(page)) {
+				SetPageUptodate(page);
+				goto confused;
+			}
+		} else { // 获取失败了，则跳过这个page
+			zero_user_segment(page, 0, PAGE_SIZE);
+			SetPageUptodate(page);
+			unlock_page(page);
+			goto next_page;
+		}
+
+		/**
+		 * 这部分开始用于将物理地址通过submit_bio提交到磁盘读取数据
+		 * 由于从磁盘读取数据是一个相对耗时的操作，
+		 * 因此显然每读取一个页就访问一次磁盘一次的方式是低效的且影响读性能的，
+		 * 所以F2FS会尽量一次性提交多个页到磁盘读取数据，以提高性能。
+		 * 
+		 * 这部分开始就是具体实现:
+		 * 1. 创建一个bio(最大一次性提交256个页)
+		 * 2. 将需要读取的页添加到这个bio中，
+		 *     ------如果bio未满则将page添加到bio中
+		 *     ------如果bio满了立即访问磁盘读取
+		 *     ------如果循环结束以后，bio还是未满，则通过本函数末尾的操作提交未满的bio。
+		 *     
+         */
+
+		// 循环第五步，判断bio装的page是否到了设定的最大数量，如果到了最大值则先发送到磁盘
+		if (bio && (last_block_in_bio != block_nr - 1)) {
+submit_and_realloc:
+			submit_bio(READ, bio);
+			bio = NULL;
+		}
+
+		// 循环第六步，如果bio是空，则创建一个bio，然后指定的f2fs_read_end_io进行读取
+		if (bio == NULL) {
+			struct fscrypt_ctx *ctx = NULL;
+
+			if (f2fs_encrypted_inode(inode) &&
+					S_ISREG(inode->i_mode)) {
+
+				ctx = fscrypt_get_ctx(inode, GFP_NOFS);
+				if (IS_ERR(ctx))
+					goto set_error_page;
+
+				/* wait the page to be moved by cleaning */
+				f2fs_wait_on_encrypted_page_writeback(
+						F2FS_I_SB(inode), block_nr);
+			}
+
+			bio = bio_alloc(GFP_KERNEL,
+				min_t(int, nr_pages, BIO_MAX_PAGES)); // 创建bio
+			if (!bio) {
+				if (ctx)
+					fscrypt_release_ctx(ctx);
+				goto set_error_page;
+			}
+			bio->bi_bdev = bdev;
+			bio->bi_iter.bi_sector = SECTOR_FROM_BLOCK(block_nr); // 设定bio的sector地址
+			bio->bi_end_io = f2fs_read_end_io;
+			bio->bi_private = ctx;
+		}
+
+		// 循环第七步，将page加入到bio中，等待第五步满了之后发送到磁盘
+		if (bio_add_page(bio, page, blocksize, 0) < blocksize)
+			goto submit_and_realloc;
+
+set_error_page:
+		SetPageError(page);
+		zero_user_segment(page, 0, PAGE_SIZE);
+		unlock_page(page);
+		goto next_page;
+confused: // 特殊情况进行submit bio
+		if (bio) {
+			submit_bio(READ, bio);
+			bio = NULL;
+		}
+		unlock_page(page);
+next_page:
+		if (pages)
+			put_page(page);
+		
+	}
+
+	
+	BUG_ON(pages && !list_empty(pages));
+
+	// 如果还有bio没有处理，例如读取的页遍历完以后，还没有达到第五步要求的bio的最大保存页数，就会在这里提交bio到磁盘读取
+	if (bio)
+		submit_bio(READ, bio);
+	return 0;
+}
+```
+
+# 写流程
+
+F2FS 的写流程主要包含了以下几个子流程:
+1. 调用 vfs_write 函数。
+2. 调用 f2fs_file_write_iter 函数: 初始化 f2fs_node 的信息。
+3. 调用 f2fs_write_begin 函数: 创建 page cache，并填充数据。
+4. 写入到 page cache: 等待系统触发 writeback 回写到磁盘。
+5. 调用 f2fs_write_end 函数: 将 page 设置为最新状态。
+6. 调用 f2fs_write_data_pages 函数: 系统 writeback 或者 fsync 触发的时候执行这个函数写入到磁盘。
+
+第一步的 vfs_write 函数是 VFS 层面的流程，下面仅针对涉及 F2FS 的写流程，且经过简化的主要流程进行分析。
+
+## f2fs_file_write_iter函数
+这个函数的主要作用是在数据写入文件之前进行预处理，核心流程就是将该文件对应 `f2fs_inode` 或者 `direct_node` 对应写入位置的 `i_addr` 或者 `addr `的值进行初始化。例如用户需要在第 4 个 page 的位置写入数据，那么 `f2fs_file_write_iter` 函数会首先找到该文件对应的 `f2fs_inode`，然后找到第 4 个 page 对应的数据块地址记录，即 `f2fs_inode->i_addr[3]`。如果该位置的值是 `NULL_ADDR` 则表示当前是**添加写(Append Write)**，因此将值初始化为 `NEW_ADDR`。如果是该位置的值是一个具体的 block 号，那么表示为**覆盖写(Overwrite)**，不需要做处理。
+```c
+static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+{
+	struct file *file = iocb->ki_filp;
+	struct inode *inode = file_inode(file);
+	ssize_t ret;
+
+	...
+	err = f2fs_preallocate_blocks(iocb, from); // 进行预处理
+	...
+	ret = __generic_file_write_iter(iocb, from); // 预处理完成后继续执行下一步写流程
+	...
+
+	return ret;
+}
+```
+下面继续分析 f2fs_preallocate_blocks()。
+```c
+int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *from)
+{
+	struct inode *inode = file_inode(iocb->ki_filp); // 获取inode
+	struct f2fs_map_blocks map;
+
+	map.m_lblk = F2FS_BLK_ALIGN(iocb->ki_pos); // 根据文件指针偏移计算需要从第几个block开始写入
+	map.m_len = F2FS_BYTES_TO_BLK(iocb->ki_pos + iov_iter_count(from)); // 计算要写入block的个数
+
+	// 初始化一些信息
+	map.m_next_pgofs = NULL;
+	map.m_next_extent = NULL;
+	map.m_seg_type = NO_CHECK_TYPE;
+
+	flag = F2FS_GET_BLOCK_PRE_AIO;
+
+map_blocks:
+	err = f2fs_map_blocks(inode, &map, 1, flag); // 进行初始化
+	return err;
+}
+```
+f2fs_map_blocks() 函数的作用非常广泛，主要作用是通过逻辑地址(文件偏移指针)找到对应的物理地址(block 号)。因此在读写流程中都有作用。在写流程中，该函数的主要作用是初始化地址信息。
+```c
+int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+						int create, int flag)
+{
+	unsigned int maxblocks = map->m_len;
+
+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+	int mode = create ? ALLOC_NODE : LOOKUP_NODE;
+
+	map->m_len = 0;
+	map->m_flags = 0;
+
+	pgofs =	(pgoff_t)map->m_lblk; // 获得文件访问偏移量
+	end = pgofs + maxblocks; // 获得需要读取的block的长度
+
+next_dnode:
+
+	set_new_dnode(&dn, inode, NULL, NULL, 0); // 初始化dnode，dnode的作用是根据逻辑地址找到物理地址
+	
+	// 根据inode找到对应的f2fs_inode或者direct_node结构，然后通过pgofs(文件页偏移)获得物理地址，记录在dn中
+	err = f2fs_get_dnode_of_data(&dn, pgofs, mode); 
+
+	start_pgofs = pgofs;
+	prealloc = 0;
+	last_ofs_in_node = ofs_in_node = dn.ofs_in_node;
+	end_offset = ADDRS_PER_PAGE(dn.node_page, inode);
+
+next_block:
+	// 根据dn获得物理地址，ofs_in_node表示这个物理地址位于当前node的第几个数据块
+	// 如 f2fs_inode->i_addr[3]，那么dn.ofs_in_node=3
+	blkaddr = datablock_addr(dn.inode, dn.node_page, dn.ofs_in_node); 
+	...
+	if (!is_valid_blkaddr(blkaddr)) { // is_valid_blkaddr函数用于判断是否存在旧数据
+		// 如果不存在旧数据
+		if (create) {
+			if (flag == F2FS_GET_BLOCK_PRE_AIO) {
+				if (blkaddr == NULL_ADDR) {
+					prealloc++; // 记录有多少个添加写的block
+					last_ofs_in_node = dn.ofs_in_node;
+				}
+			}
+			map->m_flags |= F2FS_MAP_NEW; // F2FS_MAP_NEW表示正在处理一个从未使用的数据
+			blkaddr = dn.data_blkaddr; // 记录当前的物理地址
+		}
+	}
+	...
+	// 记录处理了多少个block
+	dn.ofs_in_node++; 
+	pgofs++;
+	...
+	// 这里表示已经处理到最后一个block了
+	if (flag == F2FS_GET_BLOCK_PRE_AIO &&
+			(pgofs == end || dn.ofs_in_node == end_offset)) {
+
+		dn.ofs_in_node = ofs_in_node; // 回到第一个block
+		err = f2fs_reserve_new_blocks(&dn, prealloc); // 通过这个函数将其地址设置为NEW_ADDR
+		map->m_len += dn.ofs_in_node - ofs_in_node;
+		dn.ofs_in_node = end_offset;
+	}
+	...
+	if (pgofs >= end)
+		goto sync_out; // 表示已经全部处理完，可以退出这个函数了
+	else if (dn.ofs_in_node < end_offset)
+		goto next_block; // 每执行上面的流程就处理一个block，如果没有处理所有用户写入的block，那么回去继续处理
+	...
+sync_out:
+	...
+out:
+	return err;
+}
+```
+然后分析 f2fs_reserve_new_blocks()。
+```c
+int f2fs_reserve_new_blocks(struct dnode_of_data *dn, blkcnt_t count)
+{
+	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
+	int err;
+
+	...
+	for (; count > 0; dn->ofs_in_node++) {
+		block_t blkaddr = datablock_addr(dn->inode,
+					dn->node_page, dn->ofs_in_node);
+		if (blkaddr == NULL_ADDR) { // 首先判断是不是NULL_ADDR，如果是则初始化为NEW_ADDR
+			dn->data_blkaddr = NEW_ADDR;
+			__set_data_blkaddr(dn);
+			count--;
+		}
+	}
+	...
+
+	return 0;
+}
+```
+## f2fs_write_begin 和 f2fs_write_end 函数
+VFS 中 `write_begin` 和 `write_end` 函数分别是数据写入 page cache 前以及写入后的处理。写入 page cache 后，系统会维护一段时间，直到满足一定条件后(如 fsync 和 writeback 会写)，VFS 会调用 writepages 函数，将这些缓存在内存中的 page 一次性写入到磁盘中。`write_begin` 和 `write_end` 函数的调用可以参考 VFS 的 `generic_perform_write` 函数。
+```c
+ssize_t generic_perform_write(struct file *file,
+				struct iov_iter *i, loff_t pos)
+{
+	struct address_space *mapping = file->f_mapping;
+	const struct address_space_operations *a_ops = mapping->a_ops;
+	long status = 0;
+	ssize_t written = 0;
+	unsigned int flags = 0;
+
+	do {
+		struct page *page;
+		unsigned long offset;
+		unsigned long bytes;
+		size_t copied;
+		void *fsdata;
+
+		offset = (pos & (PAGE_SIZE - 1)); // 计算文件偏移，按page计算
+		bytes = min_t(unsigned long, PAGE_SIZE - offset, iov_iter_count(i)); // 计算需要写多少个字节
+again:
+		status = a_ops->write_begin(file, mapping, pos, bytes, flags, &page, &fsdata); // 调用write_begin，对page进行初始化
+
+		copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes); //  将处理后的数据拷贝到page当中
+		flush_dcache_page(page); // 将包含用户数据的page加入到page cache中，等待系统触发writeback的时候回写
+
+		status = a_ops->write_end(file, mapping, pos, bytes, copied, page, fsdata); // 调用write_end函数进行后续处理
+		
+		copied = status;
+
+		iov_iter_advance(i, copied);
+
+		pos += copied;
+		written += copied;
+
+		balance_dirty_pages_ratelimited(mapping);
+	} while (iov_iter_count(i)); // 直到处理完所有的数据
+
+	return written ? written : status;
+}
+```
+然后分析 VFS 的 `write_begin` 和 `write_end` 对应的功能，`write_begin` 在 F2FS 中对应的是 `f2fs_write_begin`，它的作用是将根据用户需要写入的数据类型，对 page 进行初始化，如下所示：
+```c
+static int f2fs_write_begin(struct file *file, struct address_space *mapping,
+		loff_t pos, unsigned len, unsigned flags,
+		struct page **pagep, void **fsdata)
+{
+	struct inode *inode = mapping->host;
+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+	struct page *page = NULL;
+	pgoff_t index = ((unsigned long long) pos) >> PAGE_SHIFT;
+	bool need_balance = false, drop_atomic = false;
+	block_t blkaddr = NULL_ADDR;
+	int err = 0;
+
+repeat:
+	page = f2fs_pagecache_get_page(mapping, index,
+				FGP_LOCK | FGP_WRITE | FGP_CREAT, GFP_NOFS); // 第一步创建或者获取page cache
+
+	*pagep = page;
+
+	err = prepare_write_begin(sbi, page, pos, len,
+					&blkaddr, &need_balance); // 第二步根据页偏移信息获取到对应的物理地址blkaddr
+
+	// 第三步，根据写类型对新创建的page进行初始化处理
+	if (blkaddr == NEW_ADDR) { //如果是添加写，则将该page直接使用0填充
+		zero_user_segment(page, 0, PAGE_SIZE);
+		SetPageUptodate(page);
+	} else {  //如果是覆盖写，则将该page直接使用0填充
+		err = f2fs_submit_page_read(inode, page, blkaddr); // 从磁盘中将旧数据读取出来
+
+		lock_page(page);
+		if (unlikely(page->mapping != mapping)) {
+			f2fs_put_page(page, 1);
+			goto repeat;
+		}
+		if (unlikely(!PageUptodate(page))) {
+			err = -EIO;
+			goto fail;
+		}
+	}
+	return 0;
+}
+```
+通过 flush_dcache_page() 函数将用户数据写入到 page cache 之后，进行 `write_end` 处理，在 F2FS 中它对应的是 f2fs_write_end() 函数，它的作用是，如下所述:
+```c
+static int f2fs_write_end(struct file *file,
+			struct address_space *mapping,
+			loff_t pos, unsigned len, unsigned copied,
+			struct page *page, void *fsdata)
+{
+	struct inode *inode = page->mapping->host;
+
+	if (!PageUptodate(page)) { // 判断是否已经将page cache在写入是否到达了最新的状态
+		if (unlikely(copied != len))
+			copied = 0;
+		else
+			SetPageUptodate(page); // 如果不是就处理后设置为最新
+	}
+	if (!copied)
+		goto unlock_out;
+
+	set_page_dirty(page); // 将page设置为dirty，就会加入到inode->mapping的radix tree中，等待系统回写
+
+	if (pos + copied > i_size_read(inode))
+		f2fs_i_size_write(inode, pos + copied); // 更新文件尺寸
+unlock_out:
+	f2fs_put_page(page, 1);
+	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME); // 更新文件修改日期
+	return copied;
+}
+```
+
+## f2fs_write_data_pages 函数
+系统会将用户写入的数据先写入到 page cache，然后等待时机回写到磁盘中。page cache 的回写是通过 f2fs_write_data_pages() 函数进行。系统会将 page cache 中 dirty 的 pages 加入到一个 list 当中，然后传入到 f2fs_write_data_pages() 进行处理。它包含如下步骤:
+1. f2fs_write_data_pages & __f2fs_write_data_pages 函数: 做一些不那么重要的预处理。
+2. f2fs_write_cache_pages 函数: 从 inode->mapping 的 radix tree 中取出 page。
+3. __write_data_page 函数: 判断文件类型(内联文件，目录文件，普通文件)进行不同的写入。
+4. f2fs_do_write_data_page: 根据 F2FS 的状态选择进行就地回写(在原物理地址更新)还是异地回写(在其他物理地址更新)。
+5. f2fs_outplace_write_data: 执行回写，更新 f2fs_inode 的状态。
+6. do_write_page: 从 CURSEG 分配物理地址，然后写入到磁盘。
+
+### f2fs_write_data_pages & __f2fs_write_data_pages 函数
+这两个函数只是包含了一些不太重要的预处理。
+```c
+static int f2fs_write_data_pages(struct address_space *mapping,
+			    struct writeback_control *wbc)
+{
+	struct inode *inode = mapping->host;
+
+	return __f2fs_write_data_pages(mapping, wbc,
+			F2FS_I(inode)->cp_task == current ?
+			FS_CP_DATA_IO : FS_DATA_IO); // 这个函数可以知道当前是普通的写入，还是Checkpoint数据的写入
+}
+
+static int __f2fs_write_data_pages(struct address_space *mapping,
+						struct writeback_control *wbc,
+						enum iostat_type io_type)
+{
+	struct inode *inode = mapping->host;
+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+	struct blk_plug plug;
+	int ret;
+
+
+	blk_start_plug(&plug);
+
+	ret = f2fs_write_cache_pages(mapping, wbc, io_type); // 取出需要回写的page，然后写入
+
+	blk_finish_plug(&plug);
+
+	f2fs_remove_dirty_inode(inode); // 写入后将inode从dirty标志清除，即不需要再回写
+	return ret;
+skip_write:
+	wbc->pages_skipped += get_dirty_pages(inode);
+	trace_f2fs_writepages(mapping->host, wbc, DATA);
+	return 0;
+}
+```
+
+### f2fs_write_cache_pages 函数
+这个函数的主要作用是从 inode 对应的 mapping(radix tree 的 root)中，取出所有需要回写的 page，然后通过一个循环，逐个写入到磁盘。
+```c
+static int f2fs_write_cache_pages(struct address_space *mapping,
+					struct writeback_control *wbc,
+					enum iostat_type io_type)
+{
+	struct pagevec pvec;
+	
+	pagevec_init(&pvec); // 这是一个用于装载page的数组，数组大小是15个page
+
+	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+		tag = PAGECACHE_TAG_TOWRITE; // tag是mapping给每一个pae的标志，用于标志这些page的属性
+	else
+		tag = PAGECACHE_TAG_DIRTY;
+		
+retry:
+	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+		tag_pages_for_writeback(mapping, index, end); // SYNC模式下，将所有的tag=PAGECACHE_TAG_DIRTY的page重新标志为PAGECACHE_TAG_TOWRITE，作用是SYNC模式下必须全部回写到磁盘
+	done_index = index;
+	
+	while (!done && (index <= end)) {
+		int i;
+		
+		// 从mapping中取出tag类型的15个page，装载到pvec中
+		nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end, tag); 
+		
+		// 循环将pvec中的page取出，回写到磁盘
+		for (i = 0; i < nr_pages; i++) {
+			struct page *page = pvec.pages[i];
+			bool submitted = false;
+			
+			ret = __write_data_page(page, &submitted, wbc, io_type); // 写入磁盘的核心函数
+
+			if (--wbc->nr_to_write <= 0 &&
+					wbc->sync_mode == WB_SYNC_NONE) {
+				done = 1; // 如果本次writeback的所有page写完就退出
+				break;
+			}
+		}
+		pagevec_release(&pvec); // 释放掉pvec
+		cond_resched();
+	}
+
+	if (wbc->range_cyclic || (range_whole && wbc->nr_to_write > 0))
+		mapping->writeback_index = done_index;
+
+	if (last_idx != ULONG_MAX)
+		// page通过一些函数后，会放入到bio中，然后提交到磁盘。
+		// f2fs的机制是不会马上提交bio，需要等到bio包含了一定数目的page之后才会提交
+		// 因此这个函数作用是，即使数目不够，但是仍要强制提交bio，需要与磁盘同步
+		f2fs_submit_merged_write_cond(F2FS_M_SB(mapping), mapping->host,
+						0, last_idx, DATA);
+
+	return ret;
+}
+```
+
+### __write_data_page 函数
+这个函数的作用是判断文件类型(目录文件，内联文件，普通文件)进行不同的写入。F2FS 针对普通文件，有两种保存方式，分别是内联方式(inline)和普通方式。这里主要介绍普通文件的写流程。
+```c
+static int __write_data_page(struct page *page, bool *submitted,
+				struct writeback_control *wbc,
+				enum iostat_type io_type)
+{
+	struct inode *inode = page->mapping->host;
+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+	loff_t i_size = i_size_read(inode);
+	const pgoff_t end_index = ((unsigned long long) i_size) >> PAGE_SHIFT;
+	// 这个数据结构在整个写流程非常重要，记录了写入的信息
+	// 关键变量是 fio->old_blkaddr 以及 fio->new_blkaddr记录旧地址和新地址
+	struct f2fs_io_info fio = { 
+		.sbi = sbi,
+		.ino = inode->i_ino,
+		.type = DATA,
+		.op = REQ_OP_WRITE,
+		.op_flags = wbc_to_write_flags(wbc),
+		.old_blkaddr = NULL_ADDR,
+		.page = page, // 即将写入的page
+		.encrypted_page = NULL,
+		.submitted = false,
+		.need_lock = LOCK_RETRY,
+		.io_type = io_type,
+		.io_wbc = wbc,
+	};
+
+	if (page->index < end_index)
+		goto write;
+		
+write:
+	if (S_ISDIR(inode->i_mode)) { // 如果是目录文件，直接写入不需要修改
+		err = f2fs_do_write_data_page(&fio);
+		goto done;
+	}
+
+	err = -EAGAIN;
+	if (f2fs_has_inline_data(inode)) { // 内联文件使用内联的写入方式
+		err = f2fs_write_inline_data(inode, page);
+		if (!err)
+			goto out;
+	}
+
+	if (err == -EAGAIN) { // 普通文件则使用普通的方式
+		err = f2fs_do_write_data_page(&fio);
+	}
+
+done:
+	if (err && err != -ENOENT)
+		goto redirty_out;
+
+out:
+	inode_dec_dirty_pages(inode); // 每写入一个page，就清除了inode一个dirty pages，因此数目减去1
+	if (err)
+		ClearPageUptodate(page);
+
+	unlock_page(page);
+
+	if (submitted)
+		*submitted = fio.submitted;
+
+	return 0;
+
+redirty_out:
+	redirty_page_for_writepage(wbc, page);
+	if (!err || wbc->for_reclaim)
+		return AOP_WRITEPAGE_ACTIVATE;
+	unlock_page(page);
+	return err;
+}
+```
+### f2fs_do_write_data_page 函数
+这个函数的作用是根据系统的状态选择就地更新数据(inplace update)还是异地更新数据(outplace update)。一般情况下，系统只会在磁盘空间比较满的时候选择就地更新策略，避免触发过多的 gc 影响性能。因此，这里主要介绍异地更新的写流程:
+```c
+int f2fs_do_write_data_page(struct f2fs_io_info *fio) // 前面提到fio是写流程最重要的数据结构
+{
+	struct page *page = fio->page;
+	struct inode *inode = page->mapping->host;
+	struct dnode_of_data dn;
+	struct extent_info ei = {0,0,0};
+	bool ipu_force = false;
+	int err = 0;
+
+	set_new_dnode(&dn, inode, NULL, NULL, 0); // 初始化dnode
+	err = f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_NODE); // 根据文件偏移page->index获取物理地址
+
+	fio->old_blkaddr = dn.data_blkaddr; // 将旧的物理地址赋值给fio->old_blkaddr
+
+	if (fio->old_blkaddr == NULL_ADDR) { // 前面提及到f2fs_file_write_iter已经将物理地址设置为NEW_ADDR或者具体的block号，因此这里表示在写入磁盘之前，用户又将这部分数据删除了，所以没必要写入了
+		ClearPageUptodate(page);
+		goto out_writepage;
+	}
+got_it:
+	if (ipu_force || (is_valid_blkaddr(fio->old_blkaddr) &&
+					need_inplace_update(fio))) { // 判断是否需要就地更新
+		err = encrypt_one_page(fio);
+		if (err)
+			goto out_writepage;
+
+		set_page_writeback(page);
+		ClearPageError(page);
+		f2fs_put_dnode(&dn);
+		if (fio->need_lock == LOCK_REQ)
+			f2fs_unlock_op(fio->sbi);
+		err = f2fs_inplace_write_data(fio); // 使用就地更新的方式写入
+		trace_f2fs_do_write_data_page(fio->page, IPU);
+		set_inode_flag(inode, FI_UPDATE_WRITE);
+		return err;
+	}
+
+	err = encrypt_one_page(fio); // 如果开启系统加密，会将这个fio->page先加密
+
+	set_page_writeback(page);
+	ClearPageError(page);
+
+	f2fs_outplace_write_data(&dn, fio); // 执行异地更新函数
+
+	set_inode_flag(inode, FI_APPEND_WRITE);
+	if (page->index == 0)
+		set_inode_flag(inode, FI_FIRST_BLOCK_WRITTEN);
+out_writepage:
+	f2fs_put_dnode(&dn);
+out:
+	if (fio->need_lock == LOCK_REQ)
+		f2fs_unlock_op(fio->sbi);
+	return err;
+}
+```
+
+### f2fs_outplace_write_data 函数
+这个函数主要用作异地更新，所谓异地更新即不在原先的物理地址更新数据，因此包含了如下四个步骤:
+1. 分配一个新的物理地址。
+2. 将数据写入新的物理地址。
+3. 将旧的物理地址无效掉，然后等 GC 回收。
+4. 更新逻辑地址和物理地址的映射关系。
+
+本函数即完成以上四个步骤:
+```c
+void f2fs_outplace_write_data(struct dnode_of_data *dn,
+					struct f2fs_io_info *fio)
+{
+	struct f2fs_sb_info *sbi = fio->sbi;
+	struct f2fs_summary sum;
+	struct node_info ni;
+
+	f2fs_get_node_info(sbi, dn->nid, &ni);
+	set_summary(&sum, dn->nid, dn->ofs_in_node, ni.version);
+	
+	do_write_page(&sum, fio); // 这里完成第1,2,3步骤
+	f2fs_update_data_blkaddr(dn, fio->new_blkaddr); // 这里完成第四个步骤，重新建立映射
+}
+```
+`struct dnode_of_data dn` 的作用是根据文件 inode，找到 `f2fs_inode` 或者 `direct_node`，然后再通过文件偏移得到物理地址，因此 f2fs_update_data_blkaddr() 也是通过 `dnode_of_data` 将新的物理地址更新到 `f2fs_inode` 或者 `direct_node` 对应的位置中。
+
+```c
+void f2fs_update_data_blkaddr(struct dnode_of_data *dn, block_t blkaddr)
+{
+	dn->data_blkaddr = blkaddr; // 获得新的物理地址
+	f2fs_set_data_blkaddr(dn); // 更新地址到f2fs_inode或者direct_node
+	f2fs_update_extent_cache(dn); // 更新cache
+}
+
+void f2fs_set_data_blkaddr(struct dnode_of_data *dn)
+{
+	f2fs_wait_on_page_writeback(dn->node_page, NODE, true); // 因为要更新node，所以要保证当前的node是最新状态
+	__set_data_blkaddr(dn);
+	if (set_page_dirty(dn->node_page)) // 设置dirty，因为更新后的地址要回写到磁盘记录
+		dn->node_changed = true;
+}
+
+static void __set_data_blkaddr(struct dnode_of_data *dn)
+{
+	struct f2fs_node *rn = F2FS_NODE(dn->node_page); // 根据node page转换到对应的f2fs_node
+	__le32 *addr_array;
+	int base = 0;
+
+	addr_array = blkaddr_in_node(rn); // 这个用于获得f2fs_inode->i_addr地址或者direct_node->addr地址
+	addr_array[base + dn->ofs_in_node] = cpu_to_le32(dn->data_blkaddr); // 根据偏移赋值更新
+}
+
+static inline __le32 *blkaddr_in_node(struct f2fs_node *node)
+{
+	// RAW_IS_INODE判断当前node是属于f2fs_inode还是f2fs_node，然后返回物理地址数组指针
+	return RAW_IS_INODE(node) ? node->i.i_addr : node->dn.addr;
+}
+```
+
+### do_write_page 函数
+上一节提及到异地更新的 1,2,3 步骤都是在这里完成，分别是 f2fs_allocate_data_block() 函数完成新物理地址的分配，以及旧物理地址的回收; f2fs_submit_page_write() 函数完成最后一步，将数据提交到磁盘。下面进行分析:
+
+```c
+static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
+{
+	int type = __get_segment_type(fio); // 获取数据类型，这个类型指HOT/WARM/COLD X NODE/DATA的六种类型
+
+	f2fs_allocate_data_block(fio->sbi, fio->page, fio->old_blkaddr,
+			&fio->new_blkaddr, sum, type, fio, true); // 完成异地更新的1,2步
+
+	f2fs_submit_page_write(fio); //完成异地更新的第3步
+
+}
+```
+f2fs_allocate_data_block() 函数首先会根据 type 获得 CURSEG。然后在 CURSEG 分配一个新的物理块，然后将旧的物理块无效掉。
+```c
+void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+		block_t old_blkaddr, block_t *new_blkaddr,
+		struct f2fs_summary *sum, int type,
+		struct f2fs_io_info *fio, bool add_list)
+{
+	struct sit_info *sit_i = SIT_I(sbi);
+	struct curseg_info *curseg = CURSEG_I(sbi, type);
+
+	*new_blkaddr = NEXT_FREE_BLKADDR(sbi, curseg); // 获取新的物理地址
+
+	__add_sum_entry(sbi, type, sum); // 将当前summary更新到CURSEG中
+
+	__refresh_next_blkoff(sbi, curseg); // 更新下一次可以用的物理地址
+
+	// 下面更新主要是更新SIT区域的segment信息
+	
+	// 根据new_blkaddr找到对应的sit_entry，然后更新状态为valid(值为1)，表示被用户使用，不可被其他人所使用
+	update_sit_entry(sbi, *new_blkaddr, 1);
+	
+	// 根据old_blkaddr找到对应的sit_entry，然后更新状态为invalid(值为-1)，表示被覆盖了，等待GC回收后重新投入使用
+	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO)
+		update_sit_entry(sbi, old_blkaddr, -1);
+
+	// 如果当前segment没有空间进行下一次分配了，就分配一个新的segment给CURSEG
+	if (!__has_curseg_space(sbi, type))
+		sit_i->s_ops->allocate_segment(sbi, type, false);
+
+	// 将segment设置为脏，等CP写回磁盘
+	locate_dirty_segment(sbi, GET_SEGNO(sbi, old_blkaddr));
+	locate_dirty_segment(sbi, GET_SEGNO(sbi, *new_blkaddr));
+
+}
+```
+f2fs_submit_page_write() 完成最后的提交到磁盘的任务，先创建一个 bio，然后将 page 加入到 bio 中，如果 bio 满了就提交到磁盘。
+```c
+void f2fs_submit_page_write(struct f2fs_io_info *fio)
+{
+	struct f2fs_sb_info *sbi = fio->sbi;
+	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
+	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp; // 这个是F2FS用于临时存放bio的变量
+	struct page *bio_page;
+
+	down_write(&io->io_rwsem);
+next:
+	// 第一步根据是否有加密，将bio_page设置为对应的page
+	if (fio->encrypted_page)
+		bio_page = fio->encrypted_page;
+	else
+		bio_page = fio->page;
+
+	fio->submitted = true;
+
+alloc_new:
+	// 如果bio是null，就创建一个新的bio
+	if (io->bio == NULL) {
+		io->bio = __bio_alloc(sbi, fio->new_blkaddr, fio->io_wbc,
+						BIO_MAX_PAGES, false,
+						fio->type, fio->temp); // BIO_MAX_PAGES一般等于256
+		io->fio = *fio;
+	}
+
+	// 将page加入到bio中，如果  < PAGE_SIZE 表示bio已经满了，因此就先将这个bio提交，然后重新分配一个新的bio
+	if (bio_add_page(io->bio, bio_page, PAGE_SIZE, 0) < PAGE_SIZE) {
+		__submit_merged_bio(io); // 提交bio，最终会执行submit_bio函数
+		goto alloc_new;
+	}
+out:
+	up_write(&io->io_rwsem);
+}
+```
+需要注意的是，在这个函数，当 bio 还没有填满 page 的时候是不会被提交到磁盘的，这是因为 F2FS 通过增大 bio 的 size 提高了写性能。因此，在用户 fsync 或者系统 writeback 的时候，为了保证这些 page 都可以刷写到磁盘，会如 f2fs_write_cache_pages() 函数所介绍一样，通过 f2fs_submit_merged_write_cond() 函数或者其他函数强行提交这个 page 未满的 bio。
 
 # 参考文档
 
