@@ -5,7 +5,7 @@ categories:
   - 内核层
 abbrlink: 257909f0
 date: 2025-12-24 17:30:00
-updated: 2025-12-29 16:40:00
+updated: 2025-12-29 17:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -3011,7 +3011,851 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
 
 # 重要数据结构和函数分析
 
-TODO
+## f2fs_summary 和 f2fs_summary_block
+
+### 介绍
+因为每一个 segment 需要管理 512 个 Block 的地址，而且很多场合需要通过 block 地址找到这个 block 是属于哪一个 node，以及属于这个 node 的第几个 block。`f2fs_summary` 主要保存了 block->node 的映射信息：
+
+```c
+struct f2fs_summary {
+	__le32 nid;		/* parent node id */
+	union {
+		__u8 reserved[3];
+		struct {
+			__u8 version;		/* node version number */
+			__le16 ofs_in_node;	/* block index in parent node */
+		} __packed;
+	};
+} __packed;
+```
+一个 segment 对应的 512 个 `f2fs_summary` 是通过一个 4 KB 的 block 保存，`f2fs_summary_block` 保存在元数据区域的 **SSA**  区域: 
+
+```c
+struct f2fs_summary_block {
+	struct f2fs_summary entries[ENTRIES_IN_SUM];
+	struct f2fs_journal journal;
+	struct summary_footer footer;
+} __packed;
+
+struct summary_footer {
+	unsigned char entry_type;	/* SUM_TYPE_XXX */
+	__le32 check_sum;		/* summary checksum */
+} __packed;
+```
+
+其中 `summary_footer` 记录了这个 `f2fs_summary_block` 的一些属性，如校验信息，以及这个 `f2fs_summary_block` 对应的 segment 所管理的 block 是属于 node 还是 data。
+
+### 应用场景
+
+1. **GC 基本流程:** 选一个无效 block 最多的当选择出需要 gc 的 victim segment，然后将这个 victim segment 的 block 迁移插入到其他 segment 中，这样就可以制造出一个全部 block 都可以用的 segment。
+2. **f2fs_summary 在 GC 的作用:** 当选择出需要 gc 的 victim segment 之后，可以通过这个 victim segment 的 segno，在 SSA 区域找到 `f2fs_summary_block`。对 victim segment 的每一个 block 进行迁移的时候，会根据 block 的地址在 `f2fs_summary_block` 找到 它所对应的 `f2fs_summary` 然后根据它所记录的 `f2fs_summary->nid` 以及 `f2fs_summary->ofs_in_node` 找到对应的具体的 block 的数据，然后将这些数据设置为 dirty，然后等待 vfs 的 writeback 机制完成页迁移。
+
+## seg_entry 和 sit_info
+
+### seg_entry 结构
+#### 介绍
+因为每一个 segment 需要管理 512 个 Block 的地址，因此需要通过某种方式去标记一个 segment 下的 block，哪些是已经使用的，哪些 block 是处于无效状态等待回收。在 F2FS 中，通过结构体 `seg_entry` 去管理一个 segment 下的所有 block 的使用信息:
+
+```c
+struct seg_entry {
+	unsigned int type:6;		/* 这个segment的类型 */
+	unsigned int valid_blocks:10;	/* 已经使用的块的数目 */
+	unsigned int ckpt_valid_blocks:10;	/* 上一次执行CP时，使用的块的数目 */
+	unsigned int padding:6;		/* padding */
+	unsigned char *cur_valid_map;	/* 通过bitmap(512位)表示这个segment哪些被使用，哪些没使用 */
+#ifdef CONFIG_F2FS_CHECK_FS
+	unsigned char *cur_valid_map_mir;	/* mirror of current valid bitmap */
+#endif
+	/*
+	 * # of valid blocks and the validity bitmap stored in the the last
+	 * checkpoint pack. This information is used by the SSR mode.
+	 */
+	unsigned char *ckpt_valid_map;	/* 上次CP时的bitmap状态 */
+	unsigned char *discard_map; /* 标记哪些block需要discard的bitmap */
+	unsigned long long mtime;	/* 修改时间 */
+};
+```
+
+`seg_entry` 由于跟磁盘空间大小有关，因此初始化时以动态分配的方式，保存在元数据区域的 **SIT** 区域当中，代码的具体实现为 `sbi->sit_info->sentries` 中。
+
+#### 应用场景
+
+**写流程:** 当文件的修改某一个 block 的数据时，需要经过的流程是：
+
+1) 分配一个新的 block; 
+2) 将数据写入到新分配的 block 中; 
+3) 将旧 block 置为无效，等待回收; 
+4) 将新 block 写入到磁盘中。
+
+这一个流程需要更新的 segment 的管理信息，因为新 block 和旧 block 可能来自不同的 segment，因此需要更新 segment 的统计信息，具体流程是: 根据新 block 的地址，找到对应 segment number 和 seg_entry，然后在 `seg_entry` 的根据新 block 在 segment 的 bitmap 对应位置设为 1，然后给 `seg_entry->valid_blocks` 加一，表示这个 segment 新增加了一个被使用 block；对于旧 block，一样是根据 block 地址找到 segment number 和 seg_entry，然后执行相反操作对 bitmap 设为 0，然后 `seg_entry->valid_blocks` 减一。
+
+### curseg_info 结构
+#### 介绍
+`curseg_info` 在 F2FS 中表示的是当前使用的 segment 的信息。一般情况下，F2FS 同时运行着 6 个 `curseg_info` ，分别表示 **(NODE,DATA) X (HOT,WARM,COLD)** 这些不同类型的 segment。它的基本结构和关联数据结构是：
+
+```c
+struct curseg_info {
+	struct mutex curseg_mutex;		/* lock for consistency */
+	struct f2fs_summary_block *sum_blk;	/* cached summary block */
+	struct rw_semaphore journal_rwsem;	/* protect journal area */
+	struct f2fs_journal *journal;		/* cached journal info */
+	unsigned char alloc_type;		/* current allocation type */
+	unsigned int segno;			/* current segment number */
+	unsigned short next_blkoff;		/* next block offset to write */
+	unsigned int zone;			/* current zone number */
+	unsigned int next_segno;		/* preallocated segment */
+};
+```
+**f2fs_summary_block:** `curseg_info` 表示一个 segment，因此通过 `f2fs_summary_block` 管理这个 segment 下的所有 block。 `f2fs_summary_block` 包含 512 个 `f2fs_summary`，每个 summary 代表一个这个 segment 里面的一个 block，它的结构是:
+
+```c
+struct f2fs_summary_block {
+	struct f2fs_summary entries[ENTRIES_IN_SUM]; /* ENTRIES_IN_SUM = 512 表示被管理的512个块 */
+	struct f2fs_journal journal;
+	struct summary_footer footer; /* 指示这个segment的类型 */
+} __packed;
+
+struct f2fs_summary {
+	__le32 nid;		/* 属主node id */
+	union {
+		__u8 reserved[3];
+		struct {
+			__u8 version;		/* node version number */
+			__le16 ofs_in_node;	/* 属主node里面的第几个block */
+		} __packed;
+	};
+} __packed;
+
+```
+可以看到每一个 `f2fs_summary` 用来描述这个 segment 里面的 block 是属于哪一个 node，而且是这个 node 里面的第几个 block。
+
+**f2fs_journal:** `curseg_info` 管理着 512 个 block，需要一种机制去记录每一个它所管理的 block 是否已经被分配出去。因此 `f2fs_journal` 的作用就是记录每一个 block 是否是有效。它的结构如下:
+
+```c
+struct f2fs_journal {
+	union {
+		__le16 n_nats;
+		__le16 n_sits; /* 这个journal里面包含多少个sit_journal对象 */
+	};
+	/* spare area is used by NAT or SIT journals or extra info */
+	union {
+		struct nat_journal nat_j;
+		struct sit_journal sit_j;
+		struct f2fs_extra_info info;
+	};
+} __packed;
+
+struct sit_journal {
+	struct sit_journal_entry entries[SIT_JOURNAL_ENTRIES];
+	__u8 reserved[SIT_JOURNAL_RESERVED];
+} __packed;
+
+struct sit_journal_entry {
+	__le32 segno;
+	struct f2fs_sit_entry se;
+} __packed;
+
+struct f2fs_sit_entry {
+	__le16 vblocks;				/* reference above */
+	__u8 valid_map[SIT_VBLOCK_MAP_SIZE];	/* SIT_VBLOCK_MAP_SIZE = 64，64 * 8 = 512 可以表示每一个块的valid状态 */
+	__le64 mtime;				/* segment age for cleaning */
+} __packed;
+```
+`f2fs_journal` 可以记录 NAT 和 SIT 的 journal。通过 `f2fs_sit_entry` 可以发现，`f2fs_journal` 保存的是有效 block 的数目 `vblocks` 以及它的 bitmap `valid_map`。 
+
+#### curseg_info 的作用
+`curseg_info` 的作用主要是当一个 Node 或者 Data 需要分配一个新的 block 的时候，就会根据这个 block 的类型，在 `curseg_info` 取出一个 segment，然后在这个 segment 分配出一个新的 block，然后将新的 block 的映射信息，写入 `curseg_info` 的 `f2fs_summary_block` 和 `f2fs_journal` 中。这样设计的原因是，将大部分更新元数据的操作都放在 `curseg_info` 完成，避免了频繁读写磁盘。
+
+## F2FS Journal 机制
+### 介绍
+当 F2FS 进行文件读写的时候，根据 `f2fs_node` 的设计以及闪存设备异地更新的特性，每修改一个数据块，都需要改动 `f2fs_node` 的地址映射，以及 NAT，SIT 等信息。但是如果仅仅因为一个小改动，例如修改一个块，就需要改动这么多数据，然后再写入磁盘，这样既会导致性能下降，也会导致 SSD 寿命的下降。故 F2FS 设计了 journal 机制，用于将这些对数据的修改会暂存在 `f2fs_journal`，等系统进行 checkpoint 的时候，再写入磁盘当中。
+
+部分内容参考: [https://blog.csdn.net/sunwukong54/article/details/45669017](https://blog.csdn.net/sunwukong54/article/details/45669017)
+
+### 涉及到的数据结构
+```c
+struct f2fs_journal {
+	union {
+		__le16 n_nats; /* 这个journal里面包含多少个nat_journal对象 */
+		__le16 n_sits; /* 这个journal里面包含多少个sit_journal对象 */
+	};
+	/* spare area is used by NAT or SIT journals or extra info */
+	union {
+		struct nat_journal nat_j;
+		struct sit_journal sit_j;
+		struct f2fs_extra_info info;
+	};
+} __packed;
+```
+`f2fs_journal` 可以保存 NAT 的 journal 也可以保存 SIT 的 journal，以下分别分析:
+
+**NAT Journal**
+NAT 类型的 journal 主要保存的每一个 node 是属于哪一个 inode，以及它的地址是什么，这样设计的原始访问某一个 node 的时候，只要根据 nid 找到对应的 `nat_journal_entry`，然后就可以找到 `f2fs_nat_entry`，最后找到 blkaddr。
+
+```c
+struct nat_journal {
+	struct nat_journal_entry entries[NAT_JOURNAL_ENTRIES];
+	__u8 reserved[NAT_JOURNAL_RESERVED];
+} __packed;
+
+struct nat_journal_entry {
+	__le32 nid;
+	struct f2fs_nat_entry ne;
+} __packed;
+
+struct f2fs_nat_entry {
+	__u8 version;		/* latest version of cached nat entry */
+	__le32 ino;		/* inode number */
+	__le32 block_addr;	/* block address */
+} __packed;
+```
+**SIT Journal**
+SIT 类型的 Journal 和 segment 一一对应。segment 管理着 512 个 block，需要一种机制去记录每一个它所管理的 block 是否已经被分配出去。通过 `f2fs_sit_entry` 可以发现，`f2fs_journal` 保存的是有效 block 的数目 `vblocks` 以及它的 bitmap `valid_map`。 
+
+```c
+struct sit_journal {
+	struct sit_journal_entry entries[SIT_JOURNAL_ENTRIES];
+	__u8 reserved[SIT_JOURNAL_RESERVED];
+} __packed;
+
+struct sit_journal_entry {
+	__le32 segno;
+	struct f2fs_sit_entry se;
+} __packed;
+
+struct f2fs_sit_entry {
+	__le16 vblocks;				/* reference above */
+	__u8 valid_map[SIT_VBLOCK_MAP_SIZE];	/* SIT_VBLOCK_MAP_SIZE = 64，64 * 8 = 512 可以表示每一个块的valid状态 */
+	__le64 mtime;				/* segment age for cleaning */
+} __packed;
+```
+
+### 一些机制的具体实现
+
+#### 通过 Journal 获取 Node 的地址
+```c
+void f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
+						struct node_info *ni)
+{
+	struct f2fs_nm_info *nm_i = NM_I(sbi);
+	struct curseg_info *curseg = CURSEG_I(sbi, CURSEG_HOT_DATA);
+	struct f2fs_journal *journal = curseg->journal;
+	nid_t start_nid = START_NID(nid);
+	struct f2fs_nat_block *nat_blk;
+	struct page *page = NULL;
+	struct f2fs_nat_entry ne;
+	struct nat_entry *e;
+	pgoff_t index;
+	int i;
+
+	ni->nid = nid;
+
+	/* Check nat cache */
+	down_read(&nm_i->nat_tree_lock);
+	e = __lookup_nat_cache(nm_i, nid); // 从cache里面找nid
+	if (e) { // 如果有就返回
+		ni->ino = nat_get_ino(e);
+		ni->blk_addr = nat_get_blkaddr(e);
+		ni->version = nat_get_version(e);
+		up_read(&nm_i->nat_tree_lock);
+		return;
+	}
+
+	memset(&ne, 0, sizeof(struct f2fs_nat_entry)); // 初始化为0
+
+	/* Check current segment summary */
+	down_read(&curseg->journal_rwsem);
+	i = f2fs_lookup_journal_in_cursum(journal, NAT_JOURNAL, nid, 0); // 从NAT_JOURNAL里面找这个nid在journal中的offset
+	if (i >= 0) {
+		ne = nat_in_journal(journal, i); // 将nat_entry返回出来
+		node_info_from_raw_nat(ni, &ne); // 读到node_info中
+	}
+	up_read(&curseg->journal_rwsem);
+	if (i >= 0) {
+		up_read(&nm_i->nat_tree_lock);
+		goto cache;
+	}
+
+	/*
+	 * Fill node_info from nat page
+	 * start_nid是根据nid找到管理这个nid的nat block偏移
+	 * */
+	index = current_nat_addr(sbi, nid);
+	up_read(&nm_i->nat_tree_lock);
+
+	page = f2fs_get_meta_page(sbi, index); // 从磁盘读取出f2fs_nat_block
+	nat_blk = (struct f2fs_nat_block *)page_address(page);
+	ne = nat_blk->entries[nid - start_nid];
+	node_info_from_raw_nat(ni, &ne);
+	f2fs_put_page(page, 1);
+cache:
+	/* cache nat entry */
+	cache_nat_entry(sbi, nid, &ne); // 缓存这个node_entry
+}
+```
+
+#### 通过 Checkpoint 将 journal 的信息写入到磁盘中
+简略的流程如下: 
+1. `f2fs_flush_nat_entries` 和 `f2fs_flush_sit_entries` 函数将 entry 都写入到 `curseg_info->f2fs_summary->journal` 的变量中。
+2. do_checkpoint() 函数读取 `curseg_info->f2fs_summary`，然后通过函数 `f2fs_write_node_summaries` 或 `f2fs_write_data_summaries` 刷写到磁盘中。
+
+## f2fs_map_blocks 的作用与源码分析
+函数 f2fs_map_blocks() 启到了地址映射的作用，主要作用是通过逻辑地址找到可以访问磁盘的物理地址。
+
+### 读写流程的作用
+1. 对读的作用: 通过该函数根据逻辑地址找到物理地址，然后从磁盘读取出数据。
+2. 对写的作用: 文件在写入数据之前，会执行一个 preallocate 的过程，这个过程会调用 `f2fs_map_blocks` 函数对即将要写入数据的逻辑块进行预处理，如果是 append 的方式写入数据，则将物理地址初始化为 NEW_ADDR; 如果是 rewrite 的方式写入数据，则不作改变。
+
+### 核心数据结构
+f2fs_map_blocks() 函数的核心是 `f2fs_map_blocks` 数据结构，保存了一系列映射信息。
+
+```c
+struct f2fs_map_blocks {
+	block_t m_pblk; // 保存的是物理地址，可以通过这个物理地址访问磁盘读取信息
+	block_t m_lblk; // 保存的逻辑地址，即文件的page->index
+	unsigned int m_len; // 需要读取的长度
+	unsigned int m_flags; // flags表示获取数据状态，如F2FS_MAP_MAPPED
+	pgoff_t *m_next_pgofs; // 指向下一个offset
+};
+```
+
+### 读流程的核心逻辑
+
+一般的读流程，会进行如下的数据结构初始化:
+```c
+map.m_lblk = block_in_file; // 设置逻辑地址page->index
+map.m_len = len; // 设置需要读取的长度
+f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_READ); // 0设定非创建模式，F2FS_GET_BLOCK_READ设定搜索模式
+```
+即通过逻辑地址和读取长度找到对应的物理地址，与**读流程相关的核心逻辑**如下所示:
+```c
+int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int create, int flag)
+{
+	unsigned int maxblocks = map->m_len; // 设定最大搜索长度
+	int mode = create ? ALLOC_NODE : LOOKUP_NODE_RA; // LOOKUP_NODE_RA模式
+
+	map->m_len = 0; // 将len重新设置为0
+	map->m_flags = 0;
+	pgofs =	(pgoff_t)map->m_lblk; // page->index
+
+	// 第一步：先从extent找，如果在extent找到，就可以马上返回
+	if (!create && f2fs_lookup_extent_cache(inode, pgofs, &ei)) {
+		map->m_pblk = ei.blk + pgofs - ei.fofs;
+		map->m_len = min((pgoff_t)maxblocks, ei.fofs + ei.len - pgofs);
+		map->m_flags = F2FS_MAP_MAPPED;
+		goto out;
+	}
+
+	// 第二步：根据page->index找到对应的dn，dn是一个包含了物理地址的数据结构
+	set_new_dnode(&dn, inode, NULL, NULL, 0);
+	err = get_dnode_of_data(&dn, pgofs, mode);
+
+	// 第三步：从dn获取物理地址
+	blkaddr = datablock_addr(dn.node_page, dn.ofs_in_node);
+	...
+	map->m_pblk = blkaddr;
+	...
+	return err;
+}
+```
+
+### 写流程的核心逻辑
+一般的读流程，会进行如下的数据结构初始化:
+```c
+map.m_lblk = F2FS_BLK_ALIGN(iocb->ki_pos); // 计算得到页偏移
+map.m_len = F2FS_BYTES_TO_BLK(iocb->ki_pos + iov_iter_count(from)); // 计算得到需要读取的页数
+f2fs_map_blocks(inode, &map, 1, F2FS_GET_BLOCK_PRE_AIO); // 1设定创建模式，F2FS_GET_BLOCK_PRE_AIO表示用于预分配物理页
+```
+写流程下的 f2fs_map_blocks() 函数作用是先根据逻辑地址读取物理地址出来，如果这个物理地址没有被分配过(NULL_ADDR)，则初始化为新地址(NEW_ADDR)，用于下一步的写入磁盘的操作，与**写流程相关的核心逻辑**如下所示:
+```c
+
+int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+						int create, int flag)
+{
+	unsigned int maxblocks = map->m_len;
+	int mode = create ? ALLOC_NODE : LOOKUP_NODE;
+
+	map->m_len = 0;
+	map->m_flags = 0;
+
+	pgofs =	(pgoff_t)map->m_lblk;
+	end = pgofs + maxblocks;
+
+	// 第一步：根据page->index找到对应的dn，dn是一个包含了物理地址的数据结构
+	set_new_dnode(&dn, inode, NULL, NULL, 0);
+	err = f2fs_get_dnode_of_data(&dn, pgofs, mode);
+
+	// 第二步：从dn获取物理地址
+	blkaddr = datablock_addr(dn.inode, dn.node_page, dn.ofs_in_node);
+
+	// 第三步：如果blkaddr == NULL_ADDR表示这个是从来未使用过的物理页，即目前运行的是append写，
+	//  因此将其记录下来。
+	if (flag == F2FS_GET_BLOCK_PRE_AIO) {
+		if (blkaddr == NULL_ADDR) {
+			prealloc++; // 记录需要与分配的物理页的数目
+			last_ofs_in_node = dn.ofs_in_node;
+		}
+	} 
+
+	if (flag == F2FS_GET_BLOCK_PRE_AIO &&
+			(pgofs == end || dn.ofs_in_node == end_offset)) {
+
+		dn.ofs_in_node = ofs_in_node;
+		// 第四步：根据prealloc记录的从未被使用过的块的数目，
+		//  通过函数f2fs_reserve_new_blocks，将他们的值由NULL_ADDR转换为NEW_ADDR，用于下一步写入磁盘
+		err = f2fs_reserve_new_blocks(&dn, prealloc);
+		if (err)
+			goto sync_out;
+
+		map->m_len += dn.ofs_in_node - ofs_in_node;
+		if (prealloc && dn.ofs_in_node != last_ofs_in_node + 1) {
+			err = -ENOSPC;
+			goto sync_out;
+		}
+		dn.ofs_in_node = end_offset;
+	}
+
+	...
+	return err;
+}
+```
+
+## 物理地址寻址的实现
+VFS 的读写都依赖于物理地址的寻址。经典的读流程，VFS 会传入 inode 以及 page index 信息给文件系统，然后文件系统需要根据以上信息，找到物理地址，然后访问磁盘将其读取出来。F2FS 的物理地址寻址，是通过 f2fs_get_dnode_of_data() 函数实现。
+
+在执行这个 f2fs_get_dnode_of_data() 函数之前，需要通过 set_new_dnode() 函数进行对数据结构 `struct dnode_of_data` 进行初始化:
+```c
+struct dnode_of_data {
+	struct inode *inode;		/* VFS inode结构 */
+	struct page *inode_page;	/* f2fs_inode对应的node page */
+	struct page *node_page;		/* 用户需要访问的物理地址所在的node page，有可能跟inode_page一样*/
+	nid_t nid;			/* 用户需要访问的物理地址所在的node的nid，与上面的node_page对应*/
+	unsigned int ofs_in_node;	/* 用户需要访问的物理地址位于上面的node_page对应的addr数组第几个位置 */
+	bool inode_page_locked;		/* inode page is locked or not */
+	bool node_changed;		/* is node block changed */
+	char cur_level;			/* 当前node_page的层次，按直接访问或者简介访问的深度区分 */
+	char max_level;			/* level of current page located */
+	block_t	data_blkaddr;		/* 用户需要访问的物理地址 */
+};
+
+static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+		struct page *ipage, struct page *npage, nid_t nid)
+{
+	memset(dn, 0, sizeof(*dn));
+	dn->inode = inode;
+	dn->inode_page = ipage;
+	dn->node_page = npage;
+	dn->nid = nid;
+}
+```
+大部分情况下，仅需要传入 inode 进行初始化: 
+```c
+set_new_dnode(&dn, inode, NULL, NULL, 0); // 0表示不清楚nid
+```
+然后根据需要访问的 page index，执行 f2fs_get_dnode_of_data() 函数寻找:
+```c
+err = f2fs_get_dnode_of_data(&dn, page->index, type); // type类型影响了寻址的行为
+blockt blkaddr = dn.data_blkaddr; // 获得对应位置的物理地址信息
+```
+接下来分析，函数是如何寻址，由于函数比较长和复杂，先分析一个比较重要的函数 get_node_path() 函数的作用，它的用法是:
+### 概念
+在分析之前，我们要明确几个概念。f2fs 有三种 node 的类型，`f2fs_inode`、`direct_node` 和 `indirect node`。其中 `f2fs_inode` 和 `direct_node` 都是直接保存数据的地址指针，因此一般统称为 direct node，若有下横线，例如 `direct_node`，则表示数据结构 `struct direct_node`，如果没有下横线，则表示直接保存数据的地址指针的 node，即 `f2fs_inode` 和 `direct_node`。另外 `indirect node` 保存的是间接寻址的 node 的 nid，因此一般直接称为 indirect node。
+### 函数用法
+```c
+int level;
+int offset[4];
+unsigned int noffset[4];
+level = get_node_path(inode, page->index, offset, noffset);
+```
+这里 offset 和 noffset 分别表示 block offset 和 node offset，返回的 level 表示寻址的深度，一共有 4 个深度，使用 0~3 表示:
+
+- level=0: 表示可以直接在 `f2fs_inode` 找到物理地址。
+- level=1: 表示可以在 `f2fs_inode->i_nid[0~1]` 对应的 `direct_node `能够找到物理地址。
+- level=2: 表示可以在 `f2fs_inode->i_nid[2~3] `对应的 `indirect_node` 下的 nid 对应的 `direct_node `能够找到物理地址。
+- level=3: 表示只能在 `f2fs_inode->i_nid[4]` 对应 `indirect_node `的 nid 对应的 `indirect_node` 的 nid 对应的 `direct_node` 才能找到地址。
+
+由于 offset 和 noffset，表示的是物理地址寻址信息，分别表示 block 偏移和 direct node 偏移来表示，它们是长度为 4 的数组，代表不同 level 0~3 的寻址信息。之后的函数可以通过 offset 和 noffset 将数据块计算出来。
+### 寻址原理
+给定 page->index，计算出 level 之后，offset[level] 表示该 page 在所对应的 direct node 里面的 block 的偏移，noffset[level] 表示当前的 node 是属于这个文件的第几个 node(包括 f2fs_node, direct_node, indirect_node)，下面用几个例子展示一下(注意下面计算的是不使用 xattr 的 f2fs 版本，如果使用了 xattr 结果会不同，但是表示的含义是一样的):
+
+#### 例子 1: 物理地址位于 f2fs_inode
+
+例如我们要寻找 page->index = 665 的数据块所在的位置，显然 655 是位于 `f2fs_inode` 内，因此 level=0，因此我们只需要看 offset[0] 以及 noffset[0] 的信息。offset[0] = 665 表示这个数据块在当前 direct node(注意: f2fs_inode 也是 direct node 的一种)的位置；noffset[0] 表示当前 direct node 是属于这个文件的第几个 node，由于 f2fs_inode 是第一个 node，所以 noffset[0] = 0。
+
+```c
+level = 0 // 可以直接在f2fs_inode找到物理地址
+offset[0] = 665 // 由于level=0，因此我们只需要看offset[level]=offset[0]的信息，这里offset[0] = 665表示地址位于f2fs_inode->i_addr[665]
+noffset[0] = 0 // 对于level=0的情况，即看noffset[0]，因为level=0表示数据在唯一一个的f2fs_inode中，因此这里表示inode。
+```
+
+#### 例子 2: 物理地址位于 direct_node
+
+例如我们要寻找 page->index = 2113 的数据块所在的位置，它位于第二个 direct_node，所以 level=1。我们只需要看 offset[1] 以及 noffset[1] 的信息。offset[1] = 172 表示这个数据块在当前 direct node 的位置，即 direct_node->addr[172]；noffset[1] 表示当前 direct node 是属于这个文件的第几个 node，由于它位于第二个 direct_node，前面还有一个 f2fs_inode 以及一个 direct node，所以这是第三个 node，因此 noffset[1] = 2。
+
+```c
+level = 1 // 表示可以在f2fs_inode->i_nid[0~1]对应的direct_node能够找到物理地址
+offset[1] = 172 // 表示物理地址位于对应的node page的i_addr的第172个位置中，即direct_node->addr[172]
+noffset[1] = 2 // 数据保存在总共第三个node中 (1个f2fs_inode，2个direct_node)
+```
+
+#### 例子 3: 物理地址位于 indirect_node
+
+例如我们要寻找 page->index = 4000 的数据块所在的位置，它位于第 1 个 indirect_node 的第 2 个 direct_node中，所以 level=2。我们只需要看 offset[2] 以及 noffset[2] 的信息。offset[2] = 23 表示这个数据块在当前 direct node 的位置；noffset[2] 表示当前 direct node 是属于这个文件的第几个 direct node，即这是第 6 个 node。(1 * f2fs_inode + 2 * direct_node + 1 * indirect_node + 2 * direct node)。
+
+```c
+offset[2] = 23
+noffset[2] = 5
+```
+
+#### 例子 4: 物理地址位于 indirect_node 再 indiret_node 中 (double indirect node)
+
+例如我们要寻找 page->index = 2075624 的数据块所在的位置，它位于第一个 double indirect_node 的第一个 indirect_node 的第一个 direct_node 中，所以 level=3。同理我们只需要看 offset[3] 以及 noffset[3] 的信息，如下，可以自己计算一下：
+
+```c
+offset[3] = 17
+noffset[3] = 2043
+```
+
+从上面可以知道 get_node_path() 函数以后，执行可以根据 offset 和 noffset 直接知道 page->index 对应的物理地址，位于第几个 node page 的第几个 offset 对应的物理地址中。下面分析 f2fs_get_dnode_of_data() 的原理：
+
+```c
+int f2fs_get_dnode_of_data(struct dnode_of_data *dn, pgoff_t index, int mode)
+{
+	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
+	struct page *npage[4];
+	struct page *parent = NULL;
+	int offset[4];
+	unsigned int noffset[4];
+	nid_t nids[4];
+	int level, i = 0;
+	int err = 0;
+	
+	// 通过计算得到offset, noffset，从而知道位于第几个node page的第几个offset对应的物理地址中
+	level = get_node_path(dn->inode, index, offset, noffset);
+	if (level < 0)
+		return level;
+
+	nids[0] = dn->inode->i_ino;
+	npage[0] = dn->inode_page;
+
+	if (!npage[0]) {
+		npage[0] = f2fs_get_node_page(sbi, nids[0]); // 获取inode对应的f2fs_inode的node page
+	}
+
+	parent = npage[0];
+	if (level != 0)
+		nids[1] = get_nid(parent, offset[0], true); // 获取f2fs_inode->i_nid
+		
+	dn->inode_page = npage[0];
+	dn->inode_page_locked = true;
+
+	for (i = 1; i <= level; i++) {
+		bool done = false;
+
+		if (!nids[i] && mode == ALLOC_NODE) { 
+			// 创建模式，常用，写入文件时，需要node page再写入数据，因此对于较大文件，在这里创建node page
+			if (!f2fs_alloc_nid(sbi, &(nids[i]))) { // 分配nid
+				err = -ENOSPC;
+				goto release_pages;
+			}
+
+			dn->nid = nids[i];
+			npage[i] = f2fs_new_node_page(dn, noffset[i]); // 分配node page
+			//  如果i == 1，表示f2fs_inode->nid[0~1]，即direct node，直接赋值到f2fs_inode->i_nid中
+			//  如果i != 1，表示parent是indirect node类型的，要赋值到indirect_node->nid中
+			set_nid(parent, offset[i - 1], nids[i], i == 1); 
+			f2fs_alloc_nid_done(sbi, nids[i]);
+			done = true;
+		} else if (mode == LOOKUP_NODE_RA && i == level && level > 1) {
+			// 预读模式，少用，将node page全部预读出来
+			npage[i] = f2fs_get_node_page_ra(parent, offset[i - 1]);
+			done = true;
+		}
+		if (i == 1) {
+			dn->inode_page_locked = false;
+			unlock_page(parent);
+		} else {
+			f2fs_put_page(parent, 1);
+		}
+
+		if (!done) {
+			npage[i] = f2fs_get_node_page(sbi, nids[i]); // 根据nid获取node page
+		}
+		if (i < level) {
+			parent = npage[i]; // 注意这里parent被递归地赋值，目的是处理direct node和indrect node的赋值问题
+			nids[i + 1] = get_nid(parent, offset[i], false); // 计算下一个nid
+		}
+	}
+	// 全部完成后，将结果赋值到dn，然后退出函数
+	dn->nid = nids[level];
+	dn->ofs_in_node = offset[level];
+	dn->node_page = npage[level];
+	dn->data_blkaddr = datablock_addr(dn->inode, dn->node_page, dn->ofs_in_node); // 这个就是根据page index所得到的物理地址
+	return 0;
+}
+```
+
+## Node Footer 的作用
+
+`footer` 是 F2FS 中记录 node 的属性的一个数据，定义如下：
+
+```c
+struct f2fs_node {
+	union {
+		struct f2fs_inode i;
+		struct direct_node dn;
+		struct indirect_node in;
+	};
+	struct node_footer footer;
+} __packed;
+
+struct node_footer {
+	__le32 nid;		/* node id */
+	__le32 ino;		/* inode nunmber */
+	__le32 flag;		/* include cold/fsync/dentry marks and offset */
+	__le64 cp_ver;		/* checkpoint version */
+	__le32 next_blkaddr;	/* next node page block address */
+} __packed;
+```
+
+F2FS 有三种类型的 node，分别是 `f2fs_inode`、`direct_node`、`indirect_node`，每一种类型的 node 都有对应的 footer。
+
+### footer->nid 和 footer->ino
+
+每一个 node 都有一个独特的 `nid`，它被记录在 `footer` 中，如果是 `direct_node` 或者 `indirect_node`，它们都有一个对应的 `f2fs_inode`，因此为了记录从属关系，还需要 `footer` 记录它所属于的 `f2fs_inode` 的 `nid`，即 `ino`。因此，如果 `footer->nid == footer->ino`，那么这个 node 就是 inode，反正这个 `node` 是 `direct_node` 或者 `indirect_node`。
+
+### footer->flag
+
+`footer->flag` 的作用是标记当前的 node 的属性。目前 F2FS 给 node 定义了三种属性: 
+
+```c
+enum {
+	COLD_BIT_SHIFT = 0,
+	FSYNC_BIT_SHIFT,
+	DENT_BIT_SHIFT,
+	OFFSET_BIT_SHIFT
+};
+
+#define OFFSET_BIT_MASK		(0x07)	/* (0x01 << OFFSET_BIT_SHIFT) - 1 */
+```
+
+其中 `footer->flag`：
+
+- 第 0 位表示这个 node 是否是 cold node。
+- 第 1 位表示这个 node 是否执行了完整的 fsync。F2FS 为了 `fsync` 的效率做了一些改进，F2FS 不会在 `fsync` 刷写所有脏的 node page 进去磁盘，只会刷写一些根据 data 直接相关的 node page 进入磁盘，例如 `f2fs_inode` 和 `direct_node`。因此这个标志位是用来记录这个 node 是否执行了完整的 fsync，以便系统在 crash 中恢复。
+- 第 3 位表示这个 node 是是用来保存文件数据，还是目录数据的，也是用于数据恢复。
+
+### footer->cp_ver 和 footer->next_blkaddr
+
+`footer->cp_ver` 分别用来记录当前的 checkpoint 的 version，恢复的时候比较 version 版本确定如何进行数据恢复。
+
+`footer->next_blkaddr` 则是用来记录这个 node 对应下一个 node page 的地址，也是用来恢复数据。
+
+## rename 流程
+
+### 流程介绍
+
+1. sys_rename 函数。
+2. do_renameat2 函数。
+3. vfs_rename 函数。
+4. f2fs_rename 函数。
+
+### sys_rename 函数
+
+sys_rename 函数是一个系统调用，是 rename 函数进入内核层的第一个函数:
+
+```c
+SYSCALL_DEFINE2(rename, const char __user *, oldname, const char __user *, newname)
+{
+    // AT_FDCWD表示以相对路径的方法找oldname和newname这个文件，flags=0
+	return do_renameat2(AT_FDCWD, oldname, AT_FDCWD, newname, 0);
+}
+```
+
+### do_renameat2 函数
+
+do_renameat2 函数比较长，考虑多个输入 flag 的作用，这里只考虑 sys_rename 函数 rename 一个文件的情形，即 flag=0，并以此精简函数。
+
+```c
+static int do_renameat2(int olddfd, const char __user *oldname, int newdfd,
+			const char __user *newname, unsigned int flags)
+{
+	struct dentry *old_dentry, *new_dentry;
+	struct dentry *trap;
+	struct path old_path, new_path;
+	struct qstr old_last, new_last;
+	int old_type, new_type;
+	struct inode *delegated_inode = NULL;
+	struct filename *from;
+	struct filename *to;
+	unsigned int lookup_flags = 0, target_flags = LOOKUP_RENAME_TARGET;
+	bool should_retry = false;
+	int error;
+
+retry:
+    // 接下来两个函数最重要的作用是根据oldname和newname找到父目录的dentry结构
+    // 这两个dentry结构保存在old_path和new_path中(注意是父目录的dentry)
+	from = filename_parentat(olddfd, getname(oldname), lookup_flags,
+				&old_path, &old_last, &old_type);
+
+	to = filename_parentat(newdfd, getname(newname), lookup_flags,
+				&new_path, &new_last, &new_type);
+    
+retry_deleg:
+    // 这个函数会触发一个全局的rename的互斥锁，然后锁两个父目录inode结构
+	trap = lock_rename(new_path.dentry, old_path.dentry);
+	// 根据old path的父目录找到需要被rename的文件的dentry
+	old_dentry = __lookup_hash(&old_last, old_path.dentry, lookup_flags);
+	// 根据new path的父目录找到或创建新的dentry
+	new_dentry = __lookup_hash(&new_last, new_path.dentry, lookup_flags | target_flags);
+	// 调用vfs_rename函数进行重命名
+    // 传入的是新旧两个目录的inode，以及需要重命名的两个dentry， flags = 0
+	error = vfs_rename(old_path.dentry->d_inode, old_dentry,
+			   new_path.dentry->d_inode, new_dentry,
+			   &delegated_inode, flags);
+
+	dput(new_dentry);
+
+	dput(old_dentry);
+    // 解锁全局rename互斥锁，释放两个inode锁
+	unlock_rename(new_path.dentry, old_path.dentry);
+
+	path_put(&new_path);
+	putname(to);
+
+	path_put(&old_path);
+	putname(from);
+exit:
+	return error;
+}
+```
+
+### vfs_rename 函数
+
+vfs_rename 函数也会做简化，简化的情形是将文件 A 重命名到文件 B(B 可能已经存在，或者不存在)，flags=0。
+
+```c
+int vfs_rename(struct inode *old_dir, struct dentry *old_dentry,
+	       struct inode *new_dir, struct dentry *new_dentry,
+	       struct inode **delegated_inode, unsigned int flags)
+{
+	int error;
+	bool is_dir = d_is_dir(old_dentry);
+	struct inode *source = old_dentry->d_inode; // 旧文件inode
+	struct inode *target = new_dentry->d_inode; // 新文件inode
+	bool new_is_dir = false;
+	unsigned max_links = new_dir->i_sb->s_max_links;
+	struct name_snapshot old_name;
+
+	dget(new_dentry); // 对新文件的引用计数+1
+	if (target)
+		inode_lock(target); // 如果新文件已经存在，则上锁
+
+
+	error = old_dir->i_op->rename(old_dir, old_dentry,
+				       new_dir, new_dentry, flags);
+
+
+out:
+	if (target)
+		inode_unlock(target); // 如果新文件已经存在，则解锁
+	dput(new_dentry); // 对新文件的引用计数-1
+	return error;
+}
+```
+
+### f2fs_rename函数
+
+f2fs_rename 函数也会做简化，简化的情形是将文件A 重命名到文件 B(B 可能已经存在，或者不存在)，flags=0。
+
+```c
+static int f2fs_rename(struct inode *old_dir, struct dentry *old_dentry,
+			struct inode *new_dir, struct dentry *new_dentry,
+			unsigned int flags)
+{
+	struct f2fs_sb_info *sbi = F2FS_I_SB(old_dir);
+	struct inode *old_inode = d_inode(old_dentry);
+	struct inode *new_inode = d_inode(new_dentry);
+	struct inode *whiteout = NULL;
+	struct page *old_dir_page;
+	struct page *old_page, *new_page = NULL;
+	struct f2fs_dir_entry *old_dir_entry = NULL;
+	struct f2fs_dir_entry *old_entry;
+	struct f2fs_dir_entry *new_entry;
+	bool is_old_inline = f2fs_has_inline_dentry(old_dir);
+	int err;
+	
+	// 输入显然是
+    // 旧的父目录old_dir，旧的文件old_dentry
+    // 新的父目录new_dir，新的文件new_dentry
+    
+    // 根据旧文件的名字找到对应的f2fs_dir_entry，old_page保存的是磁盘上的dir_entry数据
+	old_entry = f2fs_find_entry(old_dir, &old_dentry->d_name, &old_page);
+
+	if (new_inode) { // 如果新文件已经存在
+
+        // 根据新文件的名字找到对应的f2fs_dir_entry，new_page保存的是磁盘上的数据
+		new_entry = f2fs_find_entry(new_dir, &new_dentry->d_name,
+						&new_page);
+
+        // F2FS获取一个全局读信号量
+		f2fs_lock_op(sbi);
+
+        // 在管理orphan inode的全局结构中，将orphan inode的数目+1。
+		err = f2fs_acquire_orphan_inode(sbi);
+
+        // 这里进行新旧inode的link的变化:
+        // 将new_dentry所属的inode指向old_inode
+        // 因为rename的时候新inode是已经存在了，因此rename的操作就是将
+        // 新路径原来的inode无效掉，然后替换为旧路径的inode
+		f2fs_set_link(new_dir, new_entry, new_page, old_inode);
+
+		new_inode->i_ctime = current_time(new_inode);
+        
+        
+		down_write(&F2FS_I(new_inode)->i_sem); // 拿写信号量
+		// 减少新inode一个引用计数，因为被rename了
+		f2fs_i_links_write(new_inode, false);
+		up_write(&F2FS_I(new_inode)->i_sem); // 释放写信号量
+
+        // 如果引用计数下降到0，则添加到orphan inode中，在checkpoint管理
+		if (!new_inode->i_nlink)
+			f2fs_add_orphan_inode(new_inode);
+		else
+			f2fs_release_orphan_inode(sbi); // 否则管理结构将orphan inode的数目-1。
+	} else {
+        
+        // 这个情况是新路径的Inode不存在
+
+		// F2FS获取一个全局读信号量
+		f2fs_lock_op(sbi);
+
+        // 由于新inode是不存在的，因此直接将旧inode添加到新的f2fs_dir_entry中
+		err = f2fs_add_link(new_dentry, old_inode);
+
+	}
+
+    
+	down_write(&F2FS_I(old_inode)->i_sem);
+	if (!old_dir_entry || whiteout)
+		file_lost_pino(old_inode);  // 这个操作要保留着用于数据恢复
+	else
+		F2FS_I(old_inode)->i_pino = new_dir->i_ino;
+	up_write(&F2FS_I(old_inode)->i_sem);
+
+	old_inode->i_ctime = current_time(old_inode);
+	f2fs_mark_inode_dirty_sync(old_inode, false);
+
+    // 新的数据已经加入到新的f2fs_dir_entry，因此旧entry就去去除掉
+	f2fs_delete_entry(old_entry, old_page, old_dir, NULL);
+
+	// F2FS释放全局读信号量
+	f2fs_unlock_op(sbi);
+
+	f2fs_update_time(sbi, REQ_TIME);
+	return 0;
+}
+```
 
 # 参考文档
 
