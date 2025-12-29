@@ -20,7 +20,7 @@ updated: 2025-12-25 16:40:00
 
 为了掩盖闪存这些古怪的物理特性，所有的闪存设备，无论是你手中的 SD 卡还是高性能的 SSD，内部都内置了一个微控制器来运行闪存转换层，也就是 FTL。FTL 的本质是一个欺骗机制，它让操作系统觉得这块闪存依然是一个可以随意覆盖写的普通磁盘。然而，当传统文件系统进行大量的随机写入时，FTL 必须在后台疯狂地进行“垃圾回收”和“磨损均衡”，试图在不断变化的物理空间中寻找空白区域来安置这些新数据。由于 FTL 并不了解文件系统的上层布局，它的这种盲目搬运效率极低。这就是为什么很多嵌入式设备或智能手机在使用一段时间后会变得卡顿，其深层原因往往是文件系统的随机写入行为让底层的 FTL 陷入了几乎崩溃的处理链条中。
 
-F2FS 解决这一难题的核心武器是采用了**日志结构文件系统**，即 LFS 架构。我们可以做一个形象的比喻：传统文件系统就像一块黑板，哪里写错了就擦掉哪里，然后在原地重写；而 F2FS 则像是一个永远不使用橡皮擦的笔记本，无论你是新增文件还是修改旧文件，它永远不会去动之前写过的内容，而是不断在笔记本最后一页的空白处按顺序往后写。这种“追加式写入”的做法将所有的逻辑修改转换成了物理上的顺序写。对于底层闪存来说，顺序写入是最完美的运行模式，它极大地减轻了 FTL 的管理压力，让后台垃圾回收变得非常简单高效，同时也因为数据分布更加均匀而天然地实现了磨损均衡，从而显著延长了昂贵闪存硬件的寿命。
+F2FS 解决这一难题的核心武器是采用了**日志结构文件系统**，即 LFS 架构。我们可以做一个形象的比喻：传统文件系统就像一块黑板，哪里写错了就擦掉哪里，然后再原地重写；而 F2FS 则像是一个永远不使用橡皮擦的笔记本，无论你是新增文件还是修改旧文件，它永远不会去动之前写过的内容，而是不断在笔记本最后一页的空白处按顺序往后写。这种“追加式写入”的做法将所有的逻辑修改转换成了物理上的顺序写。对于底层闪存来说，顺序写入是最完美的运行模式，它极大地减轻了 FTL 的管理压力，让后台垃圾回收变得非常简单高效，同时也因为数据分布更加均匀而天然地实现了磨损均衡，从而显著延长了昂贵闪存硬件的寿命。
 
 虽然 LFS 架构的概念很早就有，但早期的实现一直被“漫游树（wandering tree）”这一难题所困扰，导致无法大规模商用。在传统的 LFS 中，如果你修改了一个数据块，由于它必须写到新位置，物理地址就变了。这意味着指向这个块的上一级索引节点也必须修改地址来指向它，而索引节点的地址改变又会触发上上级节点的修改，最终这种递归更新会一直蔓延到文件系统的根节点，造成巨大的额外开销。**F2FS 的绝活在于它引入了节点地址表，也就是 NAT。**NAT 像一个稳固的中转站，它给每个索引节点分配一个固定的 ID，并记录这个 ID 目前对应的物理地址。当一个数据块移动时，F2FS 只需要更新 NAT 表里对应的一个条目即可，彻底切断了向上递归的“漫游”效应。正是这个核心发明，让 F2FS 能够保持 LFS 的高性能，又避开了复杂的连锁更新，成为了现代闪存存储的基石。
 
@@ -56,9 +56,9 @@ F2FS 遵循“永远不要覆盖旧数据”的原则。这种**异地更新（O
 
 这样做的问题是：这种设计依赖 **Checkpoint（检查点）**机制来保证一致性。F2FS 不会像 JFS（日志文件系统）那样在每次操作时写日志，而是定期创建快照。这意味着如果突发断电且此时还没到 Checkpoint 时刻，可能会丢失极短时间内的数据。
 
-### Multi-head Logging（多头日志写入）特性的分类
+### Multi-head Logging（多头日志写入）特性
 
-F2FS 的核心精髓在于它能感知数据的“温度”。Log 区域指的是文件系统中用于分配 free block(空闲的且没有写入数据的 block)的区域，例如 F2FS 的一个文件需要写入新数据，它就要去 Log 区域请求 free block，然后再将数据写入这个 free block 中。传统的 LFS j往往会维护一个大的日志区域，一切数据的分配都从这个大的日志区域中进行处理。它同时维护了 6 个活动的 Log 区域（活跃段），将数据精准分类：
+F2FS 的核心精髓在于它能感知数据的“温度”。Log 区域指的是文件系统中用于分配 free block(空闲的且没有写入数据的 block)的区域，例如 F2FS 的一个文件需要写入新数据，它就要去 Log 区域请求 free block，然后再将数据写入这个 free block 中。传统的 LFS 往往会维护一个大的日志区域，一切数据的分配都从这个大的日志区域中进行处理。它同时维护了 6 个活动的 Log 区域（活跃段），将数据精准分类：
 
 - **节点类（Node）：存储文件的索引结构**
   - **HOT NODE**：目录文件的直接索引块（Direct Node）。由于目录操作极其频繁且对用户感知影响大，将其单独存放以加快访问速度。
@@ -2715,6 +2715,303 @@ out:
 }
 ```
 需要注意的是，在这个函数，当 bio 还没有填满 page 的时候是不会被提交到磁盘的，这是因为 F2FS 通过增大 bio 的 size 提高了写性能。因此，在用户 fsync 或者系统 writeback 的时候，为了保证这些 page 都可以刷写到磁盘，会如 f2fs_write_cache_pages() 函数所介绍一样，通过 f2fs_submit_merged_write_cond() 函数或者其他函数强行提交这个 page 未满的 bio。
+
+# 文件创建流程
+
+linux 的文件的创建可以抽象为两个流程。
+
+1. 创建一个 inode，使得包含文件的元数据信息;
+2. 将这个新创建的 inode 加入父目录的管理当中，可以理解建立父目录与这个新 inode 的关系。
+
+到具体代码，上述两个抽象流程在 F2FS 中主要包含了以下几个子流程：
+
+1. 调用 vfs_open 函数。
+2. 调用 f2fs_create 函数: 创建文件 inode，并链接到父目录。
+   - f2fs_new_inode 函数创建 inode。
+   - f2fs_add_link 函数链接到父目录。
+
+第一步的 vfs_open 函数是 VFS 层面的流程，下面仅针对涉及 F2FS 的文件创建流程，且经过简化的主要流程进行分析。
+
+## inode 和 f2fs_inode_info
+
+`inode` 结构是 linux 的 vfs 层最核心的结构之一，反应了文件的应该具有的基础信息，但是对于一些文件系统，原生的 `inode` 结构的信息并不够，还需要增加一些额外的变量去支持文件系统的某些功能，同时为了保证 vfs 层对所有文件系统的兼容性，我们直接修改 `inode` 结构不是一个明智的方法。针对这种场景，f2fs 使用了一种叫 `f2fs_inode_info` 的结构去扩展原有的 `inode` 的功能。
+
+### 相互转换
+
+从 `inode` 到 `f2fs_inode_info`:
+
+```c
+static inline struct f2fs_inode_info *F2FS_I(struct inode *inode)
+{
+	return container_of(inode, struct f2fs_inode_info, vfs_inode);
+}
+```
+
+从 `f2fs_inode_info` 到 `inode`:
+
+```c
+// vfs的inode其实是f2fs_inode_info结构体的一个内部变量
+struct f2fs_inode_info {
+	struct inode vfs_inode;		/* serve a vfs inode */
+	...
+};
+
+// 因此访问可以直接指向
+struct f2fs_inode_info *fi = F2FS_I(inode);
+fi->vfs_inode // 这里 fi->vfs_inode == inode
+```
+
+从上面代码我们可以看出，f2fs 中的 `inode` 是 `f2fs_inode_info` 当中的一个内部变量，因此可以用 container_of 这个函数直接获得，也可以通过指针获得。
+
+### VFS inode 的创建和销毁
+
+我们一般使用 VFS 提供的 `new_inode` 函数创建一个新 inode。这个 `new_inode` 函数内部会调用 new_inode_pseudo 函数，然后再调用 alloc_inode 函数，最后调用 `f2fs_alloc_inode` 函数，我们从这里开始分析:
+
+如下代码，显然就是通过内存分配函数先创建一个 `f2fs_inode_info` 然后返回给上层：
+
+```c
+static struct inode *f2fs_alloc_inode(struct super_block *sb)
+{
+	struct f2fs_inode_info *fi;
+
+	fi = kmem_cache_alloc(f2fs_inode_cachep, GFP_F2FS_ZERO); //简单直接创建f2fs_inode_info
+	if (!fi)
+		return NULL;
+
+	init_once((void *) fi); // 这个函数初始化vfs inode部分的原始信息
+
+    // 下面开始初始化f2fs_inode_info部分的原始信息
+	atomic_set(&fi->dirty_pages, 0);
+	init_rwsem(&fi->i_sem);
+	...
+	return &fi->vfs_inode; // 返回的vfs_inode给上层
+}
+```
+
+当 vfs inode 的 link 是 0 的时候，它应当被销毁。由于 vfs inode 是 f2fs_inode_info 的内部变量：
+
+```c
+// 用户传入一个inode销毁
+static void f2fs_destroy_inode(struct inode *inode)
+{
+	call_rcu(&inode->i_rcu, f2fs_i_callback);
+}
+
+```
+
+同样简单直接，free 掉这块内存就行。
+
+```c
+static void f2fs_i_callback(struct rcu_head *head)
+{
+	struct inode *inode = container_of(head, struct inode, i_rcu);
+	kmem_cache_free(f2fs_inode_cachep, F2FS_I(inode));
+}
+```
+
+## f2fs_create 函数
+这个函数的主要作用是创建 vfs_inode，并链接到对应的目录下，核心流程就是先创建该文件的基于 f2fs 的 inode 结构，以及对应的 f2fs 的 inode page，即 `f2fs_inode`。然后设置函数指针，最后将 f2fs 的 inode page 链接到对应的目录下。
+```c
+static int f2fs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+						bool excl)
+{
+	struct f2fs_sb_info *sbi = F2FS_I_SB(dir);
+	struct inode *inode;
+	nid_t ino = 0;
+	int err;
+
+	inode = f2fs_new_inode(dir, mode); // 创建f2fs特定的inode结构
+
+	inode->i_op = &f2fs_file_inode_operations; // 然后赋值对应的函数指针
+	inode->i_fop = &f2fs_file_operations;
+	inode->i_mapping->a_ops = &f2fs_dblock_aops;
+	ino = inode->i_ino; // 记录该inode的ino
+
+	err = f2fs_add_link(dentry, inode); // 将该inode链接到用户传入的父目录dir中
+	if (err)
+		goto out;
+
+	f2fs_alloc_nid_done(sbi, ino); // 在f2fs_new_inode函数内分配了ino，在这里完成最后一步
+
+	return 0;
+}
+
+```
+### f2fs_new_inode 函数
+
+下面继续分析 `f2fs_new_inode` 函数(只显示主干部分)，这个函数创建 inode 结构，**还没**创建对应的 f2fs inode page。
+
+```c
+static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+{
+	struct f2fs_sb_info *sbi = F2FS_I_SB(dir);
+	nid_t ino;
+	struct inode *inode;
+	bool nid_free = false;
+	int xattr_size = 0;
+	int err;
+
+	inode = new_inode(dir->i_sb); // 先创建出来一个没有ino的inode结构，参考前面提及的创建流程
+
+	if (!f2fs_alloc_nid(sbi, &ino)) { // 然后给这个inode分配一个nid，即ino
+		goto fail;
+	}
+    
+	nid_free = true;
+
+	inode_init_owner(inode, dir, mode); // 初始化从属信息: 访问模式、父目录等
+
+	inode->i_ino = ino; // 初始化一些元数据信息，例如ino
+	inode->i_blocks = 0;
+	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+	F2FS_I(inode)->i_crtime = inode->i_mtime;
+	inode->i_generation = sbi->s_next_generation++;
+
+	err = insert_inode_locked(inode); // 将这个inode插入到全局的inode table(VFS行为)
+
+    set_inode_flag(inode, FI_NEW_INODE); // 注意这个标志位后面会用到
+    
+	......
+	// 上面省略代码都在设置法f2fs_inode_info的flag，并在这个函数将部分flag设置到vfs inode中
+	f2fs_set_inode_flags(inode); 
+	return inode;
+}
+```
+### f2fs_add_link 函数
+
+经过上面的函数，我们已经创建了一个 f2fs 使用的 vfs inode，接下来我们要将这个 inode 链接到父目录的 inode 当中，建立联系，`f2fs_add_link` 函数直接会调用 `f2fs_do_add_link` 函数，因此我们直接分析这个函数。其中 `f2fs_dir_entry` 代表是目录项，可以理解为**父目录包含了多个子文件/目录项，每一个目录项对应一个子文件/子目录的关联信息。我们将新创建的 inode 加入到父目录的管理，也就是在父目录中为这个新 inode 下创建一个目录项。**
+
+```c
+static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
+{
+    // 这里的dentry就是新inode的dentry
+	return f2fs_do_add_link(d_inode(dentry->d_parent), &dentry->d_name,
+				inode, inode->i_ino, inode->i_mode);
+}
+
+// dir是父目录
+int f2fs_do_add_link(struct inode *dir, const struct qstr *name,
+				struct inode *inode, nid_t ino, umode_t mode)
+{
+	struct f2fs_dir_entry *de = NULL; // 父目录dir的目录项，初始化为NULL
+	int err;
+    // 如果文件已经加密，则获得解密后的名字fname
+	err = fscrypt_setup_filename(dir, name, 0, &fname); 
+	if (de) { // 如果找到目录项
+		f2fs_put_page(page, 0);
+		err = -EEXIST;
+	} else if (IS_ERR(page)) {
+		err = PTR_ERR(page);
+	} else { // 对于一个新inode，它对应的父目录的目录项f2fs_dir_entry应该是不存在的
+		err = f2fs_add_dentry(dir, &fname, inode, ino, mode);
+	}
+	return err;
+}
+```
+
+`f2fs_add_dentry` 函数提取了文件名字的字符串以及字符串长度：
+
+```c
+int f2fs_add_dentry(struct inode *dir, struct fscrypt_name *fname,
+				struct inode *inode, nid_t ino, umode_t mode)
+{
+	struct qstr new_name;
+	int err = -EAGAIN;
+
+	new_name.name = fname_name(fname); // 将文件名的字符串格式保存在这里
+	new_name.len = fname_len(fname);   // 将文件名的长度保存在这里
+
+    // 在这个函数实现新inode和父inode的链接
+	err = f2fs_add_regular_entry(dir, &new_name, fname->usr_fname,
+						inode, ino, mode);
+
+	f2fs_update_time(F2FS_I_SB(dir), REQ_TIME); // 更新修改时间
+	return err;
+}
+```
+
+新 inode 的 `f2fs_dir_entry` 应该是不存在的，注意 `FI_NEW_INODE` 的 flag。
+
+```c
+int f2fs_add_regular_entry(struct inode *dir, const struct qstr *new_name,
+				const struct qstr *orig_name,
+				struct inode *inode, nid_t ino, umode_t mode)
+{
+	...
+
+	// 上面的机制比较复杂，在这里不提，在目录项的作用相关章节再提
+    // 上面做了一大堆事情可以理解为，根据[文件名的长度]创建一个新的f2fs_dir_entry，然后加入到父目录当中
+    // 需要注意的是这个f2fs_dir_entry还没有包含新inode的信息
+       
+    //  接下来就是要做的就是
+    // 	1. 为新的vfs inode创建inode page，初始化与父目录有关的信息
+    // 	2. 基于新inode的信息(名字，ino等)更新f2fs_dir_entry
+        
+	if (inode) {
+        // 这个函数就是创建inode page，初始化与父目录有关的信息
+		page = f2fs_init_inode_metadata(inode, dir, new_name,
+						orig_name, NULL);
+	}
+
+
+    // 基于新inode的信息(名字，ino等)更新f2fs_dir_entry
+	f2fs_update_dentry(ino, mode, &d, new_name, dentry_hash, bit_pos);
+
+	set_page_dirty(dentry_page);
+	f2fs_update_parent_metadata(dir, inode, current_depth); // 清除FI_NEW_INODE的flag
+	return err;
+}
+```
+
+由于新 inode 设置了 `FI_NEW_INODE`，因此 `f2fs_init_inode_metadata` 函数就是完成了两个功能:
+
+1. 创建一个新的 inode page，然后初始化 acl、security 等信息。
+2. 然后初始化新创建的 inode page 的名字。
+3. 再增加 inode 的引入链接。
+
+```c
+struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
+			const struct qstr *new_name, const struct qstr *orig_name,
+			struct page *dpage)
+{
+	struct page *page;
+	int err;
+
+    // 由于新inode设置了FI_NEW_INODE
+	if (is_inode_flag_set(inode, FI_NEW_INODE)) {
+        // 创建一个新的inode page，然后初始化acl、security等信息。
+		page = f2fs_new_inode_page(inode);
+
+		err = f2fs_init_acl(inode, dir, page, dpage);
+		if (err)
+			goto put_error;
+
+		err = f2fs_init_security(inode, dir, orig_name, page);
+		if (err)
+			goto put_error;
+		}
+	} else {
+		page = f2fs_get_node_page(F2FS_I_SB(dir), inode->i_ino);
+		if (IS_ERR(page))
+			return page;
+	}
+
+	if (new_name) { // 然后初始化新创建的inode page的名字
+		init_dent_inode(new_name, page);
+		if (f2fs_encrypted_inode(dir))
+			file_set_enc_name(inode);
+	}
+	// 再增加inode的引入链接。
+	if (is_inode_flag_set(inode, FI_INC_LINK))
+		f2fs_i_links_write(inode, true);
+	return page;
+}
+```
+将新的 inode 链接到父目录后，后续用户访问时，可以通过父目录找到新创建的文件的 inode，即完成了整个文件的创建流程。
+
+# 重要数据结构和函数分析
+
+TODO
 
 # 参考文档
 
