@@ -4,7 +4,7 @@ categories:
   - 一些技巧
 abbrlink: 642c4108
 date: 2024-06-26 16:05:00
-updated: 2025-07-03 15:00:00
+updated: 2026-05-19 20:30:00
 ---
 
 <meta name="referrer" content="no-referrer"/>
@@ -304,7 +304,9 @@ updated: 2025-07-03 15:00:00
 
 - linux编译并且安装内核：[https://blog.csdn.net/weixin_43567188/article/details/119407019](https://blog.csdn.net/weixin_43567188/article/details/119407019)
 
-- linux删除多余的内核版本：[https://blog.csdn.net/jays_/article/details/90738580](https://blog.csdn.net/jays_/article/details/90738580)
+- linux删除系统多余的内核：[https://blog.csdn.net/jays_/article/details/90738580](https://blog.csdn.net/jays_/article/details/90738580)
+
+- linux删除自己编译的内核：[https://blog.csdn.net/qq_42606750/article/details/88616331](https://blog.csdn.net/qq_42606750/article/details/88616331)
 
 - linux下使用tar压缩或者解压：[https://blog.csdn.net/stf1065716904/article/details/81909320](https://blog.csdn.net/stf1065716904/article/details/81909320)
 
