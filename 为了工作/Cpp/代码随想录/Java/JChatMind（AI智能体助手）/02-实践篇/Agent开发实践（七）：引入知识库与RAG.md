@@ -50,7 +50,7 @@ Agent 最关心的一件事，是**现在缺的背景信息。**
 * 将内容放进知识库
 * 从知识库中搜索内容
 
-![1766664366460-f7b46457-5bdf-45fc-a6e4-623de0d57cd8.png](./img/VwoiGMa_U9ZMV70m/1766664366460-f7b46457-5bdf-45fc-a6e4-623de0d57cd8-220461.png)
+![1766664366460-f7b46457-5bdf-45fc-a6e4-623de0d57cd8.png](https://cdn.davidingplus.cn/images/2026/09/11/1766664366460-f7b46457-5bdf-45fc-a6e4-623de0d57cd8-220461.png)
 
 ### 将内容放入知识库流程
 
@@ -191,7 +191,7 @@ COMMENT ON TABLE t_role IS '角色表：定义系统中的角色（管理员、�
 
 像这样的文档格式一般如下：
 
-![1766472628540-4eea0098-1f8c-4cd5-9b5f-409b399c86e3.png](./img/VwoiGMa_U9ZMV70m/1766472628540-4eea0098-1f8c-4cd5-9b5f-409b399c86e3-674741.png)
+![1766472628540-4eea0098-1f8c-4cd5-9b5f-409b399c86e3.png](https://cdn.davidingplus.cn/images/2026/09/11/1766472628540-4eea0098-1f8c-4cd5-9b5f-409b399c86e3-674741.png)
 
 每篇文档都可以为拆分一块块的内容。
 

@@ -22,13 +22,13 @@ git checkout util
 
 就切换到了第一个实验--util实验的分支。切换成功后，可以看到路径下多出了很多文件，这就是xv6操作系统的相关文件：
 
-![1733120147042-ebf8adda-48e8-42ee-b7b8-336bc9c028d9.png](./img/4j2FunEKTDI-0qQx/1733120147042-ebf8adda-48e8-42ee-b7b8-336bc9c028d9-295283.png)
+![1733120147042-ebf8adda-48e8-42ee-b7b8-336bc9c028d9.png](https://cdn.davidingplus.cn/images/2026/09/11/1733120147042-ebf8adda-48e8-42ee-b7b8-336bc9c028d9-295283.png)
 
 如果是使用vscode和上一篇文章中我推荐的插件的同学，可以按以下步骤切换分支：
 
-![1733121100161-e086d4a0-4368-4a2c-9129-991a72627e63.jpeg](./img/4j2FunEKTDI-0qQx/1733121100161-e086d4a0-4368-4a2c-9129-991a72627e63-375553.jpeg)
+![1733121100161-e086d4a0-4368-4a2c-9129-991a72627e63.jpeg](https://cdn.davidingplus.cn/images/2026/09/11/1733121100161-e086d4a0-4368-4a2c-9129-991a72627e63-375553.jpeg)
 
-![1733121156713-e9373cf9-5dc5-4236-be76-ede1105f9c3d.jpeg](./img/4j2FunEKTDI-0qQx/1733121156713-e9373cf9-5dc5-4236-be76-ede1105f9c3d-306997.jpeg)
+![1733121156713-e9373cf9-5dc5-4236-be76-ede1105f9c3d.jpeg](https://cdn.davidingplus.cn/images/2026/09/11/1733121156713-e9373cf9-5dc5-4236-be76-ede1105f9c3d-306997.jpeg)
 
 后续切换实验分支操作不再赘述。
 
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
 
 <font style="color:rgb(35, 38, 59);">结合这张图来分析：</font>
 
-![1733142351891-1b7d823b-42a1-42ba-b8f1-2366490ce6a0.png](./img/4j2FunEKTDI-0qQx/1733142351891-1b7d823b-42a1-42ba-b8f1-2366490ce6a0-535145.png)
+![1733142351891-1b7d823b-42a1-42ba-b8f1-2366490ce6a0.png](https://cdn.davidingplus.cn/images/2026/09/11/1733142351891-1b7d823b-42a1-42ba-b8f1-2366490ce6a0-535145.png)
 
 <font style="color:rgb(35, 38, 59);">这里我按题目所描述的那样，将一个进程的子进程称为右邻居，将一个进程的父进程称为左邻居，所以除了父进程，每一个进程都有左邻居，除了最后一个子进程，每一个进程都有右邻居。</font><font style="color:rgb(51, 51, 51);">由于xv6的文件描述符和进程数量有限，所以题目只要求打印2~35之间的质数。</font>
 

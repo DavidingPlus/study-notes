@@ -84,7 +84,7 @@ docker exec es bash -c "bin/elasticsearch-plugin install https://github.com/medc
 
 #### 修改conf/canal.properties
 
-![1759759790410-ba162625-4da4-4fb6-b5df-a8c0cb43e3b7.png](./img/vOm1Wv6Fgs6sfR8R/1759759790410-ba162625-4da4-4fb6-b5df-a8c0cb43e3b7-774814.png)
+![1759759790410-ba162625-4da4-4fb6-b5df-a8c0cb43e3b7.png](https://cdn.davidingplus.cn/images/2026/09/11/1759759790410-ba162625-4da4-4fb6-b5df-a8c0cb43e3b7-774814.png)
 
 #### 修改conf/example/instance.properties
 
@@ -169,7 +169,7 @@ from user_file as t "
 curl http://127.0.0.1:8081/etl/es7/user_file.yml -X POST
 ```
 
-![1759847472037-cf1e66ad-3a7e-4d89-96b2-ed8eb213fa65.png](./img/vOm1Wv6Fgs6sfR8R/1759847472037-cf1e66ad-3a7e-4d89-96b2-ed8eb213fa65-537863.png)
+![1759847472037-cf1e66ad-3a7e-4d89-96b2-ed8eb213fa65.png](https://cdn.davidingplus.cn/images/2026/09/11/1759847472037-cf1e66ad-3a7e-4d89-96b2-ed8eb213fa65-537863.png)
 
 ## 同步范围与索引设计
 
@@ -238,7 +238,7 @@ VALUES
 (1001, 0, 0, '工作文档', 1, '-', 0, 1001, NOW(), NOW(), 1001, 0, 1),(1001, 0, 0, '图片', 1, '-', 0, 1001, NOW(), NOW(), 1001, 0, 1);
 ```
 
-![1759758588398-849855b2-b060-468f-8327-4cb95b5de056.png](./img/vOm1Wv6Fgs6sfR8R/1759758588398-849855b2-b060-468f-8327-4cb95b5de056-924626.png)
+![1759758588398-849855b2-b060-468f-8327-4cb95b5de056.png](https://cdn.davidingplus.cn/images/2026/09/11/1759758588398-849855b2-b060-468f-8327-4cb95b5de056-924626.png)
 
 
 > 更新: 2026-04-25 14:47:55  

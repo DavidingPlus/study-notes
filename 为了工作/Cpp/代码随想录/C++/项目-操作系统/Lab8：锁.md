@@ -301,7 +301,7 @@ struct {
 
 这时候的设计思路是：在`bget`中，获取当前的桶锁，索引到哈希表中看对应buf是否存在，存在就直接释放锁返回该块，不存在就在所有桶寻找一个LRU-buf，寻找的时候上对应的桶锁，找到后就释放这个桶锁，查询结束将该buf移出他原本所在的桶（称为缓存驱逐），然后加入到blockno对应的桶中，释放锁返回该地址。
 
-![1733642818970-f07c4dab-9701-43ec-884a-dad8b8baddb1.jpeg](./img/3QypIssO6n2oksaQ/1733642818970-f07c4dab-9701-43ec-884a-dad8b8baddb1-335998.jpeg)
+![1733642818970-f07c4dab-9701-43ec-884a-dad8b8baddb1.jpeg](https://cdn.davidingplus.cn/images/2026/09/11/1733642818970-f07c4dab-9701-43ec-884a-dad8b8baddb1-335998.jpeg)
 
 <font style="color:rgb(35, 38, 59);">这样会产生的问题如下：</font>
 

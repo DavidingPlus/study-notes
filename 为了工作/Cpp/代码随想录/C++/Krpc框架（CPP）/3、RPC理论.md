@@ -66,7 +66,7 @@ RPC 不仅用于微服务，还在以下场景中广泛应用：
 
 # 2.RPC远程调用全局概览
 
-![1734575757868-a419c06a-8740-4e01-a7f8-fdfccc7efe4b.png](./img/os8Fpm1FNGu3wpXj/1734575757868-a419c06a-8740-4e01-a7f8-fdfccc7efe4b-642538.png)
+![1734575757868-a419c06a-8740-4e01-a7f8-fdfccc7efe4b.png](https://cdn.davidingplus.cn/images/2026/09/11/1734575757868-a419c06a-8740-4e01-a7f8-fdfccc7efe4b-642538.png)
 
 * **本地发起远端调用**
 
@@ -91,7 +91,7 @@ message RpcHeader{
 
 **本项目是是怎么定义数据消息的传输格式：**
 
-![1734575767395-82b12f86-18c9-4585-bf25-1dd0bb1692a8.png](./img/os8Fpm1FNGu3wpXj/1734575767395-82b12f86-18c9-4585-bf25-1dd0bb1692a8-414842.png)
+![1734575767395-82b12f86-18c9-4585-bf25-1dd0bb1692a8.png](https://cdn.davidingplus.cn/images/2026/09/11/1734575767395-82b12f86-18c9-4585-bf25-1dd0bb1692a8-414842.png)
 
 <font style="color:rgb(77, 77, 77);">首先我们有一个protobuf类型的结构体消息RpcHeader，这个RpcHeader有三个字段，分别是服务对象名，服务函数名和函数参数长度。</font>同时我们的函数参数(args)是可变的，长度不确定的，所以不能和Rpcheader一起封装，否则有多个函数就会有多个Rpcheader，所以我们一般是专门在对所需要进行远端调用的函数进行protobuf的封装(比如请求参数和响应参数)，在RpcHeader只封装服务名、函数名、以及参数的大小，具体对来说是进行远端调用函数的request参数的大小，这一部分我建议看代码`exmaple/caller`和`chaneel`、user.proto、Krpcheader.proto理解。
 

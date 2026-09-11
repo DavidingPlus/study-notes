@@ -15,7 +15,7 @@
 
 以下是一个简单时序图，能够简单描述一次交互示例：
 
-![1766477226528-e7dcbba3-fba8-4810-b65c-6b1ae91e7436.png](./img/vxdPf_-8Xq20f6x_/1766477226528-e7dcbba3-fba8-4810-b65c-6b1ae91e7436-260851.png)
+![1766477226528-e7dcbba3-fba8-4810-b65c-6b1ae91e7436.png](https://cdn.davidingplus.cn/images/2026/09/11/1766477226528-e7dcbba3-fba8-4810-b65c-6b1ae91e7436-260851.png)
 
 ## 一、从前端的一次输入开始
 

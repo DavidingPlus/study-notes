@@ -16,7 +16,7 @@
 
 <font style="color:rgb(35, 38, 59);"></font>
 
-![1733657477651-5bb18f39-6820-42dd-b084-001f1ccecdce.png](./img/JlvL59zRBqzS6VgR/1733657477651-5bb18f39-6820-42dd-b084-001f1ccecdce-777481.png)
+![1733657477651-5bb18f39-6820-42dd-b084-001f1ccecdce.png](https://cdn.davidingplus.cn/images/2026/09/11/1733657477651-5bb18f39-6820-42dd-b084-001f1ccecdce-777481.png)
 
 进程所使用的内存空间从低地址向高地址生长（`sbrk`调用），范围是stack到trapframe。为了不和进程使用的内存空间冲突，将mmap使用的地址空间映射到trapframe下面的页，从上往下生长。先定义mmap最后一页的地址：
 

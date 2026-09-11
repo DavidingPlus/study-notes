@@ -81,7 +81,7 @@ this.agentState = AgentState.IDLE;
 
 在交互完毕后，模型的输出也会加入到历史聊天上下文中。
 
-![1766655510033-cd723ec3-04f0-492c-8a34-4192cfe99149.png](./img/wKf0YikMBi1zakFm/1766655510033-cd723ec3-04f0-492c-8a34-4192cfe99149-432170.png)
+![1766655510033-cd723ec3-04f0-492c-8a34-4192cfe99149.png](https://cdn.davidingplus.cn/images/2026/09/11/1766655510033-cd723ec3-04f0-492c-8a34-4192cfe99149-432170.png)
 
 ### 状态检查与输入校验
 
@@ -191,7 +191,7 @@ public void testMultiTurnConversation() {
 
 查看测试效果：
 
-![1766489108572-56e9a257-0a49-4644-9421-55b4e0b21edb.png](./img/wKf0YikMBi1zakFm/1766489108572-56e9a257-0a49-4644-9421-55b4e0b21edb-251748.png)
+![1766489108572-56e9a257-0a49-4644-9421-55b4e0b21edb.png](https://cdn.davidingplus.cn/images/2026/09/11/1766489108572-56e9a257-0a49-4644-9421-55b4e0b21edb-251748.png)
 
 
 > 更新: 2025-12-25 17:39:10  

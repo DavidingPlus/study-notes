@@ -100,7 +100,7 @@ CREATE DATABASE jchatmind;
 
 建表结果最终如下：
 
-![1766483416686-0314cb03-207a-4d68-9b7e-f7cbcbd21cd9.png](./img/3oZjyeGE-WFBz451/1766483416686-0314cb03-207a-4d68-9b7e-f7cbcbd21cd9-039235.png)
+![1766483416686-0314cb03-207a-4d68-9b7e-f7cbcbd21cd9.png](https://cdn.davidingplus.cn/images/2026/09/11/1766483416686-0314cb03-207a-4d68-9b7e-f7cbcbd21cd9-039235.png)
 
 ### 修改配置
 

@@ -6,7 +6,7 @@ MCP 模块是 GopherAI 第二版中用于 外部工具调用和多渠道能力�
 
 # <font style="color:#000000;">工作流程图:</font>
 
-![1766837878758-4a4fd1ab-1c4d-4b43-ae11-5606d0b2e26d.png](./img/EjtlKoeOJecQIb3n/1766837878758-4a4fd1ab-1c4d-4b43-ae11-5606d0b2e26d-377492.png)
+![1766837878758-4a4fd1ab-1c4d-4b43-ae11-5606d0b2e26d.png](https://cdn.davidingplus.cn/images/2026/09/11/1766837878758-4a4fd1ab-1c4d-4b43-ae11-5606d0b2e26d-377492.png)
 
 # <font style="color:#000000;">代码解析</font>
 

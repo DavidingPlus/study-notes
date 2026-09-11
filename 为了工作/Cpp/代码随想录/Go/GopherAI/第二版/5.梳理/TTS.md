@@ -6,7 +6,7 @@ TTS 服务在 GopherAI 第二版中提供了将文本转换为语音的能力，
 
 # 工作流程图:
 
-![1766837354282-74b9467e-9ea7-4f02-b7f3-f32b40ab52ae.png](./img/S8V64HwlD8fEjv1R/1766837354282-74b9467e-9ea7-4f02-b7f3-f32b40ab52ae-673313.png)
+![1766837354282-74b9467e-9ea7-4f02-b7f3-f32b40ab52ae.png](https://cdn.davidingplus.cn/images/2026/09/11/1766837354282-74b9467e-9ea7-4f02-b7f3-f32b40ab52ae-673313.png)
 
 # 代码解析:
 

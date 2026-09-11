@@ -62,7 +62,7 @@
 
 <font style="color:rgb(35, 38, 59);">用户程序 → ECALL → uservec（在trampoline中） → usertrap（在trap.c中） → syscall → sys\_xxx（对应的系统调用） →执行结果返回给syscall → usertrapret（在trap.c中） → userret（在trampoline中） → 系统调用完成，返回到用户空间，恢复ECALL之后的用户程序的执行</font>
 
-![1733301853107-1d401da8-c301-4fd0-be3b-4ca9f9f813b1.png](./img/Vv9wfwnBoqDA-rb4/1733301853107-1d401da8-c301-4fd0-be3b-4ca9f9f813b1-975355.webp)
+![1733301853107-1d401da8-c301-4fd0-be3b-4ca9f9f813b1.png](https://cdn.davidingplus.cn/images/2026/09/11/1733301853107-1d401da8-c301-4fd0-be3b-4ca9f9f813b1-975355.webp)
 
 #### <font style="color:rgb(35, 38, 59);">ECALL</font>
 
@@ -445,7 +445,7 @@ r_fp(){
 
 <font style="color:rgb(35, 38, 59);"> fp 指向当前栈帧的开始地址，sp 指向当前栈帧的结束地址。 （栈从高地址往低地址生长，所以 fp 虽然是帧开始地址，但是地址比 sp 高）</font>\ <font style="color:rgb(35, 38, 59);">	栈帧中从高到低第一个 8 字节 </font><code><font style="color:rgb(35, 38, 59);">fp-8</font></code><font style="color:rgb(35, 38, 59);"> 是 return address，也就是当前调用层应该返回到的地址。</font>\ <font style="color:rgb(35, 38, 59);">	栈帧中从高到低第二个 8 字节 </font><code><font style="color:rgb(35, 38, 59);">fp-16</font></code><font style="color:rgb(35, 38, 59);"> 是 previous address，指向上一层栈帧的 fp 开始地址。</font>\ <font style="color:rgb(35, 38, 59);">	剩下的为保存的寄存器、局部变量等。一个栈帧的大小不固定，但是至少 16 字节。</font>\ <font style="color:rgb(35, 38, 59);">	在 xv6 中，</font>**<font style="color:rgb(35, 38, 59);">使用一个页来存储栈</font>**<font style="color:rgb(35, 38, 59);">，如果 fp 不在页的有效范围内，说明遍历完了栈帧。</font>
 
-![1733485550898-4eb5402f-9c29-439e-a6f9-f1ca1ff10204.png](./img/Vv9wfwnBoqDA-rb4/1733485550898-4eb5402f-9c29-439e-a6f9-f1ca1ff10204-110155.png)
+![1733485550898-4eb5402f-9c29-439e-a6f9-f1ca1ff10204.png](https://cdn.davidingplus.cn/images/2026/09/11/1733485550898-4eb5402f-9c29-439e-a6f9-f1ca1ff10204-110155.png)
 
 查看 call.asm，可以看到，一个函数的函数体最开始首先会扩充一个栈帧给该层调用使用，在函数执行完毕后再回收：
 

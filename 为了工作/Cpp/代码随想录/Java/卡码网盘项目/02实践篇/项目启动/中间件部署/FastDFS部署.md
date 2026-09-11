@@ -1,7 +1,7 @@
 # FastDFS部署
 
 ## 基于docker-compose快速部署
-![1735994647852-d27eea23-471c-4507-aeed-7e90bfffd9ef.png](./img/0MclJ5-7B1atCBri/1735994647852-d27eea23-471c-4507-aeed-7e90bfffd9ef-627285.png)
+![1735994647852-d27eea23-471c-4507-aeed-7e90bfffd9ef.png](https://cdn.davidingplus.cn/images/2026/09/11/1735994647852-d27eea23-471c-4507-aeed-7e90bfffd9ef-627285.png)
 
 ### docker-compose.yml
 ```xml
@@ -402,11 +402,11 @@ http {
 
 docker-compose up -d 🚀
 
-![1735992678789-e8ddbf24-676a-4535-ac58-1d083d778c98.png](./img/0MclJ5-7B1atCBri/1735992678789-e8ddbf24-676a-4535-ac58-1d083d778c98-240222.png)
+![1735992678789-e8ddbf24-676a-4535-ac58-1d083d778c98.png](https://cdn.davidingplus.cn/images/2026/09/11/1735992678789-e8ddbf24-676a-4535-ac58-1d083d778c98-240222.png)
 
 nginx正常启动
 
-![1735994740687-234435a0-31cc-4d47-a724-880cd925f940.png](./img/0MclJ5-7B1atCBri/1735994740687-234435a0-31cc-4d47-a724-880cd925f940-196970.png)
+![1735994740687-234435a0-31cc-4d47-a724-880cd925f940.png](https://cdn.davidingplus.cn/images/2026/09/11/1735994740687-234435a0-31cc-4d47-a724-880cd925f940-196970.png)
 
 
 

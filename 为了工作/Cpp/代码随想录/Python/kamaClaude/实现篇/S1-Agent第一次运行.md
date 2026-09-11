@@ -60,7 +60,7 @@ goal 需要被传给 LLM，但不是简单地发一次消息、等一次回复�
 
 把这些组装起来的是 `AgentRunner`，它是整条链路的起点。
 
-![1779880447903-a46859b1-f7d2-4021-a0b0-cfb8c88a1297.png](./img/8MR3iZV3po0gVP6S/1779880447903-a46859b1-f7d2-4021-a0b0-cfb8c88a1297-725605.png)
+![1779880447903-a46859b1-f7d2-4021-a0b0-cfb8c88a1297.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880447903-a46859b1-f7d2-4021-a0b0-cfb8c88a1297-725605.png)
 
 接下来按这张图从上到下实现。
 
@@ -171,7 +171,7 @@ s1 里有三个订阅者：
 * `StdoutPrinter.handle`：把事件格式化后打印到终端
 * `AgentRunner` 传进来的 `extra_handlers`（目前就是 `StdoutPrinter`，这两条是同一个东西）
 
-![1779880447709-59bb7926-b669-4977-b823-a828b19b35ee.png](./img/8MR3iZV3po0gVP6S/1779880447709-59bb7926-b669-4977-b823-a828b19b35ee-686165.png)
+![1779880447709-59bb7926-b669-4977-b823-a828b19b35ee.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880447709-59bb7926-b669-4977-b823-a828b19b35ee-686165.png)
 
 为什么要这样设计，而不是在每个需要打印或记录的地方直接调用？
 
@@ -269,7 +269,7 @@ class ExecutionContext:
 
 `add_tool_result` 里有一条 Anthropic 的格式要求：同一步骤里的多个工具调用结果，必须合并在**同一条** `user` 消息里。代码检查最后一条消息是否已经是 tool\_result 类型的 user 消息，是就追加，否则新建一条。
 
-![1779880451253-ec5828e7-06b2-49cc-b9c0-9c2bd257824a.png](./img/8MR3iZV3po0gVP6S/1779880451253-ec5828e7-06b2-49cc-b9c0-9c2bd257824a-301749.png)
+![1779880451253-ec5828e7-06b2-49cc-b9c0-9c2bd257824a.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880451253-ec5828e7-06b2-49cc-b9c0-9c2bd257824a-301749.png)
 
 ### AgentLoop
 
@@ -321,7 +321,7 @@ async def run(self, context: ExecutionContext) -> None:
         await self._bus.publish(StepFinishedEvent(...))
 ```
 
-![1779880450661-74fe78ad-2d06-4a34-9859-347e9aeac915.png](./img/8MR3iZV3po0gVP6S/1779880450661-74fe78ad-2d06-4a34-9859-347e9aeac915-686425.png)
+![1779880450661-74fe78ad-2d06-4a34-9859-347e9aeac915.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880450661-74fe78ad-2d06-4a34-9859-347e9aeac915-686425.png)
 
 **为什么顺序是 observe → act，而不是 act → observe？**
 
@@ -509,7 +509,7 @@ async def invoke(self, params: dict[str, object]) -> ToolResult:
 
 这个工具抛出 `PermissionError` 后会被 `invoke_tool()` 的 `except Exception` 捕获并转成错误结果，流程照常继续。
 
-![1779880450730-a9da06ed-d02e-47d7-8177-ad042b798478.png](./img/8MR3iZV3po0gVP6S/1779880450730-a9da06ed-d02e-47d7-8177-ad042b798478-424936.png)
+![1779880450730-a9da06ed-d02e-47d7-8177-ad042b798478.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880450730-a9da06ed-d02e-47d7-8177-ad042b798478-424936.png)
 
 ### 回到 AgentRunner：收尾工作
 

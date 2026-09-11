@@ -116,7 +116,7 @@ public class MultiChatClientConfig {
 
 答案是：**不要写 if / switch，而是交给 Spring。**
 
-![1766644072294-8366adc2-5623-4d0a-832c-35a08c17e2da.png](./img/K6O2KxVwenEnDvLf/1766644072294-8366adc2-5623-4d0a-832c-35a08c17e2da-877307.png)
+![1766644072294-8366adc2-5623-4d0a-832c-35a08c17e2da.png](https://cdn.davidingplus.cn/images/2026/09/11/1766644072294-8366adc2-5623-4d0a-832c-35a08c17e2da-877307.png)
 
 Spring 会自动把所有 `ChatClient` 类型的 Bean 注入到一个 Map 中，Key 为 Bean 名称，Value 为实例本身。
 

@@ -2,7 +2,7 @@
 
 <font style="color:rgb(55, 65, 81);">假设A，B位于不同的服务器，A 想远程调用 B的xxx方法，该通过什么方式来完成这一操作呢</font>
 
-![1732621886511-b9ebd787-3bf3-48ad-9ebd-55b1c398a69a.png](./img/s4hnyQPvWFZRZCWI/1732621886511-b9ebd787-3bf3-48ad-9ebd-55b1c398a69a-218551.png)
+![1732621886511-b9ebd787-3bf3-48ad-9ebd-55b1c398a69a.png](https://cdn.davidingplus.cn/images/2026/09/11/1732621886511-b9ebd787-3bf3-48ad-9ebd-55b1c398a69a-218551.png)
 
 <font style="color:rgb(55, 65, 81);">例如：</font>
 

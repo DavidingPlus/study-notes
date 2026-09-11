@@ -36,7 +36,7 @@
 
 ## <font style="color:rgb(51, 51, 51);">HTTPS 的工作原理</font>
 
-<font style="color:rgb(25, 27, 31);">我们都知道 HTTPS 能够加密信息，以免敏感信息被第三方获取，所以很多银行网站或电子邮箱等等安全级别较高的服务都会采用 HTTPS 协议。</font>![1736943427786-f9eacb9f-612d-4567-b2a2-e007349df634.png](./img/cyAJmF0714HiFzrj/1736943427786-f9eacb9f-612d-4567-b2a2-e007349df634-220219.png)
+<font style="color:rgb(25, 27, 31);">我们都知道 HTTPS 能够加密信息，以免敏感信息被第三方获取，所以很多银行网站或电子邮箱等等安全级别较高的服务都会采用 HTTPS 协议。</font>![1736943427786-f9eacb9f-612d-4567-b2a2-e007349df634.png](https://cdn.davidingplus.cn/images/2026/09/11/1736943427786-f9eacb9f-612d-4567-b2a2-e007349df634-220219.png)
 
 **<font style="color:rgb(25, 27, 31);">1、客户端发起 HTTPS 请求</font>**
 

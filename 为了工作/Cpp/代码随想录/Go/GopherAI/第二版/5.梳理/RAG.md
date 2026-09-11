@@ -26,7 +26,7 @@ RAG（Retrieval-Augmented Generation）模块是 GopherAI 第二版中的核心�
 
 
 
-![1766836865086-c897d7a9-ed89-4b5b-9eb5-ccbb3e489292.png](./img/BsbZwysfSrX-_z5c/1766836865086-c897d7a9-ed89-4b5b-9eb5-ccbb3e489292-377314.png)
+![1766836865086-c897d7a9-ed89-4b5b-9eb5-ccbb3e489292.png](https://cdn.davidingplus.cn/images/2026/09/11/1766836865086-c897d7a9-ed89-4b5b-9eb5-ccbb3e489292-377314.png)
 
 
 

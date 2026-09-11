@@ -42,7 +42,7 @@ s2 结束时，我们已经能把任务跑起来，而且两个终端能同时�
 
 这五个方向完整覆盖了 daemon 进程边界内外的所有 I/O。每条记录都有时间戳，按时间顺序追加到 `~/.kama/traces/daemon.jsonl`，整个文件就是系统行为的完整时间线。
 
-![1779882977296-fe4ff2e0-1e47-4ada-8375-5b0cfc7f94c3.png](./img/JbpbBzB7pxnfjXg0/1779882977296-fe4ff2e0-1e47-4ada-8375-5b0cfc7f94c3-820779.png)
+![1779882977296-fe4ff2e0-1e47-4ada-8375-5b0cfc7f94c3.png](https://cdn.davidingplus.cn/images/2026/09/11/1779882977296-fe4ff2e0-1e47-4ada-8375-5b0cfc7f94c3-820779.png)
 
 ### 为什么是一个文件，而不是每个 run 一个文件
 

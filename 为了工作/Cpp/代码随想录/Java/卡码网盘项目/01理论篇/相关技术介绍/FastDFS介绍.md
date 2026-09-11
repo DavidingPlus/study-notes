@@ -10,7 +10,7 @@
 + <font style="color:rgb(31, 35, 40);">FastDFS特别适合大中型网站使用，用来存储资源文件（如：图片、文档、音频、视频等等）</font>
 
 ## <font style="color:rgb(31, 35, 40);">FastDFS与集中存储方案的对比</font>
-![fdfsVsNFS.png](./img/90GGOfOvm5fLhVN5/fdfsVsNFS-820742.png)
+![fdfsVsNFS.png](https://cdn.davidingplus.cn/images/2026/09/11/fdfsVsNFS-820742.png)
 
 ## 架构&原理
 <font style="color:rgb(31, 35, 40);">如图所示，FastDFS总体架构由三个部分构成</font>
@@ -19,7 +19,7 @@
 + <font style="color:rgb(31, 35, 40);">访问服务器（TrackerServer）</font>
 + <font style="color:rgb(31, 35, 40);">存储服务器（StorageServer）</font>
 
-![architecture.png](./img/90GGOfOvm5fLhVN5/architecture-560578.png)
+![architecture.png](https://cdn.davidingplus.cn/images/2026/09/11/architecture-560578.png)
 
 ### <font style="color:rgb(31, 35, 40);">1. 客户端（Client）</font>
 <font style="color:rgb(31, 35, 40);">客户端指的是访问FastDFS分布式存储的客户端设备，通常是应用服务器。</font>

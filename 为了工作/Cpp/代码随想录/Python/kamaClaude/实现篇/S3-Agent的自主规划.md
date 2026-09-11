@@ -148,7 +148,7 @@ class TaskManager:
 
 状态只有三种：`pending`（等待）、`in_progress`（进行中）、`completed`（完成）。没有 pause、retry、cancel——这些是流程控制逻辑，不是任务本身的状态。agent 如果需要重试，直接用工具再做一遍就好了。
 
-![1779885097737-85d8005e-2c7b-490e-a56e-2316d76fdf13.png](./img/b1R09AcGgCkvSgnM/1779885097737-85d8005e-2c7b-490e-a56e-2316d76fdf13-288174.png)
+![1779885097737-85d8005e-2c7b-490e-a56e-2316d76fdf13.png](https://cdn.davidingplus.cn/images/2026/09/11/1779885097737-85d8005e-2c7b-490e-a56e-2316d76fdf13-288174.png)
 
 ### `blocked_by` 的自动级联
 
@@ -279,7 +279,7 @@ step N:
   → end_turn
 ```
 
-![1779885097937-7c023912-0148-47c3-86b7-7484f13b4de5.png](./img/b1R09AcGgCkvSgnM/1779885097937-7c023912-0148-47c3-86b7-7484f13b4de5-067317.png)
+![1779885097937-7c023912-0148-47c3-86b7-7484f13b4de5.png](https://cdn.davidingplus.cn/images/2026/09/11/1779885097937-7c023912-0148-47c3-86b7-7484f13b4de5-067317.png)
 
 这里有一个设计决策：**任务工具调用和普通工具调用在事件流上完全一样**。LLM 调用 `task_create` 产生的是 `tool.call_started` + `tool.call_finished` 事件，跟调用 `bash` 或 `read_file` 完全相同的格式。TUI 不需要知道"这是任务操作"——它只是看到一个工具调用，显示一个工具调用块。
 
@@ -291,7 +291,7 @@ step N:
 
 现在切换到用户视角。`kama-tui` 里有什么变化？
 
-![1779886751589-78b76af5-5404-4d21-a698-6edf9cb87f1a.png](./img/b1R09AcGgCkvSgnM/1779886751589-78b76af5-5404-4d21-a698-6edf9cb87f1a-795346.png)
+![1779886751589-78b76af5-5404-4d21-a698-6edf9cb87f1a.png](https://cdn.davidingplus.cn/images/2026/09/11/1779886751589-78b76af5-5404-4d21-a698-6edf9cb87f1a-795346.png)
 
 整个界面就是一个 `VerticalScroll` 容器，事件进来时动态追加 widget，始终自动滚动到底部。用户按 `ctrl + q` 退出。
 

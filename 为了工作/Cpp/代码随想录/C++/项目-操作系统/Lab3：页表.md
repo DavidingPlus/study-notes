@@ -28,7 +28,7 @@
 
 <font style="color:rgb(35, 38, 59);">但实际在Sv39中，页表是一个</font>**<font style="color:rgb(35, 38, 59);">三级树型结构</font>**<font style="color:rgb(35, 38, 59);">，</font>**<font style="color:rgb(35, 38, 59);">根页表</font>**<font style="color:rgb(35, 38, 59);">是这棵树的根节点，它是一个4KB（4096字节）的页，每个页有512个PTE（每个PTE大小是8个字节（64位），总共可以有512个条目，4096字节 ÷ 8字节）。每个PTE记录了下一级页表的位置（也就是下一级页表的物理地址）。虚拟地址使用39位，其中的</font>**<font style="color:rgb(35, 38, 59);">前27位</font>**<font style="color:rgb(35, 38, 59);">被用来在三级页表结构中进行查找。在找到第三级的PTE之后，PTE中会有物理页号（PPN），这个物理页号提供了物理地址的</font>**<font style="color:rgb(35, 38, 59);">高44位</font>**<font style="color:rgb(35, 38, 59);">，虚拟地址的最后</font>**<font style="color:rgb(35, 38, 59);">12位</font>**<font style="color:rgb(35, 38, 59);">作页内偏移。实际的转换如下图所示：</font>
 
-![1733383183337-4d67e5b9-633b-43a2-8342-30c03c4740cc.png](./img/qDLyEEvZXPB7jLbB/1733383183337-4d67e5b9-633b-43a2-8342-30c03c4740cc-426927.png)
+![1733383183337-4d67e5b9-633b-43a2-8342-30c03c4740cc.png](https://cdn.davidingplus.cn/images/2026/09/11/1733383183337-4d67e5b9-633b-43a2-8342-30c03c4740cc-426927.png)
 
 ### TLB
 
@@ -40,7 +40,7 @@
 
 ### <font style="color:rgb(35, 38, 59);">内核地址空间</font>
 
-![1733383513099-c682ba03-7162-4041-958d-7917be5aa35d.png](./img/qDLyEEvZXPB7jLbB/1733383513099-c682ba03-7162-4041-958d-7917be5aa35d-111849.png)
+![1733383513099-c682ba03-7162-4041-958d-7917be5aa35d.png](https://cdn.davidingplus.cn/images/2026/09/11/1733383513099-c682ba03-7162-4041-958d-7917be5aa35d-111849.png)
 
 <font style="color:rgb(35, 38, 59);">右边地址0x1000是boot ROM的物理地址。对主板上电，主板做的第一件事情就是运行存储在boot ROM中的代码，当boot完成之后，会跳转到地址0x80000000，操作系统需要确保那个地址有一些数据能够接着启动操作系统</font>
 
@@ -547,7 +547,7 @@ kama_kvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz) {
 
 <font style="color:rgb(35, 38, 59);">在xv6手册中，可以看到这个范围中有一个CLINT（核心本地中断器）的映射，这个映射和刚才说的程序内存映射有冲突了。</font>
 
-![1733397226874-0d2fb8f5-ff92-4f21-a36c-86591570a3ce.png](./img/qDLyEEvZXPB7jLbB/1733397226874-0d2fb8f5-ff92-4f21-a36c-86591570a3ce-970523.png)
+![1733397226874-0d2fb8f5-ff92-4f21-a36c-86591570a3ce.png](https://cdn.davidingplus.cn/images/2026/09/11/1733397226874-0d2fb8f5-ff92-4f21-a36c-86591570a3ce-970523.png)
 
 <font style="color:rgb(35, 38, 59);">不过在手册中也可知，CLINT映射只在内核启动的时候需要使用，在内核态的用户进程并不需要使用这个映射。</font>\ <font style="color:rgb(35, 38, 59);">	所以可以在上一个实验中的</font><code><font style="color:rgb(35, 38, 59);">kama_kvm_map_pagetable</font></code><font style="color:rgb(35, 38, 59);">函数中修改一下，把CLINT这个映射去掉：</font>
 

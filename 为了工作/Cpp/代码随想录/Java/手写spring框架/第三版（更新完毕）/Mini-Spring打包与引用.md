@@ -335,23 +335,23 @@ mini-spring 中的 aop 模块使用了 CGLIB 库做代理，CGLIB 使用了字�
 
 点击 Main 下的 Edit Configurations
 
-![1753436597247-cfb65d8a-cb95-4268-bc6e-c28a27cb196c.png](./img/bYkqbEJhvTgHmmbg/1753436597247-cfb65d8a-cb95-4268-bc6e-c28a27cb196c-534584.png)
+![1753436597247-cfb65d8a-cb95-4268-bc6e-c28a27cb196c.png](https://cdn.davidingplus.cn/images/2026/09/11/1753436597247-cfb65d8a-cb95-4268-bc6e-c28a27cb196c-534584.png)
 
 在 Build and run > VM options 部分加上以上的参数。
 
-![1753436913185-79ffe1fe-ba3c-4f9b-a130-c9e549fbc707.png](./img/bYkqbEJhvTgHmmbg/1753436913185-79ffe1fe-ba3c-4f9b-a130-c9e549fbc707-627080.png)
+![1753436913185-79ffe1fe-ba3c-4f9b-a130-c9e549fbc707.png](https://cdn.davidingplus.cn/images/2026/09/11/1753436913185-79ffe1fe-ba3c-4f9b-a130-c9e549fbc707-627080.png)
 
 VM options 输入框可能是隐藏的，可以通过点击的 `Modify options` 下拉框，勾选 `Add VM options` 选项 打开。
 
-![1753437013865-2cd1bb0d-8112-49a2-a40a-00fec1587c0b.png](./img/bYkqbEJhvTgHmmbg/1753437013865-2cd1bb0d-8112-49a2-a40a-00fec1587c0b-723719.png)
+![1753437013865-2cd1bb0d-8112-49a2-a40a-00fec1587c0b.png](https://cdn.davidingplus.cn/images/2026/09/11/1753437013865-2cd1bb0d-8112-49a2-a40a-00fec1587c0b-723719.png)
 
 最终的配置如下：
 
-![1753437038840-2cae718a-4bb4-4232-922c-9d1a8fe83f9e.png](./img/bYkqbEJhvTgHmmbg/1753437038840-2cae718a-4bb4-4232-922c-9d1a8fe83f9e-350450.png)
+![1753437038840-2cae718a-4bb4-4232-922c-9d1a8fe83f9e.png](https://cdn.davidingplus.cn/images/2026/09/11/1753437038840-2cae718a-4bb4-4232-922c-9d1a8fe83f9e-350450.png)
 
 最终运行结果如下：
 
-![1753437695818-841a2f89-8e63-4071-a9bc-3bfe6d487695.png](./img/bYkqbEJhvTgHmmbg/1753437695818-841a2f89-8e63-4071-a9bc-3bfe6d487695-719055.png)
+![1753437695818-841a2f89-8e63-4071-a9bc-3bfe6d487695.png](https://cdn.davidingplus.cn/images/2026/09/11/1753437695818-841a2f89-8e63-4071-a9bc-3bfe6d487695-719055.png)
 
 
 > 更新: 2025-07-25 18:01:39  

@@ -1,7 +1,7 @@
 # 8、经典的RPC框架
 
 # gRPC
-![1731327924332-3644e086-8be7-456e-af51-a7d8f0cdf2c1.png](./img/HHzqnKsr0yPt6FMu/1731327924332-3644e086-8be7-456e-af51-a7d8f0cdf2c1-916387.png)
+![1731327924332-3644e086-8be7-456e-af51-a7d8f0cdf2c1.png](https://cdn.davidingplus.cn/images/2026/09/11/1731327924332-3644e086-8be7-456e-af51-a7d8f0cdf2c1-916387.png)
 
 ## 简介
 由 Google 开发，基于 HTTP/2 协议，支持多种编程语言，并采用 protocol Buffers(protocbuf) 作为序列化方式。
@@ -25,7 +25,7 @@
 ## 官网：[gRPC](https://grpc.io/)
 ## 源码：[gRPC](https://github.com/grpc/grpc-java)
 # Dubbo
-![1731328063928-776b5e51-4e6e-47b9-a0f4-8cde45fedeea.png](./img/HHzqnKsr0yPt6FMu/1731328063928-776b5e51-4e6e-47b9-a0f4-8cde45fedeea-354166.png)
+![1731328063928-776b5e51-4e6e-47b9-a0f4-8cde45fedeea.png](https://cdn.davidingplus.cn/images/2026/09/11/1731328063928-776b5e51-4e6e-47b9-a0f4-8cde45fedeea-354166.png)
 
 ## 简介
 由阿里巴巴开源的 RPC 框架，主要面向 Java 社区，后来扩展支持其他语言。

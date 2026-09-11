@@ -26,7 +26,7 @@ public class ClassPathXmlApplicationContext {
 
 当我们使用 XML 配置文件来定义 Bean 的时候，解析并加载配置文件的步骤总体上可分为以下步骤：
 
-![1754852474148-80269523-fb54-40a2-bf5c-2cd3b6d8b90d.png](./img/5N7YbRyl7Ge8ysAL/1754852474148-80269523-fb54-40a2-bf5c-2cd3b6d8b90d-870286.png)
+![1754852474148-80269523-fb54-40a2-bf5c-2cd3b6d8b90d.png](https://cdn.davidingplus.cn/images/2026/09/11/1754852474148-80269523-fb54-40a2-bf5c-2cd3b6d8b90d-870286.png)
 
 **1、定位配置文件**
 

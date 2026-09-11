@@ -58,7 +58,7 @@ TUI 启动后自动创建 chat session，底部输入框就绪。在输入框里
 
 这一章的主线就是一次 `kama-tui` 会话：用户启动 TUI，daemon 创建 session，用户在输入框发送第一条消息，AgentRunner 读取 thread 和 notes，run 结束后写回记忆，然后第二条消息复用这些记忆。
 
-![1779887730297-61187954-ce96-4f26-aa60-02b37ed1f683.png](./img/QvMgiAVBDfbWK5Yf/1779887730297-61187954-ce96-4f26-aa60-02b37ed1f683-362521.png)
+![1779887730297-61187954-ce96-4f26-aa60-02b37ed1f683.png](https://cdn.davidingplus.cn/images/2026/09/11/1779887730297-61187954-ce96-4f26-aa60-02b37ed1f683-362521.png)
 
 ***
 
@@ -514,7 +514,7 @@ LLM 现在同时看到两件事：
 
 所以它可以直接开始写 demo，而不是重新读取 `pyproject.toml`。
 
-![1779887731469-856554bc-5f40-409d-9bee-0b4121eda0fc.png](./img/QvMgiAVBDfbWK5Yf/1779887731469-856554bc-5f40-409d-9bee-0b4121eda0fc-136301.png)
+![1779887731469-856554bc-5f40-409d-9bee-0b4121eda0fc.png](https://cdn.davidingplus.cn/images/2026/09/11/1779887731469-856554bc-5f40-409d-9bee-0b4121eda0fc-136301.png)
 
 这就是 s4 的 payoff：多轮不是把上一轮终态文本拼到 prompt 里，而是把上一轮完整 API 消息流和主动笔记都带回来。
 

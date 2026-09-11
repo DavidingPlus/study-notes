@@ -4,7 +4,7 @@
 
 <font style="color:rgb(55, 65, 81);">我们可以在客户端建立一个本地缓存，缓存服务地址信息，作为优化的方案</font>
 
-![1732535303511-a5b06d4d-9473-45b3-8a0d-d41e406603c3.png](./img/TSY-bqatCm3W8pCc/1732535303511-a5b06d4d-9473-45b3-8a0d-d41e406603c3-870045.png)
+![1732535303511-a5b06d4d-9473-45b3-8a0d-d41e406603c3.png](https://cdn.davidingplus.cn/images/2026/09/11/1732535303511-a5b06d4d-9473-45b3-8a0d-d41e406603c3-870045.png)
 
 # <font style="color:rgb(55, 65, 81);">创建缓存</font>
 
@@ -30,7 +30,7 @@
 
 <font style="color:rgb(55, 65, 81);">比如如下场景</font>
 
-![1732535414051-9920a2e4-a21f-4877-a88e-c906451c8247.png](./img/TSY-bqatCm3W8pCc/1732535414051-9920a2e4-a21f-4877-a88e-c906451c8247-583386.png)
+![1732535414051-9920a2e4-a21f-4877-a88e-c906451c8247.png](https://cdn.davidingplus.cn/images/2026/09/11/1732535414051-9920a2e4-a21f-4877-a88e-c906451c8247-583386.png)
 
 <font style="color:rgb(55, 65, 81);">如果一个服务在注册中心中新增了一个地址，但是调用方始终能在本地缓存中读到这个服务</font>
 
@@ -66,7 +66,7 @@
 
 <font style="color:rgb(55, 65, 81);">客户端</font>\*\*首先将 **<code>**Watcher**</code>**注册到服务端**<font style="color:rgb(55, 65, 81);">，同时将 </font>`Watcher`<font style="color:rgb(55, 65, 81);">对象</font>**保存到客户端的**<code>**watch**</code>**管理器中**<font style="color:rgb(55, 65, 81);">。当</font>`Zookeeper`<font style="color:rgb(55, 65, 81);">服务端监听的数据状态发生变化时，服务端会</font>**主动通知客户端**<font style="color:rgb(55, 65, 81);">，接着客户端的 </font>`Watch`<font style="color:rgb(55, 65, 81);">管理器会**触发相关 </font>`Watcher`<font style="color:rgb(55, 65, 81);">\*\*来回调相应处理逻辑，从而完成整体的数据 </font>`发布/订阅`<font style="color:rgb(55, 65, 81);">流程</font>
 
-![1732535521507-a2a5a2b2-10d3-47f7-b4a1-384485e81e9a.png](./img/TSY-bqatCm3W8pCc/1732535521507-a2a5a2b2-10d3-47f7-b4a1-384485e81e9a-453127.png)
+![1732535521507-a2a5a2b2-10d3-47f7-b4a1-384485e81e9a.png](https://cdn.davidingplus.cn/images/2026/09/11/1732535521507-a2a5a2b2-10d3-47f7-b4a1-384485e81e9a-453127.png)
 
 <font style="color:rgb(55, 65, 81);">使用curator，可以方便的进行watcher的使用</font>
 

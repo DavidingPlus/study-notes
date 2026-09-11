@@ -17,7 +17,7 @@ public interface Advice {
 
 Mini-Spring 当前实现通知体系：
 
-![画板](./img/RQVYlZC3-bWgUT2h/1755056461016-2b2f5b71-adc6-4e4d-84cf-0ab02985f669-103405.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1755056461016-2b2f5b71-adc6-4e4d-84cf-0ab02985f669-103405.jpeg)
 
 #### 后置通知 AfterAdvice
 

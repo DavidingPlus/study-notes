@@ -38,7 +38,7 @@ s7 引入三件事来突破这些边界：
 
 路径是：`SessionManager` 识别斜杠命令 → `SkillLoader` 渲染 prompt 和工具白名单 → `AgentRunner` 构造受限 registry → 父 Agent 调 `spawn_agent` → 子 Agent 按角色运行 → 事件桥回 TUI → 必要时通过 MCP 工具访问外部能力。
 
-![1779890315850-ae4cb8eb-85b7-4b60-8f4b-fd0e99f42f52.png](./img/oWiK40gBfkNG3jGH/1779890315850-ae4cb8eb-85b7-4b60-8f4b-fd0e99f42f52-096682.png)
+![1779890315850-ae4cb8eb-85b7-4b60-8f4b-fd0e99f42f52.png](https://cdn.davidingplus.cn/images/2026/09/11/1779890315850-ae4cb8eb-85b7-4b60-8f4b-fd0e99f42f52-096682.png)
 
 ***
 
@@ -276,7 +276,7 @@ await self._parent_bus.publish(
 
 结束时发布 `SubagentFinishedEvent`。TUI 用这些事件做缩进和层级显示：哪个 run 是父 run，哪个 run 是子 run。
 
-![1779890315846-c5dabac2-8874-47bf-8d9d-a48f6e757485.png](./img/oWiK40gBfkNG3jGH/1779890315846-c5dabac2-8874-47bf-8d9d-a48f6e757485-029608.png)
+![1779890315846-c5dabac2-8874-47bf-8d9d-a48f6e757485.png](https://cdn.davidingplus.cn/images/2026/09/11/1779890315846-c5dabac2-8874-47bf-8d9d-a48f6e757485-029608.png)
 
 前台子 agent 会一直跑到结束，然后把 `child_context.result` 包成 ToolResult 返回给父 LLM。父 LLM 再根据结果决定下一步，比如派生 executor。
 
@@ -398,7 +398,7 @@ if self._mcp_manager is not None:
 
 MCP 工具走同一条 `invoke_tool()` 路径，所以 s5 的权限、失败分类、TUI 展示都能复用。server 不可用时，`McpTool` 返回 `is_error=True`，AgentLoop 不需要特殊分支。
 
-![1779890315896-a99f87a9-27f5-48b1-9458-987821141c0c.png](./img/oWiK40gBfkNG3jGH/1779890315896-a99f87a9-27f5-48b1-9458-987821141c0c-903311.png)
+![1779890315896-a99f87a9-27f5-48b1-9458-987821141c0c.png](https://cdn.davidingplus.cn/images/2026/09/11/1779890315896-a99f87a9-27f5-48b1-9458-987821141c0c-903311.png)
 
 ***
 

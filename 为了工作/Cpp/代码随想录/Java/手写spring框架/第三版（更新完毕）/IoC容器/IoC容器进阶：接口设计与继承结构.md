@@ -18,7 +18,7 @@
 
 所以我在这里引入一条主线，**在分析各种接口的设计之前，一定要先记住这条主线。**
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753845568459-5f871d23-241f-4cbe-96a9-dc1dcff37fef-625987.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753845568459-5f871d23-241f-4cbe-96a9-dc1dcff37fef-625987.jpeg)
 
 这条主线描述了 Mini-Spring **是如何将一个 XML 配置文件，最终转化为我们可以直接使用的 Java 对象的。**
 
@@ -47,7 +47,7 @@
 
 以下是具体功能划分，每一个功能最终都会有相应的接口体系与之对应。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753847466750-b60b321c-05b9-4f1d-95ca-202d2ac02314-425141.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753847466750-b60b321c-05b9-4f1d-95ca-202d2ac02314-425141.jpeg)
 
 在 IoC 容器功能这里，比较值得一说的是第一点：**容器的构造逻辑**
 
@@ -116,7 +116,7 @@ public class Main {
 
 在 Mini-Spring 中，IoC 容器的起点是一个叫做 `BeanFactory` 的接口。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753846377962-712741e2-d845-4289-a915-11b0f7f97c04-822312.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753846377962-712741e2-d845-4289-a915-11b0f7f97c04-822312.jpeg)
 
 它的核心作用就一个——**根据名字，返回对象**
 
@@ -134,7 +134,7 @@ Object getBean(String name);
 
 上面我们说到了 `BeanFactory` 接口，现在来看它的一个的子接口——`HierarchicalBeanFactory`。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753775595674-3948c4e7-0a4d-4fc6-9f0c-c2d1e2c74102-057767.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753775595674-3948c4e7-0a4d-4fc6-9f0c-c2d1e2c74102-057767.jpeg)
 
 这个接口的核心方法是：
 
@@ -150,7 +150,7 @@ BeanFactory getParentBeanFactory();
 
 同上，在 `BeanFactory` 基础上，`ListableBeanFactory` 接口给 IoC 容器扩展了更加强力的查询 Bean 的能力，**这个接口是个很重要的接口，是很多基础框架运行的基础**。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753777469018-e53fe05f-25c8-47cb-9867-67a3a88f6ade-779810.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753777469018-e53fe05f-25c8-47cb-9867-67a3a88f6ade-779810.jpeg)
 
 `ListableBeanFactory` 接口的核心方法如下：
 
@@ -192,7 +192,7 @@ Object getBean(String name);
 
 `AutowireCapableBeanFactory` 接口将会正式为 IoC 赋予创建对象的能力。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753780136926-4a39ce2b-d07a-4b37-9139-76a6ef8e2fe1-429949.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753780136926-4a39ce2b-d07a-4b37-9139-76a6ef8e2fe1-429949.jpeg)
 
 `AutowireCapableBeanFactory` 接口提供的核心接口如下：
 
@@ -209,7 +209,7 @@ IoC 容器在支持最基本容器功能——获取和创建 Bean 后。就需�
 
 `ConfigurableBeanFactory` 就是 IoC 容器支持配置这些高级功能的接口。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753786545316-7b898a6e-050b-4eda-bb79-1c9d0750652e-871492.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753786545316-7b898a6e-050b-4eda-bb79-1c9d0750652e-871492.jpeg)
 
 以下是核心的方法：
 
@@ -236,7 +236,7 @@ void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
 `ConfigurableListableBeanFactory` 接口就是这个总控接口。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753787214102-64ea4205-8570-4e30-a5b0-192758109c37-895790.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753787214102-64ea4205-8570-4e30-a5b0-192758109c37-895790.jpeg)
 
 `ConfigurableListableBeanFactory` 除了整合上述的接口之外，其自身对 IoC 容器的功能进行了拓展。
 
@@ -260,7 +260,7 @@ void preInstantiateSingletons()
 
 前文我们说到，Mini-Spring 在设计上采用了 Spring 优秀的设计思路，细化**多个职责分离的接口体系，每个接口体系按照功能逐步扩展，最终再组合在一起，形成完整的容器结构。**
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753856413331-b394fb32-5e83-40c8-9d65-06080972b08b-165694.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753856413331-b394fb32-5e83-40c8-9d65-06080972b08b-165694.jpeg)
 
 `SingletonBeanRegistry` 接口则是将**单例对象的缓存与管理**从容器本身中解耦出来，它提供以下两个核心方法：
 
@@ -281,7 +281,7 @@ void registerSingleton(String beanName, Object singletonObject);
 
 后续我们还会讲解的，IoC 容器真正的集大成者（`DefaultListableBeanFactory` 实现类）的拥有的**单例对象管理能力，也是从这里继承去的。**
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753858539173-496d3a52-0d5e-43cc-bd81-f9b40847a3d2-866562.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753858539173-496d3a52-0d5e-43cc-bd81-f9b40847a3d2-866562.jpeg)
 
 我们先来简单看一下 `DefaultSingletonBeanRegistry`实现类的**核心属性**：
 
@@ -323,7 +323,7 @@ UserService userService = (UserService) applicationContext.getBean("userService"
 
 `AbstractBeanFactory` 就充当了这个媒介。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753858667891-142f32da-fbc6-4dba-aa47-da4eb6c72348-176566.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753858667891-142f32da-fbc6-4dba-aa47-da4eb6c72348-176566.jpeg)
 
 一方面，`AbstractBeanFactory` 继承了`DefaultSingletonBeanRegistry` 的单例管理能力，另一方面，它还实现了 BeanFactory 接口，拥有了 IoC 容器初级的查找对象的能力。
 
@@ -331,7 +331,7 @@ UserService userService = (UserService) applicationContext.getBean("userService"
 
 `AbstractAutowireCapableBeanFactory` 实现类是 Mini-Spring 中真正用来创建对象的类。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753861740504-90336f0a-8b74-4fab-b639-7bb76ec32102-901078.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753861740504-90336f0a-8b74-4fab-b639-7bb76ec32102-901078.jpeg)
 
 > 你可能会觉得奇怪：这个类都叫 `AutowireCapableBeanFactory` 了，为什么它没有实现 `AutowireCapableBeanFactory` 接口？
 >
@@ -349,7 +349,7 @@ UserService userService = (UserService) applicationContext.getBean("userService"
 
 `BeanDefinitionRegistry`也将 BeanDefinition 的注册和获取能力从 IoC 容器内解耦出来了。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753862294867-8838bc59-c4a6-4fed-9612-c21986759794-707332.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753862294867-8838bc59-c4a6-4fed-9612-c21986759794-707332.jpeg)
 
 以下是 `BeanDefinitionRegistry`接口的核心方法：
 
@@ -364,7 +364,7 @@ BeanDefinition getBeanDefinition(String beanName);
 
 在正式介绍 `DefaultListableBeanFactory` 之前，我们先来以下的继承结构图：
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753864528749-3c06ff6c-d933-485b-9a20-0ae78c6b8ed7-316918.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753864528749-3c06ff6c-d933-485b-9a20-0ae78c6b8ed7-316918.jpeg)
 
 光是看 `DefaultListableBeanFactory` 在继承结构图上的位置，就大概知道这个类就是 IoC 容器的最终形态了，我们前面提到的所有接口，所有的实现类拥有的所有能力，它全都继承了。
 
@@ -406,7 +406,7 @@ public class Main {
 
 `XmlBeanDefinitionReader` 是我们最熟悉的 beans.xml 文件的配置加载器，通过它能够将 beans.xml 文件中的 Bean 的定义转换成 BeanDefinition。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753865243328-9f5cd777-36c8-4953-b550-e75f8e021a10-862971.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753865243328-9f5cd777-36c8-4953-b550-e75f8e021a10-862971.jpeg)
 
 > 如果有一天你想要通过 JSON 配置 bean，只需要继承 `AbstractBeanDefinitionReader`，重新实现里面所有的方法就可以了，类的命名大概为 `JsonBeanDefinitionReader`
 
@@ -416,13 +416,13 @@ DocumentLoader 接口和其默认实现类 DefaultDocumentLoader 的作用其实
 
 后续通过访问这个 DOM 对象，生成的 BeanDefinition。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753866036585-293c99bf-9598-4734-b405-fdace0b4442e-050124.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753866036585-293c99bf-9598-4734-b405-fdace0b4442e-050124.jpeg)
 
 #### Resource 接口
 
 Mini-Spring 中的所有配置文件、XML、Properties......只要是文件，统一都通过 Resource 来描述。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753867162129-cb952f47-7290-4923-832d-d796d2175e9a-715277.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753867162129-cb952f47-7290-4923-832d-d796d2175e9a-715277.jpeg)
 
 Resource 接口的核心方法是：
 
@@ -450,7 +450,7 @@ Mini-Spring 的 `ApplicationContext` 在继承了 `BeanFactory` 的核心功能�
 
 #### 高级 IoC 容器接口 —— ApplicationContext
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753871420109-e1942829-1da5-469a-abd1-6d0d4aa6abf6-737859.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753871420109-e1942829-1da5-469a-abd1-6d0d4aa6abf6-737859.jpeg)
 
 `ApplicationContext` 接口的核心方法：
 
@@ -465,7 +465,7 @@ Environment getEnvironment();
 * 控制容器生命周期
 * 设置运行环境
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753943175287-93ce9320-7d6f-4a79-a7c0-6da52ace2e12-972360.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753943175287-93ce9320-7d6f-4a79-a7c0-6da52ace2e12-972360.jpeg)
 
 这个接口提供了**一个十分重要的方法：**
 
@@ -480,7 +480,7 @@ Mini-Spring 的 IoC 容器就是通过这个方法启动的。
 
 `AbstractApplicationContext` 实现类是整个 `ApplicationContext` 初始化工作的实现框架，它实现了 `refresh` 方法，还继承了 `DefaultResourceLoader`，让它有了获取读取资源的能力。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753943664949-421aaac2-f901-4cb7-9d0c-a2e6aacbc895-390357.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753943664949-421aaac2-f901-4cb7-9d0c-a2e6aacbc895-390357.jpeg)
 
 这个类实现了一个最重要的 refresh 方法，这个 refresh 方法是容器启动的一个模板：
 
@@ -525,7 +525,7 @@ ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 * 创建一个新的 BeanFactory 实例
 * 让子类加载 BeanDefinitions
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753943895502-3ff1defe-20e7-4a21-b387-34a7d34be9b3-382740.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753943895502-3ff1defe-20e7-4a21-b387-34a7d34be9b3-382740.jpeg)
 
 #### AbstractXmlApplicationContext
 
@@ -533,11 +533,11 @@ ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 `loadBeanDefinitions()` 方法，负责把 XML 中的 `<bean>` 标签加载进 BeanFactory。
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753944179562-e7f26cb6-de0b-4221-a392-536f2773d2aa-179284.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753944179562-e7f26cb6-de0b-4221-a392-536f2773d2aa-179284.jpeg)
 
 #### ClassPathXmlApplicationContext 和 FileSystemXmlApplicationContext
 
-![画板](./img/TXY1MhQpUvGBPF_r/1753944489317-7b2a4003-f880-432e-baae-8e1b75e2351f-678853.jpeg)
+![画板](https://cdn.davidingplus.cn/images/2026/09/11/1753944489317-7b2a4003-f880-432e-baae-8e1b75e2351f-678853.jpeg)
 
 
 > 更新: 2025-10-11 19:22:37  

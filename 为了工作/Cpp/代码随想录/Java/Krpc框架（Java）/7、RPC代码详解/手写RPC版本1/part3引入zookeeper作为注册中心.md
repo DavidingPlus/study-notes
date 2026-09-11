@@ -22,7 +22,7 @@
 
 # 数据模型<font style="color:rgb(55, 65, 81);">：</font>
 
-![1732680932689-ecb47121-b31b-41e8-b202-c8c9379eab05.png](./img/FRShJCZbGT4U8Ssg/1732680932689-ecb47121-b31b-41e8-b202-c8c9379eab05-074281.png)
+![1732680932689-ecb47121-b31b-41e8-b202-c8c9379eab05.png](https://cdn.davidingplus.cn/images/2026/09/11/1732680932689-ecb47121-b31b-41e8-b202-c8c9379eab05-074281.png)
 
 `zookeeper`<font style="color:rgb(55, 65, 81);">的数据结点可以视为树状结构(或目录)，树中的各个结点被称为</font>`znode`<font style="color:rgb(55, 65, 81);">(即</font>`zookeeper node`<font style="color:rgb(55, 65, 81);">)，一个</font>`znode`<font style="color:rgb(55, 65, 81);">可以由多个子结点。</font>`zookeeper`<font style="color:rgb(55, 65, 81);">结点在结构上表现为树状；</font>
 
@@ -78,7 +78,7 @@
 
 <font style="color:rgb(55, 65, 81);">zkCli界面显示</font>
 
-![1732681141615-96302c8e-4335-491b-ad3e-66d3a02fc2ac.png](./img/FRShJCZbGT4U8Ssg/1732681141615-96302c8e-4335-491b-ad3e-66d3a02fc2ac-404608.png)
+![1732681141615-96302c8e-4335-491b-ad3e-66d3a02fc2ac.png](https://cdn.davidingplus.cn/images/2026/09/11/1732681141615-96302c8e-4335-491b-ad3e-66d3a02fc2ac-404608.png)
 
 <font style="color:rgb(55, 65, 81);">证明运行成功</font>
 

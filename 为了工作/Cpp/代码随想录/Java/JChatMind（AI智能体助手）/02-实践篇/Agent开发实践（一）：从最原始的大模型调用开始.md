@@ -49,11 +49,11 @@ console.log(data.choices[0].message.content);
 
 为了更直观地观察请求过程，我们使用  [example1.html](https://github.com/youngyangyang04/JChatMind/blob/dd4f39024c828b5dd0331798c8bf08c70cc79427/examples/example1.html) 页面进行测试：
 
-![1766352126834-feea8126-60c3-49fb-8442-92002a862cd9.png](./img/7yAzAVf1Xb1SA5wY/1766352126834-feea8126-60c3-49fb-8442-92002a862cd9-589505.png)
+![1766352126834-feea8126-60c3-49fb-8442-92002a862cd9.png](https://cdn.davidingplus.cn/images/2026/09/11/1766352126834-feea8126-60c3-49fb-8442-92002a862cd9-589505.png)
 
 打开浏览器开发者工具，切换到 Network 面板，你会看到请求体大致如下：
 
-![1765955320365-ed9acea7-6e1e-4789-a6f8-4aca403f9ecf.png](./img/7yAzAVf1Xb1SA5wY/1765955320365-ed9acea7-6e1e-4789-a6f8-4aca403f9ecf-387856.png)![1765955271320-5a1b05b7-57df-4797-ae18-02f6a06b865c.png](./img/7yAzAVf1Xb1SA5wY/1765955271320-5a1b05b7-57df-4797-ae18-02f6a06b865c-414749.png)
+![1765955320365-ed9acea7-6e1e-4789-a6f8-4aca403f9ecf.png](https://cdn.davidingplus.cn/images/2026/09/11/1765955320365-ed9acea7-6e1e-4789-a6f8-4aca403f9ecf-387856.png)![1765955271320-5a1b05b7-57df-4797-ae18-02f6a06b865c.png](https://cdn.davidingplus.cn/images/2026/09/11/1765955271320-5a1b05b7-57df-4797-ae18-02f6a06b865c-414749.png)
 
 ```javascript
 {
@@ -163,7 +163,7 @@ async function sendMessage(message) {
 
 在 [example2.html](https://github.com/youngyangyang04/JChatMind/blob/dd4f39024c828b5dd0331798c8bf08c70cc79427/examples/example2.html) 页面中，你可以直观地看到 messages 随着对话不断增长。
 
-![1766352819186-ca70a348-43ef-4183-b444-428898c03bf6.png](./img/7yAzAVf1Xb1SA5wY/1766352819186-ca70a348-43ef-4183-b444-428898c03bf6-947358.png)
+![1766352819186-ca70a348-43ef-4183-b444-428898c03bf6.png](https://cdn.davidingplus.cn/images/2026/09/11/1766352819186-ca70a348-43ef-4183-b444-428898c03bf6-947358.png)
 
 此时你应该能够得出一个非常重要的结论：
 
@@ -246,13 +246,13 @@ body: JSON.stringify({
 })
 ```
 
-![1766353307244-26513952-3b6f-4d9c-b7df-babcac936e9c.png](./img/7yAzAVf1Xb1SA5wY/1766353307244-26513952-3b6f-4d9c-b7df-babcac936e9c-793452.png)
+![1766353307244-26513952-3b6f-4d9c-b7df-babcac936e9c.png](https://cdn.davidingplus.cn/images/2026/09/11/1766353307244-26513952-3b6f-4d9c-b7df-babcac936e9c-793452.png)
 
 模型在第一次响应中，并不会直接回答天气，而是返回它“希望调用的工具”。
 
 系统解析这些 tool\_calls，执行对应的真实代码，并把执行结果以 **tool message** 的形式追加到 messages 中，再次发送给模型。
 
-![1766353380829-077d09fc-f01a-4364-a7c6-1ca62aac6ac1.png](./img/7yAzAVf1Xb1SA5wY/1766353380829-077d09fc-f01a-4364-a7c6-1ca62aac6ac1-215887.png)
+![1766353380829-077d09fc-f01a-4364-a7c6-1ca62aac6ac1.png](https://cdn.davidingplus.cn/images/2026/09/11/1766353380829-077d09fc-f01a-4364-a7c6-1ca62aac6ac1-215887.png)
 
 模型拿到新的信息后，继续判断下一步需要什么工具。
 

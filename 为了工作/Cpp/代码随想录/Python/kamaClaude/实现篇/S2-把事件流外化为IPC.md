@@ -49,7 +49,7 @@ s2 要修正的根本问题不是“增加一个 TUI”，也不只是“把 `Ag
 
 所以 s2 的主线是 `kama run --goal "..."` 的双进程版：CLI 发送 `event.subscribe` 和 `agent.run`，daemon 在后台运行 AgentRunner，EventBus 把事件同时交给 EventWriter 和 IpcEventBroadcaster，所有客户端从同一条 IPC 事件流里观察进度。
 
-![1779880678758-3a5f1292-031a-479d-935f-3b44ddc7d916.png](./img/hsPmMR-74SOHzZb5/1779880678758-3a5f1292-031a-479d-935f-3b44ddc7d916-159921.png)
+![1779880678758-3a5f1292-031a-479d-935f-3b44ddc7d916.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880678758-3a5f1292-031a-479d-935f-3b44ddc7d916-159921.png)
 
 ***
 
@@ -142,7 +142,7 @@ async def _run_async(goal: str, config: KamaConfig) -> int:
 {"kind":"event","event":{"type":"llm.token","token":" read",...}}
 ```
 
-![1779880679412-126bf4b0-2eed-4a2e-b0e2-e249412a0b12.png](./img/hsPmMR-74SOHzZb5/1779880679412-126bf4b0-2eed-4a2e-b0e2-e249412a0b12-730710.png)
+![1779880679412-126bf4b0-2eed-4a2e-b0e2-e249412a0b12.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880679412-126bf4b0-2eed-4a2e-b0e2-e249412a0b12-730710.png)
 
 为什么放在同一条连接里，而不是单独开一条连接专门推事件？分成两条连接需要管理两个生命周期，断开时要两边同步清理，还要有机制把两条连接绑定到同一个"会话"——实现更复杂，收益不明显。
 
@@ -205,7 +205,7 @@ bus.publish(event)
 
 `AgentRunner` 和 `AgentLoop` 对外面有没有客户端连着完全无感知，它们只管向 bus 发布事件。
 
-![1779880679481-52ef9b2d-afcf-4615-9ab5-1d24ca2ecdf9.png](./img/hsPmMR-74SOHzZb5/1779880679481-52ef9b2d-afcf-4615-9ab5-1d24ca2ecdf9-441973.png)
+![1779880679481-52ef9b2d-afcf-4615-9ab5-1d24ca2ecdf9.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880679481-52ef9b2d-afcf-4615-9ab5-1d24ca2ecdf9-441973.png)
 
 ### event.subscribe 命令
 
@@ -339,7 +339,7 @@ def _matches_scope(run_id: str | None, scope: str) -> bool:
 
 死连接（客户端已断开但 broadcaster 还不知道）在推送时触发 `BrokenPipeError`。处理方式是先把出问题的 writer 记进 `dead` 列表，fan-out 全部完成后再统一清理——不能在遍历 `self._subscriptions` 的过程中修改它，否则会跳过某些订阅者。
 
-![1779880680988-569b91e7-81dc-48e8-ad9a-d0a16208fb2f.png](./img/hsPmMR-74SOHzZb5/1779880680988-569b91e7-81dc-48e8-ad9a-d0a16208fb2f-255674.png)
+![1779880680988-569b91e7-81dc-48e8-ad9a-d0a16208fb2f.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880680988-569b91e7-81dc-48e8-ad9a-d0a16208fb2f-255674.png)
 
 客户端主动断开时，`SocketServer` 在连接处理函数的 `finally` 块里调用 `broadcaster.unsubscribe(writer)`，立刻清掉这条连接的订阅，不用等到下次推送失败才发现：
 
@@ -396,7 +396,7 @@ async def _replay_events(self, run_id, writer, topics) -> int:
 
 历史事件和实时事件用同样的 `EventPushEnvelope` 格式发出，客户端不需要区分——先收到一批历史，然后无缝接到实时流上。`EventSubscribeResult.replayed_count` 告诉客户端回放了多少条。
 
-![1779880679572-e396e644-c92d-44bc-be43-e9c4ebb2fd3b.png](./img/hsPmMR-74SOHzZb5/1779880679572-e396e644-c92d-44bc-be43-e9c4ebb2fd3b-672304.png)
+![1779880679572-e396e644-c92d-44bc-be43-e9c4ebb2fd3b.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880679572-e396e644-c92d-44bc-be43-e9c4ebb2fd3b-672304.png)
 
 `kama-tui` 支持 `--replay` 参数来触发这个流程：
 
@@ -410,7 +410,7 @@ uv run kama-tui --replay 20260515-abc
 
 TUI 用 [Textual](https://textual.textualize.io/) 框架实现，底层和 CLI 一样——`SocketClient` 连接守护进程，订阅事件——只是呈现层换成了交互式终端界面。
 
-![1779880680588-d76eefe2-af56-47ee-abf0-c85152db0070.png](./img/hsPmMR-74SOHzZb5/1779880680588-d76eefe2-af56-47ee-abf0-c85152db0070-434757.png)
+![1779880680588-d76eefe2-af56-47ee-abf0-c85152db0070.png](https://cdn.davidingplus.cn/images/2026/09/11/1779880680588-d76eefe2-af56-47ee-abf0-c85152db0070-434757.png)
 
 布局：顶部一行状态栏，剩余空间是可滚动的富文本日志区。
 
